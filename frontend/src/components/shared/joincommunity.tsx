@@ -4,17 +4,18 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import location from "../../public/images/location-icon.png";
-import mail from "../../public/images/mail-icon.png";
-import mobile from "../../public/images/phone-icon.png";
-import user from "../../public/images/user-icon.png";
+import location from "../../../public/images/location-icon.png";
+import mail from "../../../public/images/mail-icon.png";
+import mobile from "../../../public/images/phone-icon.png";
+import user from "../../../public/images/user-icon.png";
 // import Script from 'next/script';
 import { RiArrowRightLine } from "react-icons/ri";
 // import { GiCheckMark } from 'react-icons/gi';
 import { AxiosError } from "axios";
 import { ImSpinner2 } from "react-icons/im";
 import { ToastContainer, toast } from "react-toastify";
-import { _axios } from "../../lib/_axios";
+import { _axios } from "@/lib/axios-instance";
+
 
 interface OTPlessResponse {
   success: boolean;
@@ -329,7 +330,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("name")}
             type="text"
-            onChange={(e) => handleInputChange("name", e.target.value)}
+            // onChange={(e) => handleInputChange("name", e.target.value)}
             placeholder="Name"
             className={`w-full lg:text-xl text-sm lg:pl-20 pl-10 pr-3 py-2 lg:h-20 h-[60px] border ${
               errors.name ? "border-red-500" : "border-gray-300"
@@ -404,7 +405,7 @@ const JoinCommunityForm = () => {
           />
           <input
             {...register("mobile")}
-            onChange={(e) => handleInputChange("mobile", e.target.value)}
+            // onChange={(e) => handleInputChange("mobile", e.target.value)}
             type="text"
             placeholder="mobile"
             inputMode="numeric"
@@ -448,7 +449,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("address")}
             type="text"
-            onChange={(e) => handleInputChange("address", e.target.value)}
+            // onChange={(e) => handleInputChange("address", e.target.value)}
             placeholder="Address"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.address ? "border-red-500" : "border-gray-300"
