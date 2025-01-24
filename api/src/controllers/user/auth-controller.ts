@@ -3,7 +3,7 @@ import { PasetoUtil } from "../../lib/paseto";
 import { UserModel } from "../../models/usermodel";
 
 export const authController = new Elysia({
-  prefix: "/userauth",
+  prefix: "/auth",
   detail: {
     description: "User Auth controller",
     tags: ["User Auth"],
@@ -38,13 +38,14 @@ export const authController = new Elysia({
         },
       };
 
-      return { message: "User logged in successfully", token };
+      return { message: "User logged in successfully", token, status: true };
     } catch (error: any) {
       console.error("Error logging in:", error);
 
       set.status = 500;
       return {
         message: "An internal error occurred while logging in.",
+        status: false,
       };
     }
   },
@@ -53,5 +54,8 @@ export const authController = new Elysia({
       email: t.String({ format: "email" }),
       password: t.String(),
     }),
+    detail: {
+      summary: "Login as a user",
+    },
   }
 );

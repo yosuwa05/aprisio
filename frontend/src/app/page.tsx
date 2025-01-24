@@ -1,13 +1,13 @@
 import { ToastContainer } from "react-toastify";
-import About from "../components/shared/About";
-import Events from "../components/shared/Events";
-import FAQ1 from "../components/shared/FAQ1";
-import FAQ2 from "../components/shared/FAQ2";
-import Footer from "../components/shared/Footer";
-import Hero from "../components/shared/Hero";
-import Join from "../components/shared/Join";
-import NavBar from "../components/shared/NavBar";
-import Testimonial from "../components/shared/Testimonials";
+import About from "../components/shared/about";
+import Events from "../components/shared/events";
+import FAQ1 from "../components/shared/faq-one";
+import FAQ2 from "../components/shared/faq-two";
+import Footer from "../components/shared/footer";
+import Hero from "../components/shared/hero";
+import Join from "../components/shared/join";
+import NavBar from "../components/shared/navbar";
+import Testimonial from "../components/shared/testimonials";
 
 export default function Home() {
   return (

@@ -97,9 +97,11 @@ export default function NavBar() {
           </ul>
         </div>
 
-        {/* Actions button - Hidden on small screens */}
         <div className="hidden lg:flex gap-5 font-mulish font-semibold xl:text-xl lg:text-base">
-          <button className="bg-white rounded-full xl:py-4 xl:px-8 lg:py-3 lg:px-6 shadow border-[0.5px]">
+          <button
+            className="bg-white rounded-full xl:py-4 xl:px-8 lg:py-3 lg:px-6 shadow border-[0.5px]"
+            onClick={() => router.push("/login")}
+          >
             Log In
           </button>
           <button className="bg-[#C9A74E] rounded-full xl:py-4 xl:px-7 lg:py-3 lg:px-6">
@@ -107,7 +109,6 @@ export default function NavBar() {
           </button>
         </div>
 
-        {/* Hamburger menu - Visible on small screens */}
         <button
           className="lg:hidden text-[#043A53]"
           onClick={toggleDrawer}
@@ -117,7 +118,6 @@ export default function NavBar() {
         </button>
       </div>
 
-      {/* Drawer - Visible when open on small screens */}
       <div
         className={`fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
           isDrawerOpen ? "translate-x-0" : "translate-x-full"
@@ -152,7 +152,10 @@ export default function NavBar() {
             </li>
           </ul>
           <div className="space-y-4 font-mulish font-semibold text-lg">
-            <button className="w-full bg-white rounded-full py-3 px-6 shadow border-[0.5px]">
+            <button
+              className="w-full bg-white rounded-full py-3 px-6 shadow border-[0.5px]"
+              onClick={() => router.push("/login")}
+            >
               Log In
             </button>
             <button className="w-full bg-[#C9A74E] rounded-full py-3 px-6">
@@ -162,7 +165,6 @@ export default function NavBar() {
         </div>
       </div>
 
-      {/* Overlay - Visible when drawer is open */}
       {isDrawerOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"

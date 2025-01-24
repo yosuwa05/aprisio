@@ -1,5 +1,4 @@
-import Postcard from "@/components/postcard";
-import Topbar from "@/components/topbar/topbar";
+import Topbar from "@/components/shared/topbar";
 import { Button } from "@/components/ui/button";
 import { MapPin, Plus } from "lucide-react";
 
@@ -28,11 +27,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="w-full flex flex-col overflow-y-auto max-h-[91vh] hide-scrollbar">
-          <Postcard />
-          <Postcard />
-          <Postcard />
-        </div>
+        <div className="w-full flex flex-col overflow-y-auto max-h-[91vh] hide-scrollbar"></div>
 
         <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
           <div className="bg-white px-4 rounded-xl w-[350px]">

@@ -2,12 +2,12 @@ import cors from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import mongoose from "mongoose";
-import { AdminRouter, UserRouter } from "./controllers";
+import { baseRouter } from "./controllers";
 
 const app = new Elysia();
 app.use(cors());
 
-const URL = "mongodb+srv://stainsrubus:Stains2001@cluster0.ogeipvb.mongodb.net";
+const URL = process.env.DB_URL;
 
 try {
   await mongoose.connect(URL as string, {
@@ -56,7 +56,6 @@ app.onError(({ code, error }) => {
   }
 });
 
-app.use(AdminRouter);
-app.use(UserRouter);
+app.use(baseRouter);
 
 export { app };

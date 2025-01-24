@@ -1,5 +1,5 @@
-import Footer from "../../components/shared/Footer";
-import NavBar from "../../components/shared/NavBar";
+import Footer from "../../components/shared/footer";
+import NavBar from "../../components/shared/navbar";
 
 export default function JoinLayout({
   children,

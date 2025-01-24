@@ -17,20 +17,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { _axios } from "@/lib/axios-instance";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { formSchema } from "./schema";
 
 export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
-  const formSchema = z.object({
-    email: z.string().email({ message: "Invalid email address" }).min(2, {
-      message: "email must be at least 2 characters.",
-    }),
-    password: z.string().min(6, {
-      message: "Password must be at least 6 characters.",
-    }),
-  });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,8 +35,28 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
     },
   });
 
+  const router = useRouter();
+
+  const { toast } = useToast();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const res = await _axios.post("/auth/login", values);
+      return res;
+    },
+    onSuccess(data) {
+      if (data && data.data.status) {
+        toast({
+          title: "Logged in successfully",
+        });
+
+        router.push("/feed");
+      }
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    const res = mutate(values);
   }
 
   return (
@@ -68,7 +84,11 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input placeholder="user@gmail.com" {...field} />
+                            <Input
+                              autoComplete="username"
+                              placeholder="user@gmail.com"
+                              {...field}
+                            />
                           </FormControl>
                           {formState.errors.email && "Welcome"}
                         </FormItem>
@@ -83,14 +103,18 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input placeholder="Password" {...field} />
+                            <Input
+                              autoComplete="new-password"
+                              placeholder="Password"
+                              {...field}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full" disabled={isPending}>
                     Login
                   </Button>
                 </div>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { RiArrowDownLine } from "react-icons/ri";
 import join from "../../../public/images/retirement.png";
-import JoinCommunityForm from "../../components/shared/JoinCommunityForm";
+import JoinCommunityForm from "../../components/shared/joincommunity";
 export default function JoinCommunity() {
   return (
     <section className="pt-28 bg-[#F2F5F6]">

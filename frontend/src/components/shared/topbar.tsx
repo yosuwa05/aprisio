@@ -1,4 +1,7 @@
+"use client";
+
 import { Bell, Menu, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -12,6 +15,8 @@ import {
 import { UserAvatar } from "./useravatar";
 
 export default function Topbar() {
+  const router = useRouter();
+
   return (
     <nav className="w-full flex px-2 my-2 justify-between md:px-8">
       <div className="flex gap-2 items-center">
@@ -58,11 +63,14 @@ export default function Topbar() {
           <Search className="w-2 h-2" />
         </Button>
 
-        <Button className="border-[1px] bg-contrastbg p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]">
+        <Button className="border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]">
           <Bell />
         </Button>
 
-        <Button className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold">
+        <Button
+          className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
+          onClick={() => router.push("/create-post")}
+        >
           Create Post
         </Button>
 
