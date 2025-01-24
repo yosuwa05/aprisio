@@ -5,7 +5,7 @@ export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
@@ -60,10 +60,15 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       screens: {
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
         xl: "1200px",
+        "2xl": "1536px",
       },
       fontFamily: {
-        "font-opensans": ["Open Sans"],
+        sans: ["Open Sans", "ui-sans-serif", "system-ui"],
+        mulish: ['"Mulish"', "serif"],
       },
     },
   },

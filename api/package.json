@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "version": "1.0.50",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "bun run --watch src/index.ts",
+    "build": "bun build --compile --minify-whitespace --minify-syntax --target bun --outfile server ./src/index.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.732.0",
+    "@aws-sdk/s3-request-presigner": "^3.732.0",
+    "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/jwt": "^1.1.0",
+    "@elysiajs/swagger": "^1.2.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.6",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "elysia": "latest",
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "nodemailer": "^6.9.16",
+    "paseto-ts": "^1.5.7"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^6.4.17",
+    "bun-types": "latest",
+    "typescript": "^5.7.3"
+  },
+  "module": "src/index.js"
+}
