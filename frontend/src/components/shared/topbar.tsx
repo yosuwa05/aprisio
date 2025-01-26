@@ -59,7 +59,7 @@ export default function Topbar() {
           </div>
         </div>
 
-        <Button className="border-[1px] bg-contrastbg lg:hidden rounded-lg border-[#E2E2E2] w-[25px] h-[35px] md:w-[35px] md:h-[35px]">
+        <Button className="border-[1px] bg-contrastbg lg:hidden rounded-lg text-black border-[#E2E2E2] w-[25px] h-[35px] md:w-[35px] md:h-[35px]">
           <Search className="w-2 h-2" />
         </Button>
 

@@ -1,5 +1,5 @@
 "use client";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { QueryClientProvider } from "@tanstack/react-query";
 import type * as React from "react";
 import { getQueryClient } from "./get-query-client";
@@ -10,7 +10,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <Toaster />
+      <Toaster position="top-right" />
     </QueryClientProvider>
   );
 }

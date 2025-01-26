@@ -53,6 +53,8 @@ export default {
         textcol: "#353535",
         buttoncol: "#C9A74E",
         contrastbg: "#F2F5F6",
+        fadedtext: "#5D5A5A",
+        contrasttext: "#043A53",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -5,7 +5,6 @@ import { AdminAuthModel } from "../../models/adminmodel";
 export const adminController = new Elysia({
   prefix: "/admin",
 })
-
   .get(
     "/:id",
     async ({ params }) => {
@@ -37,7 +36,7 @@ export const adminController = new Elysia({
       detail: {
         summary: "Get admin by id",
       },
-    }
+    },
   )
   .put(
     "/:id",
@@ -65,7 +64,7 @@ export const adminController = new Elysia({
         ) {
           let { ok, filename: newFilename } = await saveFile(
             profileImage,
-            "admins"
+            "admins",
           );
 
           if (!ok) {
@@ -108,7 +107,7 @@ export const adminController = new Elysia({
             validate: (value: string) =>
               /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
               "Invalid email format",
-          })
+          }),
         ),
         password: t.Optional(t.String()),
         profileImage: t.Optional(t.Any()),
@@ -116,5 +115,5 @@ export const adminController = new Elysia({
       detail: {
         summary: "Edit admin information",
       },
-    }
+    },
   );

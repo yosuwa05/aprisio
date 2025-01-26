@@ -17,16 +17,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import { _axios } from "@/lib/axios-instance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "./schema";
+import { toast } from "sonner";
 
 export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,8 +41,6 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
 
   const router = useRouter();
 
-  const { toast } = useToast();
-
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       const res = await _axios.post("/auth/login", values);
@@ -46,9 +48,7 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
     },
     onSuccess(data) {
       if (data && data.data.status) {
-        toast({
-          title: "Logged in successfully",
-        });
+        toast("Logged in successfully");
 
         router.push("/feed");
       }
@@ -57,6 +57,8 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const res = mutate(values);
+
+    console.log(res);
   }
 
   return (
@@ -103,11 +105,25 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
                         <FormItem>
                           <FormLabel>Password</FormLabel>
                           <FormControl>
-                            <Input
-                              autoComplete="new-password"
-                              placeholder="Password"
-                              {...field}
-                            />
+                            <div className="relative ">
+                              <Input
+                                autoComplete="new-password"
+                                placeholder="Password"
+                                type={showPassword ? "text" : "password"}
+                                {...field}
+                              />
+                              {showPassword ? (
+                                <EyeOff
+                                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                />
+                              ) : (
+                                <Eye
+                                  className="absolute cursor-pointer right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                />
+                              )}
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
