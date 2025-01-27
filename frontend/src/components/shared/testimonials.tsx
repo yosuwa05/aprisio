@@ -3,7 +3,6 @@ import quote from "../../../public/images/quote.png";
 import rect2 from "../../../public/images/Rectangle-2.png";
 import rect3 from "../../../public/images/Rectangle3.png";
 import rect1 from "../../../public/images/Rectangle_red.png";
-import uncle from "../../../public/images/uncle.png";
 
 const testimonials = [
   {
@@ -68,7 +67,7 @@ export default function Testimonial() {
 <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center justify-between">
   {/* Fixed size for the image */}
   <div className="md:w-[25%]">
-    <img
+    <Image
       src={testimonial.clientImage}
       alt="client"
       // width={16}

@@ -4,7 +4,7 @@ import job from "../../../public/images/Briefcase.png";
 import circle from "../../../public/images/Ellipse.png";
 import heart2 from "../../../public/images/heart-2.png";
 import monitor from "../../../public/images/monitor.png";
-import group from "../../../public/images/People.png";
+// import group from "../../../public/images/People.png";
 import rect from "../../../public/images/Rectangle.png";
 import share from "../../../public/images/sharing.png";
 import arrowSVG from "../../../public/images/Vector (1).svg";
@@ -122,7 +122,7 @@ export default function FAQ2() {
             passion and purpose.
           </p>
         </div>
-        <div className="flex absolute w-full top-[60%] justify-around">
+        <div className="flex absolute w-full top-[70%] justify-around">
           <div className="text-center">
             <h1 className=" text-[#043A53] font-roboto font-semibold xl:text-6xl text-4xl">
               10+

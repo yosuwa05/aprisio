@@ -54,19 +54,19 @@ export default function About() {
     if (!video) return;
 
     // Only play video when user interacts
-    const attemptUnmutedAutoplay = async () => {
-      try {
-        video.muted = false;
-        await video.play();
-        setIsPlaying(true);
-        setIsMuted(false);
-      } catch {
-        video.muted = true;
-        await video.play();
-        setIsPlaying(true);
-        setIsMuted(true);
-      }
-    };
+    // const attemptUnmutedAutoplay = async () => {
+    //   try {
+    //     video.muted = false;
+    //     await video.play();
+    //     setIsPlaying(true);
+    //     setIsMuted(false);
+    //   } catch {
+    //     video.muted = true;
+    //     await video.play();
+    //     setIsPlaying(true);
+    //     setIsMuted(true);
+    //   }
+    // };
 
     // Remove intersection observer logic, as autoplay is not needed
   }, []);
