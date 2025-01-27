@@ -4,7 +4,6 @@ import job from "../../../public/images/Briefcase.png";
 import circle from "../../../public/images/Ellipse.png";
 import heart2 from "../../../public/images/heart-2.png";
 import monitor from "../../../public/images/monitor.png";
-import group from "../../../public/images/People.png";
 import rect from "../../../public/images/Rectangle.png";
 import share from "../../../public/images/sharing.png";
 import arrowSVG from "../../../public/images/Vector (1).svg";
@@ -27,10 +26,10 @@ export default function FAQ2() {
           </div>
           <div className="flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4">
             <h1 className="font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]">
-            Interest based groups
+              Interest based groups
             </h1>
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-            Connect with like-minded individuals.
+              Connect with like-minded individuals.
             </p>
           </div>
         </div>
@@ -43,10 +42,10 @@ export default function FAQ2() {
           </div>
           <div className="flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4">
             <h1 className="font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]">
-            Virtual and In-person Events
+              Virtual and In-person Events
             </h1>
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-            Network virtually and in-person with like-minded individuals.
+              Network virtually and in-person with like-minded individuals.
             </p>
           </div>
         </div>
@@ -88,11 +87,11 @@ export default function FAQ2() {
 
           <div className="flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4">
             <h1 className="font-roboto  font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]">
-            Discover & Access curated Experiences
+              Discover & Access curated Experiences
             </h1>
 
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-             Join exclusive, tailor made experiences designed for you.
+              Join exclusive, tailor made experiences designed for you.
             </p>
           </div>
         </div>

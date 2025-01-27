@@ -6,6 +6,20 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Postcard from "./postcard";
 import { Button } from "./ui/button";
 
+type IAuthor = {
+  name: string;
+};
+type IPost = {
+  author: IAuthor;
+  title: string;
+  description: string;
+  createdAt: string;
+  _id: string;
+  likesCount: number;
+  commentsCount: number;
+  likedByMe: boolean;
+};
+
 export const PostsSection = () => {
   const pageParam = 0;
 
@@ -27,7 +41,7 @@ export const PostsSection = () => {
       {data && data.pages && data?.pages.length > 0 ? (
         data.pages.map((page, pageIndex) =>
           page.data.posts.length > 0 ? (
-            page.data.posts.map((post, postIndex: number) => (
+            page.data.posts.map((post: IPost, postIndex: number) => (
               <Postcard
                 key={`${pageIndex}-${postIndex}`}
                 post={{

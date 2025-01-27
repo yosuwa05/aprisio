@@ -3,7 +3,6 @@ import quote from "../../../public/images/quote.png";
 import rect2 from "../../../public/images/Rectangle-2.png";
 import rect3 from "../../../public/images/Rectangle3.png";
 import rect1 from "../../../public/images/Rectangle_red.png";
-import uncle from "../../../public/images/uncle.png";
 
 const testimonials = [
   {
@@ -42,10 +41,17 @@ export default function Testimonial() {
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-10 relative">
         {testimonials.map((testimonial) => (
-          <div key={testimonial.id} className="relative flex flex-col  min-h-full">
+          <div
+            key={testimonial.id}
+            className="relative flex flex-col  min-h-full"
+          >
             <div className="bg-white rounded-3xl border flex flex-col  min-h-full">
               <div className="pt-9 px-9">
-                <Image src={quote} alt="quote" className="xl:h-9 xl:w-9 w-6 h-6" />
+                <Image
+                  src={quote}
+                  alt="quote"
+                  className="xl:h-9 xl:w-9 w-6 h-6"
+                />
               </div>
               <div>
                 <Image
@@ -55,40 +61,35 @@ export default function Testimonial() {
                 />
               </div>
               <div className="flex flex-col justify-between  flex-grow">
-
                 <p className="text-[#353535] px-9 xl:text-2xl lg:text-base text-xl font-sans py-6 z-10 relative">
                   {testimonial.text}
                 </p>
-           
-<div className="">
-<hr className="bg-[#E9E9E9]  h-0.5 w-full" />
-<div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center justify-between">
-  {/* Fixed size for the image */}
-  <div className="md:w-[25%]">
-    <img
-      src={testimonial.clientImage}
-      alt="client"
-      // width={16}
-      // height={16}
-      className="md:h-20 md:w-20 h-16 w-16  rounded-full object-cover"
-    />
-  </div>
 
-  {/* Remaining space for the name and location */}
-  <div className="flex-grow ml-5">
-    <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
-      {testimonial.name}
-    </p>
-    <p className="text-[#35353599] font-sans xl:text-[1.25rem] text-[1rem]">
-      {testimonial.location}
-    </p>
-  </div>
-</div>
+                <div className="">
+                  <hr className="bg-[#E9E9E9]  h-0.5 w-full" />
+                  <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center justify-between">
+                    {/* Fixed size for the image */}
+                    <div className="md:w-[25%]">
+                      <Image
+                        src={testimonial.clientImage}
+                        alt="client"
+                        // width={16}
+                        // height={16}
+                        className="md:h-20 md:w-20 h-16 w-16  rounded-full object-cover"
+                      />
+                    </div>
 
-</div>
-         
-    
-               
+                    {/* Remaining space for the name and location */}
+                    <div className="flex-grow ml-5">
+                      <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-[#35353599] font-sans xl:text-[1.25rem] text-[1rem]">
+                        {testimonial.location}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
