@@ -37,9 +37,7 @@ export default function Footer() {
             About Us
           </h1>
           <p className="text-[#353535E3] font-sans xl:text-2xl text-xl">
-            Aprisio is a community for individuals aged 50+ to explore shared
-            interests, foster meaningful connections, and discover job
-            opportunities that value their experience.
+          Aprisio enables post career individuals to discover and access new events & experiences, foster meaningful connections and pursue new interests to retain your zest for life.
           </p>
           {/* social icons */}
           <div className="flex pt-5 lg:gap-5 gap-3">
