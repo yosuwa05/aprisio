@@ -8,6 +8,7 @@ const testimonials = [
   {
     id: 1,
     rectImage: rect1,
+    age: "46",
     clientImage: "/images/Nitin_Mathur.jpeg",
     text: "Almost everything in urban India seems tailored for folks between 15-35 years of age, leaving others struggling to find a community of like-minded individuals, who share their interests and are at a similar life stage. Aprisio recognizes this challenge and offers curated solutions to bridge this gap. With Aprisio I Look forward to finding my tribe and indulging in my passion for travel, food, history, culture, and adventure.",
     name: "Nitin Mathur",
@@ -17,6 +18,7 @@ const testimonials = [
     id: 2,
     clientImage: "/images/Chandan_Dey.jpg",
     rectImage: rect2,
+    age: "50",
     text: "Staying active post-career is important to me, but joining general fitness groups often feels out of sync with my pace and goals. I’m thrilled to discover Aprisio which is a community of post career people like me. Whether it’s hiking, running, or yoga, having a community where I feel understood and included is something I’ve been looking for.",
     name: "Chandan Dey",
     location: "Independent Audio-Visual Producer",
@@ -25,6 +27,7 @@ const testimonials = [
     id: 3,
     clientImage: "/images/Radhika_Sen.jpeg",
     rectImage: rect3,
+    age: "45",
     text: "I am excited to be part of Aprisio that connects seasoned talent, looking for different career paths, with meaningful and relevant opportunities. It allows me to leverage my existing expertise AND explore new areas / communities to help me in my life-long learning pursuit.",
     name: "Radhika Sen",
     location: "Market Research Consultant       ",
@@ -65,31 +68,26 @@ export default function Testimonial() {
                   {testimonial.text}
                 </p>
 
-                <div className="">
-                  <hr className="bg-[#E9E9E9]  h-0.5 w-full" />
-                  <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center justify-between">
-                    {/* Fixed size for the image */}
-                    <div className="md:w-[25%]">
-                      <Image
-                        src={testimonial.clientImage}
-                        alt="client"
-                        // width={16}
-                        // height={16}
-                        className="md:h-20 md:w-20 h-16 w-16  rounded-full object-cover"
-                      />
-                    </div>
-
-                    {/* Remaining space for the name and location */}
-                    <div className="flex-grow ml-5">
-                      <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
-                        {testimonial.name}
-                      </p>
-                      <p className="text-[#35353599] font-sans xl:text-[1.25rem] text-[1rem]">
-                        {testimonial.location}
-                      </p>
-                    </div>
-                  </div>
+                {/* Remaining space for the name and location */}
+                <div className="flex-grow ml-5">
+                  <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
+                    {testimonial.name}{" "}
+                    <span className="px-1">({testimonial.age})</span>
+                  </p>
+                  <p className="text-[#35353599] font-sans xl:text-[1.25rem] text-[1rem]">
+                    {testimonial.location}
+                  </p>
                 </div>
+              </div>
+
+              {/* Remaining space for the name and location */}
+              <div className="flex-grow ml-5">
+                <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
+                  {testimonial.name}
+                </p>
+                <p className="text-[#35353599] font-sans xl:text-[1.25rem] text-[1rem]">
+                  {testimonial.location}
+                </p>
               </div>
             </div>
           </div>
