@@ -1,5 +1,6 @@
 import { validateToken } from "@/lib/utils";
 import Elysia from "elysia";
+import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
 import { authController } from "./auth-controller";
 import { formController } from "./form-controller";
@@ -13,6 +14,7 @@ export const userrouter = new Elysia({
   .use(verifyController)
   .use(formController)
   .use(authController)
+  .use(postController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 
@@ -48,4 +50,4 @@ export const userrouter = new Elysia({
       return { message: "Unauthorized" };
     }
   })
-  .use(postController);
+  .use(authenticatedPostController);

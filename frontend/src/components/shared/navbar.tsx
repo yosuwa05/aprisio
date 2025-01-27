@@ -66,7 +66,6 @@ export default function NavBar() {
           </div>
         </Link>
 
-        {/* Nav Links - Hidden on small screens */}
         <div className="hidden lg:block">
           <ul className="flex gap-7 text-[#353535] font-semibold xl:text-2xl lg:text-lg">
             <li>
@@ -75,9 +74,12 @@ export default function NavBar() {
               </Link>
             </li>
             <li>
-              <Link href="/#join" onClick={handleNavClick}>
-                Community
+              <Link href="/#about" onClick={handleNavClick}>
+                About Us
               </Link>
+            </li>
+            <li>
+              <Link href="/feed">Community</Link>
             </li>
             <li>
               <Link href="/#about" onClick={handleNavClick}>
@@ -137,9 +139,7 @@ export default function NavBar() {
               </Link>
             </li>
             <li>
-              <Link href="/#events" onClick={handleNavClick}>
-                Community
-              </Link>
+              <Link href="/feed">Community</Link>
             </li>
             <li>
               <Link href="/#join" onClick={handleNavClick}>

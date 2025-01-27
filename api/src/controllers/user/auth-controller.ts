@@ -38,7 +38,16 @@ export const authController = new Elysia({
         },
       };
 
-      return { message: "User logged in successfully", token, status: true };
+      return {
+        message: "User logged in successfully",
+        token,
+        status: true,
+        user: {
+          email: user.email.toString(),
+          name: user.name,
+          id: user._id.toString(),
+        },
+      };
     } catch (error: any) {
       console.error("Error logging in:", error);
 

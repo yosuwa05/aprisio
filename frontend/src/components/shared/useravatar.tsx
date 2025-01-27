@@ -1,5 +1,6 @@
 "use client";
 
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
@@ -14,24 +15,35 @@ import {
 export function UserAvatar() {
   const router = useRouter();
 
+  const user = useGlobalAuthStore((state) => state.user);
+
+  function logout() {
+    useGlobalAuthStore.getState().setUser(null);
+    router.push("/login");
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
-          <AvatarImage className="" src="https://github.com/shadcn.png" />
+          <AvatarImage className="" src={"/assets/person.png"} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={() => {
-            router.push("/login");
-          }}
-        >
-          Login
-        </DropdownMenuItem>
+        {user ? (
+          <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            onClick={() => {
+              router.push("/login");
+            }}
+          >
+            Login
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

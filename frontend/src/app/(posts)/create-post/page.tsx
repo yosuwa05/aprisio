@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -16,23 +17,27 @@ import { z } from "zod";
 
 const postSchema = z.object({
   title: z.string().min(1).max(100),
-  description: z.string().min(1).max(1000),
+  description: z.string().min(1),
 });
 
 export default function CreatePost() {
   const [activeTab, setActiveTab] = useState("text");
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     resolver: zodResolver(postSchema),
   });
 
+  const router = useRouter();
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: z.infer<typeof postSchema>) => {
-      return await _axios.post("/post/create", data);
+      return await _axios.post("/authenticated/post/create", data);
     },
     onSuccess(data) {
       if (data.data.ok) {
         toast("Post created successfully");
+        reset();
+        router.push("/feed");
       } else {
         toast("An error occurred while creating post");
       }
@@ -106,7 +111,7 @@ export default function CreatePost() {
 
               <div className="flex gap-2 justify-end mt-4">
                 <Button
-                  className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
+                  className="rounded-full bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
                   onClick={() => {}}
                   type="button"
                 >

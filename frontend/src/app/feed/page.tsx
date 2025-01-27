@@ -1,3 +1,4 @@
+import { PostsSection } from "@/components/posts-section";
 import Topbar from "@/components/shared/topbar";
 import { Button } from "@/components/ui/button";
 import { MapPin, Plus } from "lucide-react";
@@ -27,7 +28,9 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="w-full flex flex-col overflow-y-auto max-h-[91vh] hide-scrollbar"></div>
+        <div className="w-full flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden max-h-full">
+          <PostsSection />
+        </div>
 
         <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
           <div className="bg-white px-4 rounded-xl w-[350px]">
