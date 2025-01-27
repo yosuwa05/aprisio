@@ -18,15 +18,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { formSchema } from "./schema";
-import { toast } from "sonner";
 
 export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,6 +50,9 @@ export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
     onSuccess(data) {
       if (data && data.data.status) {
         toast("Logged in successfully");
+
+        const globalState = useGlobalAuthStore.getState();
+        globalState.setUser(data.data.user);
 
         router.push("/feed");
       }
