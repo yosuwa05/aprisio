@@ -17,8 +17,8 @@ import { RiArrowRightLine } from "react-icons/ri";
 import { _axios } from "@/lib/axios-instance";
 import { AxiosError } from "axios";
 import { ImSpinner2 } from "react-icons/im";
-import { toast } from "sonner";
 import { ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 
 interface OTPlessResponse {
   success: boolean;

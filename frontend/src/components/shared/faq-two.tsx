@@ -27,14 +27,14 @@ export default function FAQ2() {
           </div>
           <div className="flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4">
             <h1 className="font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]">
-              Interest-Based Communities
+            Interest based groups
             </h1>
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-              Connect with like-minded individuals over topics you love.
+            Connect with like-minded individuals.
             </p>
           </div>
         </div>
-        <div className="lg:hidden block absolute top-[12%] md:top-[13%] md:left-[2%] left-[4%]">
+        <div className="lg:hidden block absolute top-[15%] md:top-[13%] md:left-[2%] left-[4%]">
           <Image src={arrowSVG} alt="arrow" className="h-12  w-5" />
         </div>
         <div className="flex lg:flex-col lg:gap-10 gap-5 items-start">
@@ -43,11 +43,10 @@ export default function FAQ2() {
           </div>
           <div className="flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4">
             <h1 className="font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]">
-              Virtual and Local Interest-Based Meetups
+            Virtual and In-person Events
             </h1>
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-              Network virtually and in-person with like-minded individuals who
-              share your passion.
+            Network virtually and in-person with like-minded individuals.
             </p>
           </div>
         </div>
@@ -56,10 +55,10 @@ export default function FAQ2() {
                         <Image src={vector} className="" alt="sharing" />
                     </div> */}
 
-        <div className="lg:hidden block absolute top-[40%] md:top-[40%] md:left-[2%] left-[4%]">
+        <div className="lg:hidden block absolute top-[50%] md:top-[40%] md:left-[2%] left-[4%]">
           <Image src={arrowSVG} alt="arrow" className="h-12 w-5" />
         </div>
-        <div className="flex lg:flex-col lg:gap-10 gap-5 items-start">
+        {/* <div className="flex lg:flex-col lg:gap-10 gap-5 items-start">
           <div className="xl:h-28 rounded-full xl:w-28 lg:h-20 lg:w-20 bg-[#EBDEBB] h-14 w-14 flex items-center justify-center">
             <Image src={group} className="xl:p-10 lg:p-5 p-4" alt="sharing" />
           </div>
@@ -71,11 +70,11 @@ export default function FAQ2() {
               Join a safe and friendly space to grow.
             </p>
           </div>
-        </div>
+        </div> */}
 
-        <div className="lg:hidden block absolute top-[64%] md:top-[66%] md:left-[2%] left-[4%]">
+        {/* <div className="lg:hidden block absolute top-[64%] md:top-[66%] md:left-[2%] left-[4%]">
           <Image src={arrowSVG} alt="arrow" className="h-12 w-5" />
-        </div>
+        </div> */}
 
         <div className="flex lg:flex-col lg:gap-10 gap-5 items-start">
           <div className="xl:h-28  hidden rounded-full xl:w-28 lg:h-20 lg:w-20 bg-[#EBDEBB] h-14 w-14 lg:flex items-center justify-center">
@@ -89,19 +88,18 @@ export default function FAQ2() {
 
           <div className="flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4">
             <h1 className="font-roboto  font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]">
-              Opportunities for Experienced Professionals
+            Discover & Access curated Experiences
             </h1>
 
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-              Discover projects & assignments and jobs that value your expertise
-              and optimize for your maturity and experience.
+             Join exclusive, tailor made experiences designed for you.
             </p>
           </div>
         </div>
       </div>
 
       {/* clip */}
-      <div className="relative lg:block hidden w-full -top-28">
+      <div className="relative lg:block hidden w-full top-5 ">
         <div className="w-full relative">
           <Image src={rect} alt="rect" className="w-full h-auto" priority />
         </div>
