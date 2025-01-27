@@ -68,9 +68,7 @@ export default function Footer() {
               <li className="xl:text-2xl text-xl text-[#353535E3]">About Us</li>
               </Link>
            
-{/* <Link href="/#home">
-<li className="xl:text-2xl text-xl text-[#353535E3]">Job</li>
-</Link> */}
+
 <Link  href="/#footer">
 <li className="xl:text-2xl text-xl text-[#353535E3]">Contact</li>
 </Link>
