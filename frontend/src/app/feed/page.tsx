@@ -1,7 +1,9 @@
 import { PostsSection } from "@/components/posts-section";
 import Topbar from "@/components/shared/topbar";
 import { Button } from "@/components/ui/button";
+import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { MapPin, Plus } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -17,11 +19,7 @@ export default function Home() {
           </p>
 
           <div className="mt-4 flex flex-col gap-3 items-center">
-            <img
-              src="/assets/placeholder-hero.jpeg"
-              className="rounded-xl"
-              alt=""
-            />
+            <Image src={placeholder} className="rounded-xl" alt="" />
             <Button className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol">
               Join Community
             </Button>

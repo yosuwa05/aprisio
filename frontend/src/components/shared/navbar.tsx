@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { Menu, X } from "lucide-react";
@@ -37,6 +38,7 @@ export default function NavBar() {
         toggleDrawer();
       }
     },
+
     [currentPath, isDrawerOpen, router]
   );
 

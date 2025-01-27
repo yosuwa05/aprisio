@@ -6,6 +6,7 @@ interface User {
   address: string;
   active: boolean;
   email: string;
+  password: string;
 }
 
 const UserSchema = new Schema<User>(
@@ -27,6 +28,9 @@ const UserSchema = new Schema<User>(
       type: Boolean,
       default: true,
     },
+    password: {
+      type: String,
+    },
     email: {
       type: String,
       required: [true, "Please enter Email"],
@@ -37,5 +41,21 @@ const UserSchema = new Schema<User>(
   },
   { timestamps: true }
 );
+
+UserSchema.pre("save", async function (next) {
+  const admin = this;
+
+  if (!admin.isModified("password")) {
+    return next();
+  }
+
+  admin.password = await Bun.password.hash(admin.password);
+
+  next();
+});
+
+UserSchema.methods.comparePassword = async function (password: string) {
+  return await Bun.password.verify(password, this.password);
+};
 
 export const UserModel = model<User>("User", UserSchema);

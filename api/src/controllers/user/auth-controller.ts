@@ -20,6 +20,13 @@ export const authController = new Elysia({
         return { message: "User not found" };
       }
 
+      const isMatch = await Bun.password.verify(password, user.password);
+
+      if (!isMatch) {
+        set.status = 401;
+        return { message: "Invalid password", ok: false };
+      }
+
       const token = await PasetoUtil.encodePaseto({
         email: user.email.toString(),
         id: user._id.toString(),

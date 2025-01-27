@@ -1,7 +1,9 @@
 "use client";
 
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import logo from "@img/logo.png";
 import { Bell, Menu, Search } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
@@ -39,7 +41,12 @@ export default function Topbar() {
           </SheetContent>
         </Sheet>
 
-        <img src="/logo.png" className="w-[80px] xl:w-[120px]" alt="logo" />
+        <Image
+          src={logo}
+          className="w-[80px] xl:w-[120px] cursor-pointer"
+          alt="logo"
+          onClick={() => router.push("/")}
+        />
 
         <ul className="hidden xl:flex gap-4 text-textcol font-semibold mx-4">
           <Link className="" href={"#"}>

@@ -4,6 +4,9 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import eyeclose from "../../../public/icons/eye-close.svg";
+import eye from "../../../public/icons/eye.svg";
+import key from "../../../public/images/key.svg";
 import location from "../../../public/images/location-icon.png";
 import mail from "../../../public/images/mail-icon.png";
 import mobile from "../../../public/images/phone-icon.png";
@@ -11,11 +14,11 @@ import user from "../../../public/images/user-icon.png";
 // import Script from 'next/script';
 import { RiArrowRightLine } from "react-icons/ri";
 // import { GiCheckMark } from 'react-icons/gi';
+import { _axios } from "@/lib/axios-instance";
 import { AxiosError } from "axios";
 import { ImSpinner2 } from "react-icons/im";
-import { ToastContainer, toast } from "react-toastify";
-import { _axios } from "@/lib/axios-instance";
-
+import { toast } from "sonner";
+import { ToastContainer } from "react-toastify";
 
 interface OTPlessResponse {
   success: boolean;
@@ -25,7 +28,6 @@ interface OTPlessResponse {
   };
 }
 
-// Update the global interface to use the new types
 declare global {
   interface Window {
     OTPlessSignin: {
@@ -42,30 +44,43 @@ declare global {
   }
 }
 
-// Form validation schema
-const formSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email"),
-  mobile: z
-    .string()
-    .regex(/^\d+$/, "Only numbers are allowed")
-    .length(10, "mobile number must be exactly 10 digits"),
-  address: z.string().min(5, "Address must be at least 5 characters"),
-  terms: z
-    .boolean()
-    .refine((val) => val === true, "You must accept terms and conditions"),
-});
+const formSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Please enter a valid email"),
+    mobile: z
+      .string()
+      .regex(/^\d+$/, "Only numbers are allowed")
+      .length(10, "Mobile number must be exactly 10 digits"),
+    address: z.string().min(5, "Address must be at least 5 characters"),
+    terms: z
+      .boolean()
+      .refine((val) => val === true, "You must accept terms and conditions"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords must match",
+    path: ["confirmPassword"],
+  });
 
 const JoinCommunityForm = () => {
   const [token, setToken] = useState<string | null>(null);
 
   const [emailFromParams, setEmailFromParams] = useState<string | null>(null);
-  // const [isEmailValid, setIsEmailValid] = useState(false);
-  // const [emailVerified, setEmailVerified] = useState(false);
+
   const [mobileVerified, setmobileVerified] = useState(false);
   // const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   //const [isVerifying, setIsVerifying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [passwordsVisible, setPasswordsVisible] = useState({
+    password: true,
+    confirmPassword: true,
+  });
+
   const {
     register,
     handleSubmit,
@@ -107,19 +122,15 @@ const JoinCommunityForm = () => {
       if (storedMobile) setValue("mobile", storedMobile);
       if (storedEmail) {
         setValue("email", storedEmail);
-        // setEmailVerified(verifiedStatus === 'true');
       }
 
-      // Call verifyEmail if token and emailParam are present
       if (tokenParam && emailParam) {
         verifyEmail(tokenParam, emailParam);
       }
     }
-  }, [token, emailFromParams]);
 
-  const handleInputChange = (field: string, value: string) => {
-    localStorage.setItem(field, value);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, emailFromParams]);
 
   const verifyEmail = async (tokenParam: string, emailParam: string | null) => {
     try {
@@ -146,7 +157,6 @@ const JoinCommunityForm = () => {
             localStorage.removeItem("mobile");
           }, 5 * 60 * 1000);
 
-          // Cleanup function to clear the timeout if the component unmounts
           return () => clearTimeout(timeoutId);
         } else {
           console.log(emailParam, "apri", storedEmail);
@@ -458,6 +468,72 @@ const JoinCommunityForm = () => {
           {errors.address && (
             <p className="text-red-500 absolute">
               {errors.address.message?.toString()}
+            </p>
+          )}
+        </div>
+
+        <div className="relative">
+          <Image
+            src={key}
+            alt="Key"
+            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+          />
+          <input
+            {...register("password")}
+            type={passwordsVisible.password ? "password" : "text"}
+            placeholder="Create Password"
+            className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
+          />
+
+          <Image
+            src={passwordsVisible.password ? eyeclose : eye}
+            alt="Key"
+            onClick={() =>
+              setPasswordsVisible((prev) => ({
+                ...prev,
+                password: !prev.password,
+              }))
+            }
+            className="absolute cursor-pointer lg:right-[5%] right-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+          />
+          {errors.password && (
+            <p className="text-red-500 absolute">
+              {errors.password.message?.toString()}
+            </p>
+          )}
+        </div>
+
+        <div className="relative">
+          <Image
+            src={key}
+            alt="Key"
+            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+          />
+          <input
+            {...register("confirmPassword")}
+            type={passwordsVisible.confirmPassword ? "password" : "text"}
+            placeholder="Confirm Password"
+            className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
+              errors.confirmPassword ? "border-red-500" : "border-gray-300"
+            } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
+          />
+
+          <Image
+            src={passwordsVisible.confirmPassword ? eyeclose : eye}
+            alt="Key"
+            onClick={() =>
+              setPasswordsVisible((prev) => ({
+                ...prev,
+                confirmPassword: !prev.confirmPassword,
+              }))
+            }
+            className="absolute cursor-pointer lg:right-[5%] right-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 absolute">
+              {errors.confirmPassword.message?.toString()}
             </p>
           )}
         </div>

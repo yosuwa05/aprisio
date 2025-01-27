@@ -2,6 +2,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
@@ -55,13 +56,16 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
       const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       queryClient.setQueryData(["projects" + user?.id], (old: any) => {
         return {
           ...old,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           pages: old.pages.map((page: any) => ({
             ...page,
             data: {
               ...page.data,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               posts: page.data.posts.map((p: any) =>
                 p._id === post.id
                   ? {
@@ -80,6 +84,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
       return { previousPosts };
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err, newPost, context: any) => {
       queryClient.setQueryData(["projects" + user?.id], context.previousPosts);
     },
@@ -141,11 +146,23 @@ export default function Postcard({ post }: { post: IPostCard }) {
             <p>{post.likeCount ?? 0}</p>
           </div>
           <div className="flex gap-1 items-center font-semibold">
-            <img className="h-5 w-5" src="/assets/message.svg" alt="" />
+            <Image
+              width={20}
+              height={20}
+              className="h-5 w-5"
+              src="/assets/message.svg"
+              alt=""
+            />
             <p>{post.commentCount ?? 0}</p>
           </div>
           <div className="flex gap-1 items-center font-semibold">
-            <img className="h-5 w-5" src="/assets/share.svg" alt="" />
+            <Image
+              className="h-5 w-5"
+              width={20}
+              height={20}
+              src="/assets/share.svg"
+              alt=""
+            />
             <p>Share</p>
           </div>
         </div>

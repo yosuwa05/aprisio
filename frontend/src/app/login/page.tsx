@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { formSchema } from "./schema";
 
-export default function LoginForm({}: React.ComponentPropsWithoutRef<"div">) {
+export default function LoginForm({}) {
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({

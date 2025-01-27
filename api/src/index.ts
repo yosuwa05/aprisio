@@ -2,11 +2,11 @@ import { config } from "dotenv";
 import { app } from "./setup";
 
 const hostname = "localhost";
-const port = 4000;
+const port = 3000;
 
 config();
 
-const PORT = 4000;
+const PORT = 3000;
 
 app.listen({ port: PORT }, () => {
   console.log(`Listening on http://${hostname}:${port}`);

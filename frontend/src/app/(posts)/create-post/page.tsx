@@ -2,13 +2,23 @@
 
 import Topbar from "@/components/shared/topbar";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import chevronleft from "@img/icons/chevron-left.svg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -22,21 +32,35 @@ const postSchema = z.object({
 
 export default function CreatePost() {
   const [activeTab, setActiveTab] = useState("text");
+  const [draftsModelOpen, setDraftsModelOpen] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm({
+  const { register, handleSubmit, reset, watch } = useForm({
     resolver: zodResolver(postSchema),
   });
+  const titleValue = watch("title", "");
+  const descriptionValue = watch("description", "");
+
+  const user = useGlobalAuthStore((state) => state.user);
 
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { isLoading, data } = useQuery({
+    queryFn: async () => {
+      return await _axios.get("/drafts");
+    },
+    queryKey: ["drafts"],
+  });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: z.infer<typeof postSchema>) => {
+    mutationFn: async (data: unknown) => {
       return await _axios.post("/authenticated/post/create", data);
     },
     onSuccess(data) {
       if (data.data.ok) {
         toast("Post created successfully");
         reset();
+        queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
         router.push("/feed");
       } else {
         toast("An error occurred while creating post");
@@ -44,17 +68,53 @@ export default function CreatePost() {
     },
   });
 
-  const onSubmit = (data: any) => {
+  type Draft = {
+    title: string;
+    description: string;
+  };
+
+  const { mutate: createCraft } = useMutation({
+    mutationKey: ["createDraft"],
+    mutationFn: async (data: Draft) => {
+      const res = await _axios.post("/drafts/create", data);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast("Draft Saved!");
+      reset();
+    },
+    onError: () => {
+      toast("An error occurred while creating post");
+    },
+  });
+
+  const onSubmit = (data: unknown) => {
     mutate(data);
   };
 
   return (
     <div>
       <Topbar />
-
       <div className="mx-2 xl:mx-8">
-        <h1 className="text-3xl font-semibold py-4 xl:text-5xl">Create Post</h1>
-
+        <div className="flex justify-between items-end mx-6">
+          <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
+            Create Post
+          </h1>
+          <Button
+            className="rounded-full p-[20px] bg-[#FCF7EA] border-[#AF965447] font-bold border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol"
+            onClick={() => {
+              setDraftsModelOpen(true);
+            }}
+            type="button"
+          >
+            Drafts{" "}
+            {!isLoading && data?.data && data.data.drafts.length > 0 && (
+              <span className="bg-[#534B04] text-[#FCF7EA] rounded-full px-2 py-1">
+                {data.data.drafts.length}
+              </span>
+            )}
+          </Button>
+        </div>
         <Tabs
           defaultValue={activeTab}
           onValueChange={setActiveTab}
@@ -95,7 +155,7 @@ export default function CreatePost() {
                   {...register("title")}
                 />
                 <div className="text-fadedtext text-sm w-full text-right p-2">
-                  {}/100
+                  {titleValue.length}/100
                 </div>
               </div>
               <div>
@@ -103,27 +163,35 @@ export default function CreatePost() {
                 <Textarea
                   id="content"
                   placeholder="Description..."
-                  className="rounded-2xl !text-lg text-black"
+                  className="rounded-2xl !text-lg text-black p-4"
                   rows={8}
                   {...register("description")}
                 />
               </div>
 
-              <div className="flex gap-2 justify-end mt-4">
+              <div className="flex gap-6 justify-end mt-4">
                 <Button
-                  className="rounded-full bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
-                  onClick={() => {}}
+                  className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
+                  onClick={() => {
+                    if (!titleValue || !descriptionValue)
+                      return toast("Please fill in all the fields");
+                    createCraft({
+                      description: descriptionValue,
+                      title: titleValue,
+                    });
+                  }}
                   type="button"
                 >
                   Save as Draft
                 </Button>
 
                 <Button
-                  className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
+                  className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-xs lg:text-sm hover:bg-buttoncol"
                   type="submit"
                   disabled={isPending}
                 >
                   Submit
+                  <Image src={chevronleft} alt="chevron-left" />
                 </Button>
               </div>
             </form>
@@ -135,7 +203,6 @@ export default function CreatePost() {
                 placeholder="Title"
                 id="title"
                 className="h-16 rounded-2xl"
-                onChange={(e) => {}}
               />
               <div className="text-fadedtext text-sm w-full text-right p-2">
                 /100
@@ -159,7 +226,6 @@ export default function CreatePost() {
                 placeholder="Link"
                 id="link"
                 className="h-16 rounded-2xl"
-                onChange={(e) => {}}
               />
               <div className="text-fadedtext text-sm w-full text-right p-2"></div>
             </div>
@@ -175,6 +241,22 @@ export default function CreatePost() {
           </TabsContent>
         </Tabs>
       </div>
+      <Dialog open={draftsModelOpen} onOpenChange={setDraftsModelOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-3xl">
+              Drafts
+              {!isLoading && data?.data && (
+                <span className="text-xl ml-4 text-[#5D5A5A]">2 / 4</span>
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete your
+              account and remove your data from our servers.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

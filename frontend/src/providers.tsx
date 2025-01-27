@@ -15,7 +15,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       useGlobalAuthStore.getState().setUser(userData);
       queryClient.setQueryData(["user"], userData);
     }
-  }, []);
+  }, [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>

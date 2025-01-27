@@ -10,18 +10,20 @@ export const formController = new Elysia({
 }).post(
   "/submit",
   async ({ body, set }) => {
-    const { name, email, mobile, address } = body;
+    const { name, email, mobile, address, password } = body;
     try {
       const newUser = new UserModel({
         name,
         email,
         mobile,
         address,
+        password,
+        active: true,
       });
 
       await newUser.save();
       set.status = 200;
-      return { message: "Form submitted successfully" };
+      return { message: "Registration successful" };
     } catch (error: any) {
       console.error("Error saving form data:", error);
 
@@ -42,6 +44,7 @@ export const formController = new Elysia({
       mobile: t.String(),
       address: t.String(),
       name: t.String(),
+      password: t.String(),
     }),
     detail: {
       description: "Submit form data",

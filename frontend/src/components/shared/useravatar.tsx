@@ -26,7 +26,10 @@ export function UserAvatar() {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
-          <AvatarImage className="" src={"/assets/person.png"} />
+          <AvatarImage
+            className=""
+            src={user ? "/assets/person.png" : "/user.png"}
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
