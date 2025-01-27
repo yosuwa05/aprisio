@@ -109,7 +109,7 @@ export default function About() {
               About Aprisio
             </h1>
             <p className="font-roboto lg:text-4xl text-xl lg:pt-4 pt-5 text-white">
-              Post career Impact & Fulfilment
+            Live your best life after your career
             </p>
           </div>
 
