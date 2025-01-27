@@ -6,6 +6,7 @@ import location from "../../../public/images/location.png";
 import logo from "../../../public/images/logo.png";
 import mail from "../../../public/images/mail.png";
 import twitter from "../../../public/images/twitter.png";
+import Link from "next/link";
 export default function Footer() {
   return (
     <section className="">
@@ -55,13 +56,25 @@ export default function Footer() {
               Navigations
             </h1>
             <ul className="flex flex-col xl:gap-4 lg:gap-2 font-mulish">
+              <Link href="/#home">
               <li className="xl:text-2xl text-xl text-[#353535E3]">Home</li>
-              <li className="xl:text-2xl text-xl text-[#353535E3]">About Us</li>
+              </Link>
+              <Link  href="/#join">
               <li className="xl:text-2xl text-xl text-[#353535E3]">
                 Community
               </li>
-              <li className="xl:text-2xl text-xl text-[#353535E3]">Job</li>
-              <li className="xl:text-2xl text-xl text-[#353535E3]">Contact</li>
+              </Link>
+              <Link href="/#about">
+              <li className="xl:text-2xl text-xl text-[#353535E3]">About Us</li>
+              </Link>
+           
+{/* <Link href="/#home">
+<li className="xl:text-2xl text-xl text-[#353535E3]">Job</li>
+</Link> */}
+<Link  href="/#footer">
+<li className="xl:text-2xl text-xl text-[#353535E3]">Contact</li>
+</Link>
+              
             </ul>
           </div>
         </div>

@@ -13,7 +13,7 @@ export default function FAQ1() {
           How it Works?
         </h1>
         <p className="font-mulish font-light lg:pt-8 pt-2 text-[#353535CC] xl:text-3xl lg:text-2xl text-xl">
-          Getting Started is Simple! Steps
+          Getting Started is Simple!
         </p>
       </div>
 
@@ -31,7 +31,7 @@ export default function FAQ1() {
               Create Your Profile
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">
-              Share your interests, Passion & skills.
+              Share your interests, passion and skills
             </p>
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function FAQ1() {
               Join Community
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">
-              Arrange virtual & in person meetups & build lasting connections.
+            oin like minded people who share your interests and passion.
             </p>
           </div>
           <div></div>
@@ -85,11 +85,10 @@ export default function FAQ1() {
           </div>
           <div className=" lg:mt-0">
             <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-4xl lg:text-2xl text-xl font-bold font-mulish">
-              Explore Oppurtunities
+              Explore Experiences
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">
-              Arrange virtual & in person meetups & build lasting
-              connections.(lorem)
+            Join curated experiences designed around your interests and passion.
             </p>
           </div>
           <div></div>

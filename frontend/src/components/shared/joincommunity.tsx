@@ -117,9 +117,9 @@ const JoinCommunityForm = () => {
     }
   }, [token, emailFromParams]);
 
-  const handleInputChange = (field: string, value: string) => {
-    localStorage.setItem(field, value);
-  };
+  // const handleInputChange = (field: string, value: string) => {
+  //   localStorage.setItem(field, value);
+  // };
 
   const verifyEmail = async (tokenParam: string, emailParam: string | null) => {
     try {

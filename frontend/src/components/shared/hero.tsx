@@ -31,20 +31,18 @@ export default function Hero() {
       <div className="flex flex-col justify-center items-center">
         <div className="flex flex-col justify-center items-center w-[90%]">
           <h1 className="font-semibold text-[#353535] text-center xl:text-[75px] lg:text-[60px] text-[24px] font-roboto">
-            Your Career May Be Behind You
+           Your career may be behind you.
           </h1>
           <h2 className="font-semibold text-[#353535] text-center xl:text-[60px] lg:text-[40px] text-[24px] mt-5 lg:mt-0 font-roboto">
-            Your Best Days are Ahead of You
+            Your Best Days are ahead of you
           </h2>
           <div className="w-full flex justify-center items-center">
             <p className="text-center xl:w-1/2 lg:w-[80%] w-[98%] text-[#353535CC] leading-loose font-sans xl:text-[24px] lg:text-[20px] text-[18px] pt-10">
-              Join a vibrant community of active, impactful, & like-minded post
-              career individuals exploring new opportunities, building new
-              connections, & pursuing new interests.
+            Join a vibrant community of active, impactful, and like-minded post career individuals exploring new events & experiences, building new connections, and living their best lives.
             </p>
           </div>
         </div>
-        <div className={`${isZoomedOut ? "pt-[7%]" : "pt-[2%]"}`}>
+        <div className={`${isZoomedOut ? "pt-[7%]" : "pt-[2%]"} hover:scale-105 duration-300 transition-all`}>
           <Link href={"/join-community"}>
             <button className="flex lg:py-6 py-3 lg:text-2xl text-xl lg:px-9 px-5 font-mulish font-bold bg-[#C9A74E] rounded-full justify-center items-center gap-5">
               Join Aprisio

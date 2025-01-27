@@ -75,20 +75,21 @@ export default function NavBar() {
               </Link>
             </li>
             <li>
-              <Link href="/#about" onClick={handleNavClick}>
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link href="/#events" onClick={handleNavClick}>
+              <Link href="/#join" onClick={handleNavClick}>
                 Community
               </Link>
             </li>
             <li>
+              <Link href="/#about" onClick={handleNavClick}>
+                About Us
+              </Link>
+            </li>
+          
+            {/* <li>
               <Link href="/#join" onClick={handleNavClick}>
                 Job
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link href="/#footer" onClick={handleNavClick}>
                 Contact

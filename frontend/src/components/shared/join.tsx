@@ -68,8 +68,7 @@ export default function Join() {
       </div>
       <div className=" text-white absolute lg:top-16 top-10 xl:left-16 lg:left-9 lg:px-10 px-4">
         <h1 className="font-roboto xl:text-5xl lg:text-3xl lg:w-[70%]  lg:leading-normal !leading-relaxed lg:text-left text-center text-xl">
-          Your post career life begins today. Take the first step towards a more
-          productive, connected and impactful life.
+          Your post career life begins today. Take the first step towards a more connected fulfilling and impactful life.
         </h1>
       </div>
       <div className="absolute lg:top-[80%] md:top-64 top-72 xl:left-24 lg:left-14 w-full">
@@ -80,7 +79,7 @@ export default function Join() {
       <div className="absolute inset-0 flex xl:top-36 lg:top-28 xl:left-24 lg:left-14 md:-top-[54%]  -top-64 items-center justify-center lg:justify-start">
         <Link href={"/join-community"}>
           <span className="flex py-5 text-2xl pl-6 pr-4 font-mulish font-bold bg-[#F0B73F] hover:bg-[#f8cd71] hover:border-[#eba50d]  hover:border-[5px] rounded-full justify-center items-center gap-5">
-            Join Community
+            Join the Community
             <span className="text-white bg-[#00000029] rounded-full p-1">
               <RiArrowRightLine className="w-6 h-6" />
             </span>

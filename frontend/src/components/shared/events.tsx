@@ -15,15 +15,19 @@ import arrow2 from "../../../public/images/arrow-2.png";
 import heart1 from "../../../public/images/green-heart.png";
 import heart2 from "../../../public/images/yellow-heart.png";
 import yoga from "../../../public/images/yoga.png";
+import food from "../../../public/images/food.jpg";
+import hiking from "../../../public/images/hiking.webp";
+
+
 export default function Events() {
   const data = [
-    { title: "Yoga1", src: yoga, date: "21 Jan 2024" },
-    { title: "Yoga2", src: yoga, date: "22 Jan 2024" },
-    { title: "Yoga3", src: yoga, date: "23 Jan 2024" },
-    { title: "Yoga4", src: yoga, date: "24 Jan 2024" },
-    { title: "Yoga5", src: yoga, date: "25 Jan 2024" },
-    { title: "Yoga6", src: yoga, date: "26 Jan 2024" },
-    { title: "Yoga7", src: yoga, date: "27 Jan 2024" },
+    { title: "Yoga", src: yoga, date: "21 Jan 2025" },
+    { title: "Hiking", src: hiking, date: "22 Jan 2025" },
+    { title: "Experiential Dining", src: food, date: "23 Jan 2025" },
+    // { title: "Yoga4", src: yoga, date: "24 Jan 2024" },
+    // { title: "Yoga5", src: yoga, date: "25 Jan 2024" },
+    // { title: "Yoga6", src: yoga, date: "26 Jan 2024" },
+    // { title: "Yoga7", src: yoga, date: "27 Jan 2024" },
   ];
 
   return (
@@ -76,13 +80,13 @@ export default function Events() {
                 <Image
                   src={item.src}
                   alt={item.title}
-                  className="h-full w-full object-cover rounded-2xl"
+                  className="h-[450px] w-full object-cover rounded-2xl"
                 />
 
                 {/* Event Info */}
                 <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
                   <p className="font-mulish flex items-center text-xl text-[#353535]">
-                    Yoga event - {item.date}
+                  {item.title} - {item.date}
                   </p>
                   <div>
                     <Image src={arrow2} alt="Arrow" className="w-14 h-14" />
@@ -105,8 +109,8 @@ export default function Events() {
 
               {/* Event Info */}
               <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
-                <p className="font-mulish flex items-center text-xl text-[#353535]">
-                  Yoga event - {item.date}
+                <p className="font-mulish flex items-center text-left text-[1.25rem] text-[#353535]">
+                {item.title} - {item.date}
                 </p>
                 <div>
                   <Image src={arrow2} alt="Arrow" className="w-14 h-14" />
