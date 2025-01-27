@@ -48,10 +48,12 @@ export default function About() {
     }
   };
 
+  // Remove autoplay logic and observer for video
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    // Only play video when user interacts
     const attemptUnmutedAutoplay = async () => {
       try {
         video.muted = false;
@@ -66,22 +68,7 @@ export default function About() {
       }
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            attemptUnmutedAutoplay();
-          } else {
-            video.pause();
-            setIsPlaying(false);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    observer.observe(video);
-    return () => observer.unobserve(video);
+    // Remove intersection observer logic, as autoplay is not needed
   }, []);
 
   const handleControlsVisibility = (visible: boolean) => {

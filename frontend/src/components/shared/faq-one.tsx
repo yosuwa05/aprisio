@@ -59,7 +59,7 @@ export default function FAQ1() {
               Join Community
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">
-            oin like minded people who share your interests and passion.
+            Join like minded people who share your interests and passion.
             </p>
           </div>
           <div></div>

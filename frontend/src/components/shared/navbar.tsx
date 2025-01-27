@@ -76,7 +76,7 @@ export default function NavBar() {
               </Link>
             </li>
             <li>
-              <Link href="/feed">Community</Link>
+              <Link href="/#join">Community</Link>
             </li>
             <li>
               <Link href="/#about" onClick={handleNavClick}>
@@ -131,7 +131,7 @@ export default function NavBar() {
               </Link>
             </li>
             <li>
-              <Link href="/feed">Community</Link>
+              <Link href="/#join">Community</Link>
             </li>
             <li>
               <Link href="/#about" onClick={handleNavClick}>

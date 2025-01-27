@@ -72,9 +72,9 @@ export default function Join() {
         </h1>
       </div>
       <div className="absolute lg:top-[80%] md:top-64 top-72 xl:left-24 lg:left-14 w-full">
-        <p className="text-[#FFFFFF] opacity-70 lg:text-left text-center  font-lato text-xl">
+        {/* <p className="text-[#FFFFFF] opacity-70 lg:text-left text-center  font-lato text-xl">
           Let’s join yourself to the community
-        </p>
+        </p> */}
       </div>
       <div className="absolute inset-0 flex xl:top-36 lg:top-28 xl:left-24 lg:left-14 md:-top-[54%]  -top-64 items-center justify-center lg:justify-start">
         <Link href={"/join-community"}>

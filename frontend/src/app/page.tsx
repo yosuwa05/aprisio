@@ -19,11 +19,12 @@ export default function Home() {
           <Hero />
         </div>
       </section>
+
+      <FAQ1 />
+      <FAQ2 />
       <div id="about">
         <About />
       </div>
-      <FAQ1 />
-      <FAQ2 />
       <div id="events">
         <Events />
       </div>
