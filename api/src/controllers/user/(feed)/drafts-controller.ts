@@ -16,6 +16,17 @@ export const draftsController = new Elysia({
         const userId = (store as StoreType)["id"];
         const { title, description } = body;
 
+        const existing = await DraftModel.countDocuments({
+          user: userId,
+        });
+
+        if (existing > 5) {
+          return {
+            message: "You can only have 5 drafts",
+            ok: false,
+          };
+        }
+
         const newDraft = new DraftModel({
           title,
           description,
@@ -75,5 +86,30 @@ export const draftsController = new Elysia({
         description: "Get Drafts",
         summary: "Get Drafts",
       },
+    }
+  )
+  .delete(
+    "/:id",
+    async ({ params }) => {
+      try {
+        const { id } = params;
+        await DraftModel.findByIdAndDelete(id);
+        return {
+          message: "Draft deleted successfully",
+          ok: true,
+        };
+      } catch (error) {
+        console.log(error);
+        return {
+          error,
+          status: "error",
+          ok: false,
+        };
+      }
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
     }
   );
