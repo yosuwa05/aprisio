@@ -1,16 +1,16 @@
 "use client";
 import Image from "next/image";
 import job from "../../../public/images/Briefcase.png";
-import circle from "../../../public/images/Ellipse.png";
+// import circle from "../../../public/images/Ellipse.png";
 import heart2 from "../../../public/images/heart-2.png";
 import monitor from "../../../public/images/monitor.png";
-import rect from "../../../public/images/Rectangle.png";
+// import rect from "../../../public/images/Rectangle.png";
 import share from "../../../public/images/sharing.png";
 import arrowSVG from "../../../public/images/Vector (1).svg";
 // import vector from "../../public/images/Vector.png"
 export default function FAQ2() {
   return (
-    <section className="bg-[#F2F5F6] lg:px-14 px-5 lg:pb-0 pb-12">
+    <section className="bg-[#F2F5F6] lg:px-14 px-5 lg:pb-20 pb-12">
       <div className="absolute  right-0">
         <Image src={heart2} className="h-12 w-12" alt="hearts" />
       </div>
@@ -45,7 +45,7 @@ export default function FAQ2() {
               Virtual and In-person Events
             </h1>
             <p className="font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]">
-              Network virtually and in-person with like-minded individuals.
+            Network virtually and in-person with your groups.
             </p>
           </div>
         </div>
@@ -98,9 +98,9 @@ export default function FAQ2() {
       </div>
 
       {/* clip */}
-      <div className="relative lg:block hidden w-full top-5 ">
+      {/* <div className="relative lg:block hidden w-full top-10 ">
         <div className="w-full relative">
-          <Image src={rect} alt="rect" className="w-full h-auto" priority />
+          <Image src={rect} alt="rect" className="w-full h-full" priority />
         </div>
         <div className="absolute top-[33%] left-[29%] transform -translate-x-1/2 -translate-y-1/2">
           <Image
@@ -121,7 +121,7 @@ export default function FAQ2() {
             passion and purpose.
           </p>
         </div>
-        <div className="flex absolute w-full top-[70%] justify-around">
+        <div className="flex  absolute w-full top-[70%] justify-around">
           <div className="text-center">
             <h1 className=" text-[#043A53] font-roboto font-semibold xl:text-6xl text-4xl">
               10+
@@ -147,21 +147,21 @@ export default function FAQ2() {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="block lg:hidden w-full bg-white  mt-12  rounded-2xl">
-        <div className="px-4 py-6">
-          <h1 className="text-[#353535]  text-xl font-bold font-roboto">
+      <div className=" w-full bg-white flex justify-center  mt-12  rounded-2xl">
+        <div className="px-4 py-6 lg:py-28 lg:w-5/6 ">
+          <h1 className="text-[#353535] text-center lg:pb-4 lg:text-6xl text-xl font-bold font-roboto">
             Our Milestone
           </h1>
-          <p className="text-[#353535CC] lg:pt-7 pt-3 font-mulish lg:text-2xl text-base">
+          <p className="text-[#353535CC] text-center lg:leading-normal lg:pt-7 pt-3 font-mulish lg:text-3xl text-base">
             Aprisio celebrates milestones of growth, connection, and
             exploration, empowering post-career individuals to embrace new
             opportunities, build meaningful relationships, and live with renewed
             passion and purpose.
           </p>
         </div>
-        <div className="flex w-full flex-wrap justify-evenly  items-center">
+        {/* <div className="flex w-full flex-wrap justify-evenly  items-center">
           <div className="text-center md:w-auto w-1/2">
             <h1 className=" text-[#043A53] font-roboto font-semibold text-3xl">
               10+
@@ -186,7 +186,7 @@ export default function FAQ2() {
               Job Provided
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

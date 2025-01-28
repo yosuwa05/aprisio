@@ -23,12 +23,12 @@ export default function Footer() {
                 support@aprisio.com
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <Image className="w-6 h-6" src={location} alt="email" />
               <p className="text-[#353535E3] font-sans xl:text-2xl text-xl">
                 Bangalore
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* about */}
@@ -37,7 +37,7 @@ export default function Footer() {
             About Us
           </h1>
           <p className="text-[#353535E3] font-sans xl:text-2xl text-xl">
-          Aprisio enables post career individuals to discover and access new events & experiences, foster meaningful connections and pursue new interests to retain your zest for life.
+          Aprisio enables post career individuals to discover and access new events & experiences, foster meaningful connections and pursue new interests to retain their zest for life.
           </p>
           {/* social icons */}
           <div className="flex pt-5 lg:gap-5 gap-3">

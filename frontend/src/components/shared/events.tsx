@@ -21,8 +21,8 @@ import yoga from "../../../public/images/yoga.png";
 export default function Events() {
   const data = [
     { title: "Yoga", src: yoga, date: "21 Jan 2025" },
-    { title: "Hiking", src: hiking, date: "22 Jan 2025" },
-    { title: "Experiential Dining", src: food, date: "23 Jan 2025" },
+    { title: "Guided Nature Walk", src: hiking, date: "22 Jan 2025" },
+    { title: "Culinary Exploration", src: food, date: "23 Jan 2025" },
     // { title: "Yoga4", src: yoga, date: "24 Jan 2024" },
     // { title: "Yoga5", src: yoga, date: "25 Jan 2024" },
     // { title: "Yoga6", src: yoga, date: "26 Jan 2024" },
@@ -40,7 +40,7 @@ export default function Events() {
       </div>
       <div className="lg:px-14 relative z-20 px-5 lg:pt-14  pt-7 flex justify-between items-center">
         <h1 className="text-[#353535] flex lg:gap-6 gap-1 flex-col xl:text-7xl lg:text-4xl text-2xl font-roboto font-semibold">
-          <span>Our Upcoming Events</span>
+          <span>Our Upcoming Experiences</span>
           <span>On this Year</span>
         </h1>
         <p className="flex flex-col text-right">
@@ -85,7 +85,9 @@ export default function Events() {
                 {/* Event Info */}
                 <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
                   <p className="font-mulish flex items-center text-xl text-[#353535]">
-                    {item.title} - {item.date}
+                    {item.title}
+                     {/* - 
+                    {item.date} */}
                   </p>
                   <div>
                     <Image src={arrow2} alt="Arrow" className="w-14 h-14" />
@@ -104,12 +106,12 @@ export default function Events() {
                 src={item.src}
                 alt={item.title}
                 unoptimized
-                className="h-full w-full object-contain rounded-2xl"
+                className="h-[450px] w-full object-left rounded-2xl"
               />
 
               {/* Event Info */}
               <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
-                <p className="font-mulish flex items-center text-left text-[1.25rem] text-[#353535]">
+                <p className="font-mulish w-5/6 flex items-center text-left text-[1.25rem] text-[#353535]">
                   {item.title} - {item.date}
                 </p>
                 <div>

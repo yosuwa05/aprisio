@@ -107,7 +107,7 @@ export default function About() {
               Aprisio is a community of, for and by post-career individuals
               whose careers may be behind them but their best days are ahead of
               them. This community seeks to explore new opportunities to stay
-              productive, foster new, meaningful connections to stay connected,
+              connected, foster new, meaningful connections to stay connected,
               and pursue new interests to retain their zest for life.
             </p>
           </div>

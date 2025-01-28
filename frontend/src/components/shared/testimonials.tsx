@@ -26,7 +26,7 @@ const testimonials = [
   },
   {
     id: 3,
-    clientImage: "/images/Radhika_Sen.jpeg",
+    clientImage: "/images/Radhika_Sen.png",
     rectImage: rect3,
     age: "45",
     text: "I am excited to be part of Aprisio that connects seasoned talent, looking for different career paths, with meaningful and relevant opportunities. It allows me to leverage my existing expertise AND explore new areas / communities to help me in my life-long learning pursuit.",
@@ -71,9 +71,9 @@ export default function Testimonial() {
 
                 <div className="">
                   <hr className="bg-[#E9E9E9]  h-0.5 w-full" />
-                  <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 md:gap-5 py-4 flex items-center justify-between">
+                  <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center ">
                     {/* Fixed size for the image */}
-                    <div className=" w-[35%]">
+                    <div className="w-[25%] ">
                       <Image
                         src={testimonial.clientImage}
                         alt="client"
@@ -84,7 +84,7 @@ export default function Testimonial() {
                     </div>
 
                     {/* Remaining space for the name and location */}
-                    <div className="flex-grow items-start md:ml-5">
+                    <div className="flex flex-col  md:ml-5">
                       <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
                         {testimonial.name}{" "}
                         <span className="px-1">({testimonial.age})</span>

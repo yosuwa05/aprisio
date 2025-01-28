@@ -17,7 +17,7 @@ export default function FAQ1() {
         </p>
       </div>
 
-      <div className="lg:pt-16 pt-10 flex lg:flex-row flex-col gap-3 ">
+      <div className="lg:pt-16 pt-10 flex lg:flex-row flex-col gap-2 ">
         <div className="flex lg:flex-col items-start gap-5 lg:w-1/3 w-full ">
           <div className="">
             <Image
@@ -27,11 +27,11 @@ export default function FAQ1() {
             />
           </div>
           <div className=" lg:mt-0 ">
-            <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-4xl lg:text-2xl text-xl font-bold font-mulish">
+            <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-[2.25rem] lg:text-[1.5rem] text-[1.25rem] font-bold font-mulish">
               Create Your Profile
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">
-              Share your interests, passion and skills
+              Share your interests, passion and skills.
             </p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export default function FAQ1() {
             />
           </div>
           <div className=" lg:mt-0">
-            <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-4xl lg:text-2xl text-xl font-bold font-mulish">
+            <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-[2.25rem] lg:text-[1.5rem] text-[1.25rem] font-bold font-mulish">
               Join Community
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">
@@ -84,7 +84,7 @@ export default function FAQ1() {
             />
           </div>
           <div className=" lg:mt-0">
-            <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-4xl lg:text-2xl text-xl font-bold font-mulish">
+            <h1 className="text-[#353535] xl:pt-10 lg:pt-3 xl:text-[2.25rem] lg:text-[1.5rem] text-[1.25rem] font-bold font-mulish">
               Explore Experiences
             </h1>
             <p className="font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1">

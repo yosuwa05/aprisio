@@ -68,7 +68,7 @@ export default function Join() {
       </div>
       <div className=" text-white absolute lg:top-16 top-10 xl:left-16 lg:left-9 lg:px-10 px-4">
         <h1 className="font-roboto xl:text-5xl lg:text-3xl lg:w-[70%]  lg:leading-normal !leading-relaxed lg:text-left text-center text-xl">
-          Your post career life begins today. Take the first step towards a more connected fulfilling and impactful life.
+          Your post career life begins today. Take the first step towards a, more connected fulfilling and impactful life.
         </h1>
       </div>
       <div className="absolute lg:top-[80%] md:top-64 top-72 xl:left-24 lg:left-14 w-full">
