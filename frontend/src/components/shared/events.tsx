@@ -41,7 +41,7 @@ export default function Events() {
       <div className="lg:px-14 relative z-20 px-5 lg:pt-14  pt-7 flex justify-between items-center">
         <h1 className="text-[#353535] flex lg:gap-6 gap-1 flex-col xl:text-7xl lg:text-4xl text-2xl font-roboto font-semibold">
           <span>Our Upcoming Experiences</span>
-          <span>On this Year</span>
+          {/* <span>On this Year</span> */}
         </h1>
         <p className="flex flex-col text-right">
           <span className="text-[#043A53] xl:text-6xl lg:text-4xl text-2xl font-semibold font-roboto">
