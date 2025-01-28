@@ -5,6 +5,7 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import Postcard from "./postcard";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 
 type IAuthor = {
   name: string;
@@ -18,6 +19,8 @@ type IPost = {
   likesCount: number;
   commentsCount: number;
   likedByMe: boolean;
+  url?: string;
+  image?: string;
 };
 
 export const PostsSection = () => {
@@ -25,7 +28,7 @@ export const PostsSection = () => {
 
   const user = useGlobalAuthStore((state) => state.user);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["projects" + user?.id],
       queryFn: () => {
@@ -38,7 +41,26 @@ export const PostsSection = () => {
 
   return (
     <div className="flex flex-col gap-4 items-center">
-      {data && data.pages && data?.pages.length > 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col gap-4 w-full">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex gap-4 w-full">
+              <Skeleton className="w-[50px] h-[50px] rounded-full" />
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="w-full h-[200px]" />
+                <Skeleton className="w-full h-[15px]" />
+                <Skeleton className="w-3/4 h-[15px]" />
+              </div>
+
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="w-full h-[200px]" />
+                <Skeleton className="w-full h-[15px]" />
+                <Skeleton className="w-3/4 h-[15px]" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : data && data.pages && data?.pages.length > 0 ? (
         data.pages.map((page, pageIndex) =>
           page.data.posts.length > 0 ? (
             page.data.posts.map((post: IPost, postIndex: number) => (
@@ -53,6 +75,8 @@ export const PostsSection = () => {
                   likeCount: post.likesCount,
                   commentCount: post.commentsCount,
                   likedByMe: post.likedByMe,
+                  url: post.url ? post.url : "",
+                  image: post.image ? post.image : "",
                 }}
               />
             ))

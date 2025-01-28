@@ -1,8 +1,9 @@
 import axios from "axios";
+import { BASE_URL } from "./config";
 
 const axiosInstance = axios.create({
-  baseURL: "https://aprisio.com/api/user",
-  // baseURL: "http://localhost:3000/api/user",
+  // baseURL: "https://aprisio.com/api/user",
+  baseURL: BASE_URL,
 
   withCredentials: true,
 });

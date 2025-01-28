@@ -16,7 +16,7 @@ export const postController = new Elysia({
 
     try {
       const sanitizedPage = Math.max(1, page);
-      const sanitizedLimit = Math.max(1, Math.min(limit, 100));
+      const sanitizedLimit = Math.max(1, Math.min(limit, 20));
 
       const posts = await PostModel.aggregate([
         {
@@ -37,6 +37,14 @@ export const postController = new Elysia({
             localField: "author",
             foreignField: "_id",
             as: "author",
+            pipeline: [
+              {
+                $project: {
+                  name: 1,
+                  email: 1,
+                },
+              },
+            ],
           },
         },
         {
@@ -86,6 +94,8 @@ export const postController = new Elysia({
             createdAt: 1,
             likesCount: { $size: "$likes" },
             commentsCount: { $size: "$comments" },
+            url: 1,
+            image: 1,
             likedByMe: {
               $cond: {
                 if: { $eq: [userId, null] },

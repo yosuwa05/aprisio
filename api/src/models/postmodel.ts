@@ -6,9 +6,11 @@ interface IPost {
   slug: string;
   author: Types.ObjectId;
   likes: Types.ObjectId[];
+  url: string;
+  image: string;
   comments: Types.ObjectId[];
-  likesCount: number; // Real field
-  commentsCount: number; // Real field
+  likesCount: number;
+  commentsCount: number;
 }
 
 const PostSchema = new Schema<IPost>(
@@ -17,6 +19,8 @@ const PostSchema = new Schema<IPost>(
     slug: { type: String },
     description: { type: String },
     author: { type: Schema.Types.ObjectId, ref: "User" },
+    url: { type: String, default: "" },
+    image: { type: String, default: "" },
     likes: [
       {
         type: Schema.Types.ObjectId,

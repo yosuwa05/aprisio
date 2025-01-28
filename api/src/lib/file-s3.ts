@@ -1,22 +1,21 @@
 import {
   DeleteObjectCommand,
   GetObjectCommand,
-  PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from "stream";
 
-const s3Client = new S3Client({
+export const s3Client = new S3Client({
   region: process.env.REGION || "ap-south-1",
-
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY || "key",
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "secret",
   },
 });
 
-const bucketName = process.env.BUCKET_NAME || "prathap-constructions";
+const bucketName = process.env.BUCKET_NAME || "kings-chic";
 
 export const saveFile = async (
   blob: Blob | undefined,
@@ -32,14 +31,10 @@ export const saveFile = async (
       Math.random().toString(36).substring(2, 15) +
       Math.random().toString(36).substring(2, 15);
 
-    let currentDateString = new Date().toISOString().split("T")[0];
-
     let extension = blob.type.split("/")[1];
     let filename =
       "uploads/" +
       parentFolder +
-      "/" +
-      currentDateString +
       "/" +
       blob.name +
       "." +
@@ -47,41 +42,35 @@ export const saveFile = async (
       `${keyString ? `-${keyString}` : ""}` +
       "." +
       extension;
+
     // @ts-ignore
     const stream = Readable.from(blob.stream());
 
-    await s3Client.send(
-      new PutObjectCommand({
+    const upload = new Upload({
+      client: s3Client,
+      params: {
         Bucket: bucketName,
-        ContentLength: blob.size,
         Key: filename,
         Body: stream,
-      })
-    );
+        ContentLength: blob.size,
+      },
+    });
+
+    await upload.done();
+
     return { ok: true, filename };
   } catch (error) {
     console.error(error);
-
     return { ok: false, filename: "" };
   }
 };
 
-export const deleteFile = (filename: any) => {
+export const deleteFile = (key: any) => {
   try {
-    const parts = filename.split("/");
-    const parentFolder = parts[1];
-    const uploadedFileNameWithHash = parts[parts.length - 1];
-
-    const uploadedFileNameParts = uploadedFileNameWithHash.split(".");
-    const originalFileName = uploadedFileNameParts.slice(0, -2).join(".");
-    const hash = uploadedFileNameParts[uploadedFileNameParts.length - 2];
-
-    const reconstructedFilename = `uploads/${parentFolder}/${originalFileName}.${hash}.png`;
-
     s3Client.send(
       new DeleteObjectCommand({
         Bucket: bucketName,
-        Key: reconstructedFilename,
+        Key: key,
       })
     );
   } catch (error) {
@@ -89,51 +78,22 @@ export const deleteFile = (filename: any) => {
   }
 };
 
-export const deliverFileOld = async (filename: any) => {
+export const deliverFile = async (filename: string) => {
   try {
-    let { Body } = await s3Client.send(
-      new GetObjectCommand({
-        Bucket: bucketName,
-        Key: filename,
-      })
-    );
-
-    if (!Body) {
-      return {
-        ok: false,
-        data: [],
-      };
+    if (!bucketName || !filename) {
+      throw new Error("Bucket name or filename is missing");
     }
 
-    let buffer = await Body?.transformToByteArray();
-
-    return {
-      data: buffer,
-      ok: true,
-    };
-  } catch (error) {
-    console.error(error);
-
-    return {
-      ok: false,
-      data: [],
-    };
-  }
-};
-
-export const deliverFile = async (filename: any) => {
-  try {
     let url = await getSignedUrl(
-      // @ts-ignore
       s3Client,
       new GetObjectCommand({
         Bucket: bucketName,
         Key: filename,
         ResponseContentDisposition: "inline",
-        ResponseContentType: "image/png",
+        ResponseContentType: "application/octet-stream",
       }),
       {
-        expiresIn: 3600, // 1 hour
+        expiresIn: 3600,
       }
     );
 
@@ -149,11 +109,42 @@ export const deliverFile = async (filename: any) => {
       ok: true,
     };
   } catch (error) {
+    console.error("Error in deliverFile:", error);
+    return {
+      ok: false,
+      data: [],
+    };
+  }
+};
+
+export const getAsBlob = async (filename: string) => {
+  try {
+    const command = new GetObjectCommand({
+      Bucket: bucketName,
+      Key: filename,
+    });
+
+    const data = await s3Client.send(command);
+
+    const stream = data.Body as Readable;
+    const chunks: Buffer[] = [];
+
+    for await (const chunk of stream) {
+      chunks.push(chunk);
+    }
+
+    const buffer = Buffer.concat(chunks);
+
+    return {
+      data: buffer,
+      ok: true,
+    };
+  } catch (error) {
     console.error(error);
 
     return {
       ok: false,
-      data: [],
+      data: null,
     };
   }
 };

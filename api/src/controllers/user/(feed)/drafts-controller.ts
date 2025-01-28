@@ -1,3 +1,4 @@
+import { saveFile } from "@/lib/file-s3";
 import { DraftModel } from "@/models/draftmodel";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
@@ -14,7 +15,7 @@ export const draftsController = new Elysia({
     async ({ body, set, store }) => {
       try {
         const userId = (store as StoreType)["id"];
-        const { title, description } = body;
+        const { title, description, link, file } = body;
 
         const existing = await DraftModel.countDocuments({
           user: userId,
@@ -27,10 +28,27 @@ export const draftsController = new Elysia({
           };
         }
 
+        let fileUrl = "";
+
+        if (file) {
+          const { ok, filename } = await saveFile(file, "drafts-images");
+
+          if (!ok) {
+            return {
+              message: "Error uploading file",
+              ok: false,
+            };
+          }
+
+          fileUrl = filename;
+        }
+
         const newDraft = new DraftModel({
           title,
           description,
           user: userId,
+          url: link,
+          image: fileUrl,
         });
 
         await newDraft.save();
@@ -48,7 +66,17 @@ export const draftsController = new Elysia({
     {
       body: t.Object({
         title: t.String(),
-        description: t.String(),
+        description: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        link: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        file: t.Optional(t.File()),
       }),
     }
   )

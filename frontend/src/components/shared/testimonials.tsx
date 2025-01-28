@@ -67,25 +67,7 @@ export default function Testimonial() {
                 <p className="text-[#353535] px-9 xl:text-2xl lg:text-base text-xl font-sans py-6 z-10 relative">
                   {testimonial.text}
                 </p>
-<<<<<<< HEAD
-           
-<div className="">
-<hr className="bg-[#E9E9E9]  h-0.5 w-full" />
-<div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center justify-between">
-  {/* Fixed size for the image */}
-  <div className="md:w-[25%]">
-    <Image
-      src={testimonial.clientImage}
-      alt="client"
-      // width={16}
-      // height={16}
-      className="md:h-20 md:w-20 h-16 w-16  rounded-full object-cover"
-    />
-  </div>
-=======
->>>>>>> 56dd9c1904a08ec9a0c739cacd6a145d436e53dd
 
-                {/* Remaining space for the name and location */}
                 <div className="flex-grow ml-5">
                   <p className="text-[#353535] font-sans xl:text-[1.5rem] text-[1rem]">
                     {testimonial.name}{" "}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Topbar from "@/components/shared/topbar";
@@ -19,26 +20,33 @@ import chevronleft from "@img/icons/chevron-left.svg";
 import pencil from "@img/icons/pencil.svg";
 import trash from "@img/icons/trash.svg";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const postSchema = z.object({
   title: z.string().min(1).max(100),
-  description: z.string().min(1),
+  description: z.string(),
+  url: z.string(),
 });
 
 export default function CreatePost() {
   const [draftsModelOpen, setDraftsModelOpen] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  const { register, reset, watch } = useForm({
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { register, reset, watch, handleSubmit, setValue } = useForm({
     resolver: zodResolver(postSchema),
   });
   const titleValue = watch("title", "");
   const descriptionValue = watch("description", "");
+  const urlValue = watch("url", "");
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -55,7 +63,7 @@ export default function CreatePost() {
       queryKey: ["drafts"],
     });
 
-  const { isPending } = useMutation({
+  const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
       return await _axios.post("/authenticated/post/create", data);
     },
@@ -74,11 +82,22 @@ export default function CreatePost() {
   type Draft = {
     title: string;
     description: string;
+    link: string;
+    image?: any;
   };
 
-  const { mutate: createCraft } = useMutation({
+  const { mutate: createDraft } = useMutation({
     mutationKey: ["createDraft"],
     mutationFn: async (data: Draft) => {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("description", data.description);
+      formData.append("link", data.link);
+
+      if (data.image) {
+        formData.append("image", data.image);
+      }
+
       const res = await _axios.post("/drafts/create", data);
       return res.data;
     },
@@ -92,7 +111,7 @@ export default function CreatePost() {
     },
   });
 
-  const {} = useMutation({
+  const { mutate: deleteDraft, isPending: deletingDraft } = useMutation({
     mutationKey: ["deleteDraft"],
     mutationFn: async (id: string) => {
       const res = await _axios.delete(`/drafts/${id}`);
@@ -107,12 +126,36 @@ export default function CreatePost() {
     },
   });
 
-  // const onSubmit = (data: unknown) => {
-  //   mutate(data);
-  // };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSubmit = (data: any) => {
+    const formData = new FormData();
+
+    if (uploadedFile) {
+      formData.append("file", uploadedFile);
+    }
+
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("url", data.url);
+    mutate(formData);
+  };
 
   const [activeIndex, setActiveIndex] = useState(0);
   const tabs = ["Text", "Image & Video", "Link"];
+
+  useEffect(() => {
+    setValue("title", "");
+    setValue("description", "");
+    setValue("url", "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const imageRendered = useMemo(() => {
+    if (uploadedFile) {
+      return URL.createObjectURL(uploadedFile);
+    }
+    return "";
+  }, [uploadedFile]);
 
   return (
     <div>
@@ -146,10 +189,8 @@ export default function CreatePost() {
                   onClick={() => {
                     setActiveIndex(index);
                   }}
-                  className={`shadow-none text-fadedtext font-normal text-lg px-4 xl:text-xl ${
-                    activeIndex == index
-                      ? "shadow-none font-bold text-contrasttext"
-                      : ""
+                  className={`shadow-none text-fadedtext font-normal text-sm md:text-lg px-4 xl:text-xl ${
+                    index == activeIndex ? "text-[#05151b] font-extrabold" : ""
                   }`}
                 >
                   {tab}
@@ -158,7 +199,10 @@ export default function CreatePost() {
             ))}
           </div>
 
-          <form onSubmit={() => {}} className="flex flex-col gap-4 mt-6 mx-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 mt-6 mx-4"
+          >
             <div className="">
               <Label htmlFor="title"></Label>
               <Input
@@ -171,16 +215,97 @@ export default function CreatePost() {
                 {titleValue.length}/100
               </div>
             </div>
-            <div>
-              <Label htmlFor="content"></Label>
-              <Textarea
-                id="content"
-                placeholder="Description..."
-                className="rounded-2xl !text-lg text-black p-4"
-                rows={4}
-                {...register("description")}
-              />
-            </div>
+
+            {activeIndex == 0 && (
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Label htmlFor="content"></Label>
+                <Textarea
+                  id="content"
+                  placeholder="Description..."
+                  className="rounded-2xl !text-lg text-black p-4"
+                  rows={4}
+                  {...register("description")}
+                />
+              </motion.div>
+            )}
+
+            {activeIndex == 1 && (
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Label htmlFor="file"></Label>
+                <div className="h-[130px] text-fadedtext cursor-pointer border rounded-lg text-lg flex justify-start p-4 items-start">
+                  <h4>Upload a image</h4>
+                </div>
+              </motion.div>
+            )}
+
+            {activeIndex == 1 && uploadedFile && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="relative"
+              >
+                <Trash2
+                  className="absolute top-4 right-4 cursor-pointer text-red"
+                  color="red"
+                  onClick={() => {
+                    setUploadedFile(null);
+                  }}
+                />
+                <Image
+                  src={imageRendered}
+                  alt=""
+                  width={100}
+                  height={100}
+                  className="w-full h-[300px] object-cover rounded-2xl"
+                />
+              </motion.div>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) {
+                  setUploadedFile(file);
+                }
+              }}
+              ref={fileInputRef}
+            />
+
+            {activeIndex == 2 && (
+              <motion.div
+                key={activeIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Label htmlFor="url"></Label>
+                <Input
+                  placeholder="Link / URL"
+                  id="url"
+                  className="h-16 rounded-2xl text-black text-lg"
+                  {...register("url")}
+                />
+              </motion.div>
+            )}
 
             <div className="flex gap-6 justify-end mt-4">
               <Button
@@ -188,9 +313,11 @@ export default function CreatePost() {
                 onClick={() => {
                   if (!titleValue || !descriptionValue)
                     return toast("Please fill in all the fields");
-                  createCraft({
+                  createDraft({
                     description: descriptionValue,
                     title: titleValue,
+                    link: urlValue,
+                    image: uploadedFile ? uploadedFile : "",
                   });
                 }}
                 type="button"
@@ -209,132 +336,6 @@ export default function CreatePost() {
             </div>
           </form>
         </div>
-
-        {/* <Tabs
-          defaultValue={activeTab}
-          onValueChange={setActiveTab}
-          value={activeTab}
-          className=""
-        >
-          <TabsList className="bg-transparent mb-2">
-            <TabsTrigger
-              className="shadow-none text-fadedtext font-light text-lg px-4 xl:text-xl  data-[state=active]:shadow-none data-[state=active]:font-bold data-[state=active]:text-contrasttext"
-              value="text"
-            >
-              Text
-            </TabsTrigger>
-            <TabsTrigger
-              className="shadow-none text-fadedtext font-light text-lg px-4 xl:text-xl  data-[state=active]:shadow-none data-[state=active]:font-bold data-[state=active]:text-contrasttext"
-              value="media"
-            >
-              Image & Video
-            </TabsTrigger>
-            <TabsTrigger
-              className="shadow-none text-fadedtext font-light text-lg px-4 xl:text-xl  data-[state=active]:shadow-none data-[state=active]:font-bold data-[state=active]:text-contrasttext"
-              value="link"
-            >
-              Link
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent className="mx-2 xl:mx-8" value="text">
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <div className="">
-                <Label htmlFor="title"></Label>
-                <Input
-                  placeholder="Title"
-                  id="title"
-                  className="h-16 rounded-2xl text-black text-lg"
-                  {...register("title")}
-                />
-                <div className="text-fadedtext text-sm w-full text-right p-2">
-                  {titleValue.length}/100
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="content"></Label>
-                <Textarea
-                  id="content"
-                  placeholder="Description..."
-                  className="rounded-2xl !text-lg text-black p-4"
-                  rows={8}
-                  {...register("description")}
-                />
-              </div>
-
-              <div className="flex gap-6 justify-end mt-4">
-                <Button
-                  className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
-                  onClick={() => {
-                    if (!titleValue || !descriptionValue)
-                      return toast("Please fill in all the fields");
-                    createCraft({
-                      description: descriptionValue,
-                      title: titleValue,
-                    });
-                  }}
-                  type="button"
-                >
-                  Save as Draft
-                </Button>
-
-                <Button
-                  className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-xs lg:text-sm hover:bg-buttoncol"
-                  type="submit"
-                  disabled={isPending}
-                >
-                  Submit
-                  <Image src={chevronleft} alt="chevron-left" />
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
-          <TabsContent className="mx-2 xl:mx-8" value="media">
-            <div className="">
-              <Label htmlFor="title"></Label>
-              <Input
-                placeholder="Title"
-                id="title"
-                className="h-16 rounded-2xl"
-              />
-              <div className="text-fadedtext text-sm w-full text-right p-2">
-                /100
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="content"></Label>
-              <Textarea
-                id="content"
-                placeholder="Description..."
-                className="rounded-2xl"
-                rows={8}
-              />
-            </div>
-          </TabsContent>
-
-          <TabsContent className="mx-2 xl:mx-8" value="link">
-            <div className="">
-              <Label htmlFor="link"></Label>
-              <Input
-                placeholder="Link"
-                id="link"
-                className="h-16 rounded-2xl"
-              />
-              <div className="text-fadedtext text-sm w-full text-right p-2"></div>
-            </div>
-            <div>
-              <Label htmlFor="content"></Label>
-              <Textarea
-                id="content"
-                placeholder="Description..."
-                className="rounded-2xl"
-                rows={8}
-              />
-            </div>
-          </TabsContent>
-        </Tabs> */}
       </div>
       <Dialog open={draftsModelOpen} onOpenChange={setDraftsModelOpen}>
         <DialogContent className="w-full px-0">
@@ -349,20 +350,29 @@ export default function CreatePost() {
             </DialogTitle>
             <DialogDescription asChild key={"fragment"}>
               <div>
-                {drafts && ok ? (
+                {drafts && drafts.length > 0 && ok ? (
                   drafts.map(
                     (draft: {
                       _id: string;
                       title: string;
                       description: string;
+                      url: string;
                     }) => (
                       <div key={draft._id}>
                         <div
                           className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center"
                           key={draft._id}
-                          onClick={() => {}}
                         >
-                          <div className="flex flex-col items-start gap-2 mt-4 py-2">
+                          <div
+                            className="flex flex-col items-start gap-2 mt-4 py-2"
+                            onClick={() => {
+                              setValue("title", draft.title);
+                              setValue("description", draft.description);
+                              setValue("url", draft.url);
+
+                              setDraftsModelOpen(false);
+                            }}
+                          >
                             <div className="text-[#534B04] text-xl">
                               {draft.title}
                             </div>
@@ -381,6 +391,10 @@ export default function CreatePost() {
                               src={trash}
                               alt="trash"
                               className="cursor-pointer"
+                              onClick={() => {
+                                if (deletingDraft) return;
+                                deleteDraft(draft._id);
+                              }}
                             />
                           </div>
                         </div>
@@ -389,7 +403,7 @@ export default function CreatePost() {
                     )
                   )
                 ) : (
-                  <div>
+                  <div className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center">
                     <p>No drafts</p>
                   </div>
                 )}

@@ -1,4 +1,5 @@
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
@@ -15,6 +16,8 @@ interface IPostCard {
   likedByMe?: boolean;
   likeCount?: number;
   commentCount?: number;
+  url?: string;
+  image?: string;
 }
 
 function formatDate(date: string) {
@@ -124,7 +127,30 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
       <div className="mt-3">
         <h2 className="text-lg text-textcol font-semibold">{post.title}</h2>
-        <p className="font-normal mt-2">{post.description}</p>
+
+        {post.description && (
+          <p className="font-normal mt-2">{post.description}</p>
+        )}
+
+        {post.url && (
+          <p className="font-normal mt-2 text-sky-500">
+            <a href={post.url} target="_blank" rel="noreferrer">
+              {post.url}
+            </a>
+          </p>
+        )}
+
+        {post.image && (
+          <Image
+            src={BASE_URL + `/file?key=${post.image}`}
+            alt=""
+            width={500}
+            priority={false}
+            placeholder="empty"
+            height={500}
+            className="w-full mt-2 h-full"
+          />
+        )}
       </div>
 
       <div className="flex justify-between items-center mt-4">

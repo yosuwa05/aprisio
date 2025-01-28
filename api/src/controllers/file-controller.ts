@@ -1,117 +1,60 @@
-import { Elysia, t } from "elysia";
-import { saveFile } from "../lib/file";
+import { getAsBlob } from "@/lib/file-s3";
+import Elysia, { t } from "elysia";
+// @ts-ignore
+import mime from "mime-types";
 
-export const FileController = new Elysia({
-  prefix: "/files",
-})
-  .get(
-    "/view",
-    async ({ set, query }) => {
-      try {
-        let { key } = query;
+export const fileController = new Elysia({
+  prefix: "/user/file",
+  detail: {
+    tags: ["User - File"],
+  },
+}).get(
+  "/",
+  async ({ query, set }) => {
+    try {
+      const { key } = query;
 
-        const file = Bun.file(key);
-
-        let buffer = await file.arrayBuffer();
-
-        const blob = new Blob([buffer], {
-          type: "image/png",
-        });
-
-        set.headers["Content-Type"] = "image/png";
-
-        return blob;
-      } catch (error: any) {
-        set.status = 400;
-
-        console.error(error);
-
+      if (!key) {
+        set.status = 404;
         return {
-          message: error.message,
-          ok: false,
+          message: "File not found",
+          status: false,
         };
       }
-    },
-    {
-      query: t.Object({
-        key: t.String(),
-      }),
-      detail: {
-        tags: ["File"],
-        description: "View a file",
-      },
-    }
-  )
 
-  .post(
-    "/upload",
-    async ({ set, body }) => {
-      try {
-        const { file } = body;
+      const { data, ok } = await getAsBlob(key);
 
-        const { ok, filename } = await saveFile(file, "admin");
-
-        if (ok) {
-          set.status = 200;
-          return {
-            message: "File uploaded",
-            ok: true,
-            filename,
-          };
-        }
-
+      if (!ok) {
+        set.status = 404;
         return {
-          message: "Failed to upload file",
-          ok: false,
-        };
-      } catch (error: any) {
-        set.status = 400;
-
-        console.error(error);
-
-        return {
-          message: "Failed to upload file",
-          ok: false,
+          message: "File not found",
+          status: false,
         };
       }
-    },
-    {
-      body: t.Object({
-        file: t.File(),
-      }),
-      detail: {
-        tags: ["File"],
-        description: "Upload a file",
-      },
+
+      const mimeType = mime.lookup(key) || "application/octet-stream";
+
+      set.headers = {
+        "content-type": mimeType,
+        "content-disposition": `attachment; filename=${key}`,
+      };
+
+      // @ts-ignore
+      return Buffer.from(data);
+    } catch (error) {
+      console.error(error);
+      return {
+        error,
+        status: false,
+      };
     }
-  );
-// .get(
-//   "/view",
-//   async ({ set, query }) => {
-//     let { ok, data } = await deliverFile(query.key);
-
-//     if (ok) {
-//       const blob = new Blob([data as Uint8Array], {
-//         type: "image/png",
-//       });
-
-//       set.headers["Content-Type"] = "image/png";
-
-//       return blob;
-//     }
-
-//     return {
-//       message: "File not found",
-//       ok: false,
-//     };
-//   },
-//   {
-//     query: t.Object({
-//       key: t.String(),
-//     }),
-//     detail: {
-//       tags: ["File"],
-//       description: "View a file",
-//     },
-//   }
-// );
+  },
+  {
+    query: t.Object({
+      key: t.String(),
+    }),
+    detail: {
+      summary: "Get a file from s3 bucket",
+    },
+  }
+);

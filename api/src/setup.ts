@@ -1,5 +1,6 @@
 import cors from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
+import { logger } from "@rasla/logify";
 import { Elysia } from "elysia";
 import mongoose from "mongoose";
 import { baseRouter } from "./controllers";
@@ -18,6 +19,12 @@ try {
 } catch (e) {
   console.log(e);
 }
+
+app.use(
+  logger({
+    level: "info",
+  })
+);
 
 app.use(
   swagger({

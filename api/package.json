@@ -8,10 +8,12 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.732.0",
+    "@aws-sdk/lib-storage": "^3.735.0",
     "@aws-sdk/s3-request-presigner": "^3.732.0",
     "@elysiajs/cors": "^1.2.0",
     "@elysiajs/jwt": "^1.1.0",
     "@elysiajs/swagger": "^1.2.0",
+    "@rasla/logify": "^4.0.0",
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
     "bcrypt": "^5.1.1",
@@ -20,6 +22,7 @@
     "elysia": "latest",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
+    "mime-types": "^2.1.35",
     "mongoose": "^8.9.5",
     "nodemailer": "^6.9.16",
     "paseto-ts": "^1.5.7"

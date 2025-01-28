@@ -1,7 +1,7 @@
 "use client";
 
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import logo from "@img/logo.png";
+import logo from "@img/images/logo.png";
 import { Bell, Menu, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

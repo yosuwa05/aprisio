@@ -4,10 +4,6 @@ import job from "../../../public/images/Briefcase.png";
 import circle from "../../../public/images/Ellipse.png";
 import heart2 from "../../../public/images/heart-2.png";
 import monitor from "../../../public/images/monitor.png";
-<<<<<<< HEAD
-// import group from "../../../public/images/People.png";
-=======
->>>>>>> 56dd9c1904a08ec9a0c739cacd6a145d436e53dd
 import rect from "../../../public/images/Rectangle.png";
 import share from "../../../public/images/sharing.png";
 import arrowSVG from "../../../public/images/Vector (1).svg";

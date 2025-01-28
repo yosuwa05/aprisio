@@ -1,8 +1,8 @@
+import { saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
 import { LikeModel, PostModel } from "@/models";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
-import { Types } from "mongoose";
 
 export const authenticatedPostController = new Elysia({
   prefix: "/authenticated/post",
@@ -11,131 +11,10 @@ export const authenticatedPostController = new Elysia({
     tags: ["User - Post - (Auth)"],
   },
 })
-  .get(
-    "/",
-    async ({ query, set, store }) => {
-      const { page = 1, limit = 10 } = query;
-
-      try {
-        const userId = (store as StoreType)["id"] || "";
-
-        const sanitizedPage = Math.max(1, page);
-        const sanitizedLimit = Math.max(1, Math.min(limit, 100));
-
-        const posts = await PostModel.aggregate([
-          {
-            $match: {},
-          },
-          {
-            $sort: { createdAt: -1 },
-          },
-          {
-            $skip: (sanitizedPage - 1) * sanitizedLimit,
-          },
-          {
-            $limit: sanitizedLimit,
-          },
-          {
-            $lookup: {
-              from: "users",
-              localField: "author",
-              foreignField: "_id",
-              as: "author",
-            },
-          },
-          {
-            $lookup: {
-              from: "likes",
-              localField: "_id",
-              foreignField: "post",
-              as: "likes",
-            },
-          },
-          {
-            $lookup: {
-              from: "comments",
-              localField: "_id",
-              foreignField: "post",
-              as: "comments",
-            },
-          },
-          ...(userId
-            ? [
-                {
-                  $lookup: {
-                    from: "likes",
-                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $and: [
-                              { $eq: ["$post", "$$postId"] },
-                              { $eq: ["$user", "$$userId"] },
-                            ],
-                          },
-                        },
-                      },
-                    ],
-                    as: "likedByMe",
-                  },
-                },
-              ]
-            : []),
-          {
-            $project: {
-              title: 1,
-              description: 1,
-              author: { $arrayElemAt: ["$author", 0] },
-              createdAt: 1,
-              likesCount: { $size: "$likes" },
-              commentsCount: { $size: "$comments" },
-              likedByMe: {
-                $cond: {
-                  if: { $eq: [userId, null] },
-                  then: false,
-                  else: {
-                    $gt: [{ $size: { $ifNull: ["$likedByMe", []] } }, 0],
-                  },
-                },
-              },
-            },
-          },
-        ]);
-
-        const totalPosts = await PostModel.countDocuments();
-        const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
-
-        return {
-          posts,
-          nextCursor: hasNextPage ? sanitizedPage + 1 : null,
-          ok: true,
-        };
-      } catch (error: any) {
-        console.error("Error fetching posts:", error.message || error);
-
-        set.status = 500;
-        return {
-          message: "An internal error occurred while fetching posts.",
-          ok: false,
-        };
-      }
-    },
-    {
-      query: t.Object({
-        page: t.Optional(t.Number()),
-        limit: t.Optional(t.Number()),
-      }),
-      detail: {
-        description: "Get posts",
-        summary: "Get posts",
-      },
-    }
-  )
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { title, description } = body;
+      const { title, description, url, file } = body;
 
       try {
         const userId = (store as StoreType)["id"];
@@ -148,14 +27,6 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
-        if (!title || !description) {
-          set.status = 400;
-          return {
-            message: "Title and description are required.",
-            ok: false,
-          };
-        }
-
         if (title.length > 100) {
           set.status = 400;
           return {
@@ -164,7 +35,6 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
-        let slug = slugify(title);
         const existingPost = await PostModel.findOne({ title });
 
         if (existingPost) {
@@ -174,11 +44,33 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
+        let fileUrl = "";
+
+        if (file) {
+          const { ok, filename } = await saveFile(file, "posts");
+          console.log(ok, filename);
+          if (ok) {
+            fileUrl = filename;
+          } else {
+            set.status = 400;
+            return {
+              message: "File upload failed",
+              ok: false,
+            };
+          }
+        }
+
         const newPost = new PostModel({
           title,
           description,
           slug: slugify(title),
           author: userId,
+          url,
+          image: fileUrl,
+          comments: [],
+          likes: [],
+          commentsCount: 0,
+          likesCount: 0,
         });
 
         await newPost.save();
@@ -196,7 +88,17 @@ export const authenticatedPostController = new Elysia({
     {
       body: t.Object({
         title: t.String(),
-        description: t.String(),
+        description: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        url: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        file: t.Optional(t.File()),
       }),
       detail: {
         description: "Create post",
