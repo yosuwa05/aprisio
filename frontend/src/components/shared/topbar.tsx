@@ -24,7 +24,7 @@ export default function Topbar() {
   const user = useGlobalAuthStore((state) => state.user);
 
   return (
-    <nav className="w-full flex px-2 my-2 justify-between md:px-8">
+    <nav className="w-full flex px-2 my-4 justify-between md:px-6">
       <div className="flex gap-2 items-center">
         <Sheet>
           <SheetTrigger asChild>
@@ -43,7 +43,7 @@ export default function Topbar() {
 
         <Image
           src={logo}
-          className="w-[80px] xl:w-[120px] cursor-pointer"
+          className="w-[110px] xl:w-[160px] cursor-pointer"
           alt="logo"
           onClick={() => router.push("/")}
         />

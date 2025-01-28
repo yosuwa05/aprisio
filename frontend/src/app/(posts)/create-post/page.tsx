@@ -375,7 +375,7 @@ export default function CreatePost() {
                         </div>
                         <div className="h-[0.5px] bg-[#888383]"></div>
                       </div>
-                    )
+                    ),
                   )
                 ) : (
                   <div className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center">

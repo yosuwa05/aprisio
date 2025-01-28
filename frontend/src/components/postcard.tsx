@@ -87,20 +87,21 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
       return { previousPosts };
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onError: (err, newPost, context: any) => {
       queryClient.setQueryData(["projects" + user?.id], context.previousPosts);
     },
     onSuccess: (data) => {
       if (data.data.ok) {
-        toast("Post liked successfully");
+        if (data.data.message === "Post liked successfully") {
+          toast("Post liked");
+        } else {
+          toast("Post Unliked");
+        }
       } else {
         toast("An error occurred while liking post");
       }
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
-    },
+    onSettled: () => {},
   });
 
   return (
@@ -141,15 +142,25 @@ export default function Postcard({ post }: { post: IPostCard }) {
         )}
 
         {post.image && (
-          <Image
-            src={BASE_URL + `/file?key=${post.image}`}
-            alt=""
-            width={500}
-            priority={false}
-            placeholder="empty"
-            height={500}
-            className="w-full mt-2 h-full"
-          />
+          <div className="relative mt-2 w-full h-[400px] overflow-hidden rounded-lg bg-gray-200">
+            <div className="absolute inset-2 bg-gray-100 blur-lg"></div>
+
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Image
+                src={BASE_URL + `/file?key=${post.image}`}
+                alt=""
+                width={500}
+                height={500}
+                priority={false}
+                placeholder="empty"
+                className="max-w-full max-h-full object-contain"
+                style={{
+                  width: "auto",
+                  height: "auto",
+                }}
+              />
+            </div>
+          </div>
         )}
       </div>
 
