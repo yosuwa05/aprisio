@@ -10,7 +10,7 @@ import logo from "../../../public/images/logo.png";
 
 export default function NavBar() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [padding, setPadding] = useState("py-6");
+  const [padding, setPadding] = useState("py-2");
   const router = useRouter();
   const currentPath = usePathname();
 
@@ -49,7 +49,7 @@ export default function NavBar() {
       if (scrollPosition > windowHeight * 0.01) {
         setPadding("py-2");
       } else {
-        setPadding("py-6");
+        setPadding("py-2");
       }
     };
 
@@ -64,7 +64,7 @@ export default function NavBar() {
       <div className={`flex justify-between items-center ${padding} px-5`}>
         <Link href="/" passHref>
           <div>
-            <Image src={logo} alt="logo" className="lg:h-9 h-6 lg:w-32 w-24" />
+            <Image src={logo} alt="logo" className=" lg:w-40 w-28" />
           </div>
         </Link>
 

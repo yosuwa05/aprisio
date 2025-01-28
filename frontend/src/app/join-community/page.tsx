@@ -39,7 +39,7 @@ export default function JoinCommunity() {
           </div>
         </div>
         <div className="lg:flex hidden  justify-end items-end right-0">
-          <Image src={join} alt="image" className="h-[615px] w-full" />
+          <Image src={join} alt="image" className="h-[500px] w-full" />
         </div>
       </div>
       <div className="lg:py-16 lg:px-28 px-5 pt-5 bg-white">

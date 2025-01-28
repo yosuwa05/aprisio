@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { RiArrowRightLine } from "react-icons/ri";
-import avatar from "../../../public/images/avatar.png";
+import avatar from "../../../public/images/pic (1).png";
 import hearts from "../../../public/images/hearts.png";
 import heroboy from "../../../public/images/hero-boy.png";
 import herogirl from "../../../public/images/hero-girl.png";
@@ -67,14 +67,14 @@ export default function Hero() {
         <Image
           src={avatar}
           alt=""
-          className="xl:h-24 xl:w-80 lg:w-60 lg:h-20 w-36 h-12"
+          className="xl:h-[5.5rem] xl:w-60  lg:w-60 lg:h-20 w-40 h-16"
         />
-        <div className="flex mt-5 lg:mt-0 justify-center items-center">
-          <h1 className="font-bold text-[#B9932E] font-lato xl:text-6xl lg:text-4xl text-3xl px-4">
-            2M
-          </h1>
-          <p className="text-[#353535CC] xl:text-3xl lg:text-2xl text-xl font-sans">
-            Users are in the Aprisio
+        <div className="flex mt-5 lg:mt-0 justify-center md:items-start lg:justify-start items-center">
+          {/* <h1 className="font-bold text-[#B9932E] font-lato xl:text-6xl lg:text-4xl text-3xl px-4">
+            1K
+          </h1> */}
+          <p className="text-[#353535CC] lg:pl-5 xl:w-[90%] lg:w-[80%]  lg:leading-normal xl:text-[1.875rem] lg:text-left text-center lg:text-[1.5rem] text-[1.25rem] font-sans">
+          Thousands of post career people are joining Aprisio
           </p>
         </div>
       </div>
