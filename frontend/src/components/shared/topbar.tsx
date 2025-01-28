@@ -49,7 +49,7 @@ export default function Topbar() {
         />
 
         <ul className="hidden xl:flex gap-4 text-textcol font-semibold mx-4">
-          <Link className="" href={"#"}>
+          <Link className="" href={"/"}>
             Home
           </Link>
           <Link className="" href={"#"}>
@@ -57,9 +57,6 @@ export default function Topbar() {
           </Link>
           <Link className="" href={"/feed"}>
             Community
-          </Link>
-          <Link className="" href={"#"}>
-            Job
           </Link>
           <Link className="" href={"#"}>
             Contact

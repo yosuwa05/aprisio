@@ -12,6 +12,14 @@ export const formController = new Elysia({
   async ({ body, set }) => {
     const { name, email, mobile, address, password } = body;
     try {
+      const existing = await UserModel.findOne({
+        $or: [{ email }, { mobile }],
+      });
+
+      if (existing) {
+        return { message: "Email or mobile already exists", ok: false };
+      }
+
       const newUser = new UserModel({
         name,
         email,
@@ -23,17 +31,11 @@ export const formController = new Elysia({
 
       await newUser.save();
       set.status = 200;
-      return { message: "Registration successful" };
+      return { message: "Registration successful", ok: true };
     } catch (error: any) {
-      console.error("Error saving form data:", error);
-
-      if (error.code === 11000) {
-        set.status = 409;
-        return { message: "Duplicate entry. Email or mobile already exists." };
-      }
-
       set.status = 500;
       return {
+        ok: false,
         message: "An internal error occurred while processing the form.",
       };
     }

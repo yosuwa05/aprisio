@@ -71,7 +71,7 @@ export default function NavBar() {
         <div className="hidden lg:block">
           <ul className="flex gap-7 text-[#353535] font-semibold xl:text-2xl lg:text-lg">
             <li>
-              <Link href="/#home" onClick={handleNavClick}>
+              <Link href="/" onClick={handleNavClick}>
                 Home
               </Link>
             </li>
@@ -104,7 +104,10 @@ export default function NavBar() {
           >
             Log In
           </button>
-          <button className="bg-[#C9A74E] rounded-full xl:py-4 xl:px-7 lg:py-3 lg:px-6">
+          <button
+            onClick={() => router.push("/join-community")}
+            className="bg-[#C9A74E] rounded-full xl:py-4 xl:px-7 lg:py-3 lg:px-6"
+          >
             Sign Up
           </button>
         </div>
@@ -156,7 +159,10 @@ export default function NavBar() {
             >
               Log In
             </button>
-            <button className="w-full bg-[#C9A74E] rounded-full py-3 px-6">
+            <button
+              onClick={() => router.push("/join-community")}
+              className="w-full bg-[#C9A74E] rounded-full py-3 px-6"
+            >
               Sign Up
             </button>
           </div>

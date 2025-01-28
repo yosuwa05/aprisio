@@ -21,7 +21,6 @@ import pencil from "@img/icons/pencil.svg";
 import trash from "@img/icons/trash.svg";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2 } from "lucide-react";
-import { motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -38,6 +37,7 @@ const postSchema = z.object({
 export default function CreatePost() {
   const [draftsModelOpen, setDraftsModelOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -59,7 +59,6 @@ export default function CreatePost() {
         const res = await _axios.get("/drafts");
         return res.data;
       },
-
       queryKey: ["drafts"],
     });
 
@@ -126,7 +125,6 @@ export default function CreatePost() {
     },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (data: any) => {
     const formData = new FormData();
 
@@ -140,14 +138,12 @@ export default function CreatePost() {
     mutate(formData);
   };
 
-  const [activeIndex, setActiveIndex] = useState(0);
   const tabs = ["Text", "Image & Video", "Link"];
 
   useEffect(() => {
     setValue("title", "");
     setValue("description", "");
     setValue("url", "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const imageRendered = useMemo(() => {
@@ -161,7 +157,7 @@ export default function CreatePost() {
     <div>
       <Topbar />
       <div className="mx-2 xl:mx-8">
-        <div className="flex justify-between items-end mx-2">
+        <div className="flex justify-between items-center xl:items-end mx-2">
           <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
             Create Post
           </h1>
@@ -181,20 +177,21 @@ export default function CreatePost() {
           </Button>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-2">
+        <div className="flex flex-col md:gap-4">
+          <div className="flex">
             {tabs.map((tab, index: number) => (
-              <div key={tab} className="flex cursor-pointer">
-                <div
-                  onClick={() => {
-                    setActiveIndex(index);
-                  }}
-                  className={`shadow-none text-fadedtext font-normal text-sm md:text-lg px-4 xl:text-xl ${
-                    index == activeIndex ? "text-[#05151b] font-extrabold" : ""
-                  }`}
-                >
-                  {tab}
-                </div>
+              <div
+                key={index}
+                onClick={() => {
+                  setActiveIndex(index);
+                }}
+                className={`flex cursor-pointer text-lg mx-4 ${
+                  index != activeIndex
+                    ? "text-fadedtext"
+                    : "text-contrasttext font-bold"
+                }`}
+              >
+                <h3>{tab}</h3>
               </div>
             ))}
           </div>
@@ -208,7 +205,7 @@ export default function CreatePost() {
               <Input
                 placeholder="Title"
                 id="title"
-                className="h-16 rounded-2xl text-black text-lg"
+                className="h-16 rounded-2xl text-fadedtext text-lg"
                 {...register("title")}
               />
               <div className="text-fadedtext text-sm w-full text-right p-2">
@@ -217,48 +214,32 @@ export default function CreatePost() {
             </div>
 
             {activeIndex == 0 && (
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div key={activeIndex}>
                 <Label htmlFor="content"></Label>
                 <Textarea
                   id="content"
                   placeholder="Description..."
-                  className="rounded-2xl !text-lg text-black p-4"
+                  className="rounded-2xl !text-lg text-fadedtext p-4"
                   rows={4}
                   {...register("description")}
                 />
-              </motion.div>
+              </div>
             )}
 
             {activeIndex == 1 && (
-              <motion.div
+              <div
                 key={activeIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Label htmlFor="file"></Label>
-                <div className="h-[130px] text-fadedtext cursor-pointer border rounded-lg text-lg flex justify-start p-4 items-start">
+                <div className="h-[80px] text-fadedtext cursor-pointer border rounded-xl text-lg flex justify-start p-4 items-center">
                   <h4>Upload a image</h4>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {activeIndex == 1 && uploadedFile && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="relative"
-              >
+              <div className="relative">
                 <Trash2
                   className="absolute top-4 right-4 cursor-pointer text-red"
                   color="red"
@@ -273,7 +254,7 @@ export default function CreatePost() {
                   height={100}
                   className="w-full h-[300px] object-cover rounded-2xl"
                 />
-              </motion.div>
+              </div>
             )}
 
             <input
@@ -290,26 +271,20 @@ export default function CreatePost() {
             />
 
             {activeIndex == 2 && (
-              <motion.div
-                key={activeIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              >
+              <div key={activeIndex}>
                 <Label htmlFor="url"></Label>
                 <Input
                   placeholder="Link / URL"
                   id="url"
-                  className="h-16 rounded-2xl text-black text-lg"
+                  className="h-16 rounded-2xl text-fadedtext text-lg"
                   {...register("url")}
                 />
-              </motion.div>
+              </div>
             )}
 
             <div className="flex gap-6 justify-end mt-4">
               <Button
-                className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
+                className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold"
                 onClick={() => {
                   if (!titleValue || !descriptionValue)
                     return toast("Please fill in all the fields");
@@ -326,7 +301,7 @@ export default function CreatePost() {
               </Button>
 
               <Button
-                className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-xs lg:text-sm hover:bg-buttoncol"
+                className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol"
                 type="submit"
                 disabled={isPending}
               >

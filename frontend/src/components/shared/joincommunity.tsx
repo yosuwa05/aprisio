@@ -16,6 +16,7 @@ import { RiArrowRightLine } from "react-icons/ri";
 // import { GiCheckMark } from 'react-icons/gi';
 import { _axios } from "@/lib/axios-instance";
 import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { ImSpinner2 } from "react-icons/im";
 import { ToastContainer } from "react-toastify";
 import { toast } from "sonner";
@@ -80,6 +81,7 @@ const JoinCommunityForm = () => {
     password: true,
     confirmPassword: true,
   });
+  const router = useRouter();
 
   const {
     register,
@@ -247,7 +249,7 @@ const JoinCommunityForm = () => {
     setIsLoading(true);
     try {
       const response = await _axios.post("/form/submit", data);
-      if (response.status === 200) {
+      if (response.data.ok) {
         setIsLoading(false);
         toast.success(response.data.message);
         localStorage.removeItem("aprisioEmail");
@@ -256,6 +258,8 @@ const JoinCommunityForm = () => {
         localStorage.removeItem("address");
         localStorage.removeItem("mobile");
         reset();
+
+        router.push("/login");
       } else {
         setIsLoading(false);
         toast.error(response.data.message);

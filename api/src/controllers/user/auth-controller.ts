@@ -16,15 +16,16 @@ export const authController = new Elysia({
       const user = await UserModel.findOne({ email });
 
       if (!user) {
-        set.status = 404;
-        return { message: "User not found" };
+        return {
+          message: "You don't have an account! Sign up first",
+          ok: false,
+        };
       }
 
       const isMatch = await Bun.password.verify(password, user.password);
 
       if (!isMatch) {
-        set.status = 401;
-        return { message: "Invalid password", ok: false };
+        return { message: "Kindly check your password", ok: false };
       }
 
       const token = await PasetoUtil.encodePaseto({
@@ -48,6 +49,7 @@ export const authController = new Elysia({
       return {
         message: "User logged in successfully",
         token,
+        ok: true,
         status: true,
         user: {
           email: user.email.toString(),

@@ -12,12 +12,11 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import arrow2 from "../../../public/images/arrow-2.png";
+import food from "../../../public/images/food-1.jpg";
 import heart1 from "../../../public/images/green-heart.png";
+import hiking from "../../../public/images/hiking-2.jpg";
 import heart2 from "../../../public/images/yellow-heart.png";
 import yoga from "../../../public/images/yoga.png";
-import food from "../../../public/images/food-1.jpg";
-import hiking from "../../../public/images/hiking-2.jpg";
-
 
 export default function Events() {
   const data = [
@@ -69,7 +68,7 @@ export default function Events() {
             slideShadows: false,
           }}
           //   pagination={{ clickable: true }}
-          loop={true}
+          // loop={true}
           loopAdditionalSlides={2} // Ensures the first two slides are appended for smooth scrolling
           autoplay={{ delay: 3000 }}
           className="mySwiper"
@@ -86,7 +85,7 @@ export default function Events() {
                 {/* Event Info */}
                 <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
                   <p className="font-mulish flex items-center text-xl text-[#353535]">
-                  {item.title} - {item.date}
+                    {item.title} - {item.date}
                   </p>
                   <div>
                     <Image src={arrow2} alt="Arrow" className="w-14 h-14" />
@@ -104,7 +103,6 @@ export default function Events() {
               <Image
                 src={item.src}
                 alt={item.title}
-
                 unoptimized
                 className="h-full w-full object-contain rounded-2xl"
               />
@@ -112,7 +110,7 @@ export default function Events() {
               {/* Event Info */}
               <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
                 <p className="font-mulish flex items-center text-left text-[1.25rem] text-[#353535]">
-                {item.title} - {item.date}
+                  {item.title} - {item.date}
                 </p>
                 <div>
                   <Image src={arrow2} alt="Arrow" className="w-14 h-14" />
