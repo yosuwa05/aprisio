@@ -6,6 +6,7 @@ import { Heart } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import CommentSection from "./comment-section";
 
 interface IPostCard {
   title: string;
@@ -105,7 +106,12 @@ export default function Postcard({ post }: { post: IPostCard }) {
   });
 
   return (
-    <div className="mt-4 shadow-none border-none px-2 mb-8 w-full">
+    <div
+      className="p-4 lg:px-8 w-full rounded-lg"
+      style={{
+        boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
+      }}
+    >
       <div className="flex items-center gap-2 justify-between">
         <div className="flex gap-2">
           <Avatar>
@@ -121,7 +127,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
           </div>
         </div>
 
-        <p className="text-xs font-medium text-[#6B6D6D] self-end">
+        <p className="text-xs font-medium text-[#6B6D6D] self-center">
           {formatDate(post.createdAt)}
         </p>
       </div>
@@ -165,8 +171,8 @@ export default function Postcard({ post }: { post: IPostCard }) {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <div className="flex gap-6 justify-between">
-          <div className="flex gap-1 items-center font-semibold">
+        <div className="flex gap-2 lg:gap-6 justify-between">
+          <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
             <Heart
               className="h-5 w-5 cursor-pointer"
               fill={post.likedByMe ? "red" : "white"}
@@ -182,7 +188,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
             />
             <p>{post.likeCount ?? 0}</p>
           </div>
-          <div className="flex gap-1 items-center font-semibold">
+          <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
             <Image
               width={20}
               height={20}
@@ -192,7 +198,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
             />
             <p>{post.commentCount ?? 0}</p>
           </div>
-          <div className="flex gap-1 items-center font-semibold">
+          <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
             <Image
               className="h-5 w-5"
               width={20}
@@ -203,17 +209,11 @@ export default function Postcard({ post }: { post: IPostCard }) {
             <p>Share</p>
           </div>
         </div>
-
-        <p className="text-[#043A53]">View all replies</p>
+        <p className="text-sm lg:text-md text-contrasttext">View All Replies</p>
       </div>
 
-      <div className="mt-4 flex gap-4 items-center">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-
-        <p className="text-[#828485]">Write your comment</p>
+      <div>
+        <CommentSection />
       </div>
     </div>
   );

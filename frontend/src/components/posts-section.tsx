@@ -2,9 +2,10 @@
 
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import React, { useEffect, useRef } from "react";
 import Postcard from "./postcard";
-import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
 type IAuthor = {
@@ -24,25 +25,36 @@ type IPost = {
 };
 
 export const PostsSection = () => {
-  const pageParam = 0;
-
   const user = useGlobalAuthStore((state) => state.user);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["projects" + user?.id],
       queryFn: () => {
-        return _axios.get(`/post?page=${pageParam}&userId=${user?.id ?? ""}`);
+        return _axios.get(`/post?page=${0}&userId=${user?.id ?? ""}`);
       },
       initialPageParam: 0,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getNextPageParam: (lastPage: any) => lastPage.nextCursor,
     });
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { ref, entry } = useIntersection({
+    root: containerRef.current,
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    console.log(hasNextPage);
+
+    if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
+
   return (
-    <div className="flex flex-col gap-4 items-center">
+    <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
       {isLoading ? (
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full ">
           {[...Array(5)].map((_, i) => (
             <div key={i} className="flex gap-4 w-full">
               <Skeleton className="w-[50px] h-[50px] rounded-full" />
@@ -64,21 +76,22 @@ export const PostsSection = () => {
         data.pages.map((page, pageIndex) =>
           page.data.posts.length > 0 ? (
             page.data.posts.map((post: IPost, postIndex: number) => (
-              <Postcard
-                key={`${pageIndex}-${postIndex}`}
-                post={{
-                  author: post.author.name,
-                  title: post.title,
-                  description: post.description,
-                  createdAt: post.createdAt,
-                  id: post._id,
-                  likeCount: post.likesCount,
-                  commentCount: post.commentsCount,
-                  likedByMe: post.likedByMe,
-                  url: post.url ? post.url : "",
-                  image: post.image ? post.image : "",
-                }}
-              />
+              <React.Fragment key={`${pageIndex}-${postIndex}`}>
+                <Postcard
+                  post={{
+                    author: post.author.name,
+                    title: post.title,
+                    description: post.description,
+                    createdAt: post.createdAt,
+                    id: post._id,
+                    likeCount: post.likesCount,
+                    commentCount: post.commentsCount,
+                    likedByMe: post.likedByMe,
+                    url: post.url ? post.url : "",
+                    image: post.image ? post.image : "",
+                  }}
+                />
+              </React.Fragment>
             ))
           ) : (
             <p
@@ -92,15 +105,8 @@ export const PostsSection = () => {
       ) : (
         <p className="text-gray-500">No posts</p>
       )}
-      {hasNextPage && (
-        <Button
-          onClick={() => fetchNextPage()}
-          disabled={isFetchingNextPage}
-          className="px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          {isFetchingNextPage ? "Loading more..." : "Load More"}
-        </Button>
-      )}
+
+      <div ref={ref} className="h-1"></div>
     </div>
   );
 };
