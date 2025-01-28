@@ -26,7 +26,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <Image className="w-6 h-6" src={location} alt="email" />
               <p className="text-[#353535E3] font-sans xl:text-2xl text-xl">
-                Banglore
+                Bangalore
               </p>
             </div>
           </div>
