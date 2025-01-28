@@ -15,8 +15,8 @@ import arrow2 from "../../../public/images/arrow-2.png";
 import heart1 from "../../../public/images/green-heart.png";
 import heart2 from "../../../public/images/yellow-heart.png";
 import yoga from "../../../public/images/yoga.png";
-import food from "../../../public/images/food.jpg";
-import hiking from "../../../public/images/hiking.webp";
+import food from "../../../public/images/food-1.jpg";
+import hiking from "../../../public/images/hiking-2.jpg";
 
 
 export default function Events() {
@@ -104,7 +104,9 @@ export default function Events() {
               <Image
                 src={item.src}
                 alt={item.title}
-                className="h-full w-full object-cover rounded-2xl"
+
+                unoptimized
+                className="h-full w-full object-contain rounded-2xl"
               />
 
               {/* Event Info */}

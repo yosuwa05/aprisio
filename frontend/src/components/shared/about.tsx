@@ -55,7 +55,7 @@ export default function About() {
     const video = videoRef.current;
     if (!video) return;
 
-    // // Only play video when user interacts
+    // Only play video when user interacts
     // const attemptUnmutedAutoplay = async () => {
     //   try {
     //     video.muted = false;
