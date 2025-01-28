@@ -112,7 +112,8 @@ export default function Events() {
               {/* Event Info */}
               <div className="absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]">
                 <p className="font-mulish w-5/6 flex items-center text-left text-[1.25rem] text-[#353535]">
-                  {item.title} - {item.date}
+                  {item.title}
+                   {/* - {item.date} */}
                 </p>
                 <div>
                   <Image src={arrow2} alt="Arrow" className="w-14 h-14" />
