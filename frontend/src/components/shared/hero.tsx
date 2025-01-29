@@ -26,61 +26,91 @@ export default function Hero() {
     };
   }, []);
 
+  // Helper function to calculate responsive text size
+  const getResponsiveSize = (baseSize: number) => {
+    const zoomLevel = window.devicePixelRatio || 1;
+    return `${baseSize / zoomLevel}px`;
+  };
+
   return (
-    <section className="relative overflow-x-hidden lg:mt-36 mt-28  px-2 lg:h-[100%] lg:px-0 mb-14 lg:mb-0">
-      <div className="flex flex-col justify-center items-center">
-        <div className="flex flex-col justify-center items-center w-[90%]">
-          <h1 className="font-semibold text-[#353535] text-center xl:text-[75px] lg:text-[60px] text-[24px] font-roboto">
+    <div className="lg:h-[90vh] overflow-x-hidden lg:mt-[9rem] mt-[7rem] px-[0.5rem]  lg:px-0 mb-[3.5rem] lg:mb-0">
+    <section className="relative ">
+      <div className="flex flex-col justify-center  items-center">
+        <div className="flex flex-col  justify-center items-center w-[90%]">
+          <h1 
+            className="font-semibold  text-[#353535] text-center font-roboto"
+            style={{
+              fontSize: 'clamp(24px, 5vw, 67.2px)',
+              lineHeight: '1.2'
+            }}
+          >
             Your career may be behind you.
           </h1>
-          <h2 className="font-semibold text-[#353535] text-center xl:text-[60px] lg:text-[40px] text-[24px] mt-5 lg:mt-0 font-roboto">
+          <h2 
+            className="font-semibold text-[#353535] text-center mt-5 lg:mt-0 font-roboto"
+            style={{
+              fontSize: 'clamp(24px, 4vw, 60px)',
+              lineHeight: '1.2'
+            }}
+          >
             Your Best Days are ahead of you
           </h2>
           <div className="w-full flex justify-center items-center">
-            <p className="text-center xl:w-1/2 lg:w-[80%] w-[98%] text-[#353535CC] leading-loose font-sans xl:text-[24px] lg:text-[20px] text-[18px] pt-10">
+            <p 
+              className="text-center xl:w-1/2 lg:w-[80%] w-[98%] text-[#353535CC] leading-loose font-sans pt-10"
+              style={{
+                fontSize: 'clamp(18px, 2.5vw, 24px)',
+                lineHeight: '1.6'
+              }}
+            >
               Join a vibrant community of active, impactful, and like-minded
               post career individuals exploring new events & experiences,
               building new connections, and living their best lives.
             </p>
           </div>
         </div>
-        <div
-          className={`${
-            isZoomedOut ? "pt-[7%]" : "pt-[2%]"
-          } hover:scale-105 duration-300 transition-all`}
-        >
+        <div className={`${isZoomedOut ? "md:pt-[5%] pt-[10%]" : "md:pt-[2%] pt-[10%]"} hover:scale-105  duration-300 transition-all`}>
           <Link href={"/join-community"}>
-            <button className="flex lg:py-6 py-3 lg:text-2xl text-xl lg:px-9 px-5 font-mulish font-bold bg-[#C9A74E] rounded-full justify-center items-center gap-5">
+            <button 
+              className="flex font-mulish font-bold bg-[#C9A74E] rounded-full justify-center items-center gap-5"
+              style={{
+                fontSize: 'clamp(16px, 5vw, 24px)',
+                padding: isZoomedOut 
+                ? 'clamp(8px, 1.5vw, 20px) clamp(20px, 3vw, 40px)' 
+                : 'clamp(12px, 2vw, 24px) clamp(16px, 3vw, 30px)'
+              }}
+            >
               Join Aprisio
-              <span className="text-white bg-[#A48D4A]  rounded-full mt-1 p-1">
+              <span className="text-white bg-[#A48D4A] rounded-full mt-1 p-1">
                 <RiArrowRightLine className="w-6 h-6" />
               </span>
             </button>
           </Link>
         </div>
       </div>
-      <div
-        className={`  relative lg:left-16 lg:pb-20 mt-16 lg:mt-12 ${
-          isZoomedOut ? "lg:bottom-[0%]" : "lg:bottom-[0%]"
-        }  flex lg:flex-row flex-col items-center`}
-      >
+      <div className={`relative lg:left-16 lg:pb-20 mt-16 lg:pt-2 ${
+        isZoomedOut ? "lg:bottom-[0%]" : "lg:bottom-[0%]"
+      } flex lg:flex-row flex-col items-center`}>
         <Image
           src={avatar}
           alt=""
-          className="xl:h-[5.7rem] xl:w-60  lg:w-60 lg:h-[5.5rem] w-[10.6rem] h-16"
+          className="xl:h-[5.7rem] xl:w-60 lg:w-60 lg:h-[5.5rem] w-[10.6rem] h-16"
         />
         <div className="flex mt-5 lg:mt-0 justify-center md:items-start lg:justify-start items-center">
-          {/* <h1 className="font-bold text-[#B9932E] font-lato xl:text-6xl lg:text-4xl text-3xl px-4">
-            1K
-          </h1> */}
-          <p className="text-[#353535CC] lg:pl-5 xl:w-[90%] lg:w-[80%]  lg:leading-normal xl:text-[1.875rem] lg:text-left text-center lg:text-[1.5rem] text-[1.25rem] font-sans">
-          Thousands of post career people are joining Aprisio
+          <p 
+            className="text-[#353535CC] lg:pl-5 xl:w-[90%] lg:w-[80%] lg:leading-normal font-sans lg:text-left text-center"
+            style={{
+              fontSize: 'clamp(20px, 3vw, 30px)',
+              lineHeight: '1.4'
+            }}
+          >
+            Thousands of post career people are joining Aprisio
           </p>
         </div>
       </div>
       {isZoomedOut && (
         <>
-          <div className="absolute lg:right-[2%] lg:top-[10%] top-[55%] right-3">
+   <div className="absolute right-3 md:top-[55%] md:bottom-auto lg:bottom-[80%] lg:top-auto lg:right-[2%]">
             <Image
               src={hearts}
               alt="hearts"
@@ -104,12 +134,14 @@ export default function Hero() {
             alt="hero"
             className={`${
               isZoomedOut
-                ? "lg:h-[80%] lg:w-[80%] xl:h-full xl:w-full"
-                : "lg:h-[80%] lg:w-[80%] xl:h-[80%] xl:w-[80%]"
+                ? "lg:h-[90%] lg:w-[90%] xl:h-full xl:w-full "
+                : "lg:h-[60%] lg:w-[60%] xl:h-[70%] xl:w-[70%]"
             }`}
           />
         </div>
       </div>
     </section>
+    </div>
+
   );
 }

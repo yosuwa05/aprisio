@@ -1,3 +1,5 @@
+"use client";
+
 import { ToastContainer } from "react-toastify";
 import About from "../components/shared/about";
 import Events from "../components/shared/events";
@@ -10,12 +12,13 @@ import NavBar from "../components/shared/navbar";
 import Testimonial from "../components/shared/testimonials";
 
 export default function Home() {
+
   return (
     <>
       <NavBar />
       <ToastContainer />
-      <section id="home" className="pt-5">
-        <div>
+      <section id="home" className="">
+        <div className="" >
           <Hero />
         </div>
       </section>
