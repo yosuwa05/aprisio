@@ -114,7 +114,7 @@ export const postController = new Elysia({
 
       return {
         posts,
-        nextCursor: hasNextPage ? sanitizedPage + 1 : null,
+        nextCursor: hasNextPage ? sanitizedPage + 1 : undefined,
         ok: true,
       };
     } catch (error: any) {

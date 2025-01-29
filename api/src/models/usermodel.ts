@@ -22,7 +22,6 @@ const UserSchema = new Schema<User>(
     },
     address: {
       type: String,
-      required: true,
     },
     active: {
       type: Boolean,

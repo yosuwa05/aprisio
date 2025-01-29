@@ -44,7 +44,11 @@ export const formController = new Elysia({
     body: t.Object({
       email: t.String({ format: "email" }),
       mobile: t.String(),
-      address: t.String(),
+      address: t.Optional(
+        t.String({
+          default: "",
+        })
+      ),
       name: t.String(),
       password: t.String(),
     }),

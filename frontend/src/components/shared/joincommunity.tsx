@@ -51,9 +51,9 @@ const formSchema = z
     email: z.string().email("Please enter a valid email"),
     mobile: z
       .string()
-      .regex(/^\d+$/, "Only numbers are allowed")
+      .regex(/^\d+$/, "Please enter a valid number")
       .length(10, "Mobile number must be exactly 10 digits"),
-    address: z.string().min(5, "Address must be at least 5 characters"),
+    address: z.string(),
     terms: z
       .boolean()
       .refine((val) => val === true, "You must accept terms and conditions"),
@@ -332,7 +332,7 @@ const JoinCommunityForm = () => {
       <ToastContainer />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-10"
+        className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-14"
       >
         {/* Name Input */}
         <div className="relative">
@@ -345,7 +345,7 @@ const JoinCommunityForm = () => {
             {...register("name")}
             type="text"
             // onChange={(e) => handleInputChange("name", e.target.value)}
-            placeholder="Name"
+            placeholder="Name *"
             className={`w-full lg:text-xl text-sm lg:pl-20 pl-10 pr-3 py-2 lg:h-20 h-[60px] border ${
               errors.name ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 `}
@@ -366,7 +366,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("email")}
             type="email"
-            placeholder="Email"
+            placeholder="Email *"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.email ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -421,7 +421,7 @@ const JoinCommunityForm = () => {
             {...register("mobile")}
             // onChange={(e) => handleInputChange("mobile", e.target.value)}
             type="text"
-            placeholder="mobile"
+            placeholder="Mobile *"
             inputMode="numeric"
             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
               e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
@@ -485,7 +485,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("password")}
             type={passwordsVisible.password ? "password" : "text"}
-            placeholder="Create Password"
+            placeholder="Create Password *"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.password ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -518,7 +518,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("confirmPassword")}
             type={passwordsVisible.confirmPassword ? "password" : "text"}
-            placeholder="Confirm Password"
+            placeholder="Confirm Password *"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.confirmPassword ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
