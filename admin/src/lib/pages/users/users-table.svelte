@@ -35,14 +35,13 @@
 	});
 </script>
 
-<div class="mt-6 text-maintext w-[calc(100vw-420px)] font-pt mx-auto overflow-auto">
-	<div class="w-[40%] ml-auto mb-4">
-		<div class="grid gap-2 relative">
+<div class="text-maintext font-pt mx-auto mt-6 w-[calc(100vw-420px)] overflow-auto">
+	<div class="mb-4 ml-auto w-[40%]">
+		<div class="relative grid gap-2">
 			<Input
 				type={'text'}
 				required
-
-				  class="pr-10  focus:!ring-0 focus:!ring-transparent"
+				class="pr-10  focus:!ring-0 focus:!ring-transparent"
 				placeholder={'Search Users Name'}
 				bind:value={search}
 				oninput={debounceSearch}
@@ -50,7 +49,7 @@
 			{#if !search}
 				<Icon
 					icon={'iconamoon:search'}
-					class="absolute right-2 bottom-2.5 cursor-pointer text-gray-400 text-xl"
+					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
 				/>
 			{:else}
 				<Icon
@@ -59,7 +58,7 @@
 						search = '';
 						debounceSearch();
 					}}
-					class="absolute right-2 bottom-2.5 cursor-pointer text-gray-400 text-xl"
+					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
 				/>
 			{/if}
 		</div>
@@ -70,7 +69,7 @@
 			{#if $query.isLoading}
 				<Table.Caption>Loading....</Table.Caption>
 			{:else if $query?.data?.total === 0}
-				<Table.Caption class="text-center w-full text-xs">No Users Found!</Table.Caption>
+				<Table.Caption class="w-full text-center text-xs">No Users Found!</Table.Caption>
 			{/if}
 			<Table.Header>
 				<Table.Row>
@@ -88,7 +87,7 @@
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
 						<Table.Cell class="capitalize ">
 							<button
-								class="cursor-pointer capitalize underline underline-offset-4 text-primary"
+								class="text-primary cursor-pointer capitalize underline underline-offset-4"
 								onclick={() => {
 									goto(`/admin/dashboard/users/${user._id}`);
 								}}
@@ -100,14 +99,6 @@
 						<Table.Cell>{user.email || '-'}</Table.Cell>
 						<Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
 						<Table.Cell>{user.active ? 'Yes' : 'No'}</Table.Cell>
-
-						<Table.Cell>
-							<button onclick={() => {
-								goto(`/admin/dashboard/users/${user._id}`);
-							}}>
-								<Icon icon={'solar:eye-broken'} class="hover:text-primary text-xl" />
-							</button>
-						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

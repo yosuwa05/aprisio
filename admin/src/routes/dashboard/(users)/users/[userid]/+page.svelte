@@ -2,9 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { _axios } from '$lib/_axios';
-	import Paginator from '$lib/components/paginator.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import * as Table from '$lib/components/ui/table';
 	import Icon from '@iconify/svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 
@@ -44,19 +42,17 @@
 	<title>Dashboard | User</title>
 	<meta name="description" content="dashboard for kings chic." />
 </svelte:head>
-<div
-	class="w-[95%] mx-auto p-6 space-y-6 h-[calc(100vh-60px)] overflow-y-auto hidescrollbarthumb text-white"
->
+<div class="hidescrollbarthumb mx-auto w-[95%] space-y-6 overflow-y-auto p-6 text-white">
 	{#if $query.isLoading}
-		<div class="flex justify-center items-center min-h-[400px]">
-			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+		<div class="flex min-h-[400px] items-center justify-center">
+			<div class="border-primary h-8 w-8 animate-spin rounded-full border-b-2"></div>
 		</div>
 	{:else if $query.data?.user}
 		{@const user = $query.data.user}
 		<div class="flex justify-between">
 			<div>
-				<div class="flex gap-2 items-center justify-between">
-					<h1 class="text-3xl font-bold capitalize mb-2">{user.username}</h1>
+				<div class="flex items-center justify-between gap-2">
+					<h1 class="mb-2 text-3xl font-bold capitalize">{user.username}</h1>
 				</div>
 				<p class="text-muted-foreground">
 					Joined At {new Date(user.createdAt).toLocaleString('en-IN', {
@@ -69,18 +65,18 @@
 					})}
 				</p>
 
-				<div class="flex mt-4">
-					<h1 class="text-muted-foreground text-2xl flex gap-2 items-center"><Icon icon="fluent:person-48-regular" class="text-lg" />
-{user.name}
+				<div class="mt-4 flex">
+					<h1 class="text-muted-foreground flex items-center gap-2 text-2xl">
+						<Icon icon="fluent:person-48-regular" class="text-lg" />
+						{user.name}
 					</h1>
 				</div>
-				<div class="flex gap-2 items-center mt-4">
-					
-					<p class="text-muted-foreground flex gap-2 items-center">
+				<div class="mt-4 flex items-center gap-2">
+					<p class="text-muted-foreground flex items-center gap-2">
 						<Icon icon="fluent:call-48-regular" class="text-lg" />
 						{user.mobile}
 					</p>
-					<p class="text-muted-foreground flex gap-2 items-center">
+					<p class="text-muted-foreground flex items-center gap-2">
 						<Icon icon="ic:outline-email" class="text-lg" />
 						{#if user.email}
 							{user.email}
@@ -89,15 +85,13 @@
 						{/if}
 					</p>
 				</div>
-
 			</div>
 			<div>
 				<Button size="sm" onclick={() => history.back()}>
-					<Icon icon="ep:arrow-up-bold" class="text-lg rotate-[-90deg]" />
+					<Icon icon="ep:arrow-up-bold" class="rotate-[-90deg] text-lg" />
 					Back</Button
 				>
 			</div>
 		</div>
-
 	{/if}
 </div>
