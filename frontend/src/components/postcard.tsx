@@ -60,16 +60,13 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
       const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       queryClient.setQueryData(["projects" + user?.id], (old: any) => {
         return {
           ...old,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           pages: old.pages.map((page: any) => ({
             ...page,
             data: {
               ...page.data,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               posts: page.data.posts.map((p: any) =>
                 p._id === post.id
                   ? {
