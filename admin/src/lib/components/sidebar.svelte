@@ -19,11 +19,26 @@
 			type: 'heading',
 			name: 'Dashboard'
 		},
-
 		{
 			name: 'Users',
 			href: '/admin/dashboard/users/',
-			icon: 'meteor-icons:user',
+			icon: 'lucide:users-round',
+			subRoutes: '-'
+		},
+		{
+			type: 'heading',
+			name: 'Community'
+		},
+		{
+			name: 'Topics',
+			href: '/admin/dashboard/topics/',
+			icon: 'ic:twotone-book',
+			subRoutes: '-'
+		},
+		{
+			name: 'Sub Topics',
+			href: '/admin/dashboard/subtopics/',
+			icon: 'mdi:books',
 			subRoutes: '-'
 		}
 	]);

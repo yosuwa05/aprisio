@@ -1,6 +1,8 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
+import { _axios } from "@/lib/axios-instance";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
@@ -9,7 +11,15 @@ export default function CommentSection() {
 
   function handleSubmit() {
     console.log("Submitted comment:", typedComment);
+    setTypedComment("");
   }
+
+  const {} = useMutation({
+    mutationFn: async () => {
+      return await _axios.post("/comment");
+    },
+    onMutate: async () => {},
+  });
 
   return (
     <div className="mt-4 flex gap-4 items-center">

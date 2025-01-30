@@ -1,5 +1,6 @@
 import { validateToken } from "@/lib/utils";
 import Elysia from "elysia";
+import { commentsController } from "./(feed)/comment-controller";
 import { draftsController } from "./(feed)/drafts-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
@@ -52,4 +53,5 @@ export const userrouter = new Elysia({
     }
   })
   .use(authenticatedPostController)
-  .use(draftsController);
+  .use(draftsController)
+  .use(commentsController);
