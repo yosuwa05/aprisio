@@ -102,7 +102,6 @@ export default function Postcard({ post }: { post: IPostCard }) {
         toast("An error occurred while liking post");
       }
     },
-    onSettled: () => {},
   });
 
   return (

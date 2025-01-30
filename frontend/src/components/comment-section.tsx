@@ -11,7 +11,7 @@ export default function CommentSection() {
 
       <Input
         placeholder="Write your comment"
-        className="border-none bg-contrastbg"
+        className="border-none bg-contrastbg text-[#828485] placeholder:text-sm"
       />
     </div>
   );

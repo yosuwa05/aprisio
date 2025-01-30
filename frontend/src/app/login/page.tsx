@@ -6,7 +6,7 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/blue-chevron-left.svg";
 import key from "@img/images/key.svg";
-import loginimage from "@img/images/login_img.png";
+import loginimage from "@img/images/login_img.webp";
 import logo from "@img/images/logo.png";
 import mail from "@img/images/mail.png";
 import { useMutation } from "@tanstack/react-query";
@@ -64,7 +64,7 @@ export default function LoginForm({}) {
   return (
     <div className={"h-screen overflow-hidden flex"}>
       <div
-        className="h-full w-[50%] hidden xl:block"
+        className="h-full w-[1300px] hidden xl:block"
         style={{
           backgroundImage: `url(${loginimage.src})`,
           backgroundSize: "cover",
@@ -78,7 +78,8 @@ export default function LoginForm({}) {
           <Image
             src={logo}
             alt="Login Image"
-            className="w-[200px] self-center xl:self-start"
+            className="w-[200px] self-center xl:self-start cursor-pointer"
+            onClick={() => router.push("/")}
           />
 
           <h1 className="text-3xl xl:text-5xl font-semibold mt-4">
