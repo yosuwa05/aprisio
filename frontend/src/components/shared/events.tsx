@@ -101,7 +101,7 @@ export default function Events() {
       <div className="block py-8  pb-16 lg:hidden">
         {data.map((item, index) => (
           <div key={index} className="flex pt-8 justify-center">
-            <div className="relative h-96 w-[90%] rounded-2xl overflow-hidden">
+            <div className="relative h-96 w-[90%] max-w-[400px] rounded-2xl overflow-hidden">
               <Image
                 src={item.src}
                 alt={item.title}

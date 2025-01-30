@@ -1,0 +1,209 @@
+/* Hero.css */
+.hero-title {
+  font-size: 72px;
+  line-height: 1.5;
+}
+
+.hero-subtitle {
+  font-size: 60px;
+  line-height: 1.2;
+}
+
+.hero-description {
+  font-size: 24px;
+  line-height: 2;
+}
+
+/* 4K and Large Screens */
+@media screen and (min-width: 2560px) {
+  .hero-title {
+    font-size: 96px;
+  }
+  
+  .hero-subtitle {
+    font-size: 80px;
+  }
+  
+  .hero-description {
+    font-size: 32px;
+  }
+}
+
+/* Desktop Large */
+@media screen and (max-width: 1920px) {
+  .hero-title {
+    font-size: 72px;
+  }
+  
+  .hero-subtitle {
+    font-size: 60px;
+  }
+  
+  .hero-description {
+    font-size: 24px;
+  }
+}
+
+/* Desktop Medium */
+@media screen and (max-width: 1680px) {
+  .hero-title {
+    font-size: 64px;
+  }
+  
+  .hero-subtitle {
+    font-size: 52px;
+  }
+  
+  .hero-description {
+    font-size: 22px;
+  }
+}
+
+/* Desktop Small */
+@media screen and (max-width: 1440px) {
+  .hero-title {
+    font-size: 56px;
+  }
+  
+  .hero-subtitle {
+    font-size: 48px;
+  }
+  
+  .hero-description {
+    font-size: 20px;
+  }
+}
+
+/* Laptop Large */
+@media screen and (max-width: 1366px) {
+  .hero-title {
+    font-size: 48px;
+  }
+  
+  .hero-subtitle {
+    font-size: 40px;
+  }
+  
+  .hero-description {
+    font-size: 18px;
+  }
+}
+
+/* Laptop */
+@media screen and (max-width: 1024px) {
+  .hero-title {
+    font-size: 40px;
+  }
+  
+  .hero-subtitle {
+    font-size: 36px;
+  }
+  
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .join-button {
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+  }
+}
+
+/* Tablet */
+@media screen and (max-width: 768px) {
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 32px;
+  }
+  
+  .hero-description {
+    font-size: 16px;
+    line-height: 1.8;
+  }
+}
+
+/* Mobile Large */
+@media screen and (max-width: 425px) {
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .hero-subtitle {
+    font-size: 24px;
+  }
+  
+  .hero-description {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .join-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Mobile Medium */
+@media screen and (max-width: 375px) {
+  .hero-title {
+    font-size: 24px;
+  }
+  
+  .hero-subtitle {
+    font-size: 22px;
+  }
+  
+  .hero-description {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+/* Mobile Small */
+@media screen and (max-width: 320px) {
+  .hero-title {
+    font-size: 22px;
+  }
+  
+  .hero-subtitle {
+    font-size: 20px;
+  }
+  
+  .hero-description {
+    font-size: 13px;
+  }
+
+  .join-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* For retina and high DPI displays */
+@media screen and (min-resolution: 192dpi), 
+       screen and (min-resolution: 2dppx) {
+  .hero-title,
+  .hero-subtitle,
+  .hero-description {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* For zoomed views */
+@media screen and (max-width: 1024px) and (min-resolution: 192dpi) {
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 32px;
+  }
+  
+  .hero-description {
+    font-size: 15px;
+  }
+}

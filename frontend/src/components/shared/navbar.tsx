@@ -59,7 +59,7 @@ export default function NavBar() {
 
   return (
     <nav
-      className={`fixed top-0 z-50 w-full transition-all duration-300 bg-[#F2F5F6]`}
+      className={`sticky top-0 z-50 w-full transition-all duration-300 bg-[#F2F5F6]`}
     >
       <div className={`flex justify-between items-center ${padding} px-5`}>
         <Link href="/" passHref>

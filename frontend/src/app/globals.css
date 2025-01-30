@@ -8,6 +8,14 @@ body {
 .scrollbar::-webkit-scrollbar {
   display: none;
 }
+@media (min-width: 1024px) and (max-width: 1280px) {
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -118,3 +126,4 @@ body {
 .swiper-pagination {
   margin-top: 20px;
 }
+

@@ -90,7 +90,7 @@ export default function About() {
   };
 
   return (
-    <section className="bg-[#6F7E5F] relative">
+    <section className="bg-[#6F7E5F]">
       <div className="flex flex-col gap-16 lg:px-14 px-5 lg:pt-20 pt-6">
         <div className="flex lg:flex-row flex-col gap-4 lg:gap-0 justify-between">
           <div className="lg:w-1/2 w-full">

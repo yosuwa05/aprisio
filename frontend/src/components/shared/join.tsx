@@ -98,7 +98,7 @@ export default function Join() {
       </div>
 
       {/* Text Content - Fixed font sizes */}
-      <div className="text-white absolute flex md:justify-start justify-center lg:top-16 top-10 xl:left-16 lg:left-9 lg:px-10 px-4">
+      <div className="text-white absolute flex lg:justify-start justify-center lg:top-16 top-10 xl:left-16 lg:left-9 lg:px-10 px-4">
         <h1 
           className="font-roboto lg:text-left text-center"
           style={{
@@ -118,14 +118,7 @@ export default function Join() {
       <div className="absolute inset-0 flex xl:top-52 lg:top-44 xl:left-24 lg:left-14 md:-top-[40%] -top-0 items-center justify-center lg:justify-start">
         <Link href={"/join-community"}>
           <span 
-            className="flex font-mulish font-bold bg-[#F0B73F] hover:bg-[#f8cd71] hover:border-[#eba50d] hover:border-[5px] rounded-full justify-center items-center gap-5 transition-all duration-300"
-            style={{
-              fontSize: isZoomedOut ? 'lg:28px' : 'lg:20px', // Fixed font sizes
-              padding: isZoomedOut
-                ? '14px 20px'  // Smaller padding when zoomed out
-                : '16px 24px', // Normal padding
-              transform: `scale(${isZoomedOut ? 0.95 : 1})`
-            }}
+            className="flex font-mulish lg:px-6 px-4 py-3 lg:py-4 xl:text-2xl lg:text-xl  text-lg font-bold bg-[#F0B73F] hover:bg-[#f8cd71] hover:border-[#eba50d] hover:border-[5px] rounded-full justify-center items-center gap-5 transition-all duration-300"
           >
             Join the Community
             <span className="text-white bg-[#00000029] rounded-full p-1">

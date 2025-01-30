@@ -10,6 +10,7 @@ import Hero from "../components/shared/hero";
 import Join from "../components/shared/join";
 import NavBar from "../components/shared/navbar";
 import Testimonial from "../components/shared/testimonials";
+import Hero1 from "@/components/shared/hero1";
 
 export default function Home() {
 
@@ -17,11 +18,10 @@ export default function Home() {
     <>
       <NavBar />
       <ToastContainer />
-      <section id="home" className="">
-        <div className="" >
+      {/* <section id="home" className="">
           <Hero />
-        </div>
-      </section>
+      </section> */}
+      <Hero1/>
 
       <FAQ1 />
       <FAQ2 />

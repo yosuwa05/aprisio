@@ -7,7 +7,7 @@ import { z } from "zod";
 import eyeclose from "../../../public/icons/eye-close.svg";
 import eye from "../../../public/icons/eye.svg";
 import key from "../../../public/images/key.svg";
-import location from "../../../public/images/location-icon.png";
+// import location from "../../../public/images/location-icon.png";
 import mail from "../../../public/images/mail-icon.png";
 import mobile from "../../../public/images/phone-icon.png";
 import user from "../../../public/images/user-icon.png";
@@ -332,7 +332,7 @@ const JoinCommunityForm = () => {
       <ToastContainer />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-14"
+        className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-5"
       >
         {/* Name Input */}
         <div className="relative">
@@ -345,7 +345,7 @@ const JoinCommunityForm = () => {
             {...register("name")}
             type="text"
             // onChange={(e) => handleInputChange("name", e.target.value)}
-            placeholder="Name *"
+            placeholder="Name"
             className={`w-full lg:text-xl text-sm lg:pl-20 pl-10 pr-3 py-2 lg:h-20 h-[60px] border ${
               errors.name ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 `}
@@ -366,7 +366,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("email")}
             type="email"
-            placeholder="Email *"
+            placeholder="Email"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.email ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -421,7 +421,7 @@ const JoinCommunityForm = () => {
             {...register("mobile")}
             // onChange={(e) => handleInputChange("mobile", e.target.value)}
             type="text"
-            placeholder="Mobile *"
+            placeholder="Mobile"
             inputMode="numeric"
             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
               e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
@@ -454,7 +454,7 @@ const JoinCommunityForm = () => {
         </div>
 
         {/* Address Input */}
-        <div className="relative">
+        {/* <div className="relative">
           <Image
             src={location}
             alt="Location"
@@ -474,7 +474,7 @@ const JoinCommunityForm = () => {
               {errors.address.message?.toString()}
             </p>
           )}
-        </div>
+        </div> */}
 
         <div className="relative">
           <Image
@@ -485,7 +485,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("password")}
             type={passwordsVisible.password ? "password" : "text"}
-            placeholder="Create Password *"
+            placeholder="Create Password"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.password ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -518,7 +518,7 @@ const JoinCommunityForm = () => {
           <input
             {...register("confirmPassword")}
             type={passwordsVisible.confirmPassword ? "password" : "text"}
-            placeholder="Confirm Password *"
+            placeholder="Confirm Password"
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.confirmPassword ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -541,6 +541,10 @@ const JoinCommunityForm = () => {
             </p>
           )}
         </div>
+
+        <p className="lg:col-span-2 text-[#043A53]">
+    *All fields are mandatory
+  </p>
 
         {/* Terms & Conditions */}
         <div className="mt-10 lg:flex lg:col-span-2 md:justify-between ">
@@ -607,6 +611,7 @@ const JoinCommunityForm = () => {
             </button>
           </div>
         </div>
+      
       </form>
     </>
   );
