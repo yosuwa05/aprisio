@@ -5,7 +5,9 @@
 body {
   font-family: "Open Sans", Helvetica, sans-serif;
 }
-
+.scrollbar::-webkit-scrollbar {
+  display: none;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
