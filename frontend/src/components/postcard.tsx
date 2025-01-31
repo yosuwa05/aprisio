@@ -188,12 +188,16 @@ export default function Postcard({ post }: { post: IPostCard }) {
             <p>Share</p>
           </div>
         </div>
-        <p
-          className="text-sm lg:text-sm text-contrasttext cursor-pointer"
-          onClick={() => setViewAllReplies(!viewAllReplies)}
-        >
-          View All Replies
-        </p>
+        {post.commentCount && post.commentCount > 0 ? (
+          <p
+            className="text-sm lg:text-sm text-contrasttext cursor-pointer"
+            onClick={() => setViewAllReplies(!viewAllReplies)}
+          >
+            View All Replies
+          </p>
+        ) : (
+          ""
+        )}
       </div>
 
       <div>

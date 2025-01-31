@@ -11,9 +11,11 @@ export const commentsNoAuthController = new Elysia({
 }).get(
   "/",
   async ({ query }) => {
-    const { postId, userId } = query;
+    let { postId, userId } = query;
 
     try {
+      if (!userId) userId = null;
+
       const comments = await CommentModel.aggregate([
         { $match: { post: new Types.ObjectId(postId) } },
         { $sort: { createdAt: -1 } },
@@ -27,11 +29,44 @@ export const commentsNoAuthController = new Elysia({
         },
         { $unwind: "$user" },
         {
+          $lookup: {
+            from: "comments",
+            localField: "parentComment",
+            foreignField: "_id",
+            as: "parentComment",
+          },
+        },
+        {
+          $unwind: { path: "$parentComment", preserveNullAndEmptyArrays: true },
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "parentComment.user",
+            foreignField: "_id",
+            as: "parentComment.user",
+          },
+        },
+        {
+          $unwind: {
+            path: "$parentComment.user",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
           $project: {
             _id: 1,
             user: { name: 1 },
             content: 1,
-            parentComment: 1,
+            parentComment: {
+              _id: 1,
+              user: { name: 1 },
+              content: 1,
+              likesCount: 1,
+              likedBy: 1,
+              createdAt: 1,
+              updatedAt: 1,
+            },
             likesCount: 1,
             likedBy: 1,
             createdAt: 1,
