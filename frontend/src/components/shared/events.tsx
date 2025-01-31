@@ -77,6 +77,7 @@ export default function Events() {
             <SwiperSlide key={index}>
               <div className="relative rounded-2xl overflow-hidden">
                 <Image
+                 loading="eager"
                   src={item.src}
                   alt={item.title}
                   className="h-[450px] w-full object-cover rounded-2xl"

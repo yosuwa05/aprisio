@@ -53,6 +53,7 @@ const formSchema = z
       .string()
       .regex(/^\d+$/, "Please enter a valid number")
       .length(10, "Mobile number must be exactly 10 digits"),
+    // address: z.string().optional(),
     terms: z
       .boolean()
       .refine((val) => val === true, "You must accept terms and conditions"),
@@ -245,6 +246,7 @@ const JoinCommunityForm = () => {
     //     toast.error("Please verify your email before submitting.");
     //     return;
     // }
+    console.log("Submitting:", data);
     setIsLoading(true);
     try {
       const response = await _axios.post("/form/submit", data);
@@ -254,7 +256,7 @@ const JoinCommunityForm = () => {
         localStorage.removeItem("aprisioEmail");
         localStorage.removeItem("verified");
         localStorage.removeItem("name");
-        localStorage.removeItem("address");
+        // localStorage.removeItem("address");
         localStorage.removeItem("mobile");
         reset();
 
@@ -275,6 +277,9 @@ const JoinCommunityForm = () => {
       }
     }
   };
+  useEffect(() => {
+    console.log("Form errors:", errors);
+  }, [errors]);
 
   return (
     <>

@@ -33,6 +33,7 @@ export default function Join() {
       {/* Background images remain the same */}
       <div className="relative hidden lg:block">
         <Image
+         loading="eager"
           src={joinBg}
           className="w-full h-[560px]"
           alt="Large Screen Image"
@@ -65,6 +66,7 @@ export default function Join() {
       {/* Medium Screen */}
       <div className="relative hidden md:block lg:hidden">
         <Image
+         loading="eager"
           src={joinTab}
           className="w-full h-[780px]"
           alt="Medium Screen Image"
@@ -74,6 +76,7 @@ export default function Join() {
       {/* Small Screen */}
       <div className="relative block md:hidden">
         <Image
+         loading="eager"
           src={joinSmall}
           className="w-full h-[680px]"
           alt="Small Screen Image"
@@ -83,6 +86,7 @@ export default function Join() {
       {/* Retirement Images */}
       <div className="absolute bottom-0 h-full lg:flex items-end lg:right-0 hidden">
         <Image
+         loading="eager"
           src={retirement}
           className={`w-full ${isZoomedOut ? 'h-[88%]' : 'h-[90%]'}`}
           alt="Screen Image"
@@ -90,11 +94,11 @@ export default function Join() {
       </div>
 
       <div className="absolute h-[70%] w-full md:flex items-center justify-center bottom-0 hidden lg:hidden">
-        <Image src={retirement_md} className="w-full" alt="md Screen Image" />
+        <Image src={retirement_md}  loading="eager" className="w-full" alt="md Screen Image" />
       </div>
 
       <div className="absolute h-[60%] w-full md:hidden items-center justify-center bottom-0 flex lg:hidden">
-        <Image src={retirement_md} className="w-full" alt="md Screen Image" />
+        <Image src={retirement_md}  loading="eager" className="w-full" alt="md Screen Image" />
       </div>
 
       {/* Text Content - Fixed font sizes */}
