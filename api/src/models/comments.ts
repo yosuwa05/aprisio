@@ -6,6 +6,7 @@ interface IComment {
   content: string;
   parentComment?: Types.ObjectId;
   likesCount: number;
+  likedBy: Types.ObjectId[];
 }
 
 const CommentSchema = new Schema<IComment>(
@@ -19,11 +20,13 @@ const CommentSchema = new Schema<IComment>(
       default: null,
     },
     likesCount: { type: Number, default: 0 },
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );
 
 CommentSchema.index({ post: 1, createdAt: -1 });
 CommentSchema.index({ user: 1 });
+CommentSchema.index({ likedBy: 1 });
 
 export const CommentModel = model<IComment>("Comment", CommentSchema);

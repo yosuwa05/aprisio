@@ -53,7 +53,6 @@ const formSchema = z
       .string()
       .regex(/^\d+$/, "Please enter a valid number")
       .length(10, "Mobile number must be exactly 10 digits"),
-    address: z.string(),
     terms: z
       .boolean()
       .refine((val) => val === true, "You must accept terms and conditions"),
@@ -543,8 +542,8 @@ const JoinCommunityForm = () => {
         </div>
 
         <p className="lg:col-span-2 text-[#043A53]">
-    *All fields are mandatory
-  </p>
+          *All fields are mandatory
+        </p>
 
         {/* Terms & Conditions */}
         <div className="mt-10 lg:flex lg:col-span-2 md:justify-between ">
@@ -611,7 +610,6 @@ const JoinCommunityForm = () => {
             </button>
           </div>
         </div>
-      
       </form>
     </>
   );

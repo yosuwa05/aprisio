@@ -1,55 +1,81 @@
-import { CommentModel, PostModel } from "@/models";
-import { StoreType } from "@/types";
+import { CommentModel } from "@/models";
 import Elysia, { t } from "elysia";
+import { Types } from "mongoose";
 
-export const commentsController = new Elysia({
+export const commentsNoAuthController = new Elysia({
   prefix: "/comment",
   detail: {
-    tags: ["User Comment"],
-    summary: "Post Comments",
+    tags: ["User Comments - Noauth"],
+    summary: "Get Comments",
   },
-}).post(
+}).get(
   "/",
-  async ({ body, set, store }) => {
-    const { postId, content, parentCommentId } = body;
+  async ({ query }) => {
+    const { postId, userId } = query;
 
     try {
-      const userId = (store as StoreType)["id"];
+      const comments = await CommentModel.aggregate([
+        { $match: { post: new Types.ObjectId(postId) } },
+        { $sort: { createdAt: -1 } },
+        {
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "user",
+          },
+        },
+        { $unwind: "$user" },
+        {
+          $project: {
+            _id: 1,
+            user: { name: 1 },
+            content: 1,
+            parentComment: 1,
+            likesCount: 1,
+            likedBy: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            likedByMe: {
+              $cond: {
+                if: { $eq: [userId, null] },
+                then: false,
+                else: {
+                  $in: [
+                    new Types.ObjectId(userId),
+                    { $ifNull: ["$likedBy", []] },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      ]);
 
-      const newComment = new CommentModel({
-        user: userId,
-        post: postId,
-        content,
-        parentComment: parentCommentId || null,
-      });
-
-      await newComment.save();
-
-      await PostModel.findByIdAndUpdate(postId, {
-        $inc: { commentsCount: 1 },
-      });
-
-      set.status = 201;
       return {
-        message: "Comment added successfully",
+        comments,
         ok: true,
-        comment: newComment,
       };
-    } catch (error: any) {
-      console.error("Error adding comment:", error);
-      set.status = 500;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
       return {
-        message: "An error occurred while adding the comment.",
+        message: "An error occurred while fetching comments.",
         ok: false,
       };
     }
   },
   {
-    body: t.Object({
+    query: t.Object({
       postId: t.String(),
-      content: t.String(),
-      parentCommentId: t.Optional(t.String()),
+      userId: t.Optional(
+        t.Any({
+          default: null,
+        })
+      ),
     }),
-    detail: { description: "Add a comment", summary: "Add a comment" },
+    detail: {
+      description: "Get comments for a post",
+      summary: "Get comments for a post",
+    },
   }
 );

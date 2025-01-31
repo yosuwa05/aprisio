@@ -13,7 +13,9 @@ export const subtopicController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { subTopicName, topic, description } = body;
+      let { subTopicName, topic, description } = body;
+
+      topic = topic.split(" -&- ")[0];
 
       try {
         const existing = await SubTopicModel.findOne({
@@ -117,9 +119,11 @@ export const subtopicController = new Elysia({
   )
   .put(
     "/:id",
-    async ({ body, set, store, params }) => {
-      const { subTopicName, topic, description } = body;
+    async ({ body, set, params }) => {
+      let { subTopicName, topic, description } = body;
       const { id } = params;
+
+      topic = topic.split(" -&- ")[0];
 
       try {
         const subtopic = await SubTopicModel.findById(id);
@@ -139,6 +143,7 @@ export const subtopicController = new Elysia({
         set.status = 200;
         return { message: "SubTopic updated successfully", ok: true };
       } catch (error: any) {
+        console.error(error);
         set.status = 500;
         return {
           message: "An internal error occurred while updating subtopic.",

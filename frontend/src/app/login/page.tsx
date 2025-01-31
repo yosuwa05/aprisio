@@ -150,8 +150,8 @@ export default function LoginForm({}) {
                 className="rounded-full py-[30px] w-[130px] bg-contrasttext text-white flex justify-between font-semibold shadow-none text-sm lg:text-sm hover:bg-contrasttext"
                 type="submit"
               >
-                {isPending ? "..." : "Submit"}
-                <Image src={chevronleft} alt="chevron-left" />
+                {isPending ? "Submitting..." : "Submit"}
+                {!isPending && <Image src={chevronleft} alt="chevron-left" />}
               </Button>
             </div>
 
