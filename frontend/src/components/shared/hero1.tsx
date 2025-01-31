@@ -10,11 +10,11 @@ import heroboy from "../../../public/images/hero-boy.png";
 import herogirl from "../../../public/images/hero-girl.png";
 function Hero1() {
     return (
-        <main className="relative mb-10">
+        <main className="relative  mb-10">
             <section className=' flex flex-col gap-14'>
-                <div className='flex mt-14  flex-col justify-center  xl:gap-8 lg:gap-8 md:gap-8 gap-5 items-center'>
-                    <h1 className=' xl:text-7xl w-[90%] z-10 leading-normal text-center lg:text-5xl md:text-5xl text-3xl font-semibold text-[#353535]'>
-                        Your Carrer May Be Behind You
+                <div className='flex 2xl:mt-24 xl:mt-20 mt-14 flex-col justify-center 2xl:gap-20 xl:gap-8 lg:gap-8 md:gap-8 gap-5 items-center'>
+                    <h1 className='2xl:text-7xl xl:text-7xl w-[90%] z-10 leading-normal text-center lg:text-5xl md:text-5xl text-3xl font-semibold text-[#353535]'>
+                        Your Career May Be Behind You
                     </h1>
                     <h2 className='xl:text-6xl w-[90%] z-10 leading-normal text-center lg:text-4xl md:text-4xl text-2xl font-semibold text-[#353535]'>
                         Your Best Days are Ahead of You
@@ -38,65 +38,71 @@ function Hero1() {
                         </button>
                     </Link>
                 </div>
-                <div className={` xl:ml-16 lg:ml-12  md:mt-20 mt-10 flex lg:flex-row flex-col items-center`}>
+                <div className={` xl:ml-16 lg:ml-12 lg:mt-2 xl:mt-20 md:mt-20 mt-10 flex lg:flex-row flex-col items-center`}>
                     <Image
                         src={avatar}
                         alt=""
-                        className="xl:h-[5.7rem] xl:w-60  lg:w-44 lg:h-16 w-[10.6rem] h-16"
+                        loading="eager"
+                        className="xl:h-[5.7rem] xl:w-60 lg:w-44 lg:h-16 w-[10.6rem] h-16"
                     />
                     <div className="flex mt-5 lg:mt-0 justify-center md:items-start lg:justify-start items-center">
-                        <p className="text-[#353535CC]  lg:pl-3 xl:w-[80%] xl:text-3xl lg:text-2xl text-xl lg:w-[80%] lg:leading-relaxed lg:text-left text-center font-sans" >
+                        <p className="text-[#353535CC] lg:pl-3 xl:w-[80%] xl:text-3xl lg:text-2xl text-xl lg:w-[80%] lg:leading-relaxed lg:text-left text-center font-sans" >
                             Thousands of post career people are joining Aprisio
                         </p>
                     </div>
                 </div>
             </section>
             <div className="absolute lg:right-[2%] lg:top-[10%] top-[55%] right-3">
-            <Image
-              src={hearts}
-              alt="hearts"
-              style={{
-                width: "clamp(40px, 8vw, 72px)",
-                height: "clamp(80px, 16vw, 128px)",
-              }}
-              className="object-contain"
-            />
-          </div>
-          <div className="absolute lg:block hidden left-[4%] top-[20%]">
-            <Image
-              src={heroboy}
-              alt="hero2"
-              style={{
-                width: "clamp(40px, 8vw, 76px)",
-                height: "clamp(80px, 16vw, 112px)",
-              }}
-              className="object-contain"
-            />
-          </div>
-          <div className="absolute lg:block hidden left-[15%] top-[52%] ">
-            <Image
-              src={herogirl}
-              alt="hero3"
-              style={{
-                width: "clamp(40px, 8vw, 86px)",
-                height: "clamp(80px, 16vw, 128px)",
-              }}
-              className="object-contain"
-            />
-          </div>
+                <Image
+                    src={hearts}
+                    loading="eager"
+                    alt="hearts"
+                    style={{
+                        width: "clamp(40px, 8vw, 72px)",
+                        height: "clamp(80px, 16vw, 128px)",
+                    }}
+                    className="object-contain"
+                />
+            </div>
+            <div className="absolute lg:block hidden left-[4%] top-[20%]">
+                <Image
+                    src={heroboy}
+                    alt="hero2"
+                    loading="eager"
+                    style={{
+                        width: "clamp(40px, 8vw, 76px)",
+                        height: "clamp(80px, 16vw, 112px)",
+                    }}
+                    className="object-contain"
+                />
+            </div>
+            <div className="absolute lg:block hidden left-[15%] top-[52%] ">
+                <Image
+                    src={herogirl}
+                    alt="hero3"
+                    loading="eager"
+                    style={{
+                        width: "clamp(40px, 8vw, 86px)",
+                        height: "clamp(80px, 16vw, 128px)",
+                    }}
+                    className="object-contain"
+                />
+            </div>
 
-            <div className="absolute z-1 hidden 3xl:hidden lg:block  right-0 bottom-0">
-  <div className="flex justify-end">
-    <Image
-      src={hero}
-      priority
-      alt="hero"
-      className="xl:h-[80%] xl:w-[80%] lg:h-[70%] lg:w-[70%] "
-    />
-  </div>
-</div>
+            <div className="absolute z-1 hidden 3xl:hidden lg:block right-0 bottom-0">
+                <div className="flex justify-end">
+                    <Image
+                        src={hero}
+                        loading="eager"
+                        priority
+                        alt="hero"
+                        className=" 2xl:w-full xl:w-[85%] lg:w-[70%] "
+                    />
+                </div>
+            </div>
         </main>
     )
 }
 
 export default Hero1
+

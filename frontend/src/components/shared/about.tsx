@@ -124,7 +124,7 @@ export default function About() {
                 <video
                   className="w-full h-full object-cover rounded-t-2xl"
                   ref={videoRef}
-                  preload="auto"
+                  preload="metadata"
                   loop
                   playsInline
                   muted={isMuted}

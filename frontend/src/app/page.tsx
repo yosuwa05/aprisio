@@ -21,8 +21,9 @@ export default function Home() {
       {/* <section id="home" className="">
           <Hero />
       </section> */}
+       <section id="home" className="">
       <Hero1/>
-
+      </section>
       <FAQ1 />
       <FAQ2 />
       <div id="about">

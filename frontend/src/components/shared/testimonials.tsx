@@ -73,7 +73,7 @@ export default function Testimonial() {
                   <hr className="bg-[#E9E9E9]  h-0.5 w-full" />
                   <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center ">
                     {/* Fixed size for the image */}
-                    <div className="w-[25%] ">
+                    <div className="">
                       <Image
                         src={testimonial.clientImage}
                         alt="client"

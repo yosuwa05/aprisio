@@ -28,7 +28,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative bg-red-50 md:bg-blue-200 lg:bg-yellow-500 xl:bg-green-500 scrollbar overflow-x-hidden lg:pt-24 pt-28 xl:pt-0 px-2  md:h-[100vh] h-[85vh] lg:px-0 mb-14 lg:mb-0">
+    <section className="relative bg-red-50 md:bg-blue-200 lg:bg-yellow-500 xl:bg-green-500 scrollbar overflow-x-hidden lg:pt-24 pt-28 xl:pt-0 px-2   md:h-[100vh] h-[85vh] lg:px-0 mb-14 lg:mb-0">
     <div>
   <div className="absolute top-0">
     <div className={`flex flex-col ${isZoomedOut?'pt-20':'pt-10'}  md:h-screen  justify-start items-center `}>
