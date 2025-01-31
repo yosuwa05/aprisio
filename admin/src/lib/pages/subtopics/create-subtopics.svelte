@@ -61,7 +61,7 @@
 			async onSubmit({}) {
 				let _data: CreateTopicsData = {
 					subTopicName: $form.subTopicName,
-					topic: $form.topic.split(' -&- ')[0],
+					topic: $form.topic,
 					description: $form.description
 				};
 
@@ -80,6 +80,10 @@
 			$form.subTopicName = $subTopicsStore.topicName;
 			$form.topic = $subTopicsStore.topic;
 			$form.description = $subTopicsStore.description;
+		} else {
+			$form.subTopicName = '';
+			$form.topic = '';
+			$form.description = '';
 		}
 	});
 </script>

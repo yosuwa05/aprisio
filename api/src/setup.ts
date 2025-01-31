@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import { baseRouter } from "./controllers";
 
 const app = new Elysia();
+
 app.use(cors());
 
 const URL = process.env.DB_URL;
@@ -53,27 +54,6 @@ app.use(
     },
   })
 );
-
-// let fileContent = await Bun.file("test.txt").text();
-
-// let content = fileContent.split("\n");
-
-// content = content
-//   .map((item) => {
-//     return item.trim();
-//   })
-//   .filter((item) => {
-//     return item.length > 0;
-//   });
-
-// for (let i of content) {
-//   const newTopic = new TopicModel({
-//     topicName: i,
-//   });
-
-//   console.log(newTopic);
-//   await newTopic.save();
-// }
 
 app.onError(({ code, error }) => {
   if (code === "VALIDATION") {

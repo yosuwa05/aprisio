@@ -1,12 +1,13 @@
 import { validateToken } from "@/lib/utils";
 import Elysia from "elysia";
-import { commentsController } from "./(feed)/comment-controller";
+import { commentsController } from "./(feed)/comment-auth-controller";
 import { draftsController } from "./(feed)/drafts-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
 import { authController } from "./auth-controller";
 import { formController } from "./form-controller";
 import { verifyController } from "./verify-controller";
+import { commentsNoAuthController } from "./(feed)/comment-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -17,6 +18,7 @@ export const userrouter = new Elysia({
   .use(formController)
   .use(authController)
   .use(postController)
+  .use(commentsNoAuthController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 

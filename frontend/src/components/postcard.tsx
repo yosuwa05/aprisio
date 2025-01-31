@@ -1,9 +1,13 @@
+"use client";
+
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
+import { formatDate } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Heart } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import CommentSection from "./comment-section";
@@ -21,30 +25,9 @@ interface IPostCard {
   image?: string;
 }
 
-function formatDate(date: string) {
-  const now = new Date();
-  const givenDate = new Date(date);
-  const diffInSeconds = Math.floor(
-    (now.getTime() - givenDate.getTime()) / 1000
-  );
-
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-
-  if (diffInSeconds < 60) {
-    return rtf.format(-diffInSeconds, "seconds");
-  } else if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60);
-    return rtf.format(-minutes, "minutes");
-  } else if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600);
-    return rtf.format(-hours, "hours");
-  } else {
-    const days = Math.floor(diffInSeconds / 86400);
-    return rtf.format(-days, "days");
-  }
-}
-
 export default function Postcard({ post }: { post: IPostCard }) {
+  const [viewAllReplies, setViewAllReplies] = useState(false);
+
   const queryClient = useQueryClient();
 
   const user = useGlobalAuthStore((state) => state.user);
@@ -103,7 +86,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
   return (
     <div
-      className="p-4 lg:px-8 w-full rounded-lg"
+      className="p-4 lg:px-8 w-full rounded-lg transition-all"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}
@@ -167,7 +150,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <div className="flex gap-2 lg:gap-6 justify-between">
+        <div className="flex gap-2 lg:gap-3 justify-between">
           <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
             <Heart
               className="h-5 w-5 cursor-pointer"
@@ -205,11 +188,16 @@ export default function Postcard({ post }: { post: IPostCard }) {
             <p>Share</p>
           </div>
         </div>
-        <p className="text-sm lg:text-md text-contrasttext">View All Replies</p>
+        <p
+          className="text-sm lg:text-sm text-contrasttext cursor-pointer"
+          onClick={() => setViewAllReplies(!viewAllReplies)}
+        >
+          View All Replies
+        </p>
       </div>
 
       <div>
-        <CommentSection />
+        <CommentSection postId={post.id} viewAllReplies={viewAllReplies} />
       </div>
     </div>
   );

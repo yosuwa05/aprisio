@@ -118,7 +118,7 @@
 					<Table.Row>
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
 						<Table.Cell>{topic.subTopicName}</Table.Cell>
-						<Table.Cell>{topic.topic.topicName}</Table.Cell>
+						<Table.Cell>{topic.topic?.topicName ?? '-'}</Table.Cell>
 						<Table.Cell class="flex items-center"
 							>{formatDate(new Date(topic.createdAt))}</Table.Cell
 						>
@@ -140,9 +140,9 @@
 									$subTopicsStore = {
 										id: topic._id,
 										mode: 'create',
-										topicName: topic.topicName,
+										topicName: topic.subTopicName,
 										description: topic.description,
-										topic: topic.topic.topicName
+										topic: `${topic.topic._id} -&- ${topic.topic.topicName}`
 									};
 								}}
 							>

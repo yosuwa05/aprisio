@@ -57,6 +57,8 @@
 	$effect(() => {
 		if (edit) {
 			$form.topicName = $topicsStore.topicName;
+		} else {
+			$form.topicName = '';
 		}
 	});
 </script>

@@ -547,8 +547,8 @@ const JoinCommunityForm = () => {
         </div>
 
         <p className="lg:col-span-2 text-[#043A53]">
-    *All fields are mandatory
-  </p>
+          *All fields are mandatory
+        </p>
 
         {/* Terms & Conditions */}
         <div className="mt-10 lg:flex lg:col-span-2 md:justify-between ">
@@ -615,7 +615,6 @@ const JoinCommunityForm = () => {
             </button>
           </div>
         </div>
-      
       </form>
     </>
   );

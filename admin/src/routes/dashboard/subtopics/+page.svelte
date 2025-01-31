@@ -2,8 +2,8 @@
 	import { goto } from '$app/navigation';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import CreateSubtopics from '$lib/pages/subtopics/create-subtopics.svelte';
+	import { subTopicsStore } from '$lib/pages/subtopics/subtopics-store';
 	import SubtopicsTable from '$lib/pages/subtopics/subtopics-table.svelte';
-	import { topicsStore } from '$lib/pages/topics/topics-store';
 	import Icon from '@iconify/svelte';
 </script>
 
@@ -13,14 +13,16 @@
 </svelte:head>
 
 <Tabs.Root
-	value={$topicsStore.mode}
+	value={$subTopicsStore.mode}
 	class="w-full p-4"
 	onValueChange={(value) => {
 		goto(`/admin/dashboard/subtopics?mode=${value}`);
-		$topicsStore = {
+		$subTopicsStore = {
 			mode: value,
 			id: '',
-			topicName: ''
+			topicName: '',
+			description: '',
+			topic: ''
 		};
 	}}
 >
