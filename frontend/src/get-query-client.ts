@@ -9,7 +9,9 @@ function makeQueryClient() {
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
+        refetchOnWindowFocus: false,
       },
+
       dehydrate: {
         shouldDehydrateQuery: (query) =>
           defaultShouldDehydrateQuery(query) ||

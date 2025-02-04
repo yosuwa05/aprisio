@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 type Props = {
   postId: string;
   viewAllReplies?: boolean;
+  setViewAllReplies?: any;
 };
 
 type IComment = {
@@ -25,7 +26,11 @@ type ICommentLike = {
   commentId: string;
 };
 
-export default function CommentSection({ postId, viewAllReplies }: Props) {
+export default function CommentSection({
+  postId,
+  viewAllReplies,
+  setViewAllReplies,
+}: Props) {
   const [typedComment, setTypedComment] = useState("");
 
   const user = useGlobalAuthStore((state) => state.user);
@@ -45,6 +50,7 @@ export default function CommentSection({ postId, viewAllReplies }: Props) {
       if (!data.data.ok) return toast.error(data.data.message);
 
       toast.success("Comment added");
+      setViewAllReplies(!viewAllReplies);
       queryClient.invalidateQueries({
         queryKey: ["comments", viewAllReplies, postId, user?.id],
       });
@@ -65,14 +71,14 @@ export default function CommentSection({ postId, viewAllReplies }: Props) {
   return (
     <div>
       <div className="mt-4 flex gap-4 items-center">
-        <Avatar className="h-11 w-11">
+        <Avatar className="h-8 w-8">
           <AvatarImage src="/assets/person.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
         <Input
           placeholder="Write your comment"
-          className="border-none bg-contrastbg text-[#828485] placeholder:text-sm"
+          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

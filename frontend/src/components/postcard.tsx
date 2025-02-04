@@ -4,8 +4,8 @@ import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { formatDate } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Heart } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -93,13 +93,13 @@ export default function Postcard({ post }: { post: IPostCard }) {
     >
       <div className="flex items-center gap-2 justify-between">
         <div className="flex gap-2">
-          <Avatar>
+          <Avatar className="h-9 w-9">
             <AvatarImage src="/assets/person.png" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
 
           <div className="self-end">
-            <h3 className="text-textcol font-semibold text-sm">
+            <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
             <p className="text-[#043A53] text-xs font-medium">300+ Members</p>
@@ -120,7 +120,12 @@ export default function Postcard({ post }: { post: IPostCard }) {
 
         {post.url && (
           <p className="font-normal mt-2 text-sky-500">
-            <a href={post.url} target="_blank" rel="noreferrer">
+            <a
+              href={post.url}
+              target="_blank"
+              rel="noreferrer"
+              className="break-words"
+            >
               {post.url}
             </a>
           </p>
@@ -150,11 +155,11 @@ export default function Postcard({ post }: { post: IPostCard }) {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <div className="flex gap-2 lg:gap-3 justify-between">
-          <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
-            <Heart
-              className="h-5 w-5 cursor-pointer"
-              fill={post.likedByMe ? "red" : "white"}
+        <div className="flex gap-2 lg:gap-3 justify-between items-center">
+          <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200">
+            <Icon
+              icon={post.likedByMe ? "mage:heart-fill" : "mage:heart"}
+              className="h-4 w-4 lg:h-5 lg:w-5 cursor-pointer"
               color={post.likedByMe ? "red" : "black"}
               onClick={() => {
                 if (isPending) return;
@@ -165,43 +170,37 @@ export default function Postcard({ post }: { post: IPostCard }) {
                 mutate();
               }}
             />
-            <p>{post.likeCount ?? 0}</p>
+
+            <p className="text-xs lg:text-sm">{post.likeCount ?? 0}</p>
           </div>
-          <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
-            <Image
-              width={20}
-              height={20}
-              className="h-5 w-5"
-              src="/assets/message.svg"
-              alt=""
-            />
-            <p>{post.commentCount ?? 0}</p>
-          </div>
-          <div className="flex gap-1 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
-            <Image
-              className="h-5 w-5"
-              width={20}
-              height={20}
-              src="/assets/share.svg"
-              alt=""
-            />
-            <p>Share</p>
-          </div>
-        </div>
-        {post.commentCount && post.commentCount > 0 ? (
-          <p
-            className="text-sm lg:text-sm text-contrasttext cursor-pointer"
+          <div
+            className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200  cursor-pointer"
             onClick={() => setViewAllReplies(!viewAllReplies)}
           >
-            View All Replies
-          </p>
-        ) : (
-          ""
-        )}
+            <Icon
+              className="h-4 w-4 lg:h-5 lg:w-5"
+              icon="basil:comment-outline"
+              color="black"
+            />
+            <p className="text-xs lg:text-sm">{post.commentCount ?? 0}</p>
+          </div>
+          <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200">
+            <Icon
+              icon="uil:share"
+              color="black"
+              className="h-4 w-4 lg:h-5 lg:w-5 cursor-pointer"
+            />
+            <p className="text-xs lg:text-xs font-bold">{"Share"}</p>
+          </div>
+        </div>
       </div>
 
       <div>
-        <CommentSection postId={post.id} viewAllReplies={viewAllReplies} />
+        <CommentSection
+          postId={post.id}
+          viewAllReplies={viewAllReplies}
+          setViewAllReplies={setViewAllReplies}
+        />
       </div>
     </div>
   );

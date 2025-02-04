@@ -1,13 +1,14 @@
 import { validateToken } from "@/lib/utils";
 import Elysia from "elysia";
+import { validatorController } from "./(auth)/validate-controller";
 import { commentsController } from "./(feed)/comment-auth-controller";
+import { commentsNoAuthController } from "./(feed)/comment-controller";
 import { draftsController } from "./(feed)/drafts-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
 import { authController } from "./auth-controller";
 import { formController } from "./form-controller";
 import { verifyController } from "./verify-controller";
-import { commentsNoAuthController } from "./(feed)/comment-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -54,6 +55,7 @@ export const userrouter = new Elysia({
       return { message: "Unauthorized" };
     }
   })
+  .use(validatorController)
   .use(authenticatedPostController)
   .use(draftsController)
   .use(commentsController);

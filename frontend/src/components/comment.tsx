@@ -3,10 +3,9 @@ import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Heart } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -104,7 +103,7 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
   return (
     <motion.div
       key={comment._id}
-      className=" w-[80%] mx-auto"
+      className="lg:w-[90%] lg:ml-auto w-[85%] ml-auto"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
@@ -142,12 +141,13 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
           </p>
         )}
       </div>
-      <div className="flex gap-2 lg:gap-3 w-[95%] mx-auto">
-        <div className="flex gap-2 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
-          <Heart
-            className="h-4 w-4 cursor-pointer "
-            fill={comment.likedByMe ? "red" : "white"}
-            color={comment.likedByMe ? "red" : "black"}
+      <div className="flex gap-2 lg:gap-3">
+        <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1  hover:border-[1px] border-[1px] border-gray-200">
+          <Icon
+            icon={comment.likedByMe ? "mage:heart-fill" : "mage:heart"}
+            className={`h-4 w-4 cursor-pointer ${
+              comment.likedByMe ? "text-red-500" : "text-gray-500"
+            }`}
             onClick={() => {
               if (isLikePending) return;
               if (!user) {
@@ -157,41 +157,27 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
               likeMutation({ commentId: comment._id });
             }}
           />
-          <p className="text-xs lg:text-sm">{comment.likesCount}</p>
+          <p className="text-xs text-gray-500">{comment.likesCount}</p>
         </div>
-        <div className="flex gap-2 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
-          <Image
-            width={20}
-            height={20}
-            className="h-4 w-4"
-            src="/assets/message.svg"
-            alt=""
+        {/* <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:bg-gray-100 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer">
+          <Icon
+            className="h-4 w-4 lg:h-5 lg:w-5 cursor-pointer"
+            icon="basil:comment-outline"
+            color="black"
+            onClick={() => setIsReplyOpened(!isReplyOpened)}
           />
           <p className="text-xs lg:text-sm">{0}</p>
-        </div>
-        <div className="flex gap-2 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1">
-          <Image
-            className="h-5 w-5"
-            width={20}
-            height={20}
-            src="/assets/share.svg"
-            alt=""
-          />
-          <p className="text-xs lg:text-xs">Share</p>
-        </div>
+        </div> */}
 
         <div
-          className="flex gap-2 items-center font-semibold bg-[#FCF7EA] px-4 rounded-full py-1 cursor-pointer"
+          className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer"
           onClick={() => setIsReplyOpened(!isReplyOpened)}
         >
-          <Image
-            className="h-5 w-5"
-            width={20}
-            height={20}
-            src="/assets/share.svg"
-            alt=""
+          <Icon
+            icon="uil:share"
+            className="h-4 w-4 cursor-pointer text-gray-500"
           />
-          <p className="text-xs lg:text-xs">Reply</p>
+          <p className="text-xs text-gray-500">{"Reply"}</p>
         </div>
       </div>
 
