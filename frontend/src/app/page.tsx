@@ -1,6 +1,7 @@
 "use client";
 
 import Hero1 from "@/components/shared/hero1";
+import Topbar from "@/components/shared/topbar";
 import { ToastContainer } from "react-toastify";
 import About from "../components/shared/about";
 import Events from "../components/shared/events";
@@ -8,13 +9,12 @@ import FAQ1 from "../components/shared/faq-one";
 import FAQ2 from "../components/shared/faq-two";
 import Footer from "../components/shared/footer";
 import Join from "../components/shared/join";
-import NavBar from "../components/shared/navbar";
 import Testimonial from "../components/shared/testimonials";
 
 export default function Home() {
   return (
     <>
-      <NavBar />
+      <Topbar />
       <ToastContainer />
 
       <section id="home" className="">
