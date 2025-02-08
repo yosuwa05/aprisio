@@ -6,7 +6,9 @@ import { commentsNoAuthController } from "./(feed)/comment-controller";
 import { draftsController } from "./(feed)/drafts-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
+import { TopicsController } from "./(topics)/topics-controller";
 import { authController } from "./auth-controller";
+import { communityController } from "./community/community-controller";
 import { formController } from "./form-controller";
 import { verifyController } from "./verify-controller";
 
@@ -58,4 +60,6 @@ export const userrouter = new Elysia({
   .use(validatorController)
   .use(authenticatedPostController)
   .use(draftsController)
-  .use(commentsController);
+  .use(commentsController)
+  .use(TopicsController)
+  .use(communityController);

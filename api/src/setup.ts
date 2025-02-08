@@ -14,6 +14,7 @@ const URL = process.env.DB_URL;
 try {
   await mongoose.connect(URL as string, {
     dbName: "aprisio",
+    maxConnecting: 10,
   });
 
   console.log("Connected to Database");
