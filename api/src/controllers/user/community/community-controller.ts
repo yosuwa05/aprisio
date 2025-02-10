@@ -33,7 +33,7 @@ export const communityController = new Elysia({
           },
         ];
 
-        if (userId) {
+        if (userId && userId != "undefined") {
           aggregationPipeline.push(
             {
               $lookup: {

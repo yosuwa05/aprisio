@@ -50,7 +50,7 @@ export default function LoginForm({}) {
         const globalState = useGlobalAuthStore.getState();
         globalState.setUser(data.data.user);
 
-        router.push("/feed");
+        router.push("/community/");
       } else {
         toast.error(data.data.message);
       }
