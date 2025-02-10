@@ -43,7 +43,7 @@ export const TopicsController = new Elysia({
         const page = query.page || 1;
         const limit = query.limit || 10;
 
-        if (!query.topic) return { ok: true };
+        if (!query.topic || query.topic == "undefined") return { ok: true };
 
         const subTopic = await SubTopicModel.find(
           query.topic ? { topic: query.topic } : {},

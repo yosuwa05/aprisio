@@ -1,15 +1,12 @@
 import { PostsSection } from "@/components/posts-section";
-import Topbar from "@/components/shared/topbar";
 import { Button } from "@/components/ui/button";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { MapPin, Plus } from "lucide-react";
 import Image from "next/image";
 
-export default function Home() {
+export default function Feed() {
   return (
     <div>
-      <Topbar />
-
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
         <div className="lg:max-w-[300px] min-w-[250px]">
           <h1 className="font-[600] text-3xl text-textcol">Hiking</h1>

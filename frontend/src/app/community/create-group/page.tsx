@@ -1,0 +1,437 @@
+"use client";
+
+import GlobalLoader from "@/components/globalloader";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import chevronleft from "@img/icons/chevron-left.svg";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ChevronDown, PlusCircle, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const postSchema = z.object({
+  groupName: z.string().min(1).max(100),
+  description: z.string(),
+  location: z.string(),
+  eventName: z.string(),
+  eventRules: z.object({
+    total: z.number().min(1).max(10),
+    events: z.array(
+      z.object({
+        heading: z.string(),
+        subHeading: z.string(),
+      })
+    ),
+  }),
+});
+
+export default function CreatePost() {
+  const [uploadedFiles, setUploadedFiles] = useState<File[] | []>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const [subTopicSearch, setSubTopicSearch] = useState("");
+  const [subTopicOpen, setSubTopicOpen] = useState(false);
+  const [selectedSubTopic, setSelectedSubTopic] = useState({
+    _id: "",
+    subTopicName: "",
+  });
+
+  const [eventRules, setEventRules] = useState({
+    total: 1,
+    events: [
+      {
+        heading: "",
+        subHeading: "",
+      },
+    ],
+  });
+
+  const [date, setDate] = useState<Date>();
+
+  const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { register, reset, handleSubmit, setValue } = useForm({
+    resolver: zodResolver(postSchema),
+    defaultValues: {
+      groupName: "Coding Mania",
+      description: "Some Random Grp",
+      location: "New Delhi",
+      eventName: "Bruh",
+      eventRules: {
+        total: 1,
+        events: [
+          {
+            heading: "dadada",
+            subHeading: "dada",
+          },
+        ],
+      },
+    },
+  });
+
+  const user = useGlobalAuthStore((state) => state.user);
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (data: unknown) => {
+      return await _axios.post("/group/create", data);
+    },
+    onSuccess(data) {
+      if (data.data.ok) {
+        toast("Post created successfully");
+        reset();
+        queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
+        router.back();
+      } else {
+        toast("An error occurred while creating post");
+      }
+    },
+  });
+
+  const onSubmit = (data: any) => {
+    if (!selectedSubTopic._id) return toast("Please select a topic");
+    if (!date) return toast("Please select a Event Date");
+
+    const formData = new FormData();
+
+    if (uploadedFiles.length > 0) {
+      for (let file of uploadedFiles) {
+        formData.append("file", file);
+      }
+    }
+
+    formData.append("groupName", data.groupName);
+    formData.append("description", data.description);
+    formData.append("location", data.location);
+    formData.append("eventName", data.eventName);
+    formData.append("eventRules", JSON.stringify(data.eventRules));
+
+    mutate(formData);
+  };
+
+  const tabs = ["About", "Event", "Photos"];
+
+  const { data, isLoading: isSubTopicsLoading } = useQuery({
+    queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
+    queryFn: async () => {
+      const res = await _axios.get(
+        `/subtopics?limit=7&q=${debouncedSubTopicSearch}`
+      );
+      return res.data;
+    },
+  });
+
+  return (
+    <div>
+      <div className="mx-2 xl:mx-8">
+        <div className="flex justify-between items-center xl:items-end mx-2">
+          <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
+            Create Group
+          </h1>
+        </div>
+
+        <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
+          <PopoverTrigger asChild className="p-6">
+            <Button
+              type="button"
+              className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1"
+            >
+              {selectedSubTopic.subTopicName
+                ? selectedSubTopic.subTopicName
+                : "Select a Topic"}
+              <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg">
+            <Input
+              placeholder="Search..."
+              className="w-full my-2"
+              value={subTopicSearch}
+              onChange={(e) => setSubTopicSearch(e.target.value)}
+            />
+            <div className="flex flex-col gap-4">
+              {isSubTopicsLoading && (
+                <div className="flex justify-center items-center my-4">
+                  <div>
+                    <GlobalLoader />
+                  </div>
+                </div>
+              )}
+              {!isSubTopicsLoading &&
+                data?.subTopics?.map((subTopic: any) => (
+                  <div
+                    key={subTopic._id}
+                    className="flex cursor-pointer text-lg mx-4 text-black my-1"
+                    onClick={() => {
+                      setSubTopicSearch("");
+                      setSubTopicOpen(false);
+                      setSelectedSubTopic(subTopic);
+                    }}
+                  >
+                    <h3>{subTopic.subTopicName}</h3>
+                  </div>
+                ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <div className="flex flex-col md:gap-4">
+          <div className="flex">
+            {tabs.map((tab, index: number) => (
+              <div
+                key={index}
+                onClick={() => {
+                  setActiveIndex(index);
+                }}
+                className={`flex cursor-pointer text-lg mx-4 ${
+                  index != activeIndex
+                    ? "text-fadedtext"
+                    : "text-contrasttext font-bold"
+                }`}
+              >
+                <h3>{tab}</h3>
+              </div>
+            ))}
+          </div>
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 mt-4 mx-4"
+          >
+            {activeIndex == 0 && (
+              <div className="flex flex-col gap-4">
+                <div className="">
+                  <Label htmlFor="groupName"></Label>
+                  <Input
+                    placeholder="Group Name"
+                    id="groupName"
+                    className="h-16 rounded-2xl text-fadedtext text-lg"
+                    {...register("groupName")}
+                  />
+                </div>
+                <div key={activeIndex}>
+                  <Label htmlFor="content"></Label>
+                  <Textarea
+                    id="content"
+                    placeholder="Description..."
+                    className="rounded-2xl !text-lg text-fadedtext p-4"
+                    rows={4}
+                    {...register("description")}
+                  />
+                </div>
+              </div>
+            )}
+
+            {activeIndex == 1 && (
+              <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <div key={activeIndex}>
+                          <Label htmlFor="file"></Label>
+                          <div className="text-fadedtext cursor-pointer border rounded-xl text-lg flex justify-start p-4 items-center">
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </div>
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={setDate}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="location"></Label>
+                    <Input
+                      placeholder="Location"
+                      id="location"
+                      className="h-16 rounded-2xl text-fadedtext text-lg"
+                      {...register("location")}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="eventName"></Label>
+                  <Input
+                    placeholder="Event Name"
+                    id="eventName"
+                    className="h-16 rounded-2xl text-fadedtext text-lg"
+                    {...register("eventName")}
+                  />
+                </div>
+
+                <h3 className="mx-2 text-xl text-[#5D5A5A]">Event Rules</h3>
+
+                {Array.from(Array(eventRules.total).keys()).map((index) => (
+                  <div key={index}>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="col-span-1">
+                        <Label htmlFor="heading"></Label>
+                        <Input
+                          placeholder="Heading"
+                          id="heading"
+                          className="h-16 rounded-2xl text-fadedtext text-lg"
+                          {...register(`eventRules.events.${index}.heading`)}
+                        />
+                      </div>
+                      <div className="col-span-2 flex items-center gap-2">
+                        <Label htmlFor="subHeading"></Label>
+                        <Input
+                          placeholder="Sub Heading"
+                          id="subHeading"
+                          className="h-16 rounded-2xl text-fadedtext text-lg"
+                          {...register(`eventRules.events.${index}.subHeading`)}
+                        />
+
+                        <div>
+                          <Trash2
+                            className="text-gray-500 cursor-pointer"
+                            onClick={() => {
+                              if (eventRules.total == 1) return;
+                              setEventRules((prev) => ({
+                                events: prev.events.filter(
+                                  (_, i) => i !== index
+                                ),
+                                total: prev.total - 1,
+                              }));
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <div className="flex gap-4 justify-center mt-4">
+                  <Button
+                    type="button"
+                    className="rounded-full bg-[#FCF7EA] text-black text-sm font-normal hover:bg-[#f7f2e6] border-[1px] "
+                    onClick={() => {
+                      setEventRules((prev) => ({
+                        ...prev,
+                        total: prev.total + 1,
+                      }));
+                    }}
+                  >
+                    Add
+                    <PlusCircle />
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {activeIndex == 1 && uploadedFiles?.length > 0 && (
+              <div className="relative">
+                <Trash2
+                  className="absolute top-4 right-4 cursor-pointer text-red"
+                  color="red"
+                  onClick={() => {
+                    setUploadedFiles([]);
+                  }}
+                />
+              </div>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              multiple
+              onChange={(event) => {
+                const file = event.target.files;
+                console.log(file);
+                if (file && file.length > 0) {
+                  setUploadedFiles([...uploadedFiles, ...file]);
+                }
+              }}
+              ref={fileInputRef}
+            />
+
+            {activeIndex == 2 && (
+              <div>
+                <div
+                  key={activeIndex}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Label htmlFor="file"></Label>
+                  <div className="h-[80px] text-fadedtext cursor-pointer border rounded-xl text-lg flex justify-start p-4 items-center">
+                    <h4>Upload a image</h4>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 my-4">
+                  {uploadedFiles.map((file, index) => (
+                    <div
+                      className="relative w-[300px] border-2 rounded-md p-3"
+                      key={index}
+                    >
+                      <Trash2
+                        className="absolute top-4 right-4 cursor-pointer text-red"
+                        color="red"
+                        onClick={() => {
+                          setUploadedFiles(
+                            uploadedFiles.filter((_, i) => i !== index)
+                          );
+                        }}
+                      />
+                      <Image
+                        src={URL.createObjectURL(file)}
+                        alt=""
+                        width={30}
+                        height={100}
+                        className="w-full h-[300px] object-cover rounded-2xl"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-6 justify-end mt-4">
+              <Button
+                className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol"
+                type="submit"
+                disabled={isPending}
+              >
+                Create
+                <Image src={chevronleft} alt="chevron-left" />
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

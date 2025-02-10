@@ -1,4 +1,5 @@
 import { PostModel } from "@/models";
+import { SubTopicModel } from "@/models/subtopicmodel";
 import Elysia, { t } from "elysia";
 import { Types } from "mongoose";
 
@@ -12,15 +13,27 @@ export const postController = new Elysia({
 }).get(
   "/",
   async ({ query, set, store }) => {
-    const { page = 1, limit = 10, userId } = query;
+    const { page = 1, limit = 5, userId } = query;
 
     try {
       const sanitizedPage = Math.max(1, page);
       const sanitizedLimit = Math.max(1, Math.min(limit, 20));
 
+      const subTopic = await SubTopicModel.findOne({ slug: query.subTopic });
+
+      if (!subTopic) {
+        set.status = 404;
+        return {
+          message: "SubTopic not found",
+          ok: false,
+        };
+      }
+
       const posts = await PostModel.aggregate([
         {
-          $match: {},
+          $match: {
+            subTopic: subTopic._id,
+          },
         },
         {
           $sort: { createdAt: -1 },
@@ -136,6 +149,9 @@ export const postController = new Elysia({
           default: "",
         })
       ),
+      subTopic: t.String({
+        default: "",
+      }),
     }),
     detail: {
       description: "Get posts",

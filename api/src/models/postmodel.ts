@@ -11,6 +11,7 @@ interface IPost {
   comments: Types.ObjectId[];
   likesCount: number;
   commentsCount: number;
+  subTopic: Types.ObjectId;
 }
 
 const PostSchema = new Schema<IPost>(
@@ -35,6 +36,7 @@ const PostSchema = new Schema<IPost>(
     ],
     likesCount: { type: Number, default: 0 },
     commentsCount: { type: Number, default: 0 },
+    subTopic: { type: Schema.Types.ObjectId, ref: "subtopics" },
   },
   { timestamps: true }
 );

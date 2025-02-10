@@ -14,7 +14,7 @@ export const authenticatedPostController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { title, description, url, file } = body;
+      const { title, description, url, file, subTopicId } = body;
 
       try {
         const userId = (store as StoreType)["id"];
@@ -71,6 +71,7 @@ export const authenticatedPostController = new Elysia({
           likes: [],
           commentsCount: 0,
           likesCount: 0,
+          subTopic: subTopicId,
         });
 
         await newPost.save();
@@ -98,6 +99,7 @@ export const authenticatedPostController = new Elysia({
             default: "",
           })
         ),
+        subTopicId: t.Optional(t.String()),
         file: t.Optional(t.File()),
       }),
       detail: {

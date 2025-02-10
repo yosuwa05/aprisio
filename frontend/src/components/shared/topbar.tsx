@@ -1,6 +1,7 @@
 "use client";
 
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import logosmall from "@img/images/final-logo.png";
 import logo from "@img/images/logo.png";
 import { Bell, Menu, Search } from "lucide-react";
@@ -24,6 +25,8 @@ export default function Topbar() {
   const pathname = usePathname();
 
   const user = useGlobalAuthStore((state) => state.user);
+
+  const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
 
   return (
     <nav className="w-full flex px-4 my-4 justify-between md:px-6 ">
@@ -159,9 +162,15 @@ export default function Topbar() {
           {pathname != "/" && (
             <Button
               className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
-              onClick={() => router.push("/create-post")}
+              onClick={() =>
+                router.push(
+                  activeLayout == "group"
+                    ? "/community/create-group"
+                    : "/community/create-post"
+                )
+              }
             >
-              Create Post
+              {activeLayout == "group" ? "Create Group" : "Create Post"}
             </Button>
           )}
           <UserAvatar />

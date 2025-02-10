@@ -6,10 +6,12 @@ import { commentsNoAuthController } from "./(feed)/comment-controller";
 import { draftsController } from "./(feed)/drafts-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
+import { subtopicsController } from "./(subtopics)/subtopics-controller";
 import { TopicsController } from "./(topics)/topics-controller";
 import { authController } from "./auth-controller";
 import { communityController } from "./community/community-controller";
 import { formController } from "./form-controller";
+import { groupController } from "./group/group-controller";
 import { verifyController } from "./verify-controller";
 
 export const userrouter = new Elysia({
@@ -22,6 +24,8 @@ export const userrouter = new Elysia({
   .use(authController)
   .use(postController)
   .use(commentsNoAuthController)
+  .use(communityController)
+  .use(subtopicsController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 
@@ -62,4 +66,5 @@ export const userrouter = new Elysia({
   .use(draftsController)
   .use(commentsController)
   .use(TopicsController)
-  .use(communityController);
+  .use(communityController)
+  .use(groupController);

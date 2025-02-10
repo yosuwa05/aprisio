@@ -6,34 +6,31 @@ export const subtopicsController = new Elysia({
   tags: ["User - SubTopics"],
 }).get(
   "/",
-  async ({ query }) => {
+  async ({ query, set }) => {
     try {
       const page = query.page || 1;
       const limit = query.limit || 10;
 
-      const subTopic = await SubTopicModel.find(
-        { topic: query.topic },
-        "subTopicName"
-      )
+      const filter: any = {};
+
+      if (query.q) {
+        filter.subTopicName = { $regex: query.q, $options: "i" };
+      }
+
+      const subTopics = await SubTopicModel.find(filter, "subTopicName")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .lean()
         .exec();
 
-      const total = await SubTopicModel.countDocuments({
-        topic: query.topic,
-      });
-
       return {
-        subTopics: subTopic,
-        total,
-        page,
-        limit,
+        subTopics,
         status: true,
       };
     } catch (error) {
       console.log(error);
+      set.status = 500;
       return { ok: false, error };
     }
   },
@@ -41,7 +38,7 @@ export const subtopicsController = new Elysia({
     query: t.Object({
       page: t.Optional(t.Number()),
       limit: t.Optional(t.Number()),
-      topic: t.Optional(t.String()),
+      q: t.Optional(t.String()),
     }),
   }
 );

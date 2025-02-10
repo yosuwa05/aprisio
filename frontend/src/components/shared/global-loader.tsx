@@ -1,4 +1,4 @@
-export default function GlobalLoader() {
+export function GlobalLoader() {
   return (
     <svg
       aria-hidden="true"

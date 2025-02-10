@@ -1,3 +1,4 @@
+import { slugify } from "@/lib/utils";
 import { model, Schema, Types } from "mongoose";
 
 interface ISubTopic {
@@ -6,6 +7,7 @@ interface ISubTopic {
   description: string;
   isDeleted: boolean;
   active: boolean;
+  slug: string;
 }
 
 const subtopicSchema = new Schema<ISubTopic>(
@@ -16,6 +18,7 @@ const subtopicSchema = new Schema<ISubTopic>(
     topic: {
       type: Schema.Types.ObjectId,
       ref: "Topic",
+      index: true,
     },
     description: {
       type: String,
@@ -28,10 +31,29 @@ const subtopicSchema = new Schema<ISubTopic>(
       type: Boolean,
       default: false,
     },
+    slug: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+subtopicSchema.index({ slug: 1 });
+
+subtopicSchema.pre("save", async function (next) {
+  if (!this.isModified("slug")) {
+    return next();
+  }
+
+  const existing = await SubTopicModel.findOne({ slug: this.slug });
+
+  if (existing) {
+    this.slug = slugify(this.subTopicName);
+  }
+
+  next();
+});
 
 export const SubTopicModel = model<ISubTopic>("subtopic", subtopicSchema);

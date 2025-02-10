@@ -47,7 +47,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          {/* <div className="absolute inset-0 bottom-[0px]">
+            <div>
+              <div>Posts</div>
+              <div>Groups</div>
+              <div>Events</div>
+            </div>
+          </div> */}
+        </Providers>
       </body>
     </html>
   );

@@ -1,20 +1,23 @@
 "use client";
 
-import { TopCommunityBar } from "@/components/community/top-community-bar";
 import { TopicsCard } from "@/components/community/topics-card";
-import Topbar from "@/components/shared/topbar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
 export default function Community() {
+  const user = useGlobalAuthStore((state) => state.user);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["community"],
+      queryKey: ["community", user?.id],
       queryFn: async ({ pageParam = 1 }) => {
-        const res = await _axios.get(`/community?page=${pageParam}&limit=1`);
+        const res = await _axios.get(
+          `/community?page=${pageParam}&limit=1&userId=${user?.id}`
+        );
         return res;
       },
       initialPageParam: 1,
@@ -39,9 +42,6 @@ export default function Community() {
 
   return (
     <>
-      <Topbar />
-      <TopCommunityBar />
-
       <div className="mx-2 md:mx-12 mt-6">
         {isLoading ? (
           <div className="flex flex-col gap-4 w-full ">
@@ -68,13 +68,16 @@ export default function Community() {
               page.data.topics.map((post: any, postIndex: number) => (
                 <div key={`${pageIndex}-${postIndex}`}>
                   <h1 className="my-4 font-bold text-2xl">{post.topicName}</h1>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="grid grid-cols-[repeat(auto-fit,minmax(330px,1fr))] gap-4">
                     {post.subTopic.map(
                       (subTopic: any, subTopicIndex: number) => (
                         <TopicsCard
                           key={subTopicIndex}
                           subTopicName={subTopic.subTopicName}
                           description={subTopic.description}
+                          subTopicId={subTopic._id}
+                          joined={subTopic.joined}
+                          slug={subTopic.slug}
                         />
                       )
                     )}

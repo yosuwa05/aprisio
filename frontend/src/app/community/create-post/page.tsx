@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import Topbar from "@/components/shared/topbar";
+import GlobalLoader from "@/components/globalloader";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
@@ -19,8 +23,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/chevron-left.svg";
 import pencil from "@img/icons/pencil.svg";
 import trash from "@img/icons/trash.svg";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Trash2 } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -38,6 +43,15 @@ export default function CreatePost() {
   const [draftsModelOpen, setDraftsModelOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const [subTopicSearch, setSubTopicSearch] = useState("");
+  const [subTopicOpen, setSubTopicOpen] = useState(false);
+  const [selectedSubTopic, setSelectedSubTopic] = useState({
+    _id: "",
+    subTopicName: "",
+  });
+
+  const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -71,7 +85,7 @@ export default function CreatePost() {
         toast("Post created successfully");
         reset();
         queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
-        router.push("/feed");
+        router.back();
       } else {
         toast("An error occurred while creating post");
       }
@@ -126,6 +140,8 @@ export default function CreatePost() {
   });
 
   const onSubmit = (data: any) => {
+    if (!selectedSubTopic._id) return toast("Please select a topic");
+
     const formData = new FormData();
 
     if (uploadedFile) {
@@ -135,6 +151,7 @@ export default function CreatePost() {
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("url", data.url);
+    formData.append("subTopicId", selectedSubTopic._id);
     mutate(formData);
   };
 
@@ -153,14 +170,24 @@ export default function CreatePost() {
     return "";
   }, [uploadedFile]);
 
+  const { data, isLoading: isSubTopicsLoading } = useQuery({
+    queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
+    queryFn: async () => {
+      const res = await _axios.get(
+        `/subtopics?limit=7&q=${debouncedSubTopicSearch}`
+      );
+      return res.data;
+    },
+  });
+
   return (
     <div>
-      <Topbar />
       <div className="mx-2 xl:mx-8">
         <div className="flex justify-between items-center xl:items-end mx-2">
           <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
             Create Post
           </h1>
+
           <Button
             className="rounded-full p-[20px] bg-[#FCF7EA] border-[#AF965447] font-bold border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol"
             onClick={() => {
@@ -176,6 +203,48 @@ export default function CreatePost() {
             )}
           </Button>
         </div>
+
+        <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
+          <PopoverTrigger asChild className="p-6">
+            <Button className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1">
+              {selectedSubTopic.subTopicName
+                ? selectedSubTopic.subTopicName
+                : "Select a Topic"}
+              <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg">
+            <Input
+              placeholder="Search..."
+              className="w-full my-2"
+              value={subTopicSearch}
+              onChange={(e) => setSubTopicSearch(e.target.value)}
+            />
+            <div className="flex flex-col gap-4">
+              {isSubTopicsLoading && (
+                <div className="flex justify-center items-center my-4">
+                  <div>
+                    <GlobalLoader />
+                  </div>
+                </div>
+              )}
+              {!isSubTopicsLoading &&
+                data?.subTopics?.map((subTopic: any) => (
+                  <div
+                    key={subTopic._id}
+                    className="flex cursor-pointer text-lg mx-4 text-black my-1"
+                    onClick={() => {
+                      setSubTopicSearch("");
+                      setSubTopicOpen(false);
+                      setSelectedSubTopic(subTopic);
+                    }}
+                  >
+                    <h3>{subTopic.subTopicName}</h3>
+                  </div>
+                ))}
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <div className="flex flex-col md:gap-4">
           <div className="flex">
@@ -288,6 +357,7 @@ export default function CreatePost() {
                 onClick={() => {
                   if (!titleValue || !descriptionValue)
                     return toast("Please fill in all the fields");
+
                   createDraft({
                     description: descriptionValue,
                     title: titleValue,
@@ -375,7 +445,7 @@ export default function CreatePost() {
                         </div>
                         <div className="h-[0.5px] bg-[#888383]"></div>
                       </div>
-                    ),
+                    )
                   )
                 ) : (
                   <div className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center">

@@ -27,3 +27,14 @@ export function formatDate(date: string) {
     return rtf.format(-days, "days");
   }
 }
+
+export const makeSlug = (str: string) => {
+  return str
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
+};
