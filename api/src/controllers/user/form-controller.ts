@@ -7,8 +7,7 @@ export const formController = new Elysia({
     description: "Form controller",
     tags: ["User Form"],
   },
-})
-.post(
+}).post(
   "/submit",
   async ({ body, set }) => {
     const { name, email, mobile, address, password } = body;

@@ -21,7 +21,7 @@ import { format } from "date-fns";
 import { ChevronDown, PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -32,7 +32,7 @@ const postSchema = z.object({
   location: z.string(),
   eventName: z.string(),
   eventRules: z.object({
-    total: z.number().min(1).max(10),
+    total: z.number(),
     events: z.array(
       z.object({
         heading: z.string(),
@@ -71,22 +71,18 @@ export default function CreatePost() {
 
   const { register, reset, handleSubmit, setValue } = useForm({
     resolver: zodResolver(postSchema),
-    defaultValues: {
-      groupName: "Coding Mania",
-      description: "Some Random Grp",
-      location: "New Delhi",
-      eventName: "Bruh",
-      eventRules: {
-        total: 1,
-        events: [
-          {
-            heading: "dadada",
-            subHeading: "dada",
-          },
-        ],
-      },
-    },
   });
+
+  useEffect(() => {
+    setValue("groupName", "");
+    setValue("description", "");
+    setValue("location", "");
+    setValue("eventName", "");
+    setValue("eventRules", {
+      total: 0,
+      events: [],
+    });
+  }, []);
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -99,19 +95,20 @@ export default function CreatePost() {
     },
     onSuccess(data) {
       if (data.data.ok) {
-        toast("Post created successfully");
+        toast("Group created successfully");
         reset();
         queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
         router.back();
       } else {
-        toast("An error occurred while creating post");
+        toast(data.data.message || "An error occurred while creating post");
       }
     },
   });
 
   const onSubmit = (data: any) => {
     if (!selectedSubTopic._id) return toast("Please select a topic");
-    if (!date) return toast("Please select a Event Date");
+    if (!date && data.eventName.length > 0)
+      return toast("Please select a Event Date");
 
     const formData = new FormData();
 
@@ -126,6 +123,8 @@ export default function CreatePost() {
     formData.append("location", data.location);
     formData.append("eventName", data.eventName);
     formData.append("eventRules", JSON.stringify(data.eventRules));
+    if (date) formData.append("eventDate", date.toISOString());
+    formData.append("subtopicId", selectedSubTopic._id);
 
     mutate(formData);
   };

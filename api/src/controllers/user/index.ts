@@ -12,6 +12,7 @@ import { authController } from "./auth-controller";
 import { communityController } from "./community/community-controller";
 import { formController } from "./form-controller";
 import { groupController } from "./group/group-controller";
+import { noAuthGroupController } from "./group/noauth-group-controller";
 import { verifyController } from "./verify-controller";
 
 export const userrouter = new Elysia({
@@ -26,6 +27,7 @@ export const userrouter = new Elysia({
   .use(commentsNoAuthController)
   .use(communityController)
   .use(subtopicsController)
+  .use(noAuthGroupController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 

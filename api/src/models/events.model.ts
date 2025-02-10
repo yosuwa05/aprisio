@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
 type Rules = {
   heading: string;
@@ -10,6 +10,7 @@ type IEvent = {
   location: string;
   date: string;
   rules: Rules[];
+  group: Types.ObjectId;
 };
 
 const EventSchema = new Schema<IEvent>(
@@ -19,10 +20,14 @@ const EventSchema = new Schema<IEvent>(
     date: { type: String, required: true },
     rules: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "EventRule",
+        heading: { type: String },
+        subHeading: { type: String },
       },
     ],
+    group: {
+      type: Schema.Types.ObjectId,
+      ref: "Group",
+    },
   },
   {
     timestamps: true,

@@ -1,3 +1,4 @@
+import { EventModel } from "@/models/events.model";
 import { GroupModel } from "@/models/group.model";
 import Elysia, { t } from "elysia";
 
@@ -10,7 +11,15 @@ export const groupController = new Elysia({
 }).post(
   "/create",
   async ({ body, set, store }) => {
-    const { groupName, description, location, eventName, eventRules } = body;
+    const {
+      groupName,
+      description,
+      eventDate,
+      location,
+      eventName,
+      eventRules,
+      subtopicId,
+    } = body;
 
     try {
       const userId = (store as any)["id"];
@@ -36,10 +45,30 @@ export const groupController = new Elysia({
         name: groupName,
         description,
         location,
-        eventName,
-        eventRules,
-        user: userId,
+        subTopic: subtopicId,
       });
+
+      let eventRulesData = {
+        total: 0,
+        events: [],
+      };
+
+      if (eventRules) eventRulesData = JSON.parse(eventRules);
+
+      newGroup.groupAdmin = userId;
+
+      if (eventName) {
+        const newEvent = new EventModel({
+          date: eventDate,
+          name: eventName,
+          rules: eventRulesData.events,
+          eventName,
+          location: location,
+          group: newGroup._id,
+        });
+        newGroup.events.push(newEvent._id);
+        await newEvent.save();
+      }
 
       await newGroup.save();
 
@@ -47,8 +76,9 @@ export const groupController = new Elysia({
       return { message: "Group created successfully", ok: true };
     } catch (error: any) {
       set.status = 500;
+      console.error(error);
       return {
-        message: "An internal error occurred while creating group.",
+        message: error,
         ok: false,
       };
     }
@@ -57,9 +87,11 @@ export const groupController = new Elysia({
     body: t.Object({
       groupName: t.String(),
       description: t.String(),
-      location: t.String(),
-      eventName: t.String(),
-      eventRules: t.String(),
+      location: t.Optional(t.String()),
+      eventName: t.Optional(t.String()),
+      eventRules: t.Optional(t.String()),
+      eventDate: t.Optional(t.String()),
+      subtopicId: t.String(),
     }),
     summary: "Create group",
   }

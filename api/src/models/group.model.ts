@@ -3,9 +3,11 @@ import { model, Schema, Types } from "mongoose";
 interface IGroup {
   name: string;
   description: string;
-  events: [];
+  events: Types.ObjectId[];
   images: [];
   members: Types.ObjectId[];
+  subTopic: Types.ObjectId;
+  groupAdmin: Types.ObjectId;
 }
 
 const GroupSchema = new Schema<IGroup>(
@@ -25,6 +27,14 @@ const GroupSchema = new Schema<IGroup>(
         ref: "users",
       },
     ],
+    subTopic: {
+      type: Schema.Types.ObjectId,
+      ref: "subtopics",
+    },
+    groupAdmin: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

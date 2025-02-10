@@ -12,7 +12,7 @@ export const postController = new Elysia({
   },
 }).get(
   "/",
-  async ({ query, set, store }) => {
+  async ({ query, set }) => {
     const { page = 1, limit = 5, userId } = query;
 
     try {

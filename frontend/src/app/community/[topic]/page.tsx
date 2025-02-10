@@ -1,10 +1,16 @@
+"use client";
+
+import { GroupsSection } from "@/components/groups-section";
 import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
+import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { MapPin, Plus } from "lucide-react";
 import Image from "next/image";
 
 export default function Feed() {
+  const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
+
   return (
     <div>
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
@@ -25,7 +31,8 @@ export default function Feed() {
 
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
-            <PostsSection />
+            {activeLayout == "post" && <PostsSection />}
+            {activeLayout == "group" && <GroupsSection />}
           </div>
 
           <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
