@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
 import personImage from "@img/assets/person.png";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface IGroupCard {
   name: string;
   createdAt: string;
   groupAdmin: IAdmin;
+  canJoin: boolean;
+  slug: string;
 }
 
 interface IAdmin {
@@ -19,6 +22,8 @@ interface Props {
 }
 
 export default function GroupCard({ group }: Props) {
+  const router = useRouter();
+
   return (
     <div
       className="p-2 w-full rounded-lg transition-all"
@@ -26,8 +31,8 @@ export default function GroupCard({ group }: Props) {
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}
     >
-      <div className="flex gap-2 w-full justify-between">
-        <div className="flex gap-2 items-center">
+      <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
+        <div className="flex gap-4 items-center">
           <Image
             src={personImage}
             alt="person"
@@ -37,7 +42,7 @@ export default function GroupCard({ group }: Props) {
           />
 
           <div className="flex flex-col gap-2">
-            <h2>{group.name}</h2>
+            <h2 className="font-semibold">{group.name}</h2>
 
             <div className="flex gap-6 items-center justify-between">
               <p className="text-[#043A53] text-xs font-medium">1 Member</p>
@@ -53,9 +58,17 @@ export default function GroupCard({ group }: Props) {
             </div>
           </div>
         </div>
-
-        <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
-          Join
+        <Button
+          className={`${
+            group.canJoin
+              ? "bg-[#F2F5F6] border-[#043A53]"
+              : "bg-[#FCF7EA] border-[#AF9654]"
+          } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
+          onClick={() => {
+            router.push(`/community/groups/${group.slug}`);
+          }}
+        >
+          {group.canJoin ? "Join" : "View"}
         </Button>
       </div>
     </div>

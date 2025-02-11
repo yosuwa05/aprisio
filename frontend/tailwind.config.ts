@@ -66,7 +66,7 @@ export default {
       },
       fontFamily: {
         sans: ["Open Sans", "ui-sans-serif", "system-ui"],
-        mulish: ['"Mulish"', "serif"],
+        roboto: ["Roboto", "ui-sans-serif", "system-ui"],
       },
     },
   },

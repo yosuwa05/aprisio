@@ -46,7 +46,7 @@ export default function Community() {
       <div className='mx-2 md:mx-12 mt-6'>
         {isLoading ? (
           <div className='flex flex-col gap-4 w-full '>
-            {[...Array(5)].map((_, i) => (
+            {[...Array(2)].map((_, i) => (
               <div key={i} className='flex gap-4 w-full'>
                 <Skeleton className='w-[50px] h-[50px] rounded-full' />
                 <div className='flex flex-col gap-2 w-full'>

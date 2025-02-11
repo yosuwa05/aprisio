@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: "Open Sans", Helvetica, sans-serif;
+  font-family: "Open Sans", Helvetica, sans-serif !important;
 }
 .scrollbar::-webkit-scrollbar {
   display: none;
@@ -126,4 +126,3 @@ body {
 .swiper-pagination {
   margin-top: 20px;
 }
-

@@ -1,0 +1,157 @@
+"use client";
+
+import { EventCard } from "@/components/groups/eventcard";
+import PersonCard from "@/components/groups/personCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import { _axios } from "@/lib/axios-instance";
+import { Icon } from "@iconify/react";
+import placeholder from "@img/assets/placeholder-hero.jpeg";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+export default function GroupPage() {
+  let groupName = usePathname().split("/")[3];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const tabs = ["About", "Events", "Members", "Photos"];
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["group-info"],
+    queryFn: async () => {
+      const res = await _axios.get(`/noauth/group/get/${groupName}`);
+      return res.data;
+    },
+  });
+
+  return (
+    <div>
+      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
+        {isLoading ? (
+          <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
+        ) : (
+          <div className="lg:max-w-[300px] min-w-[250px]">
+            <div className="mt-4 flex flex-col gap-3 items-center">
+              <Image src={placeholder} className="rounded-xl" alt="" />
+            </div>
+            <p className="font-medium text-[#353535CC] opacity-80 mt-2"></p>
+
+            <h1 className="font-[600] text-2xl text-textcol capitalize">
+              {data?.group.name}
+            </h1>
+
+            <div className="flex gap-2 items-center mt-4">
+              <Icon
+                icon="mynaui:location"
+                fontSize={29}
+                className="text-gray-600"
+              />
+              <p className="text-sm text-textcol">
+                New York, USA <br />
+                <span className="text-sm text-textcol">
+                  (NYC, NY, USA, United States)
+                </span>
+              </p>
+            </div>
+
+            <div className="flex gap-2 items-center mt-4">
+              <Icon
+                icon="mingcute:user-1-line"
+                fontSize={29}
+                className="text-gray-600"
+              />
+              <p className="text-sm text-textcol">
+                4678 Members <br />
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="flex w-full max-w-[1200px] mx-auto gap-4">
+          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center text-lg">
+                <Icon icon={"ic:round-chevron-left"} fontSize={30} />
+                <h5>Coding Gang</h5> -<h5 className="font-bold">About</h5>
+              </div>
+
+              <div className="flex">
+                {tabs.map((tab, index: number) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setActiveIndex(index);
+                    }}
+                    className={`flex cursor-pointer text-lg mx-4 ${
+                      index != activeIndex
+                        ? "text-fadedtext"
+                        : "text-contrasttext font-bold"
+                    }`}
+                  >
+                    <h3>{tab}</h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {activeIndex == 0 && (
+              <div className="mx-6 my-4">
+                <h3 className="font-semibold text-2xl">What We Are</h3>
+
+                <p className="text-[#353535] leading-relaxed text-lg">
+                  {data?.group.description}
+                </p>
+              </div>
+            )}
+
+            {activeIndex == 1 && (
+              <div className="my-4">
+                <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
+                  <Icon icon="tabler:plus" fontSize={22} />
+                  <h3 className="font-semibold text-sm">Create Event</h3>
+                </div>
+
+                <div className="mt-6 flex-col flex gap-4">
+                  <EventCard />
+                  <EventCard />
+                </div>
+              </div>
+            )}
+
+            {activeIndex == 2 && (
+              <div className="my-4 mx-2">
+                <div className="flex flex-col gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
+                  <PersonCard />
+                  <PersonCard />
+                </div>
+              </div>
+            )}
+
+            {activeIndex == 3 && (
+              <div className="my-4 mx-2">
+                <div className="grid grid-cols-3 gap-4">
+                  {Array.from(Array(6).keys()).map((index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col gap-2 items-center"
+                    >
+                      <Image
+                        src={placeholder}
+                        alt="placeholder"
+                        width={300}
+                        height={300}
+                        className="rounded-lg"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
