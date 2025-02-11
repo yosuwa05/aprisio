@@ -59,27 +59,26 @@ export default function NavBar() {
 
   return (
     <nav
-      className={`sticky top-0 z-50 w-full transition-all duration-300 bg-[#F2F5F6]`}
-    >
+      className={`sticky top-0 z-50 w-full transition-all duration-300 bg-[#F2F5F6]`}>
       <div className={`flex justify-between items-center ${padding} px-5`}>
-        <Link href="/" passHref>
+        <Link href='/' passHref>
           <div>
-            <Image src={logo} alt="logo" className=" lg:w-40 w-28" />
+            <Image src={logo} alt='logo' className=' lg:w-40 w-28' />
           </div>
         </Link>
 
-        <div className="hidden lg:block">
-          <ul className="flex gap-7 text-[#353535] font-semibold xl:text-2xl lg:text-lg">
+        <div className='hidden lg:block'>
+          <ul className='flex gap-7 text-[#353535] font-semibold xl:text-2xl lg:text-lg'>
             <li>
-              <Link href="/" onClick={handleNavClick}>
+              <Link href='/' onClick={handleNavClick}>
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/feed">Community</Link>
+              <Link href='/feed'>Community</Link>
             </li>
             <li>
-              <Link href="/#about" onClick={handleNavClick}>
+              <Link href='/#about' onClick={handleNavClick}>
                 About Us
               </Link>
             </li>
@@ -90,33 +89,30 @@ export default function NavBar() {
               </Link>
             </li> */}
             <li>
-              <Link href="/#footer" onClick={handleNavClick}>
+              <Link href='/#footer' onClick={handleNavClick}>
                 Contact
               </Link>
             </li>
           </ul>
         </div>
 
-        <div className="hidden lg:flex gap-5 font-mulish font-semibold xl:text-xl lg:text-base">
+        <div className='hidden lg:flex gap-5 font-mulish font-semibold xl:text-xl lg:text-base'>
           <button
-            className="bg-white rounded-full xl:py-4 xl:px-8 lg:py-3 lg:px-6 shadow border-[0.5px]"
-            onClick={() => router.push("/login")}
-          >
+            className='bg-white rounded-full xl:py-4 xl:px-8 lg:py-3 lg:px-6 shadow border-[0.5px]'
+            onClick={() => router.push("/login")}>
             Log In
           </button>
           <button
             onClick={() => router.push("/join-community")}
-            className="bg-[#C9A74E] rounded-full xl:py-4 xl:px-7 lg:py-3 lg:px-6"
-          >
+            className='bg-[#C9A74E] rounded-full xl:py-4 xl:px-7 lg:py-3 lg:px-6'>
             Sign Up
           </button>
         </div>
 
         <button
-          className="lg:hidden text-[#043A53]"
+          className='lg:hidden text-[#043A53]'
           onClick={toggleDrawer}
-          aria-label="Toggle menu"
-        >
+          aria-label='Toggle menu'>
           {isDrawerOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -124,20 +120,19 @@ export default function NavBar() {
       <div
         className={`fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
           isDrawerOpen ? "translate-x-0" : "translate-x-full"
-        } lg:hidden`}
-      >
-        <div className="flex flex-col h-full justify-between py-6 px-4">
-          <ul className="space-y-4 text-[#353535] font-semibold text-xl">
+        } lg:hidden`}>
+        <div className='flex flex-col h-full justify-between py-6 px-4'>
+          <ul className='space-y-4 text-[#353535] font-semibold text-xl'>
             <li>
-              <Link href="/#home" onClick={handleNavClick}>
+              <Link href='/#home' onClick={handleNavClick}>
                 Home
               </Link>
             </li>
             <li>
-              <Link href="/feed">Community</Link>
+              <Link href='/feed'>Community</Link>
             </li>
             <li>
-              <Link href="/#about" onClick={handleNavClick}>
+              <Link href='/#about' onClick={handleNavClick}>
                 About Us
               </Link>
             </li>
@@ -147,22 +142,20 @@ export default function NavBar() {
               </Link>
             </li> */}
             <li>
-              <Link href="/#footer" onClick={handleNavClick}>
+              <Link href='/#footer' onClick={handleNavClick}>
                 Contact
               </Link>
             </li>
           </ul>
-          <div className="space-y-4 font-mulish font-semibold text-lg">
+          <div className='space-y-4 font-mulish font-semibold text-lg'>
             <button
-              className="w-full bg-white rounded-full py-3 px-6 shadow border-[0.5px]"
-              onClick={() => router.push("/login")}
-            >
+              className='w-full bg-white rounded-full py-3 px-6 shadow border-[0.5px]'
+              onClick={() => router.push("/login")}>
               Log In
             </button>
             <button
               onClick={() => router.push("/join-community")}
-              className="w-full bg-[#C9A74E] rounded-full py-3 px-6"
-            >
+              className='w-full bg-[#C9A74E] rounded-full py-3 px-6'>
               Sign Up
             </button>
           </div>
@@ -171,9 +164,8 @@ export default function NavBar() {
 
       {isDrawerOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={toggleDrawer}
-        ></div>
+          className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
+          onClick={toggleDrawer}></div>
       )}
     </nav>
   );
