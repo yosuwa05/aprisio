@@ -1,3 +1,4 @@
+import { SubTopicModel } from "@/models/subtopicmodel";
 import { TopicModel } from "@/models/topicsmodel";
 import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import Elysia, { t } from "elysia";
@@ -132,6 +133,29 @@ export const communityController = new Elysia({
       body: t.Object({
         userId: t.String(),
         subTopicId: t.String(),
+      }),
+    }
+  )
+  .get(
+    "/info",
+    async ({ query }) => {
+      try {
+        const subTopic = await SubTopicModel.findOne({ slug: query.slug });
+
+        if (!subTopic) return { ok: false, error: "Invalid subtopic" };
+
+        return {
+          subTopic,
+          status: true,
+        };
+      } catch (error) {
+        console.log(error);
+        return { ok: false, error };
+      }
+    },
+    {
+      query: t.Object({
+        slug: t.String(),
       }),
     }
   );

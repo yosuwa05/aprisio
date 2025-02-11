@@ -3,31 +3,49 @@
 import { GroupsSection } from "@/components/groups-section";
 import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { _axios } from "@/lib/axios-instance";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
+import { useQuery } from "@tanstack/react-query";
 import { MapPin, Plus } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Feed() {
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
+  let subTopic = usePathname().split("/")[2];
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["community-info", subTopic],
+    queryFn: async () => {
+      const res = await _axios.get(`/community/info?slug=${subTopic}`);
+      return res.data;
+    },
+  });
 
   return (
     <div>
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
-        <div className="lg:max-w-[300px] min-w-[250px]">
-          <h1 className="font-[600] text-3xl text-textcol">Hiking</h1>
-          <p className="font-medium text-[#353535CC] opacity-80 mt-2">
-            Join a vibrant community of retired like-minded individuals
-            exploring new interests, meaningful connections, and opportunities.
-          </p>
+        {isLoading ? (
+          <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
+        ) : (
+          <div className="lg:max-w-[300px] min-w-[250px]">
+            <h1 className="font-[600] text-3xl text-textcol capitalize">
+              {data.subTopic?.subTopicName}
+            </h1>
+            <p className="font-medium text-[#353535CC] opacity-80 mt-2">
+              {data.subTopic?.description}
+            </p>
 
-          <div className="mt-4 flex flex-col gap-3 items-center">
-            <Image src={placeholder} className="rounded-xl" alt="" />
-            <Button className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol">
-              Join Community
-            </Button>
+            <div className="mt-4 flex flex-col gap-3 items-center">
+              <Image src={placeholder} className="rounded-xl" alt="" />
+              <Button className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol">
+                Join Community
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
