@@ -1,4 +1,5 @@
 import { SubTopicModel } from "@/models/subtopicmodel";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import Elysia, { t } from "elysia";
 
 export const subtopicsController = new Elysia({
@@ -8,10 +9,21 @@ export const subtopicsController = new Elysia({
   "/",
   async ({ query, set }) => {
     try {
-      const page = query.page || 1;
-      const limit = query.limit || 10;
+      const page = query.page ?? 1;
+      const limit = query.limit ?? 10;
 
       const filter: any = {};
+
+      if (query.userId) {
+        const userTopics = await UserSubTopicModel.find(
+          { userId: query.userId },
+          "subTopic"
+        ).lean();
+
+        const followedTopicIds = userTopics.map((topic) => topic.subTopicId);
+
+        filter._id = { $in: followedTopicIds };
+      }
 
       if (query.q) {
         filter.subTopicName = { $regex: query.q, $options: "i" };
@@ -39,6 +51,7 @@ export const subtopicsController = new Elysia({
       page: t.Optional(t.Number()),
       limit: t.Optional(t.Number()),
       q: t.Optional(t.String()),
+      userId: t.Optional(t.String()),
     }),
   }
 );

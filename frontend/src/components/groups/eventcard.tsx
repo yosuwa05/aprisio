@@ -3,7 +3,7 @@ import { Button } from "@/hooks/components/ui/button";
 export function EventCard() {
   return (
     <div
-      className="p-4 lg:px-8  rounded-lg transition-all mx-4"
+      className="p-4 lg:px-8  rounded-lg transition-all mx-4 "
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}
