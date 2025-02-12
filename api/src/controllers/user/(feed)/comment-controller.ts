@@ -9,10 +9,16 @@ export const commentsNoAuthController = new Elysia({
     summary: "Get Comments",
   },
 })
+
+
+
   .get(
     "/",
     async ({ query }) => {
-      let { postId, userId } = query;
+      let { postId, userId, page, limit } = query;
+
+      const _page = Number(page) || 1
+      const _limit = Number(limit) || 10
 
       try {
         if (!userId) userId = null;
@@ -86,6 +92,8 @@ export const commentsNoAuthController = new Elysia({
               },
             },
           },
+          { "$skip": (_page - 1) * _limit },
+          { "$limit": _limit },
         ]);
 
         return {
@@ -103,6 +111,8 @@ export const commentsNoAuthController = new Elysia({
     {
       query: t.Object({
         postId: t.String(),
+        page: t.Optional(t.String()),
+        limit: t.Optional(t.String()),
         userId: t.Optional(
           t.Any({
             default: null,

@@ -14,7 +14,7 @@ export const noAuthGroupController = new Elysia({
     "/",
     async ({ query }) => {
       try {
-        const { subTopic, userId } = query;
+        const { subTopic, userId, search } = query;
 
         const page = query.page || 1;
         const limit = query.limit || 10;
@@ -32,9 +32,18 @@ export const noAuthGroupController = new Elysia({
           };
         }
 
-        const groups = await GroupModel.find({
+        let searchQuery: any = {
           subTopic: subTopicData._id,
-        })
+        };
+
+        if (search) {
+          searchQuery.$or = [
+            { name: { $regex: search, $options: 'i' } },
+            // { description: { $regex: search, $options: 'i' } }
+          ];
+        }
+
+        const groups = await GroupModel.find(searchQuery)
           .populate("groupAdmin", "name")
           .sort({ createdAt: -1 })
           .skip((_page - 1) * _limit)
@@ -71,9 +80,7 @@ export const noAuthGroupController = new Elysia({
           return { ...group, canJoin };
         });
 
-        const total = await GroupModel.countDocuments({
-          subTopic: subTopicData._id,
-        });
+        const total = await GroupModel.countDocuments(searchQuery);
 
         return {
           groups: updatedGroups,
@@ -96,6 +103,7 @@ export const noAuthGroupController = new Elysia({
         limit: t.Number(),
         subTopic: t.Optional(t.String()),
         userId: t.Optional(t.String()),
+        search: t.Optional(t.String())
       }),
       detail: {
         description: "Get groups",
@@ -107,7 +115,7 @@ export const noAuthGroupController = new Elysia({
     "/members",
     async ({ query }) => {
       try {
-      } catch (error) {}
+      } catch (error) { }
     },
     {
       detail: {

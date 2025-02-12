@@ -3,12 +3,19 @@
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import Comment from "./comment";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import { ChevronsDown, Loader2 } from "lucide-react";
 
 type Props = {
   postId: string;
@@ -32,9 +39,8 @@ export default function CommentSection({
   setViewAllReplies,
 }: Props) {
   const [typedComment, setTypedComment] = useState("");
-
   const user = useGlobalAuthStore((state) => state.user);
-
+  const limit = 4;
   const queryClient = useQueryClient();
 
   function handleSubmit() {
@@ -57,28 +63,35 @@ export default function CommentSection({
     },
   });
 
-  const { data, isLoading } = useQuery({
-    queryFn: async () => {
-      const res = await _axios.get(
-        `/comment?postId=${postId}&userId=${user?.id ?? ""}`
-      );
-      return res.data;
-    },
-    queryKey: ["comments", viewAllReplies, postId, user?.id],
-    staleTime: 0,
-  });
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["comments", postId, user?.id],
+      queryFn: async ({ pageParam = 1 }) => {
+        const res = await _axios.get(
+          `/comment?postId=${postId}&userId=${
+            user?.id ?? ""
+          }&page=${pageParam}&limit=${limit}`
+        );
+        return res.data;
+      },
+      initialPageParam: 1,
+      getNextPageParam: (lastPage: any, allPages: any) => {
+        const nextPage = allPages?.length + 1;
+        return lastPage?.comments?.length === limit ? nextPage : undefined;
+      },
+    });
 
   return (
     <div>
-      <div className="mt-4 flex gap-4 items-center">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="/assets/person.png" />
+      <div className='mt-4 flex gap-4 items-center'>
+        <Avatar className='h-8 w-8'>
+          <AvatarImage src='/assets/person.png' />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
         <Input
-          placeholder="Write your comment"
-          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
+          placeholder='Write your comment'
+          className='border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold'
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -90,26 +103,41 @@ export default function CommentSection({
       </div>
 
       <AnimatePresence>
-        {viewAllReplies && !isLoading && data?.comments.length > 0 ? (
+        {viewAllReplies && !isLoading && (
           <motion.div
-            className="mt-4 flex flex-col gap-6"
+            className='mt-4 flex flex-col gap-6'
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-          >
-            {data?.comments.map((comment: any) => (
-              <React.Fragment key={comment._id}>
-                <Comment
-                  comment={comment}
-                  viewAllReplies={viewAllReplies}
-                  postId={postId}
-                />
-              </React.Fragment>
-            ))}
+            transition={{ duration: 0.3, ease: "easeInOut" }}>
+            {data?.pages?.flatMap((page) =>
+              page?.comments?.map((comment: any) => (
+                <React.Fragment key={comment._id}>
+                  <Comment
+                    comment={comment}
+                    viewAllReplies={viewAllReplies}
+                    postId={postId}
+                  />
+                </React.Fragment>
+              ))
+            )}
+
+            {hasNextPage && (
+              <div className='flex justify-center'>
+                <Button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  variant='ghost'
+                  size='icon'>
+                  {isFetchingNextPage ? (
+                    <Loader2 className='h-5 w-5 animate-spin' />
+                  ) : (
+                    <ChevronsDown className='h-5 w-5' />
+                  )}
+                </Button>
+              </div>
+            )}
           </motion.div>
-        ) : (
-          <div></div>
         )}
       </AnimatePresence>
     </div>

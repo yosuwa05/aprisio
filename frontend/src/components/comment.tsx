@@ -34,6 +34,7 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
 
   const { mutate: likeMutation, isPending: isLikePending } = useMutation({
     mutationFn: async (data: ICommentLike) => {
+      console.log(data, "newone");
       return await _axios.post("/comment/like", data);
     },
     onMutate: async (data: ICommentLike) => {
@@ -47,6 +48,8 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
         postId,
         user?.id,
       ]);
+
+      console.log(previousComments);
 
       queryClient.setQueryData(
         ["comments", viewAllReplies, postId, user?.id],
@@ -103,35 +106,34 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
   return (
     <motion.div
       key={comment._id}
-      className="lg:w-[90%] lg:ml-auto w-[85%] ml-auto"
+      className='lg:w-[90%] lg:ml-auto w-[85%] ml-auto'
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
       transition={{
         duration: 0.3,
-      }}
-    >
-      <div className="flex items-center gap-6 justify-between">
-        <div className="flex gap-2">
-          <Avatar className="w-5 h-5">
-            <AvatarImage src="/assets/person.png" />
+      }}>
+      <div className='flex items-center gap-6 justify-between'>
+        <div className='flex gap-2'>
+          <Avatar className='w-5 h-5'>
+            <AvatarImage src='/assets/person.png' />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
-          <div className="self-center">
-            <h3 className="text-textcol font-semibold text-sm">
+          <div className='self-center'>
+            <h3 className='text-textcol font-semibold text-sm'>
               {comment.user.name}
             </h3>
           </div>
         </div>
-        <p className="text-xs font-medium text-[#6B6D6D] self-center">
+        <p className='text-xs font-medium text-[#6B6D6D] self-center'>
           {formatDate(comment.createdAt)}
         </p>
       </div>
-      <div className="ml-6 py-2">
+      <div className='ml-6 py-2'>
         {comment.content && (
-          <p className="font-normal text-xs lg:text-sm">
+          <p className='font-normal text-xs lg:text-sm'>
             {comment?.parentComment && comment.parentComment.user ? (
-              <span className="text-sky-500">
+              <span className='text-sky-500'>
                 {comment.parentComment.user.name}
               </span>
             ) : (
@@ -141,8 +143,8 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
           </p>
         )}
       </div>
-      <div className="flex gap-2 lg:gap-3">
-        <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1  hover:border-[1px] border-[1px] border-gray-200">
+      <div className='flex gap-2 lg:gap-3'>
+        <div className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1  hover:border-[1px] border-[1px] border-gray-200'>
           <Icon
             icon={comment.likedByMe ? "mage:heart-fill" : "mage:heart"}
             className={`h-4 w-4 cursor-pointer ${
@@ -150,14 +152,16 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
             }`}
             onClick={() => {
               if (isLikePending) return;
+
               if (!user) {
                 toast("Login to like");
                 return;
               }
+
               likeMutation({ commentId: comment._id });
             }}
           />
-          <p className="text-xs text-gray-500">{comment.likesCount}</p>
+          <p className='text-xs text-gray-500'>{comment.likesCount}</p>
         </div>
         {/* <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:bg-gray-100 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer">
           <Icon
@@ -170,14 +174,13 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
         </div> */}
 
         <div
-          className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer"
-          onClick={() => setIsReplyOpened(!isReplyOpened)}
-        >
+          className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer'
+          onClick={() => setIsReplyOpened(!isReplyOpened)}>
           <Icon
-            icon="uil:share"
-            className="h-4 w-4 cursor-pointer text-gray-500"
+            icon='uil:share'
+            className='h-4 w-4 cursor-pointer text-gray-500'
           />
-          <p className="text-xs text-gray-500">{"Reply"}</p>
+          <p className='text-xs text-gray-500'>{"Reply"}</p>
         </div>
       </div>
 
@@ -188,16 +191,15 @@ export default function Comment({ comment, postId, viewAllReplies }: Props) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2, ease: "easeInOut" }}
-            className="mt-4 flex gap-4 items-center"
-          >
-            <Avatar className="h-6 w-6">
-              <AvatarImage src="/assets/person.png" />
+            className='mt-4 flex gap-4 items-center'>
+            <Avatar className='h-6 w-6'>
+              <AvatarImage src='/assets/person.png' />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
 
             <Input
-              placeholder="Write your reply"
-              className="border-none bg-contrastbg text-[#828485] placeholder:text-sm"
+              placeholder='Write your reply'
+              className='border-none bg-contrastbg text-[#828485] placeholder:text-sm'
               value={repliedContent}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {

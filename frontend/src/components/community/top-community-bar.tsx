@@ -73,6 +73,7 @@ export function TopCommunityBar() {
             <SheetContent className='p-0' side={"left"}>
               <SheetHeader>
                 <SheetTitle></SheetTitle>
+                <SheetDescription></SheetDescription>
               </SheetHeader>
               <TopicsSidebar />
             </SheetContent>
