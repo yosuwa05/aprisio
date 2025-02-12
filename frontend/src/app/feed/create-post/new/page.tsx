@@ -27,7 +27,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -47,8 +47,7 @@ export default function CreatePost() {
   const [subTopicSearch, setSubTopicSearch] = useState("");
   const [subTopicOpen, setSubTopicOpen] = useState(false);
   const [selectedSubTopic, setSelectedSubTopic] = useState({
-    _id: "",
-    subTopicName: "",
+    slug: "",
   });
 
   const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
@@ -65,7 +64,12 @@ export default function CreatePost() {
   const user = useGlobalAuthStore((state) => state.user);
 
   const router = useRouter();
+  const params = useSearchParams();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setSelectedSubTopic({ slug: params.get("topic") ?? "" });
+  }, [params.get("topic")]);
 
   const { isLoading, data: { drafts, ok } = { drafts: [], ok: false } } =
     useQuery({
@@ -140,7 +144,7 @@ export default function CreatePost() {
   });
 
   const onSubmit = (data: any) => {
-    if (!selectedSubTopic._id) return toast("Please select a topic");
+    if (!selectedSubTopic.slug) return toast("Please select a topic");
 
     const formData = new FormData();
 
@@ -151,7 +155,7 @@ export default function CreatePost() {
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("url", data.url);
-    formData.append("subTopicId", selectedSubTopic._id);
+    formData.append("slug", selectedSubTopic.slug);
     mutate(formData);
   };
 
@@ -174,7 +178,7 @@ export default function CreatePost() {
     queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
     queryFn: async () => {
       const res = await _axios.get(
-        `/subtopics?limit=7&q=${debouncedSubTopicSearch}`
+        `/subtopics?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
       );
       return res.data;
     },
@@ -207,9 +211,7 @@ export default function CreatePost() {
         <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
           <PopoverTrigger asChild className="p-6">
             <Button className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1">
-              {selectedSubTopic.subTopicName
-                ? selectedSubTopic.subTopicName
-                : "Select a Topic"}
+              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
               <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
             </Button>
           </PopoverTrigger>
@@ -220,7 +222,7 @@ export default function CreatePost() {
               value={subTopicSearch}
               onChange={(e) => setSubTopicSearch(e.target.value)}
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               {isSubTopicsLoading && (
                 <div className="flex justify-center items-center my-4">
                   <div>
@@ -232,14 +234,14 @@ export default function CreatePost() {
                 data?.subTopics?.map((subTopic: any) => (
                   <div
                     key={subTopic._id}
-                    className="flex cursor-pointer text-lg mx-4 text-black my-1"
+                    className="flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]"
                     onClick={() => {
                       setSubTopicSearch("");
                       setSubTopicOpen(false);
                       setSelectedSubTopic(subTopic);
                     }}
                   >
-                    <h3>{subTopic.subTopicName}</h3>
+                    <p className="text-black">{subTopic.slug}</p>
                   </div>
                 ))}
             </div>

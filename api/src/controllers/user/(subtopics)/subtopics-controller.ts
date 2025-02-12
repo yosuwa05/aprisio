@@ -14,7 +14,7 @@ export const subtopicsController = new Elysia({
 
       const filter: any = {};
 
-      if (query.userId) {
+      if (query.userId && query.userId != "undefined") {
         const userTopics = await UserSubTopicModel.find(
           { userId: query.userId },
           "subTopic"
@@ -29,7 +29,7 @@ export const subtopicsController = new Elysia({
         filter.subTopicName = { $regex: query.q, $options: "i" };
       }
 
-      const subTopics = await SubTopicModel.find(filter, "subTopicName")
+      const subTopics = await SubTopicModel.find(filter, "slug")
         .sort({ createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)

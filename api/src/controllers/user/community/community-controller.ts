@@ -84,7 +84,11 @@ export const communityController = new Elysia({
           },
         });
 
-        const topics = await TopicModel.aggregate(aggregationPipeline).sort({ createdAt: -1, _id: -1 });
+        const topics = await TopicModel.aggregate(aggregationPipeline).sort({
+          createdAt: 1,
+          _id: -1,
+        });
+
         const total = await TopicModel.countDocuments(
           topicName ? { topicName: { $regex: topicName, $options: "i" } } : {}
         );
@@ -155,8 +159,8 @@ export const communityController = new Elysia({
       }),
       detail: {
         summary: "Join community",
-        description: "Join community"
-      }
+        description: "Join community",
+      },
     }
   )
   .get(
@@ -182,7 +186,7 @@ export const communityController = new Elysia({
       }),
       detail: {
         summary: "Get subtopic info",
-        description: "Get subtopic info"
-      }
+        description: "Get subtopic info",
+      },
     }
   );

@@ -15,11 +15,6 @@ interface Props {
   slug: string;
 }
 
-type joinCommunity = {
-  subTopicId: string;
-  userId: string;
-};
-
 export function TopicsCard({
   subTopicName,
   description,
@@ -95,12 +90,12 @@ export function TopicsCard({
   };
 
   return (
-    <div className=' border-[1px] border-[#C0C0C0] rounded-xl p-4 cursor-pointer'>
-      <div className='flex justify-between'>
-        <div className='flex flex-col gap-2'>
-          <h2 className='text-xl font-bold capitalize'>{subTopicName}</h2>
+    <div className=" border-[1px] border-[#C0C0C0] rounded-xl p-4 cursor-pointer">
+      <div className="flex justify-between">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xl font-bold capitalize">{subTopicName}</h2>
 
-          <div className='flex gap-2'>
+          <div className="flex gap-2">
             <p>300+ Groups</p>
 
             <p>200+ Events</p>
@@ -116,19 +111,20 @@ export function TopicsCard({
           disabled={isPending}
           onClick={() => {
             if (joined) {
-              router.push(`/community/${slug}`);
+              router.push(`/feed/explore/${slug}`);
               return;
             }
             if (!user) return toast.error("Login to join");
             if (!isPending) {
               handleClick();
             }
-          }}>
+          }}
+        >
           {joined ? "View" : "Join"}
         </Button>
       </div>
 
-      <p className='text-xs text-[#828485] mt-2 font-normal leading-4'>
+      <p className="text-xs text-[#828485] mt-2 font-normal leading-4">
         {description}
       </p>
     </div>

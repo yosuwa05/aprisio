@@ -4,7 +4,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import GroupCard from "./groupCard";
 import { GlobalLoader } from "./shared/global-loader";
@@ -13,7 +13,7 @@ import { Skeleton } from "./ui/skeleton";
 export const GroupsSection = () => {
   const user = useGlobalAuthStore((state) => state.user);
 
-  const subtopic = usePathname().split("/")[2];
+  const { topic } = useParams();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
@@ -22,7 +22,7 @@ export const GroupsSection = () => {
         const res = await _axios.get(
           `/noauth/group?page=${pageParam}&userId=${
             user?.id ?? ""
-          }&subTopic=${subtopic}&limit=${10}`
+          }&subTopic=${topic}&limit=${10}`
         );
         return res;
       },

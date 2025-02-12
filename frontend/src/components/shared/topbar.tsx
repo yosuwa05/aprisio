@@ -7,7 +7,7 @@ import logo from "@img/images/logo.png";
 import { Bell, Menu, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -23,6 +23,7 @@ import { UserAvatar } from "./useravatar";
 export default function Topbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { topic } = useParams();
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -84,6 +85,7 @@ export default function Topbar() {
           src={logo}
           className="w-[120px] xl:w-[180px] cursor-pointer hidden md:block"
           alt="logo"
+          priority={true}
           onClick={() => router.push("/")}
         />
 
@@ -104,9 +106,9 @@ export default function Topbar() {
 
           <Link
             className={
-              pathname === "/community" ? "text-contrasttext font-bold" : ""
+              pathname === "/feed" ? "text-contrasttext font-bold" : ""
             }
-            href={"/community"}
+            href={"/feed"}
           >
             Community
           </Link>
@@ -165,8 +167,8 @@ export default function Topbar() {
               onClick={() =>
                 router.push(
                   activeLayout == "group"
-                    ? "/community/create-group"
-                    : "/community/create-post"
+                    ? "/feed/create-group/new"
+                    : `/feed/create-post/new?topic=${topic ?? "none"}`
                 )
               }
             >
