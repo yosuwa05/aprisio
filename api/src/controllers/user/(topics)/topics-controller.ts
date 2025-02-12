@@ -27,7 +27,7 @@ export const TopicsController = new Elysia({
           total,
           ok: true,
         };
-      } catch (error) {}
+      } catch (error) { }
     },
     {
       query: t.Object({

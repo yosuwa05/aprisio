@@ -7,6 +7,7 @@ export const communityController = new Elysia({
   prefix: "/community",
   tags: ["User - Community"],
 })
+
   .get(
     "/",
     async ({ query }) => {
@@ -15,10 +16,20 @@ export const communityController = new Elysia({
 
         const page = query.page || 1;
         const limit = query.limit || 10;
-        const { userId } = query;
+        const { userId, topicName } = query;
 
-        const aggregationPipeline: any = [
-          { $sort: { createdAt: 1 } },
+        const aggregationPipeline: any = [];
+
+        if (topicName && topicName.trim() !== "") {
+          aggregationPipeline.push({
+            $match: {
+              topicName: { $regex: topicName, $options: "i" },
+            },
+          });
+        }
+
+        aggregationPipeline.push(
+          { $sort: { createdAt: -1, _id: -1 } },
           { $skip: (page - 1) * limit },
           { $limit: limit },
           {
@@ -31,10 +42,10 @@ export const communityController = new Elysia({
           },
           {
             $unwind: { path: "$subTopic", preserveNullAndEmptyArrays: true },
-          },
-        ];
+          }
+        );
 
-        if (userId && userId != "undefined") {
+        if (userId && userId !== "undefined") {
           aggregationPipeline.push(
             {
               $lookup: {
@@ -51,7 +62,7 @@ export const communityController = new Elysia({
                       },
                     },
                   },
-                  { $limit: 1 },
+                  { $limit: limit },
                 ],
                 as: "joinedData",
               },
@@ -73,8 +84,10 @@ export const communityController = new Elysia({
           },
         });
 
-        const topics = await TopicModel.aggregate(aggregationPipeline);
-        const total = await TopicModel.countDocuments();
+        const topics = await TopicModel.aggregate(aggregationPipeline).sort({ createdAt: -1, _id: -1 });
+        const total = await TopicModel.countDocuments(
+          topicName ? { topicName: { $regex: topicName, $options: "i" } } : {}
+        );
 
         return {
           topics,
@@ -93,9 +106,15 @@ export const communityController = new Elysia({
         page: t.Optional(t.Number()),
         limit: t.Optional(t.Number()),
         userId: t.Optional(t.String()),
+        topicName: t.Optional(t.String()),
       }),
+      detail: {
+        summary: "Get All community",
+        description: "Get All community with optional search by topicName",
+      },
     }
   )
+
   .post(
     "/join",
     async ({ body }) => {
@@ -134,6 +153,10 @@ export const communityController = new Elysia({
         userId: t.String(),
         subTopicId: t.String(),
       }),
+      detail: {
+        summary: "Join community",
+        description: "Join community"
+      }
     }
   )
   .get(
@@ -157,5 +180,9 @@ export const communityController = new Elysia({
       query: t.Object({
         slug: t.String(),
       }),
+      detail: {
+        summary: "Get subtopic info",
+        description: "Get subtopic info"
+      }
     }
   );

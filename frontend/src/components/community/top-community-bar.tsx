@@ -66,7 +66,7 @@ export function TopCommunityBar() {
           </h2>
           <Icon icon='octicon:chevron-right-12' />
 
-          <Sheet defaultOpen>
+          <Sheet>
             <SheetTrigger>
               <Icon icon='mage:filter' className='text-lg md:text-xl' />
             </SheetTrigger>
