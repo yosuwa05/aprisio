@@ -103,6 +103,7 @@ export default function CreatePost() {
     description: string;
     link: string;
     image?: any;
+    selectedTopic: string;
   };
 
   const { mutate: createDraft } = useMutation({
@@ -112,6 +113,7 @@ export default function CreatePost() {
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("link", data.link);
+      formData.append("selectedTopic", data.selectedTopic);
 
       if (data.image) {
         formData.append("image", data.image);
@@ -185,6 +187,19 @@ export default function CreatePost() {
       return res.data;
     },
   });
+
+  function handleDraftClick(draft: {
+    _id: string;
+    title: string;
+    description: string;
+    url: string;
+  }) {
+    setValue("title", draft.title);
+    setValue("description", draft.description);
+    setValue("url", draft.url);
+
+    setDraftsModelOpen(false);
+  }
 
   return (
     <Suspense fallback={null}>
@@ -359,7 +374,11 @@ export default function CreatePost() {
               <Button
                 className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold"
                 onClick={() => {
-                  if (!titleValue || !descriptionValue)
+                  if (
+                    !titleValue ||
+                    !descriptionValue ||
+                    !selectedSubTopic.slug
+                  )
                     return toast("Please fill in all the fields");
 
                   createDraft({
@@ -367,6 +386,7 @@ export default function CreatePost() {
                     title: titleValue,
                     link: urlValue,
                     image: uploadedFile ? uploadedFile : "",
+                    selectedTopic: selectedSubTopic.slug,
                   });
                 }}
                 type="button"
@@ -415,11 +435,7 @@ export default function CreatePost() {
                           <div
                             className="flex flex-col items-start gap-2 mt-4 py-2"
                             onClick={() => {
-                              setValue("title", draft.title);
-                              setValue("description", draft.description);
-                              setValue("url", draft.url);
-
-                              setDraftsModelOpen(false);
+                              handleDraftClick(draft);
                             }}
                           >
                             <div className="text-[#534B04] text-xl">
@@ -435,6 +451,9 @@ export default function CreatePost() {
                               src={pencil}
                               alt="pencil"
                               className="cursor-pointer"
+                              onClick={() => {
+                                handleDraftClick(draft);
+                              }}
                             />
                             <Image
                               src={trash}

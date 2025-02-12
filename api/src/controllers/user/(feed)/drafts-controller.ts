@@ -1,5 +1,5 @@
-import { saveFile } from "@/lib/file-s3";
 import { DraftModel } from "@/models/draftmodel";
+import { SubTopicModel } from "@/models/subtopicmodel";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
@@ -15,7 +15,7 @@ export const draftsController = new Elysia({
     async ({ body, set, store }) => {
       try {
         const userId = (store as StoreType)["id"];
-        const { title, description, link, file } = body;
+        const { title, description, link, file, selectedTopic } = body;
 
         const existing = await DraftModel.countDocuments({
           user: userId,
@@ -30,17 +30,13 @@ export const draftsController = new Elysia({
 
         let fileUrl = "";
 
-        if (file) {
-          const { ok, filename } = await saveFile(file, "drafts-images");
+        const subtopic = await SubTopicModel.findOne({ slug: selectedTopic });
 
-          if (!ok) {
-            return {
-              message: "Error uploading file",
-              ok: false,
-            };
-          }
-
-          fileUrl = filename;
+        if (!subtopic) {
+          return {
+            message: "SubTopic not found",
+            ok: false,
+          };
         }
 
         const newDraft = new DraftModel({
@@ -49,6 +45,7 @@ export const draftsController = new Elysia({
           user: userId,
           url: link,
           image: fileUrl,
+          selectedTopic: subtopic._id,
         });
 
         await newDraft.save();
@@ -77,6 +74,7 @@ export const draftsController = new Elysia({
           })
         ),
         file: t.Optional(t.File()),
+        selectedTopic: t.String(),
       }),
     }
   )

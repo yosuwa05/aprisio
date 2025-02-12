@@ -13,6 +13,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/chevron-left.svg";
 import { useDebouncedValue } from "@mantine/hooks";
@@ -49,8 +50,7 @@ export default function CreateGroup() {
   const [subTopicSearch, setSubTopicSearch] = useState("");
   const [subTopicOpen, setSubTopicOpen] = useState(false);
   const [selectedSubTopic, setSelectedSubTopic] = useState({
-    _id: "",
-    subTopicName: "",
+    slug: "",
   });
 
   const [eventRules, setEventRules] = useState({
@@ -84,6 +84,12 @@ export default function CreateGroup() {
     });
   }, []);
 
+  const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
+
+  useEffect(() => {
+    setSelectedSubTopic({ slug: activeSubTopic });
+  }, [activeSubTopic]);
+
   const user = useGlobalAuthStore((state) => state.user);
 
   const router = useRouter();
@@ -106,7 +112,7 @@ export default function CreateGroup() {
   });
 
   const onSubmit = (data: any) => {
-    if (!selectedSubTopic._id) return toast("Please select a topic");
+    if (!selectedSubTopic.slug) return toast("Please select a topic");
     if (!date && data.eventName.length > 0)
       return toast("Please select a Event Date");
 
@@ -124,7 +130,7 @@ export default function CreateGroup() {
     formData.append("eventName", data.eventName);
     formData.append("eventRules", JSON.stringify(data.eventRules));
     if (date) formData.append("eventDate", date.toISOString());
-    formData.append("subtopicId", selectedSubTopic._id);
+    formData.append("subtopicId", selectedSubTopic.slug);
 
     mutate(formData);
   };
@@ -156,9 +162,7 @@ export default function CreateGroup() {
               type="button"
               className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1"
             >
-              {selectedSubTopic.subTopicName
-                ? selectedSubTopic.subTopicName
-                : "Select a Topic"}
+              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
               <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
             </Button>
           </PopoverTrigger>
@@ -393,7 +397,7 @@ export default function CreateGroup() {
                 <div className="flex flex-wrap gap-4 my-4">
                   {uploadedFiles.map((file, index) => (
                     <div
-                      className="relative w-[300px] border-2 rounded-md p-3"
+                      className="relative w-[200px] border-2 rounded-md p-3"
                       key={index}
                     >
                       <Trash2
@@ -410,7 +414,7 @@ export default function CreateGroup() {
                         alt=""
                         width={30}
                         height={100}
-                        className="w-full h-[300px] object-cover rounded-2xl"
+                        className="w-full h-[200px] object-cover rounded-2xl"
                       />
                     </div>
                   ))}

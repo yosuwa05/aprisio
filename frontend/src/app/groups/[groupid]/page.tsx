@@ -8,11 +8,13 @@ import { Icon } from "@iconify/react";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function GroupPage() {
-  let groupName = usePathname().split("/")[3];
+  // let groupName = usePathname().split("/")[3];
+
+  const { groupid } = useParams();
 
   const router = useRouter();
 
@@ -23,7 +25,7 @@ export default function GroupPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["group-info"],
     queryFn: async () => {
-      const res = await _axios.get(`/noauth/group/get/${groupName}`);
+      const res = await _axios.get(`/noauth/group/get/${groupid}`);
       return res.data;
     },
   });
@@ -115,7 +117,7 @@ export default function GroupPage() {
                   <h3
                     className="font-semibold text-sm"
                     onClick={() => {
-                      router.push(`/community/groups/${groupName}/new-event`);
+                      router.push(`/community/groups/${groupid}/new-event`);
                     }}
                   >
                     Create Event

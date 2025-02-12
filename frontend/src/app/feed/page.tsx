@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
+import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
@@ -15,9 +16,13 @@ export default function Community() {
   const updateActiveSubTopic = useGlobalFeedStore(
     (state) => state.setActiveSubTopic
   );
+  const updateActiveLayout = useGlobalLayoutStore(
+    (state) => state.setActiveLayout
+  );
 
   useEffect(() => {
     updateActiveSubTopic("");
+    updateActiveLayout("post");
   }, []);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
