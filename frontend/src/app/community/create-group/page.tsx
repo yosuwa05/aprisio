@@ -42,7 +42,7 @@ const postSchema = z.object({
   }),
 });
 
-export default function CreatePost() {
+export default function CreateGroup() {
   const [uploadedFiles, setUploadedFiles] = useState<File[] | []>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 

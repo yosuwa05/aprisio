@@ -50,7 +50,7 @@ export const GroupsSection = () => {
     <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
       {isLoading ? (
         <div className="flex flex-col gap-4 w-full ">
-          {[...Array(2)].map((_, i) => (
+          {[...Array(1)].map((_, i) => (
             <div key={i} className="flex gap-4 w-full">
               <Skeleton className="w-[50px] h-[50px] rounded-full" />
               <div className="flex flex-col gap-2 w-full">

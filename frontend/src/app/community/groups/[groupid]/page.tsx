@@ -8,11 +8,13 @@ import { Icon } from "@iconify/react";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function GroupPage() {
   let groupName = usePathname().split("/")[3];
+
+  const router = useRouter();
 
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -110,7 +112,14 @@ export default function GroupPage() {
               <div className="my-4">
                 <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
                   <Icon icon="tabler:plus" fontSize={22} />
-                  <h3 className="font-semibold text-sm">Create Event</h3>
+                  <h3
+                    className="font-semibold text-sm"
+                    onClick={() => {
+                      router.push(`/community/groups/${groupName}/new-event`);
+                    }}
+                  >
+                    Create Event
+                  </h3>
                 </div>
 
                 <div className="mt-6 flex-col flex gap-4">
