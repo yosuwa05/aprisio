@@ -141,46 +141,31 @@ export const authenticatedPostController = new Elysia({
       try {
         const userId = (store as StoreType)["id"];
 
-        const session = await LikeModel.startSession();
-        session.startTransaction();
-
         try {
           const existingLike = await LikeModel.findOne({
             user: userId,
             post: postId,
-          }).session(session);
+          }).lean();
 
           if (existingLike) {
-            await LikeModel.deleteOne({ _id: existingLike._id }).session(
-              session
-            );
-            await PostModel.findByIdAndUpdate(
-              postId,
-              { $inc: { likesCount: -1 } },
-              { session }
-            ).exec();
-            await session.commitTransaction();
-            session.endSession();
+            await LikeModel.deleteOne({ _id: existingLike._id });
+            await PostModel.findByIdAndUpdate(postId, {
+              $inc: { likesCount: -1 },
+            }).exec();
 
             set.status = 200;
             return { message: "Post unliked successfully", ok: true };
           }
 
           const newLike = new LikeModel({ user: userId, post: postId });
-          await newLike.save({ session });
-          await PostModel.findByIdAndUpdate(
-            postId,
-            { $inc: { likesCount: 1 } },
-            { session }
-          ).exec();
-          await session.commitTransaction();
-          session.endSession();
+          await newLike.save();
+          await PostModel.findByIdAndUpdate(postId, {
+            $inc: { likesCount: 1 },
+          }).exec();
 
           set.status = 200;
           return { message: "Post liked successfully", ok: true };
         } catch (error) {
-          await session.abortTransaction();
-          session.endSession();
           throw error;
         }
       } catch (error: any) {

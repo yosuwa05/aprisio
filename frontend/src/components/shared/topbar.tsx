@@ -164,13 +164,13 @@ export default function Topbar() {
           {pathname != "/" && (
             <Button
               className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
-              onClick={() =>
+              onClick={() => {
                 router.push(
                   activeLayout == "group"
                     ? "/feed/create-group/new"
-                    : `/feed/create-post/new?topic=${topic ?? "none"}`
-                )
-              }
+                    : `/feed/create-post/new`
+                );
+              }}
             >
               {activeLayout == "group" ? "Create Group" : "Create Post"}
             </Button>

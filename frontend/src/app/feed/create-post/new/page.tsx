@@ -19,6 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/chevron-left.svg";
 import pencil from "@img/icons/pencil.svg";
@@ -27,8 +28,8 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -61,15 +62,12 @@ export default function CreatePost() {
   const descriptionValue = watch("description", "");
   const urlValue = watch("url", "");
 
+  const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
+
   const user = useGlobalAuthStore((state) => state.user);
 
   const router = useRouter();
-  const params = useSearchParams();
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    setSelectedSubTopic({ slug: params.get("topic") ?? "" });
-  }, [params.get("topic")]);
 
   const { isLoading, data: { drafts, ok } = { drafts: [], ok: false } } =
     useQuery({
@@ -79,6 +77,10 @@ export default function CreatePost() {
       },
       queryKey: ["drafts"],
     });
+
+  useEffect(() => {
+    setSelectedSubTopic({ slug: activeSubTopic });
+  }, [activeSubTopic]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
@@ -185,7 +187,7 @@ export default function CreatePost() {
   });
 
   return (
-    <div>
+    <Suspense fallback={null}>
       <div className="mx-2 xl:mx-8">
         <div className="flex justify-between items-center xl:items-end mx-2">
           <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
@@ -459,6 +461,6 @@ export default function CreatePost() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-    </div>
+    </Suspense>
   );
 }

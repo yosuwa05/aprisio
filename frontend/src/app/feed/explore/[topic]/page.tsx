@@ -5,17 +5,27 @@ import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, Plus } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Feed() {
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
 
   const { topic } = useParams();
+
+  const updateActiveSubTopic = useGlobalFeedStore(
+    (state) => state.setActiveSubTopic
+  );
+
+  useEffect(() => {
+    updateActiveSubTopic(typeof topic === "string" ? topic : "");
+  }, [topic]);
 
   const { data, isLoading } = useQuery({
     queryKey: ["community-info", topic],

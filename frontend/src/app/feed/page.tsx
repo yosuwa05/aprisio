@@ -5,12 +5,20 @@ import GlobalLoader from "@/components/globalloader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 
 export default function Community() {
   const user = useGlobalAuthStore((state) => state.user);
+  const updateActiveSubTopic = useGlobalFeedStore(
+    (state) => state.setActiveSubTopic
+  );
+
+  useEffect(() => {
+    updateActiveSubTopic("");
+  }, []);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
