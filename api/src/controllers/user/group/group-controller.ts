@@ -1,5 +1,9 @@
+import { saveFile } from "@/lib/file-s3";
+import { slugify } from "@/lib/utils";
 import { EventModel } from "@/models/events.model";
 import { GroupModel } from "@/models/group.model";
+import { GroupPhotoModel } from "@/models/groupphotos.model";
+import { SubTopicModel } from "@/models/subtopicmodel";
 import Elysia, { t } from "elysia";
 
 export const groupController = new Elysia({
@@ -19,6 +23,7 @@ export const groupController = new Elysia({
       eventName,
       eventRules,
       subtopicId,
+      file,
     } = body;
 
     try {
@@ -41,11 +46,21 @@ export const groupController = new Elysia({
         };
       }
 
+      const subTopic = await SubTopicModel.findOne({ slug: subtopicId });
+
+      if (!subTopic) {
+        return {
+          message: "Invalid subtopic",
+          ok: false,
+        };
+      }
+
       const newGroup = new GroupModel({
         name: groupName,
         description,
         location,
-        subTopic: subtopicId,
+        subTopic: subTopic?._id,
+        slug: slugify(groupName),
       });
 
       let eventRulesData = {
@@ -56,6 +71,30 @@ export const groupController = new Elysia({
       if (eventRules) eventRulesData = JSON.parse(eventRules);
 
       newGroup.groupAdmin = userId;
+
+      let filePromises = [];
+
+      if (file && file.length > 0) {
+        for (let i of file) {
+          const { filename, ok } = await saveFile(i, "group-images");
+
+          if (!ok) {
+            return {
+              message: "Error uploading file",
+              ok: false,
+            };
+          }
+
+          let newPic = new GroupPhotoModel({
+            group: newGroup._id,
+            photo: filename,
+          });
+
+          filePromises.push(newPic.save());
+        }
+      }
+
+      await Promise.all(filePromises);
 
       if (eventName) {
         const newEvent = new EventModel({
@@ -92,6 +131,11 @@ export const groupController = new Elysia({
       eventRules: t.Optional(t.String()),
       eventDate: t.Optional(t.String()),
       subtopicId: t.String(),
+      file: t.Optional(
+        t.Files({
+          default: [],
+        })
+      ),
     }),
     summary: "Create group",
   }

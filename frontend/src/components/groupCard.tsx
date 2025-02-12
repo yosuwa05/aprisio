@@ -65,7 +65,7 @@ export default function GroupCard({ group }: Props) {
               : "bg-[#FCF7EA] border-[#AF9654]"
           } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
           onClick={() => {
-            router.push(`/community/groups/${group.slug}`);
+            router.push(`/groups/${group.slug}`);
           }}
         >
           {group.canJoin ? "Join" : "View"}

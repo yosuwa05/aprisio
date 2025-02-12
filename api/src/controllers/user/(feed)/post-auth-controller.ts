@@ -1,6 +1,8 @@
 import { saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
 import { LikeModel, PostModel } from "@/models";
+import { SubTopicModel } from "@/models/subtopicmodel";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
@@ -14,7 +16,7 @@ export const authenticatedPostController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { title, description, url, file, subTopicId } = body;
+      const { title, description, url, file, slug } = body;
 
       try {
         const userId = (store as StoreType)["id"];
@@ -48,7 +50,7 @@ export const authenticatedPostController = new Elysia({
 
         if (file) {
           const { ok, filename } = await saveFile(file, "posts");
-          console.log(ok, filename);
+
           if (ok) {
             fileUrl = filename;
           } else {
@@ -58,6 +60,29 @@ export const authenticatedPostController = new Elysia({
               ok: false,
             };
           }
+        }
+
+        const subtopic = await SubTopicModel.findOne({ slug });
+
+        if (!subtopic) {
+          set.status = 400;
+          return {
+            message: "SubTopic not found",
+            ok: false,
+          };
+        }
+
+        const userSubtopic = await UserSubTopicModel.findOne({
+          userId,
+          subTopicId: subtopic._id,
+        });
+
+        if (!userSubtopic) {
+          set.status = 400;
+          return {
+            message: "Follow the topic to post",
+            ok: false,
+          };
         }
 
         const newPost = new PostModel({
@@ -71,7 +96,7 @@ export const authenticatedPostController = new Elysia({
           likes: [],
           commentsCount: 0,
           likesCount: 0,
-          subTopic: subTopicId,
+          subTopic: subtopic._id,
         });
 
         await newPost.save();
@@ -99,7 +124,7 @@ export const authenticatedPostController = new Elysia({
             default: "",
           })
         ),
-        subTopicId: t.Optional(t.String()),
+        slug: t.String(),
         file: t.Optional(t.File()),
       }),
       detail: {
@@ -116,46 +141,31 @@ export const authenticatedPostController = new Elysia({
       try {
         const userId = (store as StoreType)["id"];
 
-        const session = await LikeModel.startSession();
-        session.startTransaction();
-
         try {
           const existingLike = await LikeModel.findOne({
             user: userId,
             post: postId,
-          }).session(session);
+          }).lean();
 
           if (existingLike) {
-            await LikeModel.deleteOne({ _id: existingLike._id }).session(
-              session
-            );
-            await PostModel.findByIdAndUpdate(
-              postId,
-              { $inc: { likesCount: -1 } },
-              { session }
-            ).exec();
-            await session.commitTransaction();
-            session.endSession();
+            await LikeModel.deleteOne({ _id: existingLike._id });
+            await PostModel.findByIdAndUpdate(postId, {
+              $inc: { likesCount: -1 },
+            }).exec();
 
             set.status = 200;
             return { message: "Post unliked successfully", ok: true };
           }
 
           const newLike = new LikeModel({ user: userId, post: postId });
-          await newLike.save({ session });
-          await PostModel.findByIdAndUpdate(
-            postId,
-            { $inc: { likesCount: 1 } },
-            { session }
-          ).exec();
-          await session.commitTransaction();
-          session.endSession();
+          await newLike.save();
+          await PostModel.findByIdAndUpdate(postId, {
+            $inc: { likesCount: 1 },
+          }).exec();
 
           set.status = 200;
           return { message: "Post liked successfully", ok: true };
         } catch (error) {
-          await session.abortTransaction();
-          session.endSession();
           throw error;
         }
       } catch (error: any) {

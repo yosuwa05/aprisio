@@ -4,7 +4,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import Postcard from "./postcard";
 import { GlobalLoader } from "./shared/global-loader";
@@ -28,16 +28,15 @@ type IPost = {
 
 export const PostsSection = () => {
   const user = useGlobalAuthStore((state) => state.user);
-  const subtopic = usePathname().split("/")[2];
+
+  const { topic } = useParams();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["projects" + user?.id],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post?page=${pageParam}&userId=${
-            user?.id ?? ""
-          }&subTopic=${subtopic}`
+          `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`
         );
         return res;
       },
@@ -58,16 +57,16 @@ export const PostsSection = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className='flex flex-col gap-6 items-center p-1 lg:p-4'>
+    <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
       {isLoading ? (
-        <div className='flex flex-col gap-4 w-full'>
+        <div className="flex flex-col gap-4 w-full">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className='flex gap-4 w-full'>
-              <Skeleton className='w-[50px] h-[50px] rounded-full' />
-              <div className='flex flex-col gap-2 w-full'>
-                <Skeleton className='w-full h-[200px]' />
-                <Skeleton className='w-full h-[15px]' />
-                <Skeleton className='w-3/4 h-[15px]' />
+            <div key={i} className="flex gap-4 w-full">
+              <Skeleton className="w-[50px] h-[50px] rounded-full" />
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="w-full h-[200px]" />
+                <Skeleton className="w-full h-[15px]" />
+                <Skeleton className="w-3/4 h-[15px]" />
               </div>
             </div>
           ))}
@@ -95,13 +94,13 @@ export const PostsSection = () => {
             ))
           )
         ) : (
-          <p className='text-gray-500 text-xs font-semibold'>No posts found</p>
+          <p className="text-gray-500 text-xs font-semibold">No posts found</p>
         )
       ) : (
-        <p className='text-gray-500'>No posts</p>
+        <p className="text-gray-500">No posts</p>
       )}
 
-      <div ref={ref} className='h-1'></div>
+      <div ref={ref} className="h-1"></div>
 
       {isFetchingNextPage && <GlobalLoader />}
     </div>

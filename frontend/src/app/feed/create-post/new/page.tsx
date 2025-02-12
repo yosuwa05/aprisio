@@ -19,6 +19,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/chevron-left.svg";
 import pencil from "@img/icons/pencil.svg";
@@ -28,7 +29,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -47,8 +48,7 @@ export default function CreatePost() {
   const [subTopicSearch, setSubTopicSearch] = useState("");
   const [subTopicOpen, setSubTopicOpen] = useState(false);
   const [selectedSubTopic, setSelectedSubTopic] = useState({
-    _id: "",
-    subTopicName: "",
+    slug: "",
   });
 
   const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
@@ -61,6 +61,8 @@ export default function CreatePost() {
   const titleValue = watch("title", "");
   const descriptionValue = watch("description", "");
   const urlValue = watch("url", "");
+
+  const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -75,6 +77,10 @@ export default function CreatePost() {
       },
       queryKey: ["drafts"],
     });
+
+  useEffect(() => {
+    setSelectedSubTopic({ slug: activeSubTopic });
+  }, [activeSubTopic]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
@@ -97,6 +103,7 @@ export default function CreatePost() {
     description: string;
     link: string;
     image?: any;
+    selectedTopic: string;
   };
 
   const { mutate: createDraft } = useMutation({
@@ -106,6 +113,7 @@ export default function CreatePost() {
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("link", data.link);
+      formData.append("selectedTopic", data.selectedTopic);
 
       if (data.image) {
         formData.append("image", data.image);
@@ -140,7 +148,7 @@ export default function CreatePost() {
   });
 
   const onSubmit = (data: any) => {
-    if (!selectedSubTopic._id) return toast("Please select a topic");
+    if (!selectedSubTopic.slug) return toast("Please select a topic");
 
     const formData = new FormData();
 
@@ -151,7 +159,7 @@ export default function CreatePost() {
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("url", data.url);
-    formData.append("subTopicId", selectedSubTopic._id);
+    formData.append("slug", selectedSubTopic.slug);
     mutate(formData);
   };
 
@@ -174,14 +182,27 @@ export default function CreatePost() {
     queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
     queryFn: async () => {
       const res = await _axios.get(
-        `/subtopics?limit=7&q=${debouncedSubTopicSearch}`
+        `/subtopics?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
       );
       return res.data;
     },
   });
 
+  function handleDraftClick(draft: {
+    _id: string;
+    title: string;
+    description: string;
+    url: string;
+  }) {
+    setValue("title", draft.title);
+    setValue("description", draft.description);
+    setValue("url", draft.url);
+
+    setDraftsModelOpen(false);
+  }
+
   return (
-    <div>
+    <Suspense fallback={null}>
       <div className="mx-2 xl:mx-8">
         <div className="flex justify-between items-center xl:items-end mx-2">
           <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
@@ -207,9 +228,7 @@ export default function CreatePost() {
         <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
           <PopoverTrigger asChild className="p-6">
             <Button className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1">
-              {selectedSubTopic.subTopicName
-                ? selectedSubTopic.subTopicName
-                : "Select a Topic"}
+              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
               <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
             </Button>
           </PopoverTrigger>
@@ -220,7 +239,7 @@ export default function CreatePost() {
               value={subTopicSearch}
               onChange={(e) => setSubTopicSearch(e.target.value)}
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               {isSubTopicsLoading && (
                 <div className="flex justify-center items-center my-4">
                   <div>
@@ -232,14 +251,14 @@ export default function CreatePost() {
                 data?.subTopics?.map((subTopic: any) => (
                   <div
                     key={subTopic._id}
-                    className="flex cursor-pointer text-lg mx-4 text-black my-1"
+                    className="flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]"
                     onClick={() => {
                       setSubTopicSearch("");
                       setSubTopicOpen(false);
                       setSelectedSubTopic(subTopic);
                     }}
                   >
-                    <h3>{subTopic.subTopicName}</h3>
+                    <p className="text-black">{subTopic.slug}</p>
                   </div>
                 ))}
             </div>
@@ -355,7 +374,11 @@ export default function CreatePost() {
               <Button
                 className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold"
                 onClick={() => {
-                  if (!titleValue || !descriptionValue)
+                  if (
+                    !titleValue ||
+                    !descriptionValue ||
+                    !selectedSubTopic.slug
+                  )
                     return toast("Please fill in all the fields");
 
                   createDraft({
@@ -363,6 +386,7 @@ export default function CreatePost() {
                     title: titleValue,
                     link: urlValue,
                     image: uploadedFile ? uploadedFile : "",
+                    selectedTopic: selectedSubTopic.slug,
                   });
                 }}
                 type="button"
@@ -411,11 +435,7 @@ export default function CreatePost() {
                           <div
                             className="flex flex-col items-start gap-2 mt-4 py-2"
                             onClick={() => {
-                              setValue("title", draft.title);
-                              setValue("description", draft.description);
-                              setValue("url", draft.url);
-
-                              setDraftsModelOpen(false);
+                              handleDraftClick(draft);
                             }}
                           >
                             <div className="text-[#534B04] text-xl">
@@ -431,6 +451,9 @@ export default function CreatePost() {
                               src={pencil}
                               alt="pencil"
                               className="cursor-pointer"
+                              onClick={() => {
+                                handleDraftClick(draft);
+                              }}
                             />
                             <Image
                               src={trash}
@@ -457,6 +480,6 @@ export default function CreatePost() {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-    </div>
+    </Suspense>
   );
 }
