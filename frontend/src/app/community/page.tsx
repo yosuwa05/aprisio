@@ -24,8 +24,8 @@ export default function Community() {
       initialPageParam: 1,
       getNextPageParam: (lastPage: any) => {
         const { page, limit, total } = lastPage.data;
-        const nextPage = page + 1;
-        return nextPage * limit < total ? nextPage : undefined;
+        const hasMore = page * limit < total;
+        return hasMore ? page + 1 : undefined;
       },
     });
 
