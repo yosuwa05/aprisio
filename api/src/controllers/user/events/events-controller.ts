@@ -29,12 +29,12 @@ export const EventsController = new Elysia({
         await event.save();
 
         return {
-          message: "User attended event",
+          message: "Event attended successfully",
           ok: true,
         };
       } else {
         return {
-          error: "User already attended",
+          message: "Already attended",
           ok: false,
         };
       }

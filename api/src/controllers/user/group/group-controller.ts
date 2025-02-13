@@ -4,6 +4,7 @@ import { EventModel } from "@/models/events.model";
 import { GroupModel } from "@/models/group.model";
 import { GroupPhotoModel } from "@/models/groupphotos.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
+import { UserGroupsModel } from "@/models/usergroup.model";
 import Elysia, { t } from "elysia";
 
 export const groupController = new Elysia({
@@ -12,133 +13,188 @@ export const groupController = new Elysia({
     description: "Group controller",
     tags: ["User - Group"],
   },
-}).post(
-  "/create",
-  async ({ body, set, store }) => {
-    const {
-      groupName,
-      description,
-      eventDate,
-      location,
-      eventName,
-      eventRules,
-      subtopicId,
-      file,
-    } = body;
-
-    try {
-      const userId = (store as any)["id"];
-
-      if (!userId) {
-        set.status = 401;
-        return {
-          message: "Unauthorized",
-          ok: false,
-        };
-      }
-
-      const existingGroup = await GroupModel.findOne({ name: groupName });
-
-      if (existingGroup) {
-        return {
-          message: "Duplicate entry. Group already exists.",
-          ok: false,
-        };
-      }
-
-      const subTopic = await SubTopicModel.findOne({ slug: subtopicId });
-
-      if (!subTopic) {
-        return {
-          message: "Invalid subtopic",
-          ok: false,
-        };
-      }
-
-      const newGroup = new GroupModel({
-        name: groupName,
+})
+  .post(
+    "/create",
+    async ({ body, set, store }) => {
+      const {
+        groupName,
         description,
+        eventDate,
         location,
-        subTopic: subTopic?._id,
-        slug: slugify(groupName),
-      });
+        eventName,
+        eventRules,
+        subtopicId,
+        file,
+      } = body;
 
-      let eventRulesData = {
-        total: 0,
-        events: [],
-      };
+      try {
+        const userId = (store as any)["id"];
 
-      if (eventRules) eventRulesData = JSON.parse(eventRules);
-
-      newGroup.groupAdmin = userId;
-
-      let filePromises = [];
-
-      if (file && file.length > 0) {
-        for (let i of file) {
-          const { filename, ok } = await saveFile(i, "group-images");
-
-          if (!ok) {
-            return {
-              message: "Error uploading file",
-              ok: false,
-            };
-          }
-
-          let newPic = new GroupPhotoModel({
-            group: newGroup._id,
-            photo: filename,
-          });
-
-          filePromises.push(newPic.save());
+        if (!userId) {
+          set.status = 401;
+          return {
+            message: "Unauthorized",
+            ok: false,
+          };
         }
-      }
 
-      await Promise.all(filePromises);
+        const existingGroup = await GroupModel.findOne({ name: groupName });
 
-      if (eventName) {
-        const newEvent = new EventModel({
-          date: eventDate,
-          name: eventName,
-          rules: eventRulesData.events,
-          eventName,
-          location: location,
-          group: newGroup._id,
+        if (existingGroup) {
+          return {
+            message: "Duplicate entry. Group already exists.",
+            ok: false,
+          };
+        }
+
+        const subTopic = await SubTopicModel.findOne({ slug: subtopicId });
+
+        if (!subTopic) {
+          return {
+            message: "Invalid subtopic",
+            ok: false,
+          };
+        }
+
+        const newGroup = new GroupModel({
+          name: groupName,
+          description,
+          location,
+          subTopic: subTopic?._id,
+          slug: slugify(groupName),
         });
-        newGroup.events.push(newEvent._id);
-        await newEvent.save();
+
+        let eventRulesData = {
+          total: 0,
+          events: [],
+        };
+
+        if (eventRules) eventRulesData = JSON.parse(eventRules);
+
+        newGroup.groupAdmin = userId;
+
+        let filePromises = [];
+
+        if (file && file.length > 0) {
+          for (let i of file) {
+            const { filename, ok } = await saveFile(i, "group-images");
+
+            if (!ok) {
+              return {
+                message: "Error uploading file",
+                ok: false,
+              };
+            }
+
+            let newPic = new GroupPhotoModel({
+              group: newGroup._id,
+              photo: filename,
+            });
+
+            filePromises.push(newPic.save());
+          }
+        }
+
+        await Promise.all(filePromises);
+
+        if (eventName) {
+          const newEvent = new EventModel({
+            date: eventDate,
+            name: eventName,
+            rules: eventRulesData.events,
+            eventName,
+            location: location,
+            group: newGroup._id,
+          });
+          newGroup.events.push(newEvent._id);
+          await newEvent.save();
+        }
+
+        await newGroup.save();
+
+        set.status = 200;
+        return { message: "Group created successfully", ok: true };
+      } catch (error: any) {
+        set.status = 500;
+        console.error(error);
+        return {
+          message: error,
+          ok: false,
+        };
       }
-
-      await newGroup.save();
-
-      set.status = 200;
-      return { message: "Group created successfully", ok: true };
-    } catch (error: any) {
-      set.status = 500;
-      console.error(error);
-      return {
-        message: error,
-        ok: false,
-      };
-    }
-  },
-  {
-    body: t.Object({
-      groupName: t.String(),
-      description: t.String(),
-      location: t.Optional(t.String()),
-      eventName: t.Optional(t.String()),
-      eventRules: t.Optional(t.String()),
-      eventDate: t.Optional(t.String()),
-      subtopicId: t.String(),
-      file: t.Optional(
-        t.Files({
-          default: [],
-        })
-      ),
-    }),
-    detail: {
-      summary: "Create a new group",
     },
-  }
-);
+    {
+      body: t.Object({
+        groupName: t.String(),
+        description: t.String(),
+        location: t.Optional(t.String()),
+        eventName: t.Optional(t.String()),
+        eventRules: t.Optional(t.String()),
+        eventDate: t.Optional(t.String()),
+        subtopicId: t.String(),
+        file: t.Optional(
+          t.Files({
+            default: [],
+          })
+        ),
+      }),
+      detail: {
+        summary: "Create a new group",
+      },
+    }
+  )
+  .post(
+    "/join",
+    async ({ body, set, store }) => {
+      const { groupId } = body;
+
+      try {
+        const userId = (store as any)["id"];
+
+        const group = await GroupModel.findById(groupId);
+
+        if (!group) {
+          return {
+            message: "Group not found",
+            ok: false,
+          };
+        }
+
+        const alreadyJoined = await UserGroupsModel.findOne({
+          userId,
+          group: group._id,
+        });
+
+        if (alreadyJoined) {
+          return {
+            message: "You are already a member of this group",
+            ok: false,
+          };
+        }
+
+        const newGroup = new UserGroupsModel({
+          userId,
+          group: group._id,
+        });
+
+        await newGroup.save();
+
+        set.status = 200;
+        return {
+          message: "You have successfully joined the group",
+          ok: true,
+        };
+      } catch (error) {
+        return {
+          error,
+          ok: false,
+        };
+      }
+    },
+    {
+      body: t.Object({
+        groupId: t.String(),
+      }),
+    }
+  );

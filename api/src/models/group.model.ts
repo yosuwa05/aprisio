@@ -6,7 +6,7 @@ interface IGroup {
   description: string;
   events: Types.ObjectId[];
   images: [];
-  members: Types.ObjectId[];
+  memberCount: Number;
   subTopic: Types.ObjectId;
   groupAdmin: Types.ObjectId;
   slug: string;
@@ -23,12 +23,10 @@ const GroupSchema = new Schema<IGroup>(
       },
     ],
     images: [],
-    members: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "users",
-      },
-    ],
+    memberCount: {
+      type: Number,
+      default: 0,
+    },
     subTopic: {
       type: Schema.Types.ObjectId,
       ref: "subtopics",
