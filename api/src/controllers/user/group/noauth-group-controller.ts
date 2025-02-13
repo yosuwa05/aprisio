@@ -209,7 +209,7 @@ export const noAuthGroupController = new Elysia({
         const events = await EventModel.find({
           group: groupid,
         })
-          .sort({ createdAt: -1 })
+          .sort({ createdAt: -1, _id: -1 })
           .skip((page - 1) * limit)
           .limit(limit)
           .select("-unnecessaryField")

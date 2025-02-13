@@ -17,7 +17,7 @@ type Props = {
 export function EventsSection({ groupid, gropuslug }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
-  const limit = 4;
+  const limit = 10;
 
   const {
     data,
@@ -79,7 +79,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           </div>
         ) : hasevents ? (
           data?.pages?.flatMap((page: any) =>
-            page?.events?.map((event: any) => {
+            page?.events?.map((event: any, index: number) => {
               return (
                 <EventCard
                   key={event?._id}
