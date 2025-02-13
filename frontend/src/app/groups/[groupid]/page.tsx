@@ -3,6 +3,7 @@
 import { EventsSection } from "@/components/groups/events";
 import { PersonsSection } from "@/components/groups/persons";
 import { PhotosSection } from "@/components/groups/photos";
+import { GroupShareSection } from "@/components/groupshare-section";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
 import { Icon } from "@iconify/react";
@@ -19,7 +20,7 @@ export default function GroupPage() {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const tabs = ["About", "Events", "Members", "Photos"];
+  const tabs = ["About", "Events", "Members", "Photos", "Shared Post"];
 
   const { data, isLoading } = useQuery({
     queryKey: ["group-info"],
@@ -117,6 +118,9 @@ export default function GroupPage() {
             )}
             {activeIndex == 2 && <PersonsSection groupid={data?.group._id} />}
             {activeIndex == 3 && <PhotosSection groupid={data?.group._id} />}
+            {activeIndex == 4 && (
+              <GroupShareSection groupid={data?.group._id} />
+            )}
           </div>
         </div>
       </div>
