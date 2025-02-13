@@ -74,6 +74,14 @@ export const groupController = new Elysia({
 
         newGroup.groupAdmin = userId;
 
+        const newGroupEntry = new UserGroupsModel({
+          userId,
+          group: newGroup._id,
+          role: "admin",
+        });
+
+        await newGroupEntry.save();
+
         let filePromises = [];
 
         if (file && file.length > 0) {

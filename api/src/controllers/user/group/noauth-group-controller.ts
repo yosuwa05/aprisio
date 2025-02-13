@@ -1,5 +1,6 @@
 import { EventModel } from "@/models";
 import { GroupModel } from "@/models/group.model";
+import { GroupPhotoModel } from "@/models/groupphotos.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
 import Elysia, { t } from "elysia";
@@ -115,13 +116,46 @@ export const noAuthGroupController = new Elysia({
     "/members",
     async ({ query }) => {
       try {
-      } catch (error) { }
+        const { groupid } = query;
+
+        let group = await GroupModel.findById(groupid);
+
+        if (!group) {
+          return {
+            message: "Group not found",
+            ok: false,
+          };
+        }
+
+        const members = await UserGroupsModel.find(
+          {
+            group: groupid,
+          },
+          "userId role"
+        )
+          .populate("userId", "name")
+          .lean();
+
+        return {
+          members,
+          ok: true,
+          message: "Members fetched successfully",
+        };
+      } catch (error) {
+        return {
+          error,
+          ok: false,
+        };
+      }
     },
     {
       detail: {
         description: "Get group members",
         summary: "Get group members",
       },
+      query: t.Object({
+        groupid: t.String(),
+      }),
     }
   )
   .get(
@@ -217,43 +251,42 @@ export const noAuthGroupController = new Elysia({
       },
     }
   )
-  .get("/random-groups-events", async ({ set, query }) => {
-    try {
-      const { subtopicSlug } = query;
+  .get(
+    "/photos",
+    async ({ query }) => {
+      try {
+        const { groupid } = query;
 
-      const subTopic = await SubTopicModel.findOne({ slug: subtopicSlug });
+        const page = query.page || 1;
+        const limit = query.limit || 10;
 
-      if (!subTopic) {
+        const photoEntries = await GroupPhotoModel.find({
+          group: groupid,
+        })
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean();
+
+        return { photos: photoEntries, ok: true };
+      } catch (error) {
+        console.error(error);
+
         return {
-          message: "Invalid subtopic",
+          error,
           ok: false,
         };
       }
-
-      const groups = await GroupModel.aggregate([
-        { $match: { subTopic: subTopic._id } },
-        { $sample: { size: 3 } }
-      ]);
-
-      return {
-        groups,
-        ok: true,
-      };
-
-    } catch (error: any) {
-      console.error(error);
-      return {
-        message: "An error occurred",
-        ok: false,
-      };
-    }
-  }, {
-    query: t.Object({
-      subtopicSlug: t.String()
-    }),
-    detail: {
-      description: "Get random groups based on subtopic",
-      summary: "Get random groups based on subtopic",
     },
-  });
-
+    {
+      query: t.Object({
+        groupid: t.String(),
+        limit: t.Optional(t.Number()),
+        page: t.Optional(t.Number()),
+      }),
+      detail: {
+        summary: "Get group photos",
+        description: "Get group photos",
+      },
+    }
+  );

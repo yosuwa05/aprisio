@@ -2,6 +2,7 @@
 
 import { EventsSection } from "@/components/groups/events";
 import { PersonsSection } from "@/components/groups/persons";
+import { PhotosSection } from "@/components/groups/photos";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
 import { Icon } from "@iconify/react";
@@ -115,26 +116,7 @@ export default function GroupPage() {
               />
             )}
             {activeIndex == 2 && <PersonsSection groupid={data?.group._id} />}
-
-            {activeIndex == 3 && (
-              <div className='my-4 mx-2'>
-                <div className='grid grid-cols-3 gap-4'>
-                  {Array.from(Array(6).keys()).map((index) => (
-                    <div
-                      key={index}
-                      className='flex flex-col gap-2 items-center'>
-                      <Image
-                        src={placeholder}
-                        alt='placeholder'
-                        width={300}
-                        height={300}
-                        className='rounded-lg'
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {activeIndex == 3 && <PhotosSection groupid={data?.group._id} />}
           </div>
         </div>
       </div>

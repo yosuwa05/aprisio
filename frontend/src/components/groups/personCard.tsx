@@ -1,7 +1,17 @@
 import personImage from "@img/assets/person.png";
 import Image from "next/image";
 
-export default function PersonCard({}) {
+type Props = {
+  member: Member;
+};
+
+type Member = {
+  _id: string;
+  userId: any;
+  role: string;
+};
+
+export default function PersonCard({ member }: Props) {
   return (
     <div
       className="p-2 w-full rounded-lg transition-all"
@@ -20,7 +30,7 @@ export default function PersonCard({}) {
           />
 
           <div className="flex flex-col gap-2">
-            <h2 className="font-normal text-lg">Jhon Doe</h2>
+            <h2 className="font-normal text-lg">{member.userId.name}</h2>
 
             <div className="flex gap-6 items-center justify-between">
               <p className="text-[#043A53] font-medium text-sm">

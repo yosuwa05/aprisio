@@ -1,10 +1,9 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { Icon } from "@iconify/react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
-import { EventCard } from "./eventcard";
+import PersonCard from "./personCard";
 
 type Props = {
   groupid: string;
@@ -17,27 +16,13 @@ export function PersonsSection({ groupid }: Props) {
   const { data, isLoading } = useQuery({
     queryKey: ["group-members", user?.id],
     queryFn: async () => {
-      const res = await _axios.get(
-        `/noauth/group/events/${groupid}?userId=${user?.id}`
-      );
+      const res = await _axios.get(`/noauth/group/members?groupid=${groupid}`);
       return res.data;
     },
   });
 
   return (
     <div className="my-4">
-      <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
-        <Icon icon="tabler:plus" fontSize={22} />
-        <h3
-          className="font-semibold text-sm"
-          onClick={() => {
-            router.push(`/community/groups/${groupid}/new-event`);
-          }}
-        >
-          Create Event
-        </h3>
-      </div>
-
       <div className="mt-6 flex-col flex gap-4">
         {isLoading ? (
           <div className="flex flex-col justify-center items-center my-4 gap-4">
@@ -46,14 +31,10 @@ export function PersonsSection({ groupid }: Props) {
             <Skeleton className="w-full h-[80px]  min-w-[250px]"> </Skeleton>
           </div>
         ) : (
-          <div>
-            {data?.events &&
-              data?.events.map((event: any, index: number) => (
-                <EventCard
-                  key={index}
-                  event={event}
-                  attending={data?.attending}
-                />
+          <div className="mx-2">
+            {data?.members &&
+              data?.members.map((member: any, index: number) => (
+                <PersonCard key={index} member={member} />
               ))}
           </div>
         )}

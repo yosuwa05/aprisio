@@ -1,0 +1,54 @@
+import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import placeholder from "@img/assets/placeholder-hero.jpeg";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+type Props = {
+  groupid: string;
+};
+
+export function PhotosSection({ groupid }: Props) {
+  const user = useGlobalAuthStore((state) => state.user);
+  const router = useRouter();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["group-photos", user?.id],
+    queryFn: async () => {
+      const res = await _axios.get(`/noauth/group/photos?groupid=${groupid}`);
+      return res.data;
+    },
+  });
+
+  console.log(data);
+
+  return (
+    <div className="my-4 mx-2">
+      {isLoading ? (
+        <div className="grid grid-cols-3 gap-4">
+          {Array.from(Array(6).keys()).map((index) => (
+            <div key={index} className="flex flex-col gap-2 items-center">
+              <div className="rounded-lg h-[300px] w-[300px] overflow-hidden" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-3 gap-4">
+          {data?.photos &&
+            data?.photos.map((photo: any, index: number) => (
+              <div key={index} className="flex flex-col gap-2 items-center">
+                <Image
+                  src={placeholder}
+                  alt="placeholder"
+                  width={300}
+                  height={300}
+                  className="rounded-lg"
+                />
+              </div>
+            ))}
+        </div>
+      )}
+    </div>
+  );
+}
