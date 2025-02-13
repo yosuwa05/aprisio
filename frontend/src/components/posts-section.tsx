@@ -33,7 +33,7 @@ export const PostsSection = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["projects" + user?.id],
+      queryKey: ["projects" + user?.id, topic],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
           `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`

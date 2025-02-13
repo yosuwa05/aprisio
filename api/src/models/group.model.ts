@@ -6,7 +6,7 @@ interface IGroup {
   description: string;
   events: Types.ObjectId[];
   images: [];
-  memberCount: Number;
+  memberCount: number;
   subTopic: Types.ObjectId;
   groupAdmin: Types.ObjectId;
   slug: string;

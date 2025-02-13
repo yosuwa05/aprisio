@@ -1,9 +1,13 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import personImage from "@img/assets/person.png";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface IGroupCard {
   name: string;
@@ -11,6 +15,7 @@ interface IGroupCard {
   groupAdmin: IAdmin;
   canJoin: boolean;
   slug: string;
+  _id: string;
 }
 
 interface IAdmin {
@@ -21,8 +26,52 @@ interface Props {
   group: IGroupCard;
 }
 
+interface IGroup {
+  id: String;
+}
+
 export default function GroupCard({ group }: Props) {
+  const user = useGlobalAuthStore((state) => state.user);
+
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (group: IGroup) => {
+      return await _axios.post("/group/join", {
+        groupId: group.id,
+      });
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["groups" + user?.id] });
+
+      const previousGroups = queryClient.getQueryData(["groups" + user?.id]);
+
+      queryClient.setQueryData(["groups" + user?.id], (old: any) => {
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            data: {
+              ...page.data,
+              groups: page.data.groups.map((g: any) =>
+                g._id === group._id ? { ...g, canJoin: false } : g
+              ),
+            },
+          })),
+        };
+      });
+
+      return { previousGroups };
+    },
+    onSuccess: (data) => {
+      if (data.data.ok) {
+        toast(data.data.message || "Joined group successfully");
+      } else {
+        toast.error(data.data.message || "Something went wrong");
+      }
+    },
+  });
 
   return (
     <div
@@ -59,13 +108,20 @@ export default function GroupCard({ group }: Props) {
           </div>
         </div>
         <Button
+          disabled={isPending}
           className={`${
             group.canJoin
               ? "bg-[#F2F5F6] border-[#043A53]"
               : "bg-[#FCF7EA] border-[#AF9654]"
           } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
           onClick={() => {
-            router.push(`/groups/${group.slug}`);
+            if (group.canJoin) {
+              mutate({
+                id: group._id,
+              });
+            } else {
+              router.push(`/groups/${group.slug}`);
+            }
           }}
         >
           {group.canJoin ? "Join" : "View"}

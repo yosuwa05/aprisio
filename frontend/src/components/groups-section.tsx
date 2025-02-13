@@ -71,7 +71,7 @@ export const GroupsSection = () => {
         data.pages.map((page, pageIndex) =>
           page.data.groups.length > 0 ? (
             page.data.groups.map((group: any, postIndex: number) => (
-              <React.Fragment key={`${pageIndex}-${postIndex}`}>
+              <React.Fragment key={`${postIndex}`}>
                 <GroupCard group={group} />
               </React.Fragment>
             ))

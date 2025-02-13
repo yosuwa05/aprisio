@@ -20,7 +20,6 @@ export default function Feed() {
   const user = useGlobalAuthStore((state) => state.user);
   const { topic } = useParams();
   const router = useRouter();
-  console.log(topic);
   const updateActiveSubTopic = useGlobalFeedStore(
     (state) => state.setActiveSubTopic
   );

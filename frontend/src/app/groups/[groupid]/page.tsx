@@ -31,57 +31,62 @@ export default function GroupPage() {
 
   return (
     <div>
-      <div className='mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8'>
+      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
         {isLoading ? (
-          <Skeleton className='lg:max-w-[300px] min-w-[250px]' />
+          <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
         ) : (
-          <div className='lg:max-w-[300px] min-w-[250px]'>
-            <div className='mt-4 flex flex-col gap-3 items-center'>
-              <Image src={placeholder} className='rounded-xl' alt='' />
+          <div className="lg:max-w-[300px] min-w-[250px]">
+            <div className="mt-4 flex flex-col gap-3 items-center">
+              <Image src={placeholder} className="rounded-xl" alt="" />
             </div>
-            <p className='font-medium text-[#353535CC] opacity-80 mt-2'></p>
+            <p className="font-medium text-[#353535CC] opacity-80 mt-2"></p>
 
-            <h1 className='font-[600] text-2xl text-textcol capitalize'>
+            <h1 className="font-[600] text-2xl text-textcol capitalize">
               {data?.group.name}
             </h1>
 
-            <div className='flex gap-2 items-center mt-4'>
+            <div className="flex gap-2 items-center mt-4">
               <Icon
-                icon='mynaui:location'
+                icon="mynaui:location"
                 fontSize={29}
-                className='text-gray-600'
+                className="text-gray-600"
               />
-              <p className='text-sm text-textcol'>
+              <p className="text-sm text-textcol">
                 New York, USA <br />
-                <span className='text-sm text-textcol'>
+                <span className="text-sm text-textcol">
                   (NYC, NY, USA, United States)
                 </span>
               </p>
             </div>
 
-            <div className='flex gap-2 items-center mt-4'>
+            <div className="flex gap-2 items-center mt-4">
               <Icon
-                icon='mingcute:user-1-line'
+                icon="mingcute:user-1-line"
                 fontSize={29}
-                className='text-gray-600'
+                className="text-gray-600"
               />
-              <p className='text-sm text-textcol'>
+              <p className="text-sm text-textcol">
                 4678 Members <br />
               </p>
             </div>
           </div>
         )}
 
-        <div className='flex w-full max-w-[1200px] mx-auto gap-4'>
-          <div className='flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden'>
-            <div className='flex justify-between items-center'>
-              <div className='flex gap-2 items-center text-lg'>
-                <Icon icon={"ic:round-chevron-left"} fontSize={30} />
+        <div className="flex w-full max-w-[1200px] mx-auto gap-4">
+          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center text-lg">
+                <Icon
+                  icon={"ic:round-chevron-left"}
+                  className="cursor-pointer"
+                  fontSize={32}
+                  onClick={() => router.back()}
+                />
                 <h5>{data?.group.name}</h5> -
-                <h5 className='font-bold'>About</h5>
+                <h5 className="font-bold">About</h5>
               </div>
 
-              <div className='flex'>
+              <div className="flex">
                 {tabs.map((tab, index: number) => (
                   <div
                     key={index}
@@ -92,7 +97,8 @@ export default function GroupPage() {
                       index != activeIndex
                         ? "text-fadedtext"
                         : "text-contrasttext font-bold"
-                    }`}>
+                    }`}
+                  >
                     <h3>{tab}</h3>
                   </div>
                 ))}
@@ -100,10 +106,10 @@ export default function GroupPage() {
             </div>
 
             {activeIndex == 0 && (
-              <div className='mx-6 my-4'>
-                <h3 className='font-semibold text-2xl'>What We Are</h3>
+              <div className="mx-6 my-4">
+                <h3 className="font-semibold text-2xl">What We Are</h3>
 
-                <p className='text-[#353535] leading-relaxed text-lg'>
+                <p className="text-[#353535] leading-relaxed text-lg">
                   {data?.group.description}
                 </p>
               </div>

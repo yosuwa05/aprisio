@@ -186,6 +186,9 @@ export const groupController = new Elysia({
           group: group._id,
         });
 
+        group.memberCount += 1;
+
+        await group.save();
         await newGroup.save();
 
         set.status = 200;
