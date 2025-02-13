@@ -166,20 +166,33 @@ export const noAuthGroupController = new Elysia({
     "/events/:groupid",
     async ({ query, params }) => {
       try {
-        let limit = query.limit || 10;
-        let page = query.page || 1;
+        let limit = Number(query.limit) || 10;
+        let page = Number(query.page) || 1;
 
         const { groupid } = params;
+        const { userId } = query;
 
         const events = await EventModel.find({
           group: groupid,
         })
           .sort({ createdAt: -1 })
-          .skip((page - 1) * limit);
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .select("-unnecessaryField")
+          .lean();
+
+        let attending = null;
+        if (userId) {
+          attending = await EventModel.exists({
+            group: groupid,
+            attendees: userId,
+          });
+        }
 
         return {
           events,
           ok: true,
+          attending: !!attending,
         };
       } catch (error) {
         console.error("Error fetching events: We Possibly fucked up.", error);
@@ -194,6 +207,7 @@ export const noAuthGroupController = new Elysia({
       query: t.Object({
         page: t.Optional(t.Number()),
         limit: t.Optional(t.Number()),
+        userId: t.Optional(t.String()),
       }),
       params: t.Object({
         groupid: t.String(),

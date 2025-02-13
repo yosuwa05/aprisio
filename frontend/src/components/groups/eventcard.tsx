@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 
 type Props = {
   event: Event;
+  attending: boolean;
 };
 
 type Event = {
@@ -34,7 +35,7 @@ type EventBody = {
   eventId: string;
 };
 
-export function EventCard({ event }: Props) {
+export function EventCard({ event, attending }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
 
   const { mutate, isPending } = useMutation({
@@ -45,7 +46,7 @@ export function EventCard({ event }: Props) {
       if (data.data.ok) {
         toast(data.data.message || "Attended event successfully");
       } else {
-        toast(data.data.message || "Something went wrong");
+        toast(data.data.error || "Something went wrong");
       }
     },
   });
@@ -83,7 +84,7 @@ export function EventCard({ event }: Props) {
           </p>
 
           <Button
-            disabled={isPending}
+            disabled={isPending || attending}
             className={`
            bg-[#FCF7EA] hover:bg-[#FCF7EA] border-[#AF965447] rounded-3xl border-[0.2px]  text-black`}
             onClick={() => {
@@ -97,7 +98,7 @@ export function EventCard({ event }: Props) {
               });
             }}
           >
-            Attend Event
+            {!attending ? "Attend Event" : "Joined"}
           </Button>
         </div>
       </div>

@@ -118,7 +118,6 @@ export const communityController = new Elysia({
       },
     }
   )
-
   .post(
     "/join",
     async ({ body }) => {

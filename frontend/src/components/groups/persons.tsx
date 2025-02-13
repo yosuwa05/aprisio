@@ -10,12 +10,12 @@ type Props = {
   groupid: string;
 };
 
-export function EventsSection({ groupid }: Props) {
+export function PersonsSection({ groupid }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["group-events", user?.id],
+    queryKey: ["group-members", user?.id],
     queryFn: async () => {
       const res = await _axios.get(
         `/noauth/group/events/${groupid}?userId=${user?.id}`
@@ -43,7 +43,6 @@ export function EventsSection({ groupid }: Props) {
           <div className="flex flex-col justify-center items-center my-4 gap-4">
             <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
             <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
-
             <Skeleton className="w-full h-[80px]  min-w-[250px]"> </Skeleton>
           </div>
         ) : (

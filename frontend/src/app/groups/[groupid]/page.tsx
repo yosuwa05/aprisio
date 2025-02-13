@@ -1,7 +1,7 @@
 "use client";
 
 import { EventsSection } from "@/components/groups/events";
-import PersonCard from "@/components/groups/personCard";
+import { PersonsSection } from "@/components/groups/persons";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
 import { Icon } from "@iconify/react";
@@ -110,15 +110,7 @@ export default function GroupPage() {
             )}
 
             {activeIndex == 1 && <EventsSection groupid={data?.group._id} />}
-
-            {activeIndex == 2 && (
-              <div className="my-4 mx-2">
-                <div className="flex flex-col gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
-                  <PersonCard />
-                  <PersonCard />
-                </div>
-              </div>
-            )}
+            {activeIndex == 2 && <PersonsSection groupid={data?.group._id} />}
 
             {activeIndex == 3 && (
               <div className="my-4 mx-2">
