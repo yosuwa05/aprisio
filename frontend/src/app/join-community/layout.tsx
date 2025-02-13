@@ -1,5 +1,5 @@
+import Topbar from "@/components/shared/topbar";
 import Footer from "../../components/shared/footer";
-import NavBar from "../../components/shared/navbar";
 
 export default function JoinLayout({
   children,
@@ -9,7 +9,7 @@ export default function JoinLayout({
   return (
     <>
       <section className="min-h-screen">
-        <NavBar />
+        <Topbar />
         {children}
         <div className="mt-14">
           <Footer />

@@ -27,6 +27,8 @@ export default function Topbar() {
 
   const user = useGlobalAuthStore((state) => state.user);
 
+  let unwantedRoutes = ["/", "/join-community"];
+
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
 
   return (
@@ -135,7 +137,7 @@ export default function Topbar() {
 
       {user ? (
         <div className="flex gap-2 items-center px-2">
-          {pathname != "/" && (
+          {!unwantedRoutes.includes(pathname) && (
             <div className="hidden lg:flex gap-2 items-center">
               <div className="relative flex items-center">
                 <Search className="w-4 h-4 absolute left-3" />
@@ -149,19 +151,19 @@ export default function Topbar() {
             </div>
           )}
 
-          {pathname != "/" && (
+          {!unwantedRoutes.includes(pathname) && (
             <Button className="border-[1px] bg-contrastbg lg:hidden rounded-lg text-black border-[#E2E2E2] w-[25px] h-[35px] md:w-[35px] md:h-[35px]">
               <Search className="w-2 h-2" />
             </Button>
           )}
 
-          {pathname != "/" && (
+          {!unwantedRoutes.includes(pathname) && (
             <Button className="border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]">
               <Bell />
             </Button>
           )}
 
-          {pathname != "/" && (
+          {!unwantedRoutes.includes(pathname) && (
             <Button
               className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
               onClick={() => {

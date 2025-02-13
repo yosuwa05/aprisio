@@ -1,6 +1,6 @@
 "use client";
 
-import { EventCard } from "@/components/groups/eventcard";
+import { EventsSection } from "@/components/groups/events";
 import PersonCard from "@/components/groups/personCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
@@ -12,8 +12,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function GroupPage() {
-  // let groupName = usePathname().split("/")[3];
-
   const { groupid } = useParams();
 
   const router = useRouter();
@@ -78,7 +76,8 @@ export default function GroupPage() {
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center text-lg">
                 <Icon icon={"ic:round-chevron-left"} fontSize={30} />
-                <h5>Coding Gang</h5> -<h5 className="font-bold">About</h5>
+                <h5>{data?.group.name}</h5> -
+                <h5 className="font-bold">About</h5>
               </div>
 
               <div className="flex">
@@ -110,26 +109,7 @@ export default function GroupPage() {
               </div>
             )}
 
-            {activeIndex == 1 && (
-              <div className="my-4">
-                <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
-                  <Icon icon="tabler:plus" fontSize={22} />
-                  <h3
-                    className="font-semibold text-sm"
-                    onClick={() => {
-                      router.push(`/community/groups/${groupid}/new-event`);
-                    }}
-                  >
-                    Create Event
-                  </h3>
-                </div>
-
-                <div className="mt-6 flex-col flex gap-4">
-                  <EventCard />
-                  <EventCard />
-                </div>
-              </div>
-            )}
+            {activeIndex == 1 && <EventsSection groupid={data?.group._id} />}
 
             {activeIndex == 2 && (
               <div className="my-4 mx-2">

@@ -8,16 +8,18 @@ type Rules = {
 type IEvent = {
   eventName: string;
   location: string;
-  date: string;
+  date: Date;
   rules: Rules[];
   group: Types.ObjectId;
+  isEventEnded: boolean;
+  attendees: Types.ObjectId[];
 };
 
 const EventSchema = new Schema<IEvent>(
   {
     eventName: { type: String, required: true },
     location: { type: String, required: true },
-    date: { type: String, required: true },
+    date: { type: Date, required: true },
     rules: [
       {
         heading: { type: String },
@@ -28,6 +30,13 @@ const EventSchema = new Schema<IEvent>(
       type: Schema.Types.ObjectId,
       ref: "Group",
     },
+    isEventEnded: { type: Boolean, default: false },
+    attendees: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,
