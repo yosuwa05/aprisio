@@ -8,7 +8,6 @@ import Elysia, { t } from "elysia";
 export const noAuthGroupController = new Elysia({
   prefix: "/noauth/group",
   detail: {
-    summary: "Group controller",
     tags: ["Anonymous User - Group"],
   },
 })

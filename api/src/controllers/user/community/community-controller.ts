@@ -164,15 +164,34 @@ export const communityController = new Elysia({
   )
   .get(
     "/info",
-    async ({ query }) => {
+    async ({ query, set }) => {
       try {
         const subTopic = await SubTopicModel.findOne({ slug: query.slug });
+
+        if (!subTopic) {
+          set.status = 400
+          return { ok: false, error: "Subtopic not found" };
+        }
+        const { userId } = query
+        let isUserJoined = false
+        if (userId && userId !== "undefined") {
+          console.log(userId)
+          const userSubTopic = await UserSubTopicModel.findOne({
+            userId,
+            subTopicId: subTopic._id,
+          })
+
+          if (userSubTopic) {
+            isUserJoined = true
+          }
+        }
 
         if (!subTopic) return { ok: false, error: "Invalid subtopic" };
 
         return {
           subTopic,
           status: true,
+          isUserJoined,
         };
       } catch (error) {
         console.log(error);
@@ -182,6 +201,7 @@ export const communityController = new Elysia({
     {
       query: t.Object({
         slug: t.String(),
+        userId: t.Optional(t.String()),
       }),
       detail: {
         summary: "Get subtopic info",

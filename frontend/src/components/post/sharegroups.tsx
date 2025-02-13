@@ -14,7 +14,7 @@ type Props = {
 export function ShareGroups({ searchKey }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const limit = 5;
-  const subTopic = usePathname().split("/")[2];
+  const subTopic = usePathname().split("/")[3];
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
