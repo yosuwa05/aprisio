@@ -4,10 +4,12 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { useParams, useRouter } from "next/navigation";
 
 type Props = {
   event: Event;
   attending: boolean;
+  gropuslug: string;
 };
 
 type Event = {
@@ -35,9 +37,11 @@ type EventBody = {
   eventId: string;
 };
 
-export function EventCard({ event, attending }: Props) {
+export function EventCard({ event, attending, gropuslug }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
-
+  const router = useRouter();
+  const { topic } = useParams();
+  console.log(topic);
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: EventBody) => {
       return await _axios.post("/events/attendevent", data);
@@ -53,33 +57,34 @@ export function EventCard({ event, attending }: Props) {
 
   return (
     <div
-      className="p-4 lg:px-8  rounded-lg transition-all mx-4"
+      className='p-4 lg:px-8 my-5  rounded-lg transition-all mx-4'
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
-      }}
-    >
-      <div className="flex items-center gap-2 justify-between">
-        <h6 className="text-contrasttext font-bold font-roboto">
+      }}>
+      <div className='flex items-center gap-2 justify-between'>
+        <h6 className='text-contrasttext font-bold font-roboto'>
           {formatDateString(new Date(event.date))}
         </h6>
-        <p className="text-[#828485] text-sm">
+        <p className='text-[#828485] text-sm'>
           Created {formatDate(event.createdAt)}
         </p>
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      <div className='flex justify-between items-center mt-4'>
         <div>
-          <h1 className="text-2xl font-semibold font-sans">
+          <h1 className='text-2xl font-semibold font-sans'>
             {event.eventName}
           </h1>
-          <h3 className="mt-3 font-normal text-contrasttext text-lg">
+          <h3 className='mt-3 font-normal text-contrasttext text-lg'>
             {event.location}
           </h3>
-          <p className="mt-4 text-fadedtext text-sm font-medium">500 Members</p>
+          <p className='mt-4 text-fadedtext text-sm font-medium'>500 Members</p>
         </div>
 
-        <div className="flex flex-col gap-4 items-center">
-          <p className="text-sm font-semibold text-contrasttext  cursor-pointer">
+        <div className='flex flex-col gap-4 items-center'>
+          <p
+            onClick={() => router.push(`/groups/${gropuslug}/${event._id}`)}
+            className='text-sm font-semibold text-contrasttext  cursor-pointer'>
             View Event
           </p>
 
@@ -96,8 +101,7 @@ export function EventCard({ event, attending }: Props) {
               mutate({
                 eventId: event._id,
               });
-            }}
-          >
+            }}>
             {!attending ? "Attend Event" : "Joined"}
           </Button>
         </div>
