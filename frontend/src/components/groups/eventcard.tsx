@@ -1,4 +1,4 @@
-import { Button } from "@/hooks/components/ui/button";
+import { Button } from "../ui/button";
 
 export function EventCard() {
   return (
