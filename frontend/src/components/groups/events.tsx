@@ -43,7 +43,6 @@ export function EventsSection({ groupid }: Props) {
           <div className="flex flex-col justify-center items-center my-4 gap-4">
             <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
             <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
-
             <Skeleton className="w-full h-[80px]  min-w-[250px]"> </Skeleton>
           </div>
         ) : (
