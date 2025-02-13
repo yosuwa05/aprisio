@@ -1,5 +1,4 @@
-import { Button } from "@/hooks/components/ui/button";
-import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 export function EventCard() {
   const router = useRouter();
