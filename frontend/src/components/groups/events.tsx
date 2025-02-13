@@ -18,15 +18,6 @@ export function EventsSection({ groupid, gropuslug }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
   const limit = 4;
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["group-events", user?.id],
-  //   queryFn: async () => {
-  //     const res = await _axios.get(
-  //       `/noauth/group/events/${groupid}?userId=${user?.id}`
-  //     );
-  //     return res.data;
-  //   },
-  // });
 
   const {
     data,
@@ -103,20 +94,6 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           <p className='text-gray-500 text-xs font-semibold'>No Events found</p>
         )}
         <div ref={ref} className='h-10'></div>
-
-        {/* // (
-        //   <div>
-        //     {}
-        //     {data?.events &&
-        //       data?.events.map((event: any, index: number) => (
-                // <EventCard
-                //   key={index}
-                //   event={event}
-                //   attending={data?.attending}
-                //   gropuslug={gropuslug}
-                // />
-        //       ))}
-        //   </div> */}
       </div>
       {isLoading || isFetchingNextPage ? (
         <div className='flex justify-center items-center my-4'>
