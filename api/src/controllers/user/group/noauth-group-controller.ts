@@ -1,3 +1,4 @@
+import { EventModel } from "@/models";
 import { GroupModel } from "@/models/group.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
@@ -38,7 +39,7 @@ export const noAuthGroupController = new Elysia({
 
         if (search) {
           searchQuery.$or = [
-            { name: { $regex: search, $options: 'i' } },
+            { name: { $regex: search, $options: "i" } },
             // { description: { $regex: search, $options: 'i' } }
           ];
         }
@@ -103,7 +104,7 @@ export const noAuthGroupController = new Elysia({
         limit: t.Number(),
         subTopic: t.Optional(t.String()),
         userId: t.Optional(t.String()),
-        search: t.Optional(t.String())
+        search: t.Optional(t.String()),
       }),
       detail: {
         description: "Get groups",
@@ -115,7 +116,7 @@ export const noAuthGroupController = new Elysia({
     "/members",
     async ({ query }) => {
       try {
-      } catch (error) { }
+      } catch (error) {}
     },
     {
       detail: {
@@ -158,6 +159,48 @@ export const noAuthGroupController = new Elysia({
       detail: {
         description: "Get Single Group Details.",
         summary: "Get Single Group Details.",
+      },
+    }
+  )
+  .get(
+    "/events/:groupid",
+    async ({ query, params }) => {
+      try {
+        let limit = query.limit || 10;
+        let page = query.page || 1;
+
+        const { groupid } = params;
+
+        const events = await EventModel.find({
+          group: groupid,
+        })
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit);
+
+        return {
+          events,
+          ok: true,
+        };
+      } catch (error) {
+        console.error("Error fetching events: We Possibly fucked up.", error);
+
+        return {
+          ok: false,
+          error,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        page: t.Optional(t.Number()),
+        limit: t.Optional(t.Number()),
+      }),
+      params: t.Object({
+        groupid: t.String(),
+      }),
+      detail: {
+        description: "Get group events",
+        summary: "Get group events",
       },
     }
   );

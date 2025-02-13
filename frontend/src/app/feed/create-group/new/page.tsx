@@ -141,7 +141,7 @@ export default function CreateGroup() {
     queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
     queryFn: async () => {
       const res = await _axios.get(
-        `/subtopics?limit=7&q=${debouncedSubTopicSearch}`
+        `/subtopics/dropdown?limit=7&q=${debouncedSubTopicSearch}`
       );
       return res.data;
     },
@@ -173,7 +173,7 @@ export default function CreateGroup() {
               value={subTopicSearch}
               onChange={(e) => setSubTopicSearch(e.target.value)}
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
               {isSubTopicsLoading && (
                 <div className="flex justify-center items-center my-4">
                   <div>
@@ -185,14 +185,14 @@ export default function CreateGroup() {
                 data?.subTopics?.map((subTopic: any) => (
                   <div
                     key={subTopic._id}
-                    className="flex cursor-pointer text-lg mx-4 text-black my-1"
+                    className="flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]"
                     onClick={() => {
                       setSubTopicSearch("");
                       setSubTopicOpen(false);
                       setSelectedSubTopic(subTopic);
                     }}
                   >
-                    <h3>{subTopic.subTopicName}</h3>
+                    <p className="text-black">{subTopic.slug}</p>
                   </div>
                 ))}
             </div>

@@ -182,7 +182,7 @@ export default function CreatePost() {
     queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
     queryFn: async () => {
       const res = await _axios.get(
-        `/subtopics?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
+        `/subtopics/dropdown?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
       );
       return res.data;
     },

@@ -137,6 +137,8 @@ export const groupController = new Elysia({
         })
       ),
     }),
-    summary: "Create group",
+    detail: {
+      summary: "Create a new group",
+    },
   }
 );
