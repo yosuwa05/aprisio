@@ -7,7 +7,6 @@ import Elysia, { t } from "elysia";
 export const noAuthGroupController = new Elysia({
   prefix: "/noauth/group",
   detail: {
-    summary: "Group controller",
     tags: ["Anonymous User - Group"],
   },
 })
@@ -116,7 +115,7 @@ export const noAuthGroupController = new Elysia({
     "/members",
     async ({ query }) => {
       try {
-      } catch (error) {}
+      } catch (error) { }
     },
     {
       detail: {
@@ -203,4 +202,44 @@ export const noAuthGroupController = new Elysia({
         summary: "Get group events",
       },
     }
-  );
+  )
+  .get("/random-groups-events", async ({ set, query }) => {
+    try {
+      const { subtopicSlug } = query;
+
+      const subTopic = await SubTopicModel.findOne({ slug: subtopicSlug });
+
+      if (!subTopic) {
+        return {
+          message: "Invalid subtopic",
+          ok: false,
+        };
+      }
+
+      const groups = await GroupModel.aggregate([
+        { $match: { subTopic: subTopic._id } },
+        { $sample: { size: 3 } }
+      ]);
+
+      return {
+        groups,
+        ok: true,
+      };
+
+    } catch (error: any) {
+      console.error(error);
+      return {
+        message: "An error occurred",
+        ok: false,
+      };
+    }
+  }, {
+    query: t.Object({
+      subtopicSlug: t.String()
+    }),
+    detail: {
+      description: "Get random groups based on subtopic",
+      summary: "Get random groups based on subtopic",
+    },
+  });
+

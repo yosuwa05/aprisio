@@ -5,20 +5,22 @@ import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, Plus } from "lucide-react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Feed() {
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
-
+  const user = useGlobalAuthStore((state) => state.user);
   const { topic } = useParams();
-
+  const router = useRouter();
+  console.log(topic);
   const updateActiveSubTopic = useGlobalFeedStore(
     (state) => state.setActiveSubTopic
   );
@@ -28,12 +30,27 @@ export default function Feed() {
   }, [topic]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["community-info", topic],
+    queryKey: ["community-info", topic, user?.id],
     queryFn: async () => {
-      const res = await _axios.get(`/community/info?slug=${topic}`);
+      const res = await _axios.get(
+        `/community/info?slug=${topic}&userId=${user?.id}`
+      );
       return res.data;
     },
   });
+
+  const { data: randomEventsGroups, isLoading: randomEventsGroupsLoading } =
+    useQuery({
+      queryKey: ["random-events-groups", topic, user?.id],
+      queryFn: async () => {
+        const res = await _axios.get(
+          `/noauth/group/random-groups-events?subtopicSlug=${topic}`
+        );
+        return res.data;
+      },
+    });
+
+  console.log(randomEventsGroups);
 
   return (
     <div>
@@ -51,9 +68,12 @@ export default function Feed() {
 
             <div className='mt-4 flex flex-col gap-3 items-center'>
               <Image src={placeholder} className='rounded-xl' alt='' />
-              <Button className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
-                Join Community
-              </Button>
+              {data?.isUserJoined}
+              {data?.isUserJoined ? null : (
+                <Button className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
+                  Join Community
+                </Button>
+              )}
             </div>
           </div>
         )}
@@ -110,19 +130,23 @@ export default function Feed() {
               </h1>
 
               <div className='flex flex-col  items-start gap-2 my-2'>
-                {[1, 2].map((item, index) => (
+                {randomEventsGroups?.groups?.map((group: any) => (
                   <div
                     className='flex justify-between items-center w-full'
-                    key={`${index}-${item}`}>
+                    key={group?._id}>
                     <div className='text-textcol flex flex-col gap-2'>
-                      <h4 className='text-[15px] font-medium'>Hiking</h4>
-                      <p className=' text-[#777777] text-xs flex items-center gap-1'>
+                      <h4 className='text-[15px] font-medium'>{group?.name}</h4>
+                      {/* <p className=' text-[#777777] text-xs flex items-center gap-1'>
                         <MapPin className='h-4 w-4' />
                         <span>Nagercoil to Kallikesham</span>
-                      </p>
+                      </p> */}
                     </div>
 
-                    <Button className='rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]'>
+                    <Button
+                      onClick={() => {
+                        router.push(`/groups/${group.slug}`);
+                      }}
+                      className='rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]'>
                       View
                     </Button>
                   </div>
