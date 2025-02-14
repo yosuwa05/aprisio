@@ -13,14 +13,19 @@ import { useDebouncedValue, useIntersection } from "@mantine/hooks";
 import { _axios } from "@/lib/axios-instance";
 import { Skeleton } from "../ui/skeleton";
 import GlobalLoader from "../globalloader";
+import { useRouter } from "next/navigation";
 
-export function TopicsSidebar() {
+type Props = {
+  CloseSideBar: () => void;
+};
+
+export function TopicsSidebar({ CloseSideBar }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const [topicSearch, setTopicSearch] = useState<string>("");
   const [debouncedTopicSearch] = useDebouncedValue(topicSearch, 400);
   const limit = 10;
   const [openTopic, setOpenTopic] = useState<string | null>(null);
-
+  const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["communitysideBar", user?.id, debouncedTopicSearch],
@@ -124,6 +129,10 @@ export function TopicsSidebar() {
                       {post?.subTopic?.map(
                         (subTopic: any, subTopicIndex: number) => (
                           <p
+                            onClick={() => {
+                              router.push(`/feed/explore/${subTopic?.slug}`);
+                              CloseSideBar();
+                            }}
                             key={subTopicIndex}
                             className='text-lg py-1 text-fadedtext capitalize cursor-pointer'>
                             {subTopic?.subTopicName}

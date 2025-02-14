@@ -8,6 +8,21 @@ type IGroupPostShare = {
 
 const GroupPostShareSchema = new Schema<IGroupPostShare>(
     {
-
-    }
+        group: {
+            type: Schema.Types.ObjectId,
+            ref: "Group",
+        },
+        sharedBy: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+        postId: {
+            type: Schema.Types.ObjectId,
+            ref: "Post"
+        }
+    }, {
+    timestamps: true
+}
 )
+
+export const GroupPostShareModel = model<IGroupPostShare>("GroupPostShare", GroupPostShareSchema)

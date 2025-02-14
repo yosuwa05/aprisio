@@ -1,8 +1,10 @@
 import { saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
+import { PostModel, UserModel } from "@/models";
 import { EventModel } from "@/models/events.model";
 import { GroupModel } from "@/models/group.model";
 import { GroupPhotoModel } from "@/models/groupphotos.model";
+import { GroupPostShareModel } from "@/models/grouppostshare";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
 import Elysia, { t } from "elysia";
@@ -208,4 +210,98 @@ export const groupController = new Elysia({
         groupId: t.String(),
       }),
     }
-  );
+  )
+
+  .post(
+    "/share-post-group",
+    async ({ set, body }) => {
+      try {
+        const { groupIds, sharedBy, postId } = body;
+
+        if (!Array.isArray(groupIds) || groupIds.length === 0) {
+          set.status = 400;
+          return { message: "Invalid group IDs" };
+        }
+
+        const sharePosts = groupIds.map((groupId) => ({
+          group: groupId,
+          sharedBy,
+          postId,
+        }));
+
+        await GroupPostShareModel.insertMany(sharePosts);
+
+        set.status = 200;
+        return {
+          message: "Post shared successfully ",
+          ok: true,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return { message: error.message };
+      }
+    },
+    {
+      detail: {
+        summary: "Share Post to Multiple Groups",
+        description: "Allows sharing a post to multiple groups at once using group IDs.",
+      },
+      body: t.Object({
+        groupIds: t.Array(t.String()),
+        sharedBy: t.String(),
+        postId: t.String(),
+      }),
+    }
+  )
+  .get("/sharedpost", async ({ query, set }) => {
+    try {
+      const { page, limit, group } = query
+
+      const _page = Number(page) || 1
+      const _limit = Number(limit) || 10
+      console.log(group)
+      const isGropuExist = await GroupModel.findOne({ slug: group })
+      console.log(isGropuExist)
+      if (!isGropuExist) {
+        set.status = 400
+        return {
+          message: "Group not found"
+        }
+      }
+
+      const sharedPosts = await GroupPostShareModel.find({
+        group: isGropuExist._id
+      }).populate({
+        path: "postId",
+        populate: {
+          path: "author",
+          model: "User",
+          select: "name"
+        }
+      }).skip(((_page - 1) * _limit)).limit(_limit).sort({ createdAt: -1, _id: -1 }).lean()
+
+
+      return {
+        sharedPosts,
+        message: "Shared Post fetched successfully",
+      }
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  }, {
+    query: t.Object({
+      page: t.Optional(t.String()),
+      limit: t.Optional(t.String()),
+      group: t.String()
+    }),
+    detail: {
+      summary: "Get all shared post",
+      description: "Get all shared post"
+    }
+  })

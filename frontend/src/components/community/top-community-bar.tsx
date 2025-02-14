@@ -33,7 +33,10 @@ type Topic = {
 
 export function TopCommunityBar() {
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
-
+  const [sheetOpen, setSheetOpen] = useState<boolean>(false);
+  const CloseSideBar = () => {
+    setSheetOpen(false);
+  };
   const { data, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: async () => {
@@ -66,16 +69,20 @@ export function TopCommunityBar() {
           </h2>
           <Icon icon='octicon:chevron-right-12' />
 
-          <Sheet>
-            <SheetTrigger>
-              <Icon icon='mage:filter' className='text-lg md:text-xl' />
-            </SheetTrigger>
+          <Icon
+            onClick={() => setSheetOpen(true)}
+            icon='mage:filter'
+            className='text-lg md:text-xl cursor-pointer'
+          />
+
+          <Sheet onOpenChange={setSheetOpen} open={sheetOpen}>
+            <SheetTrigger></SheetTrigger>
             <SheetContent className='p-0' side={"left"}>
               <SheetHeader>
                 <SheetTitle></SheetTitle>
                 <SheetDescription></SheetDescription>
               </SheetHeader>
-              <TopicsSidebar />
+              <TopicsSidebar CloseSideBar={CloseSideBar} />
             </SheetContent>
           </Sheet>
         </div>

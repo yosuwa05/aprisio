@@ -47,6 +47,15 @@ export default function Postcard({ post }: { post: IPostCard }) {
   const [viewAllReplies, setViewAllReplies] = useState(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
+  const [postId, setPostId] = useState("");
+
+  const CloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const CloseDrawerOpen = () => {
+    setDrawerOpen(false);
+  };
 
   const queryClient = useQueryClient();
 
@@ -203,7 +212,9 @@ export default function Postcard({ post }: { post: IPostCard }) {
           </div>
           {/* for Dialog web */}
           <div
-            onClick={() => setDialogOpen(true)}
+            onClick={() => {
+              setPostId(post.id), setDialogOpen(true);
+            }}
             className='hidden  md:flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200 cursor-pointer '>
             <Icon
               icon='uil:share'
@@ -226,12 +237,14 @@ export default function Postcard({ post }: { post: IPostCard }) {
                   </div>
                 </DialogClose> */}
               </DialogHeader>
-              <PostShareModalWeb />
+              <PostShareModalWeb postId={postId} CloseDialog={CloseDialog} />
             </DialogContent>
           </Dialog>
           {/* for Drawer mobile */}
           <div
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => {
+              setPostId(post.id), setDrawerOpen(true);
+            }}
             className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200 cursor-pointer md:hidden  '>
             <Icon
               icon='uil:share'

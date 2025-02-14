@@ -9,6 +9,7 @@ import { Skeleton } from "../ui/skeleton";
 
 type Props = {
   searchKey: string;
+  postId: string;
 };
 
 export function ShareUsers({ searchKey }: Props) {

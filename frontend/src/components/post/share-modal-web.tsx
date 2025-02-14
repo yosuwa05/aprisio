@@ -5,7 +5,12 @@ import { ShareGroups } from "./sharegroups";
 import { ShareUsers } from "./shareusers";
 import { useDebouncedValue } from "@mantine/hooks";
 
-export function PostShareModalWeb() {
+type Props = {
+  postId: string;
+  CloseDialog: () => void;
+};
+
+export function PostShareModalWeb({ postId, CloseDialog }: Props) {
   const tabs = ["Groups", "Users"];
   const [activeTab, setActiveTab] = useState("Groups");
   const [groupSearch, setGroupSearch] = useState<string>("");
@@ -43,9 +48,13 @@ export function PostShareModalWeb() {
 
       <div className='p-5 h-[50vh] overflow-y-scroll hide-scrollbar'>
         {activeTab === "Groups" ? (
-          <ShareGroups searchKey={debouncedGroupSearch} />
+          <ShareGroups
+            searchKey={debouncedGroupSearch}
+            postId={postId ?? ""}
+            CloseDialog={CloseDialog}
+          />
         ) : (
-          <ShareUsers searchKey={debouncedGroupSearch} />
+          <ShareUsers searchKey={debouncedGroupSearch} postId={postId ?? ""} />
         )}
       </div>
     </main>
