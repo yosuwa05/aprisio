@@ -85,14 +85,14 @@ export default function CommentSection({
       toast.success("Comment added");
       if (!viewAllReplies) setViewAllReplies(!viewAllReplies);
       queryClient.invalidateQueries({
-        queryKey: ["comments", user?.id],
+        queryKey: ["comments", user?.id, postId],
       });
     },
   });
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["comments", user?.id],
+      queryKey: ["comments", user?.id, postId],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
           `/comment?postId=${postId}&userId=${

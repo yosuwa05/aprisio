@@ -38,12 +38,16 @@ export default function Comment({ comment, postId }: Props) {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({
-        queryKey: ["comments", user?.id],
+        queryKey: ["comments", user?.id, postId],
       });
 
-      const previousComments = queryClient.getQueryData(["comments", user?.id]);
+      const previousComments = queryClient.getQueryData([
+        "comments",
+        user?.id,
+        postId,
+      ]);
 
-      queryClient.setQueryData(["comments", user?.id], (old: any) => {
+      queryClient.setQueryData(["comments", user?.id, postId], (old: any) => {
         return {
           ...old,
           pages: old.pages.map((page: any) => ({
@@ -81,6 +85,10 @@ export default function Comment({ comment, postId }: Props) {
       if (!data.data.ok) return toast.error(data.data.message);
 
       toast.success("Comment added");
+
+      queryClient.invalidateQueries({
+        queryKey: ["comments", user?.id, postId],
+      });
     },
   });
 

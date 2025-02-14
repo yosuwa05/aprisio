@@ -13,7 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -23,6 +23,8 @@ import { formSchema } from "./schema";
 
 export default function LoginForm({}) {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const user = useGlobalAuthStore((state) => state.user);
 
   const {
     handleSubmit,
@@ -59,6 +61,19 @@ export default function LoginForm({}) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values);
+  }
+
+  useEffect(() => {
+    router.push("/");
+    setTimeout(() => {
+      if (user) {
+        setLoading(false);
+      }
+    }, 500);
+  }, [user, router]);
+
+  if (loading) {
+    return <div className="w-screen h-screen bg-white"></div>;
   }
 
   return (

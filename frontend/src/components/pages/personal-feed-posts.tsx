@@ -33,9 +33,7 @@ export const FeedPosts = () => {
       queryKey: ["projects" + user?.id, "technology"],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post/personal?page=${pageParam}&userId=${
-            user?.id ?? ""
-          }&subTopic=${"technology"}`
+          `/post/personal?page=${pageParam}&userId=${user?.id ?? ""}`
         );
         return res;
       },

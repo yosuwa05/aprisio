@@ -170,31 +170,29 @@ export const postController = new Elysia({
         const sanitizedPage = Math.max(1, page);
         const sanitizedLimit = Math.max(1, Math.min(limit, 20));
 
-        const subTopic = await SubTopicModel.findOne({ slug: query.subTopic });
+        const userJoinedSubtopics = await UserSubTopicModel.find(
+          {
+            userId: userId,
+          },
+          "subTopicId"
+        );
 
-        if (!subTopic) {
+        if (!userJoinedSubtopics || userJoinedSubtopics.length === 0) {
           set.status = 404;
           return {
-            message: "SubTopic not found",
+            message: "User has not joined any subtopics",
             ok: false,
           };
         }
 
-        const userJoinedGroups = await UserSubTopicModel.find(
-          {
-            userId: userId,
-          },
-          "_id"
+        const subTopicIds = userJoinedSubtopics.map(
+          (subTopic) => subTopic.subTopicId
         );
-
-        // const post = await PostModel.sub
-
-        console.log(userJoinedGroups);
 
         const posts = await PostModel.aggregate([
           {
             $match: {
-              subTopic: subTopic._id,
+              subTopic: { $in: subTopicIds },
             },
           },
           {
@@ -284,7 +282,9 @@ export const postController = new Elysia({
           },
         ]);
 
-        const totalPosts = await PostModel.countDocuments();
+        const totalPosts = await PostModel.countDocuments({
+          subTopic: { $in: subTopicIds },
+        });
         const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
 
         return {
@@ -311,13 +311,10 @@ export const postController = new Elysia({
             default: "",
           })
         ),
-        subTopic: t.String({
-          default: "",
-        }),
       }),
       detail: {
-        description: "Get posts",
-        summary: "Get posts",
+        description: "Get personal posts",
+        summary: "Get personal posts",
       },
     }
   );
