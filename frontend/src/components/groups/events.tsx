@@ -6,7 +6,6 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import GlobalLoader from "../globalloader";
-import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { EventCard } from "./eventcard";
 
@@ -57,19 +56,17 @@ export function EventsSection({ groupid, gropuslug }: Props) {
 
   return (
     <div className="my-4">
-      {hasevents && (
-        <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
-          <Icon icon="tabler:plus" fontSize={22} />
-          <h3
-            className="font-semibold text-sm"
-            onClick={() => {
-              router.push(`/groups/${gropuslug}/new-event`);
-            }}
-          >
-            Create Event
-          </h3>
-        </div>
-      )}
+      <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
+        <Icon icon="tabler:plus" fontSize={22} />
+        <h3
+          className="font-semibold text-sm"
+          onClick={() => {
+            router.push(`/feed/create-event/${gropuslug}`);
+          }}
+        >
+          Create Event
+        </h3>
+      </div>
 
       <div className="mt-6 flex-col flex gap-4">
         {isLoading ? (
@@ -104,11 +101,11 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           )
         ) : (
           <div className="flex flex-col justify-center items-center gap-4">
-            {/* <p className="text-gray-500 text-xs font-semibold">
+            <p className="text-gray-500 text-xs font-semibold">
               No Events found
-            </p> */}
+            </p>
 
-            <Button
+            {/* <Button
               className="bg-white border-contrasttext border-2 hover:bg-transparent"
               onClick={() => {
                 router.push(`/groups/${gropuslug}/new-event`);
@@ -117,7 +114,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
               <p className="text-contrasttext text-xs font-semibold cursor-pointer">
                 Create Event
               </p>
-            </Button>
+            </Button> */}
           </div>
         )}
         <div ref={ref} className="h-10"></div>
