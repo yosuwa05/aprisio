@@ -132,7 +132,7 @@ export default function NewEvent() {
               type="button"
               className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1"
             >
-              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
+              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Group"}
               <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
             </Button>
           </PopoverTrigger>

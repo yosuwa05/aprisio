@@ -1,9 +1,9 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
-import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
+import { MapPin, Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -12,7 +12,6 @@ import { Skeleton } from "../ui/skeleton";
 import { FeedPosts } from "./personal-feed-posts";
 
 export default function PersonalFeed() {
-  const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
   const user = useGlobalAuthStore((state) => state.user);
   const topic = "technology";
   const router = useRouter();
@@ -33,6 +32,17 @@ export default function PersonalFeed() {
       return res.data;
     },
   });
+
+  const { data: randomEventsGroups, isLoading: randomEventsGroupsLoading } =
+    useQuery({
+      queryKey: ["random-events-groups", topic, user?.id],
+      queryFn: async () => {
+        const res = await _axios.get(
+          `/noauth/group/random-groups-events?subtopicSlug=${topic}`
+        );
+        return res.data;
+      },
+    });
 
   return (
     <div>
@@ -63,6 +73,76 @@ export default function PersonalFeed() {
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
             <FeedPosts />
+          </div>
+
+          <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
+            <div className="bg-white px-4 rounded-xl w-[350px]">
+              <div className="relative h-[110px] bg-white flex justify-center items-center overflow-hidden">
+                <div
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{
+                    backgroundImage: "url(/assets/placeholder-hero.jpeg)",
+                    opacity: 0.3,
+                  }}
+                />
+
+                <Button className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white">
+                  <Plus />
+                  Create Event
+                </Button>
+              </div>
+
+              <h1 className="text-2xl text-textcol my-4 font-semibold">
+                Event
+              </h1>
+
+              <div className="flex flex-col  items-start gap-2 my-2">
+                {[1, 2, 3].map((item, index) => (
+                  <div
+                    className="flex justify-between items-center w-full"
+                    key={index}
+                  >
+                    <div className="text-textcol flex flex-col gap-2">
+                      <h4 className="text-[15px] font-medium">Hiking</h4>
+                      <p className=" text-[#777777] text-xs flex items-center gap-1">
+                        <MapPin className="h-4 w-4" />
+                        <span>Nagercoil to Kallikesham</span>
+                      </p>
+                    </div>
+
+                    <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
+                      View
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              <h1 className="text-2xl text-textcol my-4 font-semibold">
+                Groups
+              </h1>
+
+              <div className="flex flex-col  items-start gap-2 my-2">
+                {randomEventsGroups?.groups?.map((group: any) => (
+                  <div
+                    className="flex justify-between items-center w-full"
+                    key={group?._id}
+                  >
+                    <div className="text-textcol flex flex-col gap-2">
+                      <h4 className="text-[15px] font-medium">{group?.name}</h4>
+                    </div>
+
+                    <Button
+                      onClick={() => {
+                        router.push(`/groups/${group.slug}`);
+                      }}
+                      className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]"
+                    >
+                      View
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
