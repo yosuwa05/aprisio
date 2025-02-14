@@ -57,7 +57,7 @@ export default function Postcard({
     setDialogOpen(false);
   };
 
-  const CloseDrawerOpen = () => {
+  const CloseDrawer = () => {
     setDrawerOpen(false);
   };
 
@@ -247,7 +247,11 @@ export default function Postcard({
                   </div>
                 </DialogClose> */}
               </DialogHeader>
-              <PostShareModalWeb postId={postId} CloseDialog={CloseDialog} />
+              <PostShareModalWeb
+                postId={postId}
+                CloseDialog={CloseDialog}
+                CloseDrawer={CloseDrawer}
+              />
             </DialogContent>
           </Dialog>
           {/* for Drawer mobile */}
@@ -269,7 +273,11 @@ export default function Postcard({
                 <DrawerTitle></DrawerTitle>
                 <DrawerDescription></DrawerDescription>
               </DrawerHeader>
-              <PostShareModalMobile />
+              <PostShareModalMobile
+                postId={postId}
+                CloseDrawer={CloseDrawer}
+                CloseDialog={CloseDialog}
+              />
             </DrawerContent>
           </Drawer>
         </div>

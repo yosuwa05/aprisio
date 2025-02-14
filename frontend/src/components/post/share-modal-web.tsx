@@ -8,9 +8,10 @@ import { useDebouncedValue } from "@mantine/hooks";
 type Props = {
   postId: string;
   CloseDialog: () => void;
+  CloseDrawer: () => void;
 };
 
-export function PostShareModalWeb({ postId, CloseDialog }: Props) {
+export function PostShareModalWeb({ postId, CloseDialog, CloseDrawer }: Props) {
   const tabs = ["Groups", "Users"];
   const [activeTab, setActiveTab] = useState("Groups");
   const [groupSearch, setGroupSearch] = useState<string>("");
@@ -52,6 +53,7 @@ export function PostShareModalWeb({ postId, CloseDialog }: Props) {
             searchKey={debouncedGroupSearch}
             postId={postId ?? ""}
             CloseDialog={CloseDialog}
+            CloseDrawer={CloseDrawer}
           />
         ) : (
           <ShareUsers searchKey={debouncedGroupSearch} postId={postId ?? ""} />

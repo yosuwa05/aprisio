@@ -13,9 +13,15 @@ type Props = {
   searchKey: string;
   postId: string;
   CloseDialog: () => void;
+  CloseDrawer: () => void;
 };
 
-export function ShareGroups({ searchKey, postId, CloseDialog }: Props) {
+export function ShareGroups({
+  searchKey,
+  postId,
+  CloseDialog,
+  CloseDrawer,
+}: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const limit = 5;
   const subTopic = usePathname().split("/")[3];
@@ -50,6 +56,7 @@ export function ShareGroups({ searchKey, postId, CloseDialog }: Props) {
       setSelectedGroups(new Set());
       console.log(selectedGroups, "selected");
       CloseDialog();
+      CloseDrawer();
     },
     onError(error: any) {
       console.log(error);
