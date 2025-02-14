@@ -4,11 +4,10 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
-import Postcard from "./postcard";
-import { GlobalLoader } from "./shared/global-loader";
-import { Skeleton } from "./ui/skeleton";
+import GlobalLoader from "../globalloader";
+import Postcard from "../postcard";
+import { Skeleton } from "../ui/skeleton";
 
 type IAuthor = {
   name: string;
@@ -26,17 +25,17 @@ type IPost = {
   image?: string;
 };
 
-export const PostsSection = () => {
+export const FeedPosts = () => {
   const user = useGlobalAuthStore((state) => state.user);
-
-  const { topic } = useParams();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["projects" + user?.id, topic],
+      queryKey: ["projects" + user?.id, "technology"],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`
+          `/post/personal?page=${pageParam}&userId=${
+            user?.id ?? ""
+          }&subTopic=${"technology"}`
         );
         return res;
       },
@@ -89,7 +88,7 @@ export const PostsSection = () => {
                     url: post.url || "",
                     image: post.image || "",
                   }}
-                  topic={topic?.toString() || ""}
+                  topic={"technology"?.toString() || ""}
                 />
               </React.Fragment>
             ))

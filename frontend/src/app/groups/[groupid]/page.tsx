@@ -110,7 +110,7 @@ export default function GroupPage() {
               <div className="mx-6 my-4">
                 <h3 className="font-semibold text-2xl">What We Are</h3>
 
-                <p className="text-[#353535] leading-relaxed text-lg">
+                <p className="text-[#353535] leading-relaxed text-[16px] mt-5 font-normal">
                   {data?.group.description}
                 </p>
               </div>

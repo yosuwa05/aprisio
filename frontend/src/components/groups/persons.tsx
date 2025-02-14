@@ -1,7 +1,6 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import PersonCard from "./personCard";
 
@@ -11,7 +10,6 @@ type Props = {
 
 export function PersonsSection({ groupid }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
-  const router = useRouter();
 
   const { data, isLoading } = useQuery({
     queryKey: ["group-members", user?.id],
@@ -31,7 +29,7 @@ export function PersonsSection({ groupid }: Props) {
             <Skeleton className="w-full h-[80px]  min-w-[250px]"> </Skeleton>
           </div>
         ) : (
-          <div className="mx-2">
+          <div className="mx-2 flex gap-4 flex-col">
             {data?.members &&
               data?.members.map((member: any, index: number) => (
                 <PersonCard key={index} member={member} />

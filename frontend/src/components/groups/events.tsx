@@ -1,13 +1,14 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useIntersection } from "@mantine/hooks";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import GlobalLoader from "../globalloader";
+import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 import { EventCard } from "./eventcard";
-import { useEffect, useRef } from "react";
-import { useIntersection } from "@mantine/hooks";
-import GlobalLoader from "../globalloader";
 
 type Props = {
   groupid: string;
@@ -46,8 +47,6 @@ export function EventsSection({ groupid, gropuslug }: Props) {
     threshold: 1,
   });
 
-  console.log(data);
-
   const hasevents = !isLoading && data?.pages?.[0]?.events?.length > 0;
 
   useEffect(() => {
@@ -57,25 +56,38 @@ export function EventsSection({ groupid, gropuslug }: Props) {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className='my-4'>
-      <div className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2'>
-        <Icon icon='tabler:plus' fontSize={22} />
-        <h3
-          className='font-semibold text-sm'
-          onClick={() => {
-            router.push(`/groups/${groupid}/new-event`);
-          }}>
-          Create Event
-        </h3>
-      </div>
+    <div className="my-4">
+      {hasevents && (
+        <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
+          <Icon icon="tabler:plus" fontSize={22} />
+          <h3
+            className="font-semibold text-sm"
+            onClick={() => {
+              router.push(`/groups/${gropuslug}/new-event`);
+            }}
+          >
+            Create Event
+          </h3>
+        </div>
+      )}
 
-      <div className='mt-6 flex-col flex gap-4'>
+      <div className="mt-6 flex-col flex gap-4">
         {isLoading ? (
-          <div className='flex flex-col justify-center items-center my-4 gap-4'>
-            <Skeleton className='w-full h-[100px]  min-w-[250px]'> </Skeleton>
-            <Skeleton className='w-full h-[100px]  min-w-[250px]'> </Skeleton>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
+              <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
+              <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
+            </div>
 
-            <Skeleton className='w-full h-[80px]  min-w-[250px]'> </Skeleton>
+            <div className="grid grid-cols-4 gap-4 w-full">
+              <Skeleton className="col-span-1 h-[100px]  min-w-[250px]">
+                {" "}
+              </Skeleton>
+              <Skeleton className="col-span-3 h-[100px]  min-w-[250px]">
+                {" "}
+              </Skeleton>
+            </div>
           </div>
         ) : hasevents ? (
           data?.pages?.flatMap((page: any) =>
@@ -91,12 +103,27 @@ export function EventsSection({ groupid, gropuslug }: Props) {
             })
           )
         ) : (
-          <p className='text-gray-500 text-xs font-semibold'>No Events found</p>
+          <div className="flex flex-col justify-center items-center gap-4">
+            {/* <p className="text-gray-500 text-xs font-semibold">
+              No Events found
+            </p> */}
+
+            <Button
+              className="bg-white border-contrasttext border-2 hover:bg-transparent"
+              onClick={() => {
+                router.push(`/groups/${gropuslug}/new-event`);
+              }}
+            >
+              <p className="text-contrasttext text-xs font-semibold cursor-pointer">
+                Create Event
+              </p>
+            </Button>
+          </div>
         )}
-        <div ref={ref} className='h-10'></div>
+        <div ref={ref} className="h-10"></div>
       </div>
       {isLoading || isFetchingNextPage ? (
-        <div className='flex justify-center items-center my-4'>
+        <div className="flex justify-center items-center my-4">
           <GlobalLoader />
         </div>
       ) : (

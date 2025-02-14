@@ -14,7 +14,7 @@ type Member = {
 export default function PersonCard({ member }: Props) {
   return (
     <div
-      className="p-2 w-full rounded-lg transition-all"
+      className="p-2 w-full rounded-lg transition-all cursor-pointer hover:scale-[1.01]"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}
