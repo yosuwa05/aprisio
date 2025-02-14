@@ -63,29 +63,18 @@ export const commentsController = new Elysia({
       try {
         const userId = (store as StoreType)["id"];
 
-        const session = await CommentLikeModel.startSession();
-        session.startTransaction();
-
         try {
           const existingLike = await CommentLikeModel.findOne({
             user: userId,
             comment: commentId,
-          }).session(session);
+          });
 
           if (existingLike) {
-            await CommentLikeModel.deleteOne({ _id: existingLike._id }).session(
-              session
-            );
-            await CommentModel.findByIdAndUpdate(
-              commentId,
-              {
-                $inc: { likesCount: -1 },
-                $pull: { likedBy: userId },
-              },
-              { session }
-            ).exec();
-            await session.commitTransaction();
-            session.endSession();
+            await CommentLikeModel.deleteOne({ _id: existingLike._id });
+            await CommentModel.findByIdAndUpdate(commentId, {
+              $inc: { likesCount: -1 },
+              $pull: { likedBy: userId },
+            }).exec();
 
             set.status = 200;
             return { message: "Comment unliked", ok: true };
@@ -95,23 +84,15 @@ export const commentsController = new Elysia({
             user: userId,
             comment: commentId,
           });
-          await newLike.save({ session });
-          await CommentModel.findByIdAndUpdate(
-            commentId,
-            {
-              $inc: { likesCount: 1 },
-              $addToSet: { likedBy: userId },
-            },
-            { session }
-          ).exec();
-          await session.commitTransaction();
-          session.endSession();
+          await newLike.save();
+          await CommentModel.findByIdAndUpdate(commentId, {
+            $inc: { likesCount: 1 },
+            $addToSet: { likedBy: userId },
+          }).exec();
 
           set.status = 200;
           return { message: "Comment liked", ok: true };
         } catch (error) {
-          await session.abortTransaction();
-          session.endSession();
           throw error;
         }
       } catch (error: any) {

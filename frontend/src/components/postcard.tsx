@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { formatDate } from "@/lib/utils";
@@ -11,15 +18,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import CommentSection from "./comment-section";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { PostShareModalMobile } from "./post/share-drawer-mobile";
 import { PostShareModalWeb } from "./post/share-modal-web";
 import {
   Drawer,
@@ -28,7 +27,6 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "./ui/drawer";
-import { PostShareModalMobile } from "./post/share-drawer-mobile";
 
 interface IPostCard {
   title: string;
@@ -43,7 +41,13 @@ interface IPostCard {
   image?: string;
 }
 
-export default function Postcard({ post }: { post: IPostCard }) {
+export default function Postcard({
+  post,
+  topic,
+}: {
+  post: IPostCard;
+  topic: string;
+}) {
   const [viewAllReplies, setViewAllReplies] = useState(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
@@ -70,9 +74,12 @@ export default function Postcard({ post }: { post: IPostCard }) {
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
 
-      const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
+      const previousPosts = queryClient.getQueryData([
+        "projects" + user?.id,
+        topic,
+      ]);
 
-      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
+      queryClient.setQueryData(["projects" + user?.id, topic], (old: any) => {
         return {
           ...old,
           pages: old.pages.map((page: any) => ({
@@ -98,7 +105,10 @@ export default function Postcard({ post }: { post: IPostCard }) {
       return { previousPosts };
     },
     onError: (err, newPost, context: any) => {
-      queryClient.setQueryData(["projects" + user?.id], context.previousPosts);
+      queryClient.setQueryData(
+        ["projects" + user?.id, topic],
+        context.previousPosts
+      );
     },
     onSuccess: (data) => {
       if (data.data.ok) {
@@ -270,6 +280,7 @@ export default function Postcard({ post }: { post: IPostCard }) {
           postId={post.id}
           viewAllReplies={viewAllReplies}
           setViewAllReplies={setViewAllReplies}
+          topic={topic}
         />
       </div>
     </div>

@@ -15,6 +15,7 @@ interface IGroupCard {
   groupAdmin: IAdmin;
   canJoin: boolean;
   slug: string;
+  memberCount: number;
   _id: string;
 }
 
@@ -94,7 +95,9 @@ export default function GroupCard({ group }: Props) {
             <h2 className="font-semibold">{group.name}</h2>
 
             <div className="flex gap-6 items-center justify-between">
-              <p className="text-[#043A53] text-xs font-medium">1 Member</p>
+              <p className="text-[#043A53] text-xs font-medium">
+                {group.memberCount} Member
+              </p>
               <p className="text-gray-500 text-xs font-medium">
                 Created {formatDate(group.createdAt)}
               </p>

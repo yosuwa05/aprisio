@@ -1,6 +1,6 @@
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -37,13 +37,13 @@ export function PhotosSection({ groupid }: Props) {
         <div className="grid grid-cols-3 gap-4">
           {data?.photos &&
             data?.photos.map((photo: any, index: number) => (
-              <div key={index} className="flex flex-col gap-2 items-center">
+              <div key={index} className="flex flex-col  items-center">
                 <Image
-                  src={placeholder}
+                  src={BASE_URL + `/file?key=${photo.photo}`}
                   alt="placeholder"
                   width={300}
                   height={300}
-                  className="rounded-lg"
+                  className="rounded-lg object-cover h-[200px] w-[300px]"
                 />
               </div>
             ))}
