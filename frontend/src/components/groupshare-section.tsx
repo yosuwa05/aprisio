@@ -1,26 +1,22 @@
 import { _axios } from "@/lib/axios-instance";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import GlobalLoader from "./globalloader";
-import Postcard from "./postcard";
+import SharedPostcard from "./sharedpost-card";
 import { Skeleton } from "./ui/skeleton";
 
-type Props = {
-  groupid: string;
-};
-
-export function GroupShareSection({ groupid }: Props) {
-  const groupSlug = usePathname().split("/")[2];
+export function GroupShareSection({}) {
+  const { groupid } = useParams();
 
   const limit = 1;
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["shared-group-post", groupSlug],
+      queryKey: ["shared-group-post", groupid],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/group/sharedpost?page=${pageParam}&limit=${limit}&group=${groupSlug}`
+          `/group/sharedpost?page=${pageParam}&limit=${limit}&group=${groupid}`
         );
         return res?.data;
       },
@@ -45,8 +41,6 @@ export function GroupShareSection({ groupid }: Props) {
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
 
-  console.log(data);
-
   return (
     <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
       {isLoading ? (
@@ -67,7 +61,7 @@ export function GroupShareSection({ groupid }: Props) {
           page?.sharedPosts?.map((post: any) => {
             return (
               <React.Fragment key={post?._id}>
-                <Postcard
+                <SharedPostcard
                   post={{
                     author: post?.postId?.author?.name,
                     title: post?.postId?.title,
@@ -80,7 +74,7 @@ export function GroupShareSection({ groupid }: Props) {
                     url: post?.postId?.url || "",
                     image: post?.postId?.image || "",
                   }}
-                  topic={""}
+                  groupid={groupid?.toString() ?? ""}
                 />
               </React.Fragment>
             );
