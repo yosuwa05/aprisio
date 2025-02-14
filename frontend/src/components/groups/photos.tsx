@@ -4,6 +4,8 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
+import { ChevronsDown, Loader2 } from "lucide-react";
 
 type Props = {
   groupid: string;
@@ -52,21 +54,38 @@ export function PhotosSection({ groupid }: Props) {
           ))}
         </div>
       ) : (
-        <div className='grid grid-cols-3 gap-4 h-[calc(100vh-300px)]   overflow-y-auto'>
-          {data?.pages?.flatMap((page) =>
-            page?.photos?.map((photo: any, index: number) => (
-              <div key={index} className='flex flex-col  items-center'>
-                <Image
-                  src={BASE_URL + `/file?key=${photo.photo}`}
-                  alt='placeholder'
-                  width={300}
-                  height={300}
-                  className='rounded-lg object-cover h-[200px] w-[300px]'
-                />
-              </div>
-            ))
+        <>
+          <div className='grid  grid-cols-1  md:grid-cols-2  lg:grid-cols-3 gap-4 h-[calc(100vh-300px)] hide-scrollbar    overflow-y-auto'>
+            {data?.pages?.flatMap((page) =>
+              page?.photos?.map((photo: any, index: number) => (
+                <div key={photo?._id} className='flex flex-col  items-center'>
+                  <Image
+                    src={BASE_URL + `/file?key=${photo.photo}`}
+                    alt='placeholder'
+                    width={300}
+                    height={300}
+                    className='rounded-lg object-cover h-[200px] w-[300px]'
+                  />
+                </div>
+              ))
+            )}
+          </div>
+          {hasNextPage && (
+            <div className='flex justify-center'>
+              <Button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                variant='ghost'
+                size='icon'>
+                {isFetchingNextPage ? (
+                  <Loader2 className='h-5 w-5 animate-spin' />
+                ) : (
+                  <ChevronsDown className='h-5 w-5' />
+                )}
+              </Button>
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
