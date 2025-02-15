@@ -5,10 +5,13 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import { MapPin, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { PersonalFeedPosts } from "./personal-feed-posts";
 
 export default function PersonalFeed() {
+  const router = useRouter();
+
   return (
     <div>
       <div className="mx-2 md:mx-8 flex flex-col lg:flex-row gap-8">
@@ -66,7 +69,13 @@ export default function PersonalFeed() {
                   }}
                 />
 
-                <Button className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white">
+                <Button
+                  onClick={() => {
+                    console.log("Create Event");
+                    router.push("/feed/create-event");
+                  }}
+                  className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white"
+                >
                   <Plus />
                   Create Event
                 </Button>

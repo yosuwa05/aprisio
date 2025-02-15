@@ -1,6 +1,5 @@
 import { saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
-import { PostModel, UserModel } from "@/models";
 import { EventModel } from "@/models/events.model";
 import { GroupModel } from "@/models/group.model";
 import { GroupPhotoModel } from "@/models/groupphotos.model";
@@ -117,7 +116,9 @@ export const groupController = new Elysia({
             eventName,
             location: location,
             group: newGroup._id,
+            managedBy: userId,
           });
+
           newGroup.events.push(newEvent._id);
           await newEvent.save();
         }
@@ -246,7 +247,8 @@ export const groupController = new Elysia({
     {
       detail: {
         summary: "Share Post to Multiple Groups",
-        description: "Allows sharing a post to multiple groups at once using group IDs.",
+        description:
+          "Allows sharing a post to multiple groups at once using group IDs.",
       },
       body: t.Object({
         groupIds: t.Array(t.String()),
@@ -255,134 +257,139 @@ export const groupController = new Elysia({
       }),
     }
   )
-  .get("/sharedpost", async ({ query, set }) => {
-    try {
-      const { page, limit, group, userId } = query;
+  .get(
+    "/sharedpost",
+    async ({ query, set }) => {
+      try {
+        const { page, limit, group, userId } = query;
 
-      const _page = Number(page) || 1;
-      const _limit = Number(limit) || 10;
+        const _page = Number(page) || 1;
+        const _limit = Number(limit) || 10;
 
-      const isGroupExist = await GroupModel.findOne({ slug: group });
-      if (!isGroupExist) {
-        set.status = 400;
-        return { message: "Group not found" };
-      }
+        const isGroupExist = await GroupModel.findOne({ slug: group });
+        if (!isGroupExist) {
+          set.status = 400;
+          return { message: "Group not found" };
+        }
 
-      const sharedPosts = await GroupPostShareModel.aggregate([
-        {
-          $match: { group: isGroupExist._id },
-        },
-        {
-          $lookup: {
-            from: "posts",
-            localField: "postId",
-            foreignField: "_id",
-            as: "post",
+        const sharedPosts = await GroupPostShareModel.aggregate([
+          {
+            $match: { group: isGroupExist._id },
           },
-        },
-        { $unwind: "$post" },
-        {
-          $lookup: {
-            from: "users",
-            localField: "post.author",
-            foreignField: "_id",
-            as: "author",
+          {
+            $lookup: {
+              from: "posts",
+              localField: "postId",
+              foreignField: "_id",
+              as: "post",
+            },
           },
-        },
-        {
-          $lookup: {
-            from: "users",
-            localField: "sharedBy",
-            foreignField: "_id",
-            as: "sharedByUser",
+          { $unwind: "$post" },
+          {
+            $lookup: {
+              from: "users",
+              localField: "post.author",
+              foreignField: "_id",
+              as: "author",
+            },
           },
-        },
-        {
-          $lookup: {
-            from: "likes",
-            localField: "post._id",
-            foreignField: "post",
-            as: "likes",
+          {
+            $lookup: {
+              from: "users",
+              localField: "sharedBy",
+              foreignField: "_id",
+              as: "sharedByUser",
+            },
           },
-        },
-        {
-          $lookup: {
-            from: "comments",
-            localField: "post._id",
-            foreignField: "post",
-            as: "comments",
+          {
+            $lookup: {
+              from: "likes",
+              localField: "post._id",
+              foreignField: "post",
+              as: "likes",
+            },
           },
-        },
-        ...(userId
-          ? [
-            {
-              $lookup: {
-                from: "likes",
-                let: { postId: "$post._id", userId: new Types.ObjectId(userId) },
-                pipeline: [
-                  {
-                    $match: {
-                      $expr: {
-                        $and: [
-                          { $eq: ["$post", "$$postId"] },
-                          { $eq: ["$user", "$$userId"] },
-                        ],
-                      },
+          {
+            $lookup: {
+              from: "comments",
+              localField: "post._id",
+              foreignField: "post",
+              as: "comments",
+            },
+          },
+          ...(userId
+            ? [
+                {
+                  $lookup: {
+                    from: "likes",
+                    let: {
+                      postId: "$post._id",
+                      userId: new Types.ObjectId(userId),
                     },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$post", "$$postId"] },
+                              { $eq: ["$user", "$$userId"] },
+                            ],
+                          },
+                        },
+                      },
+                    ],
+                    as: "likedByMe",
                   },
-                ],
-                as: "likedByMe",
-              },
-            },
-          ]
-          : []),
-        {
-          $sort: { "post.createdAt": -1, "post._id": -1 },
-        },
-        {
-          $skip: (_page - 1) * _limit,
-        },
-        {
-          $limit: _limit,
-        },
-        {
-          $project: {
-            title: "$post.title",
-            description: "$post.description",
-            authorName: { $arrayElemAt: ["$author.name", 0] },
-            sharedBy: { $arrayElemAt: ["$sharedByUser.name", 0] },
-            createdAt: "$post.createdAt",
-            likesCount: { $size: "$likes" },
-            commentsCount: { $size: "$comments" },
-            url: "$post.url",
-            image: "$post.image",
-            likedByMe: {
-              $cond: {
-                if: { $eq: [userId, null] },
-                then: false,
-                else: { $gt: [{ $size: { $ifNull: ["$likedByMe", []] } }, 0] },
+                },
+              ]
+            : []),
+          {
+            $sort: { "post.createdAt": -1, "post._id": -1 },
+          },
+          {
+            $skip: (_page - 1) * _limit,
+          },
+          {
+            $limit: _limit,
+          },
+          {
+            $project: {
+              title: "$post.title",
+              description: "$post.description",
+              authorName: { $arrayElemAt: ["$author.name", 0] },
+              sharedBy: { $arrayElemAt: ["$sharedByUser.name", 0] },
+              createdAt: "$post.createdAt",
+              likesCount: { $size: "$likes" },
+              commentsCount: { $size: "$comments" },
+              url: "$post.url",
+              image: "$post.image",
+              likedByMe: {
+                $cond: {
+                  if: { $eq: [userId, null] },
+                  then: false,
+                  else: {
+                    $gt: [{ $size: { $ifNull: ["$likedByMe", []] } }, 0],
+                  },
+                },
               },
             },
           },
-        },
-      ]);
+        ]);
 
+        return {
+          sharedPosts,
+          ok: true,
+        };
+      } catch (error: any) {
+        console.error("Error fetching shared posts:", error.message || error);
 
-
-      return {
-        sharedPosts,
-        ok: true,
-      };
-    } catch (error: any) {
-      console.error("Error fetching shared posts:", error.message || error);
-
-      set.status = 500;
-      return {
-        message: "An internal error occurred while fetching shared posts.",
-        ok: false,
-      };
-    }
-  },
+        set.status = 500;
+        return {
+          message: "An internal error occurred while fetching shared posts.",
+          ok: false,
+        };
+      }
+    },
     {
       query: t.Object({
         page: t.Optional(t.String()),
@@ -394,8 +401,8 @@ export const groupController = new Elysia({
         summary: "Get all shared posts",
         description: "Retrieve all shared posts within a group.",
       },
-    });
-
+    }
+  );
 
 // .get("/sharedpost", async ({ query, set }) => {
 //   try {
@@ -423,7 +430,6 @@ export const groupController = new Elysia({
 //         select: "name"
 //       }
 //     }).skip(((_page - 1) * _limit)).limit(_limit).sort({ createdAt: -1, _id: -1 }).lean()
-
 
 //     return {
 //       sharedPosts,
