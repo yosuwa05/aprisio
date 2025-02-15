@@ -55,10 +55,10 @@ export default function Feed() {
         ) : (
           <div className='lg:max-w-[300px] min-w-[250px]'>
             <h1 className='font-[600] text-3xl text-textcol capitalize'>
-              {data.subTopic?.subTopicName}
+              {data?.subTopic?.subTopicName}
             </h1>
             <p className='font-medium text-[#353535CC] opacity-80 mt-2'>
-              {data.subTopic?.description}
+              {data?.subTopic?.description}
             </p>
 
             <div className='mt-4 flex flex-col gap-3 items-center'>

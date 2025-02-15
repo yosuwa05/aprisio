@@ -26,12 +26,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { TopicsSidebar } from "./topics-sidebar";
+import { useRouter } from "next/navigation";
 type Topic = {
   _id: string;
   topicName: string;
 };
 
 export function TopCommunityBar() {
+  const router = useRouter();
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [sheetOpen, setSheetOpen] = useState<boolean>(false);
   const CloseSideBar = () => {
@@ -40,7 +42,7 @@ export function TopCommunityBar() {
   const { data, isLoading } = useQuery({
     queryKey: ["topics"],
     queryFn: async () => {
-      const response = await _axios.get("/topics?limit=40");
+      const response = await _axios.get("/topics?limit=400");
       return response.data;
     },
   });
@@ -129,10 +131,15 @@ export function TopCommunityBar() {
                             />
                           ))
                         ) : !isFetching && subTopics?.subTopics?.length > 0 ? (
-                          subTopics.subTopics.map(
+                          subTopics?.subTopics.map(
                             (subTopic: any, subTopicIndex: number) => (
-                              <MenubarItem key={subTopicIndex}>
-                                {subTopic.subTopicName}
+                              <MenubarItem
+                                className='cursor-pointer'
+                                onClick={() =>
+                                  router.push(`/feed/explore/${subTopic?.slug}`)
+                                }
+                                key={subTopicIndex}>
+                                {subTopic?.subTopicName}
                               </MenubarItem>
                             )
                           )
