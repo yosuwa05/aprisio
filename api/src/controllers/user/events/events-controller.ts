@@ -1,5 +1,6 @@
 import { EventModel } from "@/models";
 import { GroupModel } from "@/models/group.model";
+import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
 export const EventsController = new Elysia({
@@ -118,8 +119,11 @@ export const EventsController = new Elysia({
       }
     }
   )
-  .get("/view-event", async ({ set, query }) => {
+  .get("/view-event", async ({ set, query, store }) => {
     try {
+
+      const userId = (store as StoreType)["id"];
+
 
       const { eventId } = query
       const event = await EventModel.findOne({ _id: eventId }).populate("group", "name").populate("managedBy", "name").lean();
@@ -130,8 +134,19 @@ export const EventsController = new Elysia({
           message: "Event not found"
         }
       }
+
+      let eventTemp = {
+        ...event,
+        attending: userId
+          ? event.attendees?.some(
+            (attendee) => attendee.toString() === userId
+          )
+          : false,
+      };
+
+
       return {
-        event,
+        event: eventTemp,
         ok: true
       }
 

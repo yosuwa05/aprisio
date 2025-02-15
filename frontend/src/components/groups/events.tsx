@@ -26,8 +26,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
     isFetchingNextPage,
     isLoading,
   }: any = useInfiniteQuery<any>({
-    queryKey: ["group-events", user?.id],
-    staleTime: 0,
+    queryKey: ["group-events", user?.id, groupid],
     queryFn: async ({ pageParam = 1 }) => {
       const res = await _axios.get(
         `/noauth/group/events/${groupid}?userId=${user?.id}&page=${pageParam}&limit=${limit}`

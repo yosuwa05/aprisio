@@ -47,7 +47,7 @@ export const TopicsController = new Elysia({
 
         const subTopic = await SubTopicModel.find(
           query.topic ? { topic: query.topic } : {},
-          "subTopicName"
+          "subTopicName slug"
         )
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)

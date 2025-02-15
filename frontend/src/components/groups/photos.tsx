@@ -17,7 +17,7 @@ export function PhotosSection({ groupid }: Props) {
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["groups-photos", user?.id],
+      queryKey: ["groups-photos", user?.id, groupid],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
           `/noauth/group/photos?groupid=${groupid}&userId=${
@@ -36,44 +36,43 @@ export function PhotosSection({ groupid }: Props) {
     });
 
   return (
-    <div className="my-4 mx-2">
+    <div className='my-4 mx-2'>
       {isLoading ? (
-        <div className="grid grid-cols-3 gap-4">
+        <div className='grid grid-cols-3 gap-4'>
           {Array.from(Array(6).keys()).map((index) => (
-            <div key={index} className="flex flex-col gap-2 items-center">
-              <div className="rounded-lg h-[300px] w-[300px] overflow-hidden" />
+            <div key={index} className='flex flex-col gap-2 items-center'>
+              <div className='rounded-lg h-[300px] w-[300px] overflow-hidden' />
             </div>
           ))}
         </div>
       ) : (
         <>
-          <div className="grid  grid-cols-1  md:grid-cols-2  lg:grid-cols-3 gap-4 h-[calc(100vh-300px)] hide-scrollbar    overflow-y-auto">
+          <div className='grid  grid-cols-1  md:grid-cols-2  lg:grid-cols-3 gap-4 h-[calc(100vh-300px)] hide-scrollbar    overflow-y-auto'>
             {data?.pages?.flatMap((page) =>
               page?.photos?.map((photo: any, index: number) => (
-                <div key={photo?._id} className="flex flex-col  items-center">
+                <div key={photo?._id} className='flex flex-col  items-center'>
                   <Image
                     src={BASE_URL + `/file?key=${photo.photo}`}
-                    alt="placeholder"
+                    alt='placeholder'
                     width={300}
                     height={300}
-                    className="rounded-lg object-cover h-[200px] w-[300px]"
+                    className='rounded-lg object-cover h-[200px] w-[300px]'
                   />
                 </div>
               ))
             )}
           </div>
           {hasNextPage && (
-            <div className="flex justify-center">
+            <div className='flex justify-center'>
               <Button
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
-                variant="ghost"
-                size="icon"
-              >
+                variant='ghost'
+                size='icon'>
                 {isFetchingNextPage ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className='h-5 w-5 animate-spin' />
                 ) : (
-                  <ChevronsDown className="h-5 w-5" />
+                  <ChevronsDown className='h-5 w-5' />
                 )}
               </Button>
             </div>

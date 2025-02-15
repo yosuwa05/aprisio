@@ -1,15 +1,24 @@
 "use client";
+import EventCommentSection from "@/components/event/event-comment-section";
 import GlobalLoader from "@/components/globalloader";
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+type EventBody = {
+  eventId: string;
+};
 export default function ViewEventPage() {
-  const { eventid } = useParams();
+  const { eventid }: any = useParams();
+  const router = useRouter();
+  const user = useGlobalAuthStore((state) => state.user);
 
-  const { data, isLoading } = useQuery<any>({
+  const [viewAllReplies, setViewAllReplies] = useState(false);
+  const { data, isLoading, refetch } = useQuery<any>({
     queryKey: ["view -single-Event", eventid],
     queryFn: async () => {
       const res = await _axios.get(`/events/view-event?eventId=${eventid}`);
@@ -33,9 +42,25 @@ export default function ViewEventPage() {
     }).format(date);
   }
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: EventBody) => {
+      return await _axios.post("/events/attendevent", data);
+    },
+    onSuccess(data) {
+      if (data.data.ok) {
+        toast(data.data.message || "Attended event successfully");
+        refetch();
+      } else {
+        toast(data.data.error || "Something went wrong");
+      }
+    },
+  });
+
   return (
     <main className=' px-3 md:px-8 md:py-6 py-3 '>
-      <div className='flex items-center text-lg  cursor-pointer  gap-2'>
+      <div
+        onClick={() => router.back()}
+        className='flex items-center text-lg  cursor-pointer  gap-2'>
         <Icon className='font-semibold' icon={"weui:back-filled"} />
         <span className='text-textcol'>Back</span>
       </div>
@@ -71,8 +96,20 @@ export default function ViewEventPage() {
               </span>
             </div>
             <div>
-              <Button className='rounded-full bg-buttoncol text-black shadow-none p-4  md:p-8   text-xs lg:text-xl hover:bg-buttoncol font-semibold'>
-                Attend Event
+              <Button
+                onClick={() => {
+                  if (isPending) return;
+                  if (!user) {
+                    toast("Login to continue");
+                    return;
+                  }
+                  mutate({
+                    eventId: eventid,
+                  });
+                }}
+                disabled={data?.event?.attending}
+                className='rounded-full bg-buttoncol text-black shadow-none p-4  md:p-8   text-xs lg:text-xl hover:bg-buttoncol font-semibold'>
+                {!data?.event?.attending ? "Attend Event" : "Joined"}
               </Button>
             </div>
           </div>
@@ -119,6 +156,27 @@ export default function ViewEventPage() {
               </p>
             ))}
           </article>
+
+          {/* <div className='mt-20 px-5 pb-10'>
+            <div
+              className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200  cursor-pointer'
+              onClick={() => setViewAllReplies(!viewAllReplies)}>
+              <Icon
+                className='h-4 w-4 lg:h-5 lg:w-5'
+                icon='basil:comment-outline'
+                color='black'
+              />
+              <p className='text-xs lg:text-sm'>
+                {data?.event?.commentCount ?? 0}
+              </p>
+            </div>
+            <EventCommentSection
+              eventId={eventid}
+              viewAllReplies={viewAllReplies}
+              setViewAllReplies={setViewAllReplies}
+              // topic={topic}
+            />
+          </div> */}
         </div>
       )}
     </main>

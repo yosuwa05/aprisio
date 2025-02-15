@@ -17,6 +17,8 @@ import { groupController } from "./group/group-controller";
 import { noAuthGroupController } from "./group/noauth-group-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
+import { EventscommentsController } from "./events/event-comment-auth-controller";
+import { EventsCommentNoAuthController } from "./events/event-comment-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -28,6 +30,7 @@ export const userrouter = new Elysia({
   .use(authController)
   .use(postController)
   .use(commentsNoAuthController)
+  .use(EventsCommentNoAuthController)
   .use(communityController)
   .use(subtopicsController)
   .use(noAuthGroupController)
@@ -76,4 +79,6 @@ export const userrouter = new Elysia({
   .use(groupController)
   .use(subtopicsController)
   .use(EventsController)
-  .use(PersonalController);
+  .use(PersonalController)
+  .use(EventscommentsController)
+

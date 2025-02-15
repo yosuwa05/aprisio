@@ -14,6 +14,7 @@ type IEvent = {
   group: Types.ObjectId;
   isEventEnded: boolean;
   attendees: Types.ObjectId[];
+  commentsCount: number;
 };
 
 const EventSchema = new Schema<IEvent>(
@@ -35,6 +36,7 @@ const EventSchema = new Schema<IEvent>(
       type: Schema.Types.ObjectId,
       ref: "Group",
     },
+    commentsCount: { type: Number, default: 0 },
     isEventEnded: { type: Boolean, default: false },
     attendees: [
       {
