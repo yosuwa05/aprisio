@@ -22,7 +22,7 @@ export default function PersonalFeed() {
   });
   const [openSections, setOpenSections] = useState({
     joinedGroups: true,
-    joinedEvents: false,
+    joinedEvents: true,
     topicsFollowed: true,
   });
 
