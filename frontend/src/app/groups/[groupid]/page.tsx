@@ -123,9 +123,7 @@ export default function GroupPage() {
             )}
             {activeIndex == 2 && <PersonsSection groupid={data?.group._id} />}
             {activeIndex == 3 && <PhotosSection groupid={data?.group._id} />}
-            {activeIndex == 4 && (
-              <GroupShareSection groupid={data?.group._id} />
-            )}
+            {activeIndex == 4 && <GroupShareSection />}
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import GlobalLoader from "./globalloader";
 import SharedPostcard from "./sharedpost-card";
 import { Skeleton } from "./ui/skeleton";
 
-export function GroupShareSection({}) {
+export function GroupShareSection() {
   const { groupid } = useParams();
 
   const limit = 1;
@@ -40,18 +40,18 @@ export function GroupShareSection({}) {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
-
+  console.log(data);
   return (
-    <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
+    <div className='flex flex-col gap-6 h-[calc(100vh-200px)] overflow-y-auto hide-scrollbar  items-center p-1 lg:p-4'>
       {isLoading ? (
-        <div className="flex flex-col gap-4 w-full">
+        <div className='flex flex-col gap-4 w-full'>
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex gap-4 w-full">
-              <Skeleton className="w-[50px] h-[50px] rounded-full" />
-              <div className="flex flex-col gap-2 w-full">
-                <Skeleton className="w-full h-[200px]" />
-                <Skeleton className="w-full h-[15px]" />
-                <Skeleton className="w-3/4 h-[15px]" />
+            <div key={i} className='flex gap-4 w-full'>
+              <Skeleton className='w-[50px] h-[50px] rounded-full' />
+              <div className='flex flex-col gap-2 w-full'>
+                <Skeleton className='w-full h-[200px]' />
+                <Skeleton className='w-full h-[15px]' />
+                <Skeleton className='w-3/4 h-[15px]' />
               </div>
             </div>
           ))}
@@ -63,16 +63,16 @@ export function GroupShareSection({}) {
               <React.Fragment key={post?._id}>
                 <SharedPostcard
                   post={{
-                    author: post?.postId?.author?.name,
-                    title: post?.postId?.title,
-                    description: post?.postId?.description,
-                    createdAt: post?.postId?.createdAt,
-                    id: post?.postId?._id,
-                    likeCount: post?.postId?.likesCount,
-                    commentCount: post?.postId?.commentsCount,
-                    likedByMe: post?.postId?.likedByMe,
-                    url: post?.postId?.url || "",
-                    image: post?.postId?.image || "",
+                    author: post?.author?.name,
+                    title: post?.title,
+                    description: post?.description,
+                    createdAt: post?.createdAt,
+                    id: post?._id,
+                    likeCount: post?.likesCount,
+                    commentCount: post?.commentsCount,
+                    likedByMe: post?.likedByMe,
+                    url: post?.url || "",
+                    image: post?.image || "",
                   }}
                   groupid={groupid?.toString() ?? ""}
                 />
@@ -81,12 +81,12 @@ export function GroupShareSection({}) {
           })
         )
       ) : (
-        <p className="text-gray-500 text-xs font-semibold">No posts found</p>
+        <p className='text-gray-500 text-xs font-semibold'>No posts found</p>
       )}
-      <div ref={ref} className="h-10"></div>
+      <div ref={ref} className='h-10'></div>
 
       {isLoading || isFetchingNextPage ? (
-        <div className="flex justify-center items-center my-4">
+        <div className='flex justify-center items-center my-4'>
           <GlobalLoader />
         </div>
       ) : (
