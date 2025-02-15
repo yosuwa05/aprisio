@@ -80,14 +80,6 @@ export default function PersonalProfile({
                 </div>
               </div>
             </div>
-
-            <div className="px-3">
-              <h3 className="text-[#043A537D] text-xl">Topics Mukesh Follow</h3>
-
-              <div>
-                <p>Career & Buisness</p>
-              </div>
-            </div>
           </div>
         </div>
 
