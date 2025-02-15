@@ -133,4 +133,5 @@ export const userController = new Elysia({
         summary: "Get a user by slug",
       },
     }
-  );
+  )
+

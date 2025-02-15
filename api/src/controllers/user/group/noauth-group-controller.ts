@@ -310,7 +310,7 @@ export const noAuthGroupController = new Elysia({
           { $match: { subTopic: subTopic._id } },
           { $sample: { size: 3 } },
         ]);
-
+        set.status = 200;
         return {
           groups,
           ok: true,
