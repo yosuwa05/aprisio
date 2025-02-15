@@ -30,7 +30,7 @@ export const FeedPosts = () => {
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["projects" + user?.id, "technology"],
+      queryKey: ["projects" + user?.id],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
           `/post/personal?page=${pageParam}&userId=${user?.id ?? ""}`

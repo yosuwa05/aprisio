@@ -4,8 +4,8 @@ import { Elysia, t } from "elysia";
 export const userController = new Elysia({
   prefix: "/user",
   detail: {
-    tags: ["Client - Users"]
-  }
+    tags: ["Client - Users"],
+  },
 })
 
   .get(
@@ -64,7 +64,7 @@ export const userController = new Elysia({
       }),
       detail: {
         summary: "Get all users for Client site",
-        description: "Get all users for Client site"
+        description: "Get all users for Client site",
       },
     }
   )
@@ -98,6 +98,39 @@ export const userController = new Elysia({
       }),
       detail: {
         summary: "Get a user by id",
+      },
+    }
+  )
+  .get(
+    "/getprofilebyname",
+    async ({ query }) => {
+      try {
+        const { slug } = query;
+
+        const user = await UserModel.findOne({ name: slug });
+
+        if (!user) {
+          return { message: "User not found" };
+        }
+
+        return {
+          user,
+          status: "success",
+        };
+      } catch (error) {
+        console.log(error);
+        return {
+          error,
+          status: "error",
+        };
+      }
+    },
+    {
+      query: t.Object({
+        slug: t.String(),
+      }),
+      detail: {
+        summary: "Get a user by slug",
       },
     }
   );
