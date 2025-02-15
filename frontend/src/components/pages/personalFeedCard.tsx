@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import CommentSection from "../comment-section";
 import { PostShareModalMobile } from "../post/share-drawer-mobile";
 import { PostShareModalWeb } from "../post/share-modal-web";
 import {
@@ -28,6 +27,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "../ui/drawer";
+import PerosonalFeedCommentSection from "./personalFeedCommentSection";
 
 interface IPostCard {
   title: string;
@@ -75,11 +75,15 @@ export default function PersonalPostcard({
       });
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
+      await queryClient.cancelQueries({
+        queryKey: ["personalfeed" + user?.id],
+      });
 
-      const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
+      const previousPosts = queryClient.getQueryData([
+        "personalfeed" + user?.id,
+      ]);
 
-      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
+      queryClient.setQueryData(["personalfeed" + user?.id], (old: any) => {
         return {
           ...old,
           pages: old.pages.map((page: any) => ({
@@ -105,10 +109,7 @@ export default function PersonalPostcard({
       return { previousPosts };
     },
     onError: (err, newPost, context: any) => {
-      queryClient.setQueryData(
-        ["projects" + user?.id, topic],
-        context.previousPosts
-      );
+      queryClient.setQueryData(["projects" + user?.id], context.previousPosts);
     },
     onSuccess: (data) => {
       if (data.data.ok) {
@@ -285,7 +286,7 @@ export default function PersonalPostcard({
       </div>
 
       <div>
-        <CommentSection
+        <PerosonalFeedCommentSection
           postId={post.id}
           viewAllReplies={viewAllReplies}
           setViewAllReplies={setViewAllReplies}

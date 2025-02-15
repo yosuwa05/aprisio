@@ -50,11 +50,15 @@ export default function PerosonalFeedCommentSection({
       return await _axios.post("/comment", data);
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
+      await queryClient.cancelQueries({
+        queryKey: ["personalfeed" + user?.id],
+      });
 
-      const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
+      const previousPosts = queryClient.getQueryData([
+        "personalfeed" + user?.id,
+      ]);
 
-      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
+      queryClient.setQueryData(["personalfeed" + user?.id], (old: any) => {
         return {
           ...old,
           pages: old.pages.map((page: any) => ({

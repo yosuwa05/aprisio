@@ -11,7 +11,7 @@ import { PersonalFeedPosts } from "./personal-feed-posts";
 export default function PersonalFeed() {
   return (
     <div>
-      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
+      <div className="mx-2 md:mx-8 flex flex-col lg:flex-row gap-8">
         <div className="lg:max-w-[300px] min-w-[300px]">
           <Collapsible defaultOpen>
             <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm font-bold text-contrasttext text-lg w-full text-start flex gap-2 items-center">
