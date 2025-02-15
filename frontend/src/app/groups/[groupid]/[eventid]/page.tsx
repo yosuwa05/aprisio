@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 
 export default function ViewEventPage() {
   const { eventid } = useParams();
-  console.log(eventid);
 
   const { data, isLoading } = useQuery({
     queryKey: ["view -single-Event", eventid],
@@ -29,8 +28,6 @@ export default function ViewEventPage() {
       timeZone: "UTC",
     }).format(date);
   }
-
-  console.log(data);
 
   return (
     <main className=' px-3 md:px-8 md:py-6 py-3 '>
@@ -105,7 +102,7 @@ export default function ViewEventPage() {
             <p className='mt-3 text-lg  md:text-xl leading-relaxed   tracking-wide   whitespace-pre-line text-textcol/80'>
               <span className='text-contrasttext  font-sans font-semibold'>
                 {index + 1}. {rule?.heading} -
-              </span>{" "}
+              </span>
               {rule?.subHeading}
             </p>
           ))}
