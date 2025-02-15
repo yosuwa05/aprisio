@@ -63,7 +63,7 @@ export function GroupShareSection() {
               <React.Fragment key={post?._id}>
                 <SharedPostcard
                   post={{
-                    author: post?.author?.name,
+                    author: post?.authorName,
                     title: post?.title,
                     description: post?.description,
                     createdAt: post?.createdAt,
