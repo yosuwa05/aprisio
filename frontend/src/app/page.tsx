@@ -1,6 +1,5 @@
 "use client";
 
-import { TopCommunityBar } from "@/components/community/top-community-bar";
 import PersonalFeed from "@/components/pages/personalfeed";
 import Hero1 from "@/components/shared/hero1";
 import Topbar from "@/components/shared/topbar";
@@ -35,7 +34,7 @@ export default function Home() {
     <>
       <div className="sticky top-[-2px] z-50 bg-white py-2">
         <Topbar />
-        {user && <TopCommunityBar />}
+        {/* {user && <TopCommunityBar />} */}
       </div>
       <ToastContainer />
       {!user ? (

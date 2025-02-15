@@ -40,7 +40,9 @@ export default function Topbar() {
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
 
   const { data } = useQuery({
-    queryKey: ["user-Joined-things"],
+    queryKey: ["joined"],
+    retry: false,
+    staleTime: Infinity,
     queryFn: async () => {
       return await _axios.get(`/personal/joined-things`);
     },
@@ -68,158 +70,197 @@ export default function Topbar() {
                 <Menu size={24} />
               </div>
             </SheetTrigger>
-            <SheetContent className="h-screen p-0 px-2" side={"left"}>
-              <SheetHeader>
-                <SheetTitle></SheetTitle>
-                <SheetDescription></SheetDescription>
-              </SheetHeader>
+            <SheetContent
+              className="h-screen overflow-scroll p-0 px-2 flex flex-col justify-between  bg-white z-50"
+              side={"left"}
+            >
+              <div>
+                <SheetHeader>
+                  <SheetTitle></SheetTitle>
+                  <SheetDescription></SheetDescription>
+                </SheetHeader>
 
-              <div className="px-4 text-center">
-                <div className="flex flex-col justify-between gap-6">
-                  {/* <ul className="flex flex-col gap-6 text-textcol font-semibold  text-xl">
-                    <Link className="" href={"/"}>
-                      Home
-                    </Link>
+                <Link
+                  href={"/feed"}
+                  className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-12"
+                >
+                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                    <div className="flex gap-3 items-center">
+                      <Icon
+                        icon="material-symbols:explore-outline-rounded"
+                        fontSize={20}
+                      />
 
-                    <Link className="" href={"/feed"}>
-                      Community
-                    </Link>
-                    <Link className="" href={"#"}>
-                      About Us
-                    </Link>
-                    <Link className="" href={"#"}>
-                      Contact
-                    </Link>
-                  </ul> */}
-
-                  {!user && (
-                    <div>
-                      <button
-                        className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
-                        onClick={() => router.push("/login")}
-                      >
-                        Log In
-                      </button>
-                      <button
-                        onClick={() => router.push("/join-community")}
-                        className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
-                      >
-                        Sign Up
-                      </button>
+                      <h1 className={`capitalize text-sm md:text-lg `}>
+                        Explore Community
+                      </h1>
                     </div>
-                  )}
+                  </div>
+                </Link>
+
+                {user && (
+                  <>
+                    <Collapsible
+                      className="my-3"
+                      open={openSections.joinedGroups}
+                      onOpenChange={() => toggleSection("joinedGroups")}
+                    >
+                      <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+                        <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                          <div className="flex gap-3 items-center">
+                            <Icon icon="gravity-ui:persons" />
+                            <h1 className={`capitalize text-sm md:text-lg `}>
+                              Joined Groups
+                            </h1>
+                          </div>
+                          <Icon
+                            className={`text-xl `}
+                            icon={
+                              openSections.joinedGroups
+                                ? "octicon:chevron-up-12"
+                                : "octicon:chevron-down-12"
+                            }
+                          />
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pt-2 px-4 ">
+                        {data?.data?.joinedGroups?.map((group: any) => (
+                          <p
+                            onClick={() =>
+                              router.push(`/groups/${group?.groupSlug}`)
+                            }
+                            key={group?._id}
+                            className="text-textcol py-1.5 cursor-pointer  md:py-3"
+                          >
+                            {group?.groupName}
+                          </p>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+
+                    <Collapsible
+                      className="my-3"
+                      open={openSections.joinedEvents}
+                      onOpenChange={() => toggleSection("joinedEvents")}
+                    >
+                      <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+                        <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                          <div className="flex gap-3 items-center">
+                            <Icon icon="uiw:date" />
+                            <h1 className={`capitalize text-sm md:text-lg `}>
+                              Joined Events
+                            </h1>
+                          </div>
+                          <Icon
+                            className={`text-xl `}
+                            icon={
+                              openSections.joinedEvents
+                                ? "octicon:chevron-up-12"
+                                : "octicon:chevron-down-12"
+                            }
+                          />
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pt-2 px-4 ">
+                        {data?.data?.joinedEvents?.map((event: any) => (
+                          <p
+                            onClick={() =>
+                              router.push(
+                                `/groups/${event?.groupSulg}/${event?._id}`
+                              )
+                            }
+                            key={event?._id}
+                            className="text-textcol py-1.5 cursor-pointer  md:py-3"
+                          >
+                            {event?.eventName}
+                          </p>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+
+                    <Collapsible
+                      className="my-3"
+                      open={openSections.topicsFollowed}
+                      onOpenChange={() => toggleSection("topicsFollowed")}
+                    >
+                      <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+                        <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                          <div className="flex gap-3 items-center">
+                            <Icon icon="hugeicons:note" />
+                            <h1 className={`capitalize text-sm md:text-lg `}>
+                              Topics Followed
+                            </h1>
+                          </div>
+                          <Icon
+                            className={`text-xl `}
+                            icon={
+                              openSections.topicsFollowed
+                                ? "octicon:chevron-up-12"
+                                : "octicon:chevron-down-12"
+                            }
+                          />
+                        </div>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="pt-2 px-4 ">
+                        {data?.data?.TopicsFollowed?.map((topic: any) => (
+                          <p
+                            onClick={() =>
+                              router.push(
+                                `/feed/explore/${topic?.subtopicSlug}`
+                              )
+                            }
+                            key={topic?._id}
+                            className="text-textcol py-1.5 cursor-pointer md:py-3"
+                          >
+                            {topic?.subtopicName}
+                          </p>
+                        ))}
+                      </CollapsibleContent>
+                    </Collapsible>
+                  </>
+                )}
+
+                <div className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4">
+                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                    <div className="flex gap-3 items-center">
+                      <Icon icon="ix:about" />
+
+                      <h1 className={`capitalize text-sm md:text-lg `}>
+                        About Us
+                      </h1>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4">
+                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                    <div className="flex gap-3 items-center">
+                      <Icon icon="material-symbols:call-outline-sharp" />
+
+                      <h1 className={`capitalize text-sm md:text-lg `}>
+                        Contact
+                      </h1>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <Collapsible
-                open={openSections.joinedGroups}
-                onOpenChange={() => toggleSection("joinedGroups")}
-                className="mt-12"
-              >
-                <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                    <div className="flex gap-3 items-center">
-                      <Icon icon="gravity-ui:persons" />
-                      <h1 className={`capitalize text-sm md:text-lg `}>
-                        Joined Groups
-                      </h1>
-                    </div>
-                    <Icon
-                      className={`text-xl `}
-                      icon={
-                        openSections.joinedGroups
-                          ? "octicon:chevron-up-12"
-                          : "octicon:chevron-down-12"
-                      }
-                    />
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 px-4 ">
-                  {data?.data?.joinedGroups?.map((group: any) => (
-                    <p
-                      onClick={() => router.push(`/groups/${group?.groupSlug}`)}
-                      key={group?._id}
-                      className="text-textcol py-1.5 cursor-pointer  md:py-3"
-                    >
-                      {group?.groupName}
-                    </p>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-
-              <Collapsible
-                open={openSections.joinedEvents}
-                onOpenChange={() => toggleSection("joinedEvents")}
-              >
-                <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                    <div className="flex gap-3 items-center">
-                      <Icon icon="uiw:date" />
-                      <h1 className={`capitalize text-sm md:text-lg `}>
-                        Joined Events
-                      </h1>
-                    </div>
-                    <Icon
-                      className={`text-xl `}
-                      icon={
-                        openSections.joinedEvents
-                          ? "octicon:chevron-up-12"
-                          : "octicon:chevron-down-12"
-                      }
-                    />
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 px-4 ">
-                  {data?.data?.joinedEvents?.map((event: any) => (
-                    <p
-                      onClick={() =>
-                        router.push(`/groups/${event?.groupSulg}/${event?._id}`)
-                      }
-                      key={event?._id}
-                      className="text-textcol py-1.5 cursor-pointer  md:py-3"
-                    >
-                      {event?.eventName}
-                    </p>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-
-              <Collapsible
-                open={openSections.topicsFollowed}
-                onOpenChange={() => toggleSection("topicsFollowed")}
-              >
-                <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                    <div className="flex gap-3 items-center">
-                      <Icon icon="hugeicons:note" />
-                      <h1 className={`capitalize text-sm md:text-lg `}>
-                        Topics Followed
-                      </h1>
-                    </div>
-                    <Icon
-                      className={`text-xl `}
-                      icon={
-                        openSections.topicsFollowed
-                          ? "octicon:chevron-up-12"
-                          : "octicon:chevron-down-12"
-                      }
-                    />
-                  </div>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-2 px-4 ">
-                  {data?.data?.TopicsFollowed?.map((topic: any) => (
-                    <p
-                      onClick={() =>
-                        router.push(`/feed/explore/${topic?.subtopicSlug}`)
-                      }
-                      key={topic?._id}
-                      className="text-textcol py-1.5 cursor-pointer md:py-3"
-                    >
-                      {topic?.subtopicName}
-                    </p>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
+              {!user && (
+                <div className="flex flex-col my-2 gap-3">
+                  <button
+                    className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
+                    onClick={() => router.push("/login")}
+                  >
+                    Log In
+                  </button>
+                  <button
+                    onClick={() => router.push("/join-community")}
+                    className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
             </SheetContent>
           </Sheet>
         </div>
