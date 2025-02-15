@@ -2,6 +2,7 @@ import { SubTopicModel } from "@/models/subtopicmodel";
 import { TopicModel } from "@/models/topicsmodel";
 import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import Elysia, { t } from "elysia";
+import { Types } from "mongoose";
 
 export const communityController = new Elysia({
   prefix: "/community",
@@ -167,7 +168,7 @@ export const communityController = new Elysia({
     async ({ query, set }) => {
       try {
         const subTopic = await SubTopicModel.findOne({ slug: query.slug });
-
+        console.log(subTopic)
         if (!subTopic) {
           set.status = 400
           return { ok: false, error: "Subtopic not found" };
@@ -175,14 +176,14 @@ export const communityController = new Elysia({
         const { userId } = query
         let isUserJoined = false
         if (userId && userId !== "undefined") {
-          console.log(userId)
+          console.log()
           const userSubTopic = await UserSubTopicModel.findOne({
-            userId,
+            userId: new Types.ObjectId(userId),
             subTopicId: subTopic._id,
-          })
-
+          }).lean();
+          console.log(userSubTopic)
           if (userSubTopic) {
-            isUserJoined = true
+            isUserJoined = true;
           }
         }
 
