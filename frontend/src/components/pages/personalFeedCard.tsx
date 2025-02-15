@@ -233,7 +233,7 @@ export default function PersonalPostcard({
             <p className="text-xs lg:text-sm">{post.commentCount ?? 0}</p>
           </div>
           {/* for Dialog web */}
-          <div
+          {/* <div
             onClick={() => {
               setPostId(post.id), setDialogOpen(true);
             }}
@@ -245,7 +245,7 @@ export default function PersonalPostcard({
               className="h-4 w-4 lg:h-5 lg:w-5 cursor-pointer"
             />
             <p className="text-xs lg:text-xs font-bold">{"Share"}</p>
-          </div>
+          </div> */}
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent className="min-w-[calc(60vw-100px)] h-[calc(70vh-4rem)]  flex flex-col ">
               <DialogHeader>
