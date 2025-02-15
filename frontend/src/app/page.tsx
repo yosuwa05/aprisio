@@ -14,6 +14,7 @@ import FAQ2 from "../components/shared/faq-two";
 import Footer from "../components/shared/footer";
 import Join from "../components/shared/join";
 import Testimonial from "../components/shared/testimonials";
+import { TopCommunityBar } from "@/components/community/top-community-bar";
 
 export default function Home() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function Home() {
   return (
     <>
       <Topbar />
+      {user && <TopCommunityBar />}
       <ToastContainer />
       {!user ? (
         <div>

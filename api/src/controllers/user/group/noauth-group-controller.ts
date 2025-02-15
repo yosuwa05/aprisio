@@ -39,10 +39,7 @@ export const noAuthGroupController = new Elysia({
         };
 
         if (search) {
-          searchQuery.$or = [
-            { name: { $regex: search, $options: "i" } },
-            // { description: { $regex: search, $options: 'i' } }
-          ];
+          searchQuery.$or = [{ name: { $regex: search, $options: "i" } }];
         }
 
         const groups = await GroupModel.find(searchQuery)
@@ -83,6 +80,59 @@ export const noAuthGroupController = new Elysia({
         });
 
         const total = await GroupModel.countDocuments(searchQuery);
+
+        return {
+          groups: updatedGroups,
+          ok: true,
+          page,
+          limit,
+          total,
+        };
+      } catch (error) {
+        console.error("Error fetching groups:", error);
+        return {
+          message: "An error occurred while fetching groups.",
+          ok: false,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        page: t.Number(),
+        limit: t.Number(),
+        subTopic: t.Optional(t.String()),
+        userId: t.Optional(t.String()),
+        search: t.Optional(t.String()),
+      }),
+      detail: {
+        description: "Get groups",
+        summary: "Get groups",
+      },
+    }
+  )
+  .get(
+    "/me",
+    async ({ query }) => {
+      try {
+        const { userId } = query;
+
+        const page = query.page || 1;
+        const limit = query.limit || 10;
+
+        let userJoinedGroups = await UserGroupsModel.find({
+          userId,
+        })
+          .populate("group", "name slug")
+          .populate("userId", "name")
+          .lean();
+
+        const updatedGroups = userJoinedGroups.map((group) => {
+          return { ...group, canJoin: false };
+        });
+
+        const total = await UserGroupsModel.countDocuments({
+          userId,
+        });
 
         return {
           groups: updatedGroups,
