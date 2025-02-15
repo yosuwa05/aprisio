@@ -18,16 +18,16 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import CommentSection from "./comment-section";
-import { PostShareModalMobile } from "./post/share-drawer-mobile";
-import { PostShareModalWeb } from "./post/share-modal-web";
+import CommentSection from "../comment-section";
+import { PostShareModalMobile } from "../post/share-drawer-mobile";
+import { PostShareModalWeb } from "../post/share-modal-web";
 import {
   Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-} from "./ui/drawer";
+} from "../ui/drawer";
 
 interface IPostCard {
   title: string;
@@ -42,7 +42,7 @@ interface IPostCard {
   image?: string;
 }
 
-export default function Postcard({
+export default function PersonalPostcard({
   post,
   topic,
 }: {
@@ -77,12 +77,9 @@ export default function Postcard({
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
 
-      const previousPosts = queryClient.getQueryData([
-        "projects" + user?.id,
-        topic,
-      ]);
+      const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
 
-      queryClient.setQueryData(["projects" + user?.id, topic], (old: any) => {
+      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
         return {
           ...old,
           pages: old.pages.map((page: any) => ({
@@ -250,14 +247,6 @@ export default function Postcard({
               <DialogHeader>
                 <DialogTitle></DialogTitle>
                 <DialogDescription></DialogDescription>
-                {/* <DialogClose className='absolute bg-red-500 rounded-full  right-2 top-12'>
-                  <div className='p-1'>
-                    <Icon
-                      icon='ic:baseline-close'
-                      className='h-5 w-5 text-gray-600 hover:text-gray-800 cursor-pointer'
-                    />
-                  </div>
-                </DialogClose> */}
               </DialogHeader>
               <PostShareModalWeb
                 postId={postId}
@@ -266,7 +255,6 @@ export default function Postcard({
               />
             </DialogContent>
           </Dialog>
-          {/* for Drawer mobile */}
           <div
             onClick={() => {
               setPostId(post.id), setDrawerOpen(true);

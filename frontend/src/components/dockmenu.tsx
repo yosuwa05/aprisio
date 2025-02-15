@@ -9,7 +9,7 @@ export default function DockMenu() {
   let layouts = ["post", "group", "event"];
 
   return (
-    <div className="fixed bottom-2 left-1/2 transform rounded-full -translate-x-1/2 flex bg-white border-[1px] border-[#043A53] p-2  shadow-md">
+    <div className="fixed bottom-2 left-1/2 transform rounded-full z-[1000] -translate-x-1/2 flex bg-white border-[1px] border-[#043A53] p-2  shadow-md">
       {layouts.map((layout, index) => (
         <div
           key={index}

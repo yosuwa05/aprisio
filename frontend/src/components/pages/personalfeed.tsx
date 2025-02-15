@@ -1,78 +1,58 @@
-import { _axios } from "@/lib/axios-instance";
-import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
-import placeholder from "@img/assets/placeholder-hero.jpeg";
-import { useQuery } from "@tanstack/react-query";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@radix-ui/react-collapsible";
 import { MapPin, Plus } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
-import { FeedPosts } from "./personal-feed-posts";
+import { PersonalFeedPosts } from "./personal-feed-posts";
 
 export default function PersonalFeed() {
-  const user = useGlobalAuthStore((state) => state.user);
-  const topic = "technology";
-  const router = useRouter();
-  const updateActiveSubTopic = useGlobalFeedStore(
-    (state) => state.setActiveSubTopic
-  );
-
-  useEffect(() => {
-    updateActiveSubTopic(typeof topic === "string" ? topic : "");
-  }, [topic]);
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["community-info", topic, user?.id],
-    queryFn: async () => {
-      const res = await _axios.get(
-        `/community/info?slug=${topic}&userId=${user?.id}`
-      );
-      return res.data;
-    },
-  });
-
-  const { data: randomEventsGroups, isLoading: randomEventsGroupsLoading } =
-    useQuery({
-      queryKey: ["random-events-groups", topic, user?.id],
-      queryFn: async () => {
-        const res = await _axios.get(
-          `/noauth/group/random-groups-events?subtopicSlug=${topic}`
-        );
-        return res.data;
-      },
-    });
-
   return (
     <div>
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
-        {isLoading ? (
-          <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
-        ) : (
-          <div className="lg:max-w-[300px] min-w-[250px]">
-            <h1 className="font-[600] text-3xl text-textcol capitalize">
-              {data.subTopic?.subTopicName}
-            </h1>
-            <p className="font-medium text-[#353535CC] opacity-80 mt-2">
-              {data.subTopic?.description}
-            </p>
+        <div className="lg:max-w-[300px] min-w-[300px]">
+          <Collapsible defaultOpen>
+            <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm font-bold text-contrasttext text-lg w-full text-start flex gap-2 items-center">
+              <Icon icon="gravity-ui:persons" /> Joined Groups
+            </CollapsibleTrigger>
+            <CollapsibleContent className="flex flex-col gap-6 pl-4 ">
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+            </CollapsibleContent>
+          </Collapsible>
 
-            <div className="mt-4 flex flex-col gap-3 items-center">
-              <Image src={placeholder} className="rounded-xl" alt="" />
-              {data?.isUserJoined}
-              {data?.isUserJoined ? null : (
-                <Button className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol">
-                  Join Community
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
+          <Collapsible>
+            <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm font-bold text-contrasttext text-lg w-full text-start flex gap-2 items-center">
+              <Icon icon="uiw:date" /> Joined Events
+            </CollapsibleTrigger>
+            <CollapsibleContent className="flex flex-col gap-6 pl-4 ">
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Collapsible>
+            <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm font-bold text-contrasttext text-lg w-full text-start flex gap-2 items-center">
+              <Icon icon="hugeicons:note" /> Topics Followed
+            </CollapsibleTrigger>
+            <CollapsibleContent className="flex flex-col gap-6 pl-4">
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
+            </CollapsibleContent>
+          </Collapsible>
+        </div>
 
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
-            <FeedPosts />
+            <PersonalFeedPosts />
           </div>
 
           <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
@@ -111,32 +91,6 @@ export default function PersonalFeed() {
                     </div>
 
                     <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
-                      View
-                    </Button>
-                  </div>
-                ))}
-              </div>
-
-              <h1 className="text-2xl text-textcol my-4 font-semibold">
-                Groups
-              </h1>
-
-              <div className="flex flex-col  items-start gap-2 my-2">
-                {randomEventsGroups?.groups?.map((group: any) => (
-                  <div
-                    className="flex justify-between items-center w-full"
-                    key={group?._id}
-                  >
-                    <div className="text-textcol flex flex-col gap-2">
-                      <h4 className="text-[15px] font-medium">{group?.name}</h4>
-                    </div>
-
-                    <Button
-                      onClick={() => {
-                        router.push(`/groups/${group.slug}`);
-                      }}
-                      className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]"
-                    >
                       View
                     </Button>
                   </div>
