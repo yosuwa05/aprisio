@@ -57,16 +57,14 @@ export function EventsSection({ groupid, gropuslug }: Props) {
 
   return (
     <div className="my-4">
-      <div className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2">
+      <div
+        className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2"
+        onClick={() => {
+          router.push(`/feed/create-event/`);
+        }}
+      >
         <Icon icon="tabler:plus" fontSize={22} />
-        <h3
-          className="font-semibold text-sm"
-          onClick={() => {
-            router.push(`/feed/create-event/`);
-          }}
-        >
-          Create Event
-        </h3>
+        <h3 className="font-semibold text-sm">Create Event</h3>
       </div>
 
       <div className="mt-6 flex-col flex gap-4">
