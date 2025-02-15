@@ -164,7 +164,7 @@ export const postController = new Elysia({
   .get(
     "/personal",
     async ({ query, set }) => {
-      const { page = 1, limit = 5, userId } = query;
+      const { page = 1, limit = 5, userId, createdByMe } = query;
 
       try {
         const sanitizedPage = Math.max(1, page);
@@ -191,9 +191,11 @@ export const postController = new Elysia({
 
         const posts = await PostModel.aggregate([
           {
-            $match: {
-              subTopic: { $in: subTopicIds },
-            },
+            $match: createdByMe
+              ? { author: userId }
+              : {
+                  subTopic: { $in: subTopicIds },
+                },
           },
           {
             $sort: { createdAt: -1 },
@@ -311,6 +313,9 @@ export const postController = new Elysia({
             default: "",
           })
         ),
+        createdByMe: t.Boolean({
+          default: false,
+        }),
       }),
       detail: {
         description: "Get personal posts",

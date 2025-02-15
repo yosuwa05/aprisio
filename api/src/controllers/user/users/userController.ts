@@ -1,4 +1,6 @@
 import { UserModel } from "@/models";
+import { UserGroupsModel } from "@/models/usergroup.model";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import { Elysia, t } from "elysia";
 
 export const userController = new Elysia({
@@ -113,8 +115,15 @@ export const userController = new Elysia({
           return { message: "User not found" };
         }
 
+        const [groupsCount, subtopicsFollowed] = await Promise.all([
+          UserGroupsModel.countDocuments({ userId: user._id }),
+          UserSubTopicModel.countDocuments({ userId: user._id }),
+        ]);
+
         return {
           user,
+          groupsCount,
+          subtopicsFollowed,
           status: "success",
         };
       } catch (error) {

@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 type Topic = {
@@ -29,42 +24,24 @@ export function ProfileTopBar() {
             className="text-lg md:text-xl cursor-pointer"
           />
         </div>
-        <Carousel
-          opts={{
-            align: "center",
-            axis: "x",
-            dragFree: true,
-            direction: "ltr",
-            containScroll: "keepSnaps",
-          }}
-          className="w-full overflow-hidden"
-        >
-          <CarouselContent className="mr-16">
-            {["Created Posts", "Groups Participated", "Events Created"].map(
-              (topic: string, index: number) => (
-                <CarouselItem
-                  key={index}
-                  className="basis-1/1 flex justify-center"
-                >
-                  <div className="bg-transparent border-none cursor-pointer">
-                    <div>
-                      <div
-                        onClick={() => setActiveIndex(index)}
-                        className={`text-sm md:text-lg font-bold select-none ${
-                          index == activeIndex
-                            ? "text-contrasttext font-bold"
-                            : "text-fadedtext"
-                        }`}
-                      >
-                        {topic}
-                      </div>
-                    </div>
-                  </div>
-                </CarouselItem>
-              )
-            )}
-          </CarouselContent>
-        </Carousel>
+
+        <div className="mr-20 flex gap-6">
+          {["Created Posts", "Groups Participated", "Events Created"].map(
+            (topic: string, index: number) => (
+              <div
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`text-sm md:text-lg font-bold select-none cursor-pointer ${
+                  index == activeIndex
+                    ? "text-contrasttext font-bold"
+                    : "text-fadedtext"
+                }`}
+              >
+                {topic}
+              </div>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

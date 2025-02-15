@@ -1,9 +1,9 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
   useInfiniteQuery,
   useMutation,
@@ -119,7 +119,7 @@ export default function PerosonalFeedCommentSection({
 
         <Input
           placeholder="Write your comment"
-          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
+          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-normal font-sans"
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

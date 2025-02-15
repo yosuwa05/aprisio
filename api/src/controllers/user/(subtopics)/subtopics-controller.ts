@@ -68,8 +68,10 @@ export const subtopicsController = new Elysia({
         if (query.userId && query.userId != "undefined") {
           const userTopics = await UserSubTopicModel.find(
             { userId: query.userId },
-            "subTopic"
+            "subTopicId"
           ).lean();
+
+          console.log(userTopics);
 
           const followedTopicIds = userTopics.map((topic) => topic.subTopicId);
 

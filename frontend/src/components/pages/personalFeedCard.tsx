@@ -45,9 +45,11 @@ interface IPostCard {
 export default function PersonalPostcard({
   post,
   topic,
+  createdByMe,
 }: {
   post: IPostCard;
   topic: string;
+  createdByMe: boolean;
 }) {
   const [viewAllReplies, setViewAllReplies] = useState(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -76,40 +78,47 @@ export default function PersonalPostcard({
     },
     onMutate: async () => {
       await queryClient.cancelQueries({
-        queryKey: ["personalfeed" + user?.id],
+        queryKey: ["personalfeed" + user?.id, createdByMe],
       });
 
       const previousPosts = queryClient.getQueryData([
         "personalfeed" + user?.id,
+        createdByMe,
       ]);
 
-      queryClient.setQueryData(["personalfeed" + user?.id], (old: any) => {
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => ({
-            ...page,
-            data: {
-              ...page.data,
-              posts: page.data.posts.map((p: any) =>
-                p._id === post.id
-                  ? {
-                      ...p,
-                      likesCount: !p.likedByMe
-                        ? p.likesCount + 1
-                        : p.likesCount - 1,
-                      likedByMe: !p.likedByMe,
-                    }
-                  : p
-              ),
-            },
-          })),
-        };
-      });
+      queryClient.setQueryData(
+        ["personalfeed" + user?.id, createdByMe],
+        (old: any) => {
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              data: {
+                ...page.data,
+                posts: page.data.posts.map((p: any) =>
+                  p._id === post.id
+                    ? {
+                        ...p,
+                        likesCount: !p.likedByMe
+                          ? p.likesCount + 1
+                          : p.likesCount - 1,
+                        likedByMe: !p.likedByMe,
+                      }
+                    : p
+                ),
+              },
+            })),
+          };
+        }
+      );
 
       return { previousPosts };
     },
     onError: (err, newPost, context: any) => {
-      queryClient.setQueryData(["projects" + user?.id], context.previousPosts);
+      queryClient.setQueryData(
+        ["personalfeed" + user?.id, createdByMe],
+        context.previousPosts
+      );
     },
     onSuccess: (data) => {
       if (data.data.ok) {
@@ -147,7 +156,7 @@ export default function PersonalPostcard({
             <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
-            <p className="text-[#043A53] text-xs font-medium">300+ Members</p>
+            <p className="text-[#043A53] text-xs font-medium">300+ Groups</p>
           </div>
         </div>
 

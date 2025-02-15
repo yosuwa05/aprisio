@@ -25,15 +25,21 @@ type IPost = {
   image?: string;
 };
 
-export const PersonalFeedPosts = () => {
+type Props = {
+  createdByMe: boolean;
+};
+
+export const PersonalFeedPosts = ({ createdByMe }: Props) => {
   const user = useGlobalAuthStore((state) => state.user);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["personalfeed" + user?.id],
+      queryKey: ["personalfeed" + user?.id, createdByMe],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post/personal?page=${pageParam}&userId=${user?.id ?? ""}`
+          `/post/personal?page=${pageParam}&userId=${
+            user?.id ?? ""
+          }&createdByMe=${createdByMe}`
         );
         return res;
       },
@@ -54,7 +60,7 @@ export const PersonalFeedPosts = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
+    <div className="flex flex-col gap-6 items-center p-1">
       {isLoading ? (
         <div className="flex flex-col gap-4 w-full">
           {[...Array(5)].map((_, i) => (
@@ -87,6 +93,7 @@ export const PersonalFeedPosts = () => {
                     image: post.image || "",
                   }}
                   topic={"technology"?.toString() || ""}
+                  createdByMe={createdByMe}
                 />
               </React.Fragment>
             ))

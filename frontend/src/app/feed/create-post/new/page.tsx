@@ -91,7 +91,7 @@ export default function CreatePost() {
         toast("Post created successfully");
         reset();
         queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
-        router.back();
+        router.push("/feed/explore/" + selectedSubTopic.slug);
       } else {
         toast("An error occurred while creating post");
       }
@@ -179,7 +179,7 @@ export default function CreatePost() {
   }, [uploadedFile]);
 
   const { data, isLoading: isSubTopicsLoading } = useQuery({
-    queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
+    queryKey: ["dropdowntopics", debouncedSubTopicSearch, user?.id],
     queryFn: async () => {
       const res = await _axios.get(
         `/subtopics/dropdown?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
