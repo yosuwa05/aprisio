@@ -5,7 +5,6 @@ import Elysia, { t } from "elysia";
 export const EventsController = new Elysia({
   prefix: "/events",
   detail: {
-    summary: "Events controller",
     tags: ["User - Events"],
   },
 })
@@ -27,9 +26,7 @@ export const EventsController = new Elysia({
 
         if (!event.attendees.includes(userId)) {
           event.attendees.push(userId);
-
           await event.save();
-
           return {
             message: "Event attended successfully",
             ok: true,
@@ -51,6 +48,10 @@ export const EventsController = new Elysia({
       body: t.Object({
         eventId: t.String(),
       }),
+      detail: {
+        description: "Attend an event",
+        summary: "Attend an event"
+      }
     }
   )
   .post(
@@ -111,5 +112,42 @@ export const EventsController = new Elysia({
         eventDate: t.Optional(t.String()),
         groupSelected: t.String(),
       }),
+      detail: {
+        description: "Create an event",
+        summary: "Create an event",
+      }
     }
-  );
+  )
+  .get("/view-event", async ({ set, query }) => {
+    try {
+
+      const { eventId } = query
+      const event = await EventModel.findOne({ _id: eventId }).populate("group", "name").populate("managedBy", "name").lean();
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not found"
+        }
+      }
+      return {
+        event,
+        ok: true
+      }
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  }, {
+    query: t.Object({
+      eventId: t.String()
+    }),
+    detail: {
+      description: "Get an event",
+      summary: "Get an event"
+    }
+  })

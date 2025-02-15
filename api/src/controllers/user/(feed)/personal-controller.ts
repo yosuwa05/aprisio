@@ -21,7 +21,7 @@ export const PersonalController = new Elysia({
         { $match: { userId: new Types.ObjectId(userId) } },
         {
           $sample: {
-            size: 3
+            size: 4
           }
         },
         {
@@ -47,7 +47,7 @@ export const PersonalController = new Elysia({
 
         {
           $sample: {
-            size: 3
+            size: 4
           }
         },
         {
@@ -72,7 +72,7 @@ export const PersonalController = new Elysia({
         { $match: { attendees: new Types.ObjectId(userId) } },
         {
           $sample: {
-            size: 3
+            size: 4
           }
         },
         {
