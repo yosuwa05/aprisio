@@ -10,7 +10,7 @@ import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
-import { MapPin, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -38,16 +38,12 @@ export default function Feed() {
     },
   });
 
-  const { data: randomEventsGroups, isLoading: randomEventsGroupsLoading } =
-    useQuery({
-      queryKey: ["random-events-groups", topic, user?.id],
-      queryFn: async () => {
-        const res = await _axios.get(
-          `/noauth/group/random-groups-events?subtopicSlug=${topic}`
-        );
-        return res.data;
-      },
-    });
+  const { data: joined } = useQuery({
+    queryKey: ["user-Joined-things"],
+    queryFn: async () => {
+      return await _axios.get(`/personal/joined-things`);
+    },
+  });
 
   return (
     <div>
@@ -92,7 +88,13 @@ export default function Feed() {
                   }}
                 />
 
-                <Button className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white">
+                <Button
+                  onClick={() => {
+                    console.log("Create Event");
+                    router.push("/feed/create-event");
+                  }}
+                  className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white"
+                >
                   <Plus />
                   Create Event
                 </Button>
@@ -103,54 +105,28 @@ export default function Feed() {
               </h1>
 
               <div className="flex flex-col  items-start gap-2 my-2">
-                {[1, 2, 3].map((item, index) => (
-                  <div
-                    className="flex justify-between items-center w-full"
-                    key={index}
-                  >
-                    <div className="text-textcol flex flex-col gap-2">
-                      <h4 className="text-[15px] font-medium">Hiking</h4>
-                      <p className=" text-[#777777] text-xs flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        <span>Nagercoil to Kallikesham</span>
-                      </p>
-                    </div>
-
-                    <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
-                      View
-                    </Button>
-                  </div>
-                ))}
-              </div>
-
-              <h1 className="text-2xl text-textcol my-4 font-semibold">
-                Groups
-              </h1>
-
-              <div className="flex flex-col  items-start gap-2 my-2">
-                {randomEventsGroups?.groups?.map((group: any) => (
-                  <div
-                    className="flex justify-between items-center w-full"
-                    key={group?._id}
-                  >
-                    <div className="text-textcol flex flex-col gap-2">
-                      <h4 className="text-[15px] font-medium">{group?.name}</h4>
-                      {/* <p className=' text-[#777777] text-xs flex items-center gap-1'>
-                        <MapPin className='h-4 w-4' />
-                        <span>Nagercoil to Kallikesham</span>
-                      </p> */}
-                    </div>
-
-                    <Button
-                      onClick={() => {
-                        router.push(`/groups/${group.slug}`);
-                      }}
-                      className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]"
+                {joined?.data?.joinedEvents?.length ? (
+                  data?.data?.joinedEvents?.map((item: any) => (
+                    <div
+                      className="flex justify-between items-center w-full"
+                      key={item?._id}
                     >
-                      View
-                    </Button>
+                      <div className="text-textcol flex flex-col gap-2">
+                        <h4 className="text-[15px] font-medium">
+                          {item?.eventName}
+                        </h4>
+                      </div>
+
+                      <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
+                        View
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-2 w-full text-fadedtext text-sm">
+                    No events joined
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ export default function UserPage() {
   return (
     <div className="flex w-full max-w-[1200px] mx-auto gap-4">
       <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-150px)] hide-scrollbar overflow-hidden">
-        <PersonalFeedPosts createdByMe={true} />
+        <PersonalFeedPosts />
       </div>
 
       <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
