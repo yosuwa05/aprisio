@@ -64,9 +64,11 @@ export default function LoginForm({}) {
   }
 
   useEffect(() => {
-    router.push("/");
     setTimeout(() => {
       if (user) {
+        router.push("/feed/");
+        setLoading(false);
+      } else {
         setLoading(false);
       }
     }, 500);
