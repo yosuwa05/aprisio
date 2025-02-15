@@ -3,16 +3,22 @@ import EventCommentSection from "@/components/event/event-comment-section";
 import GlobalLoader from "@/components/globalloader";
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-
+import { toast } from "sonner";
+type EventBody = {
+  eventId: string;
+};
 export default function ViewEventPage() {
   const { eventid }: any = useParams();
   const router = useRouter();
+  const user = useGlobalAuthStore((state) => state.user);
+
   const [viewAllReplies, setViewAllReplies] = useState(false);
-  const { data, isLoading } = useQuery<any>({
+  const { data, isLoading, refetch } = useQuery<any>({
     queryKey: ["view -single-Event", eventid],
     queryFn: async () => {
       const res = await _axios.get(`/events/view-event?eventId=${eventid}`);
@@ -35,6 +41,20 @@ export default function ViewEventPage() {
       timeZone: "UTC",
     }).format(date);
   }
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: EventBody) => {
+      return await _axios.post("/events/attendevent", data);
+    },
+    onSuccess(data) {
+      if (data.data.ok) {
+        toast(data.data.message || "Attended event successfully");
+        refetch();
+      } else {
+        toast(data.data.error || "Something went wrong");
+      }
+    },
+  });
 
   return (
     <main className=' px-3 md:px-8 md:py-6 py-3 '>
@@ -77,6 +97,16 @@ export default function ViewEventPage() {
             </div>
             <div>
               <Button
+                onClick={() => {
+                  if (isPending) return;
+                  if (!user) {
+                    toast("Login to continue");
+                    return;
+                  }
+                  mutate({
+                    eventId: eventid,
+                  });
+                }}
                 disabled={data?.event?.attending}
                 className='rounded-full bg-buttoncol text-black shadow-none p-4  md:p-8   text-xs lg:text-xl hover:bg-buttoncol font-semibold'>
                 {!data?.event?.attending ? "Attend Event" : "Joined"}
