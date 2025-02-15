@@ -37,7 +37,8 @@ export const PersonalController = new Elysia({
         },
         {
           $project: {
-            groupName: "$group.name"
+            groupName: "$group.name",
+            groupSlug: "$group.slug"
           }
         }
       ])
@@ -63,7 +64,8 @@ export const PersonalController = new Elysia({
         },
         {
           $project: {
-            subtopicName: "$subtopic.subTopicName"
+            subtopicName: "$subtopic.subTopicName",
+            subtopicSlug: "$subtopic.slug"
           }
         }
       ])
@@ -76,8 +78,20 @@ export const PersonalController = new Elysia({
           }
         },
         {
+          $lookup: {
+            from: "groups",
+            localField: "group",
+            foreignField: "_id",
+            as: "group"
+          }
+        },
+        {
+          $unwind: "$group"
+        },
+        {
           $project: {
-            eventName: "$eventName"
+            eventName: "$eventName",
+            groupSulg: "$group.slug"
           }
         }
       ])
