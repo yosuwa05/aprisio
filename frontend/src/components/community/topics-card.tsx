@@ -93,7 +93,14 @@ export function TopicsCard({
     <div className=" border-[1px] border-[#C0C0C0] rounded-xl p-4 cursor-pointer">
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold capitalize">{subTopicName}</h2>
+          <h2
+            className="text-xl font-bold capitalize cursor-pointer"
+            onClick={() => {
+              router.push(`/feed/explore/${slug}`);
+            }}
+          >
+            {subTopicName}
+          </h2>
 
           <div className="flex gap-2">
             <p>300+ Groups</p>

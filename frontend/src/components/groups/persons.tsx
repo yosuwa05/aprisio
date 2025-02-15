@@ -13,6 +13,7 @@ export function PersonsSection({ groupid }: Props) {
 
   const { data, isLoading } = useQuery({
     queryKey: ["group-members", user?.id],
+    staleTime: 0,
     queryFn: async () => {
       const res = await _axios.get(`/noauth/group/members?groupid=${groupid}`);
       return res.data;

@@ -27,6 +27,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
     isLoading,
   }: any = useInfiniteQuery<any>({
     queryKey: ["group-events", user?.id],
+    staleTime: 0,
     queryFn: async ({ pageParam = 1 }) => {
       const res = await _axios.get(
         `/noauth/group/events/${groupid}?userId=${user?.id}&page=${pageParam}&limit=${limit}`
@@ -61,7 +62,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
         <h3
           className="font-semibold text-sm"
           onClick={() => {
-            router.push(`/feed/create-event/${gropuslug}`);
+            router.push(`/feed/create-event/`);
           }}
         >
           Create Event

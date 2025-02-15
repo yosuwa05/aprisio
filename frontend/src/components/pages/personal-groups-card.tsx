@@ -93,7 +93,7 @@ export function PersonalGroupCard({ group }: Props) {
           />
 
           <div className="flex flex-col gap-2">
-            <h2 className="font-semibold">{group.group.name}</h2>
+            <h2 className="font-semibold">{group?.group?.name}</h2>
 
             <div className="flex gap-6 items-center justify-between">
               <p className="text-[#043A53] text-xs font-medium">
