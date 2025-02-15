@@ -72,7 +72,7 @@ export default function Feed() {
         )}
 
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
-          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
+          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-150px)] hide-scrollbar overflow-hidden">
             {activeLayout == "post" && <PostsSection />}
             {activeLayout == "group" && <GroupsSection />}
           </div>
@@ -101,12 +101,12 @@ export default function Feed() {
               </div>
 
               <h1 className="text-2xl text-textcol my-4 font-semibold">
-                Event
+                Events
               </h1>
 
               <div className="flex flex-col  items-start gap-2 my-2">
                 {joined?.data?.joinedEvents?.length ? (
-                  data?.data?.joinedEvents?.map((item: any) => (
+                  joined?.data?.joinedEvents?.map((item: any) => (
                     <div
                       className="flex justify-between items-center w-full"
                       key={item?._id}
