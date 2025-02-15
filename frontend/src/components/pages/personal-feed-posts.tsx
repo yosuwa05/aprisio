@@ -6,8 +6,8 @@ import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React, { useEffect, useRef } from "react";
 import GlobalLoader from "../globalloader";
-import Postcard from "../postcard";
 import { Skeleton } from "../ui/skeleton";
+import PersonalPostcard from "./personalFeedCard";
 
 type IAuthor = {
   name: string;
@@ -25,7 +25,7 @@ type IPost = {
   image?: string;
 };
 
-export const FeedPosts = () => {
+export const PersonalFeedPosts = () => {
   const user = useGlobalAuthStore((state) => state.user);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -73,7 +73,7 @@ export const FeedPosts = () => {
           data.pages.map((page, pageIndex) =>
             page.data.posts.map((post: IPost, postIndex: number) => (
               <React.Fragment key={`${pageIndex}-${postIndex}`}>
-                <Postcard
+                <PersonalPostcard
                   post={{
                     author: post.author.name,
                     title: post.title,

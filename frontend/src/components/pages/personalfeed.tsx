@@ -1,4 +1,3 @@
-import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   Collapsible,
@@ -6,15 +5,10 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import { MapPin, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
-import { FeedPosts } from "./personal-feed-posts";
+import { PersonalFeedPosts } from "./personal-feed-posts";
 
 export default function PersonalFeed() {
-  const user = useGlobalAuthStore((state) => state.user);
-
-  const router = useRouter();
-
   return (
     <div>
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
@@ -27,8 +21,6 @@ export default function PersonalFeed() {
               <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
               <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
               <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
-              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
-              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
             </CollapsibleContent>
           </Collapsible>
 
@@ -37,7 +29,6 @@ export default function PersonalFeed() {
               <Icon icon="uiw:date" /> Joined Events
             </CollapsibleTrigger>
             <CollapsibleContent className="flex flex-col gap-6 pl-4 ">
-              <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
               <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
               <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
               <p>NYC Tri-state Asian Outdoors, Food, Travel & Random Events</p>
@@ -61,7 +52,7 @@ export default function PersonalFeed() {
 
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
-            <FeedPosts />
+            <PersonalFeedPosts />
           </div>
 
           <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
