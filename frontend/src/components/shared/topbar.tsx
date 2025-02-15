@@ -7,7 +7,7 @@ import logo from "@img/images/logo.png";
 import { Bell, Menu, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -23,7 +23,6 @@ import { UserAvatar } from "./useravatar";
 export default function Topbar() {
   const router = useRouter();
   const pathname = usePathname();
-  const { topic } = useParams();
 
   const user = useGlobalAuthStore((state) => state.user);
 

@@ -192,7 +192,7 @@ export const postController = new Elysia({
         const posts = await PostModel.aggregate([
           {
             $match: createdByMe
-              ? { author: userId }
+              ? { author: new Types.ObjectId(userId) }
               : {
                   subTopic: { $in: subTopicIds },
                 },
