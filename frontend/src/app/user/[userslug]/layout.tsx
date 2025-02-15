@@ -36,8 +36,10 @@ export default function PersonalProfile({
 
   return (
     <div className="">
-      <Topbar />
-      <ProfileTopBar />
+      <div className="sticky top-[2px] z-50 bg-white py-2">
+        <Topbar />
+        <ProfileTopBar />
+      </div>
 
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
         <div className="lg:max-w-[300px] min-w-[300px]">

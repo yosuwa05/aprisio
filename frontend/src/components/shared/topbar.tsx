@@ -1,23 +1,32 @@
 "use client";
 
+import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
+import { Icon } from "@iconify/react";
 import logosmall from "@img/images/final-logo.png";
 import logo from "@img/images/logo.png";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@radix-ui/react-collapsible";
+import { useQuery } from "@tanstack/react-query";
 import { Bell, Menu, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "../ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 import { UserAvatar } from "./useravatar";
 
 export default function Topbar() {
@@ -30,30 +39,49 @@ export default function Topbar() {
 
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
 
+  const { data } = useQuery({
+    queryKey: ["user-Joined-things"],
+    queryFn: async () => {
+      return await _axios.get(`/personal/joined-things`);
+    },
+  });
+  const [openSections, setOpenSections] = useState({
+    joinedGroups: true,
+    joinedEvents: true,
+    topicsFollowed: true,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections((prev: any) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
   return (
     <nav className="w-full flex px-4 my-4 justify-between md:px-6 ">
       <div className="flex  items-center">
         <div className="flex gap-2">
-          <Drawer>
-            <DrawerTrigger asChild className="md:hidden">
+          <Sheet>
+            <SheetTrigger asChild className="md:hidden">
               <div className="flex">
                 <Menu size={24} />
               </div>
-            </DrawerTrigger>
-            <DrawerContent className="h-[420px]">
-              <DrawerHeader>
-                <DrawerTitle></DrawerTitle>
-                <DrawerDescription></DrawerDescription>
-              </DrawerHeader>
+            </SheetTrigger>
+            <SheetContent className="h-screen p-0 px-2" side={"left"}>
+              <SheetHeader>
+                <SheetTitle></SheetTitle>
+                <SheetDescription></SheetDescription>
+              </SheetHeader>
 
               <div className="px-4 text-center">
                 <div className="flex flex-col justify-between gap-6">
-                  <ul className="flex flex-col gap-6 text-textcol font-semibold  text-xl">
+                  {/* <ul className="flex flex-col gap-6 text-textcol font-semibold  text-xl">
                     <Link className="" href={"/"}>
                       Home
                     </Link>
 
-                    <Link className="" href={"/community"}>
+                    <Link className="" href={"/feed"}>
                       Community
                     </Link>
                     <Link className="" href={"#"}>
@@ -62,24 +90,138 @@ export default function Topbar() {
                     <Link className="" href={"#"}>
                       Contact
                     </Link>
-                  </ul>
+                  </ul> */}
 
-                  <button
-                    className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
-                    onClick={() => router.push("/login")}
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => router.push("/join-community")}
-                    className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
-                  >
-                    Sign Up
-                  </button>
+                  {!user && (
+                    <div>
+                      <button
+                        className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
+                        onClick={() => router.push("/login")}
+                      >
+                        Log In
+                      </button>
+                      <button
+                        onClick={() => router.push("/join-community")}
+                        className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            </DrawerContent>
-          </Drawer>
+
+              <Collapsible
+                open={openSections.joinedGroups}
+                onOpenChange={() => toggleSection("joinedGroups")}
+                className="mt-12"
+              >
+                <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                    <div className="flex gap-3 items-center">
+                      <Icon icon="gravity-ui:persons" />
+                      <h1 className={`capitalize text-sm md:text-lg `}>
+                        Joined Groups
+                      </h1>
+                    </div>
+                    <Icon
+                      className={`text-xl `}
+                      icon={
+                        openSections.joinedGroups
+                          ? "octicon:chevron-up-12"
+                          : "octicon:chevron-down-12"
+                      }
+                    />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2 px-4 ">
+                  {data?.data?.joinedGroups?.map((group: any) => (
+                    <p
+                      onClick={() => router.push(`/groups/${group?.groupSlug}`)}
+                      key={group?._id}
+                      className="text-textcol py-1.5 cursor-pointer  md:py-3"
+                    >
+                      {group?.groupName}
+                    </p>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Collapsible
+                open={openSections.joinedEvents}
+                onOpenChange={() => toggleSection("joinedEvents")}
+              >
+                <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                    <div className="flex gap-3 items-center">
+                      <Icon icon="uiw:date" />
+                      <h1 className={`capitalize text-sm md:text-lg `}>
+                        Joined Events
+                      </h1>
+                    </div>
+                    <Icon
+                      className={`text-xl `}
+                      icon={
+                        openSections.joinedEvents
+                          ? "octicon:chevron-up-12"
+                          : "octicon:chevron-down-12"
+                      }
+                    />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2 px-4 ">
+                  {data?.data?.joinedEvents?.map((event: any) => (
+                    <p
+                      onClick={() =>
+                        router.push(`/groups/${event?.groupSulg}/${event?._id}`)
+                      }
+                      key={event?._id}
+                      className="text-textcol py-1.5 cursor-pointer  md:py-3"
+                    >
+                      {event?.eventName}
+                    </p>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Collapsible
+                open={openSections.topicsFollowed}
+                onOpenChange={() => toggleSection("topicsFollowed")}
+              >
+                <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                    <div className="flex gap-3 items-center">
+                      <Icon icon="hugeicons:note" />
+                      <h1 className={`capitalize text-sm md:text-lg `}>
+                        Topics Followed
+                      </h1>
+                    </div>
+                    <Icon
+                      className={`text-xl `}
+                      icon={
+                        openSections.topicsFollowed
+                          ? "octicon:chevron-up-12"
+                          : "octicon:chevron-down-12"
+                      }
+                    />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-2 px-4 ">
+                  {data?.data?.TopicsFollowed?.map((topic: any) => (
+                    <p
+                      onClick={() =>
+                        router.push(`/feed/explore/${topic?.subtopicSlug}`)
+                      }
+                      key={topic?._id}
+                      className="text-textcol py-1.5 cursor-pointer md:py-3"
+                    >
+                      {topic?.subtopicName}
+                    </p>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            </SheetContent>
+          </Sheet>
         </div>
 
         <Image

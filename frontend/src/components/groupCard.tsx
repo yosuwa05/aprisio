@@ -98,8 +98,9 @@ export default function GroupCard({ group }: Props) {
               <p className="text-[#043A53] text-xs font-medium">
                 {group.memberCount} Member
               </p>
-              <p className="text-gray-500 text-xs font-medium">
-                Created {formatDate(group.createdAt)}
+              <p className="text-gray-500 text-xs font-medium hidden lg:block">
+                <span className="hidden lg:block">Created</span>{" "}
+                {formatDate(group.createdAt)}
               </p>
               <p className="text-[#828485] text-xs font-medium">
                 Organized by{" "}

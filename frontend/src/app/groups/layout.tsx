@@ -9,9 +9,10 @@ export default function CommunityLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className=''>
+    <div>
       <Topbar />
       <TopCommunityBar />
+
       {children}
     </div>
   );
