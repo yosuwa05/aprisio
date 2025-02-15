@@ -1,9 +1,9 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
   useInfiniteQuery,
   useMutation,
@@ -50,11 +50,15 @@ export default function PerosonalFeedCommentSection({
       return await _axios.post("/comment", data);
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
+      await queryClient.cancelQueries({
+        queryKey: ["personalfeed" + user?.id],
+      });
 
-      const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
+      const previousPosts = queryClient.getQueryData([
+        "personalfeed" + user?.id,
+      ]);
 
-      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
+      queryClient.setQueryData(["personalfeed" + user?.id], (old: any) => {
         return {
           ...old,
           pages: old.pages.map((page: any) => ({
@@ -115,7 +119,7 @@ export default function PerosonalFeedCommentSection({
 
         <Input
           placeholder="Write your comment"
-          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
+          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-normal font-sans"
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

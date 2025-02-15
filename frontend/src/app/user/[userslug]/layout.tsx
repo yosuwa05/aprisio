@@ -41,14 +41,12 @@ export default function PersonalProfile({
 
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
         <div className="lg:max-w-[300px] min-w-[300px]">
-          <div className="h-[380px] shadow-xl rounded-md">
-            <div className="h-[150px] bg-[#F5F5F5] border-1">
-              <div className="mt-4 flex flex-col gap-3 items-center relative">
-                <div className="h-[150px] bg-[#F5F5F5] flex self-center absolute"></div>
-
+          <div className="h-[380px] shadow-xl rounded-xl">
+            <div className="h-[150px] bg-[#F5F5F5] border-1 rounded-xl">
+              <div className="mt-4 flex flex-col gap-3 items-center">
                 <Image
                   src={profileimage}
-                  className="rounded-xl mt-24"
+                  className="rounded-xl mt-28"
                   width={70}
                   height={70}
                   alt=""
@@ -58,26 +56,25 @@ export default function PersonalProfile({
                   {data?.user.name}
                 </h1>
 
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center text-sm text-fadedtext">
                   <Icon icon="ic:outline-email"></Icon>
                   <p>{data?.user.email}</p>
                 </div>
               </div>
 
-              <div className="mt-4 flex  gap-7 items-center justify-center">
+              <div className="mt-4 flex  gap-10 items-center justify-center">
                 <div className="text-center">
-                  <h2 className="text-3xl text-contrasttext">7.5 M</h2>
-                  <p>Members</p>
-                </div>
-
-                <div className="text-center">
-                  <h2 className="text-3xl text-contrasttext">50</h2>
+                  <h2 className="text-3xl text-contrasttext">
+                    {data?.groupsCount}
+                  </h2>
                   <p>Groups</p>
                 </div>
 
                 <div className="text-center">
-                  <h2 className="text-3xl text-contrasttext">200</h2>
-                  <p>Events</p>
+                  <h2 className="text-3xl text-contrasttext">
+                    {data?.subtopicsFollowed}
+                  </h2>
+                  <p>Topics</p>
                 </div>
               </div>
             </div>

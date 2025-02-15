@@ -332,4 +332,54 @@ export const noAuthGroupController = new Elysia({
         summary: "Get random groups based on subtopic",
       },
     }
+  )
+  .get(
+    "/dropdown",
+    async ({ query, set }) => {
+      try {
+        const page = query.page ?? 1;
+        const limit = query.limit ?? 10;
+
+        const filter: any = {};
+
+        if (query.userId && query.userId != "undefined") {
+          const userTopics = await UserGroupsModel.find(
+            { userId: query.userId },
+            "group"
+          ).lean();
+
+          const followedGroups = userTopics.map((topic) => topic.group);
+
+          filter._id = { $in: followedGroups };
+        }
+
+        if (query.q) {
+          filter.name = { $regex: query.q, $options: "i" };
+        }
+
+        const groups = await GroupModel.find(filter, "slug")
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean()
+          .exec();
+
+        return {
+          groups,
+          status: true,
+        };
+      } catch (error) {
+        console.log(error);
+        set.status = 500;
+        return { ok: false, error };
+      }
+    },
+    {
+      query: t.Object({
+        page: t.Optional(t.Number()),
+        limit: t.Optional(t.Number()),
+        q: t.Optional(t.String()),
+        userId: t.Optional(t.String()),
+      }),
+    }
   );

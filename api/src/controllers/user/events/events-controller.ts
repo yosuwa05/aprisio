@@ -1,4 +1,5 @@
 import { EventModel } from "@/models";
+import { GroupModel } from "@/models/group.model";
 import Elysia, { t } from "elysia";
 
 export const EventsController = new Elysia({
@@ -7,47 +8,108 @@ export const EventsController = new Elysia({
     summary: "Events controller",
     tags: ["User - Events"],
   },
-}).post(
-  "/attendevent",
-  async ({ body, store }) => {
-    const { eventId } = body;
-    try {
-      const userId = (store as any)["id"];
+})
+  .post(
+    "/attendevent",
+    async ({ body, store }) => {
+      const { eventId } = body;
+      try {
+        const userId = (store as any)["id"];
 
-      const event = await EventModel.findOne({ _id: eventId });
+        const event = await EventModel.findOne({ _id: eventId });
 
-      if (!event) {
+        if (!event) {
+          return {
+            error: "Event not found",
+            ok: false,
+          };
+        }
+
+        if (!event.attendees.includes(userId)) {
+          event.attendees.push(userId);
+
+          await event.save();
+
+          return {
+            message: "Event attended successfully",
+            ok: true,
+          };
+        } else {
+          return {
+            message: "Already attended",
+            ok: false,
+          };
+        }
+      } catch (error) {
         return {
-          error: "Event not found",
+          error,
           ok: false,
         };
       }
+    },
+    {
+      body: t.Object({
+        eventId: t.String(),
+      }),
+    }
+  )
+  .post(
+    "/create",
+    async ({ body, store }) => {
+      try {
+        const userId = (store as any)["id"];
 
-      if (!event.attendees.includes(userId)) {
-        event.attendees.push(userId);
+        const { eventDate, location, eventName, eventRules, groupSelected } =
+          body;
 
-        await event.save();
+        const group = await GroupModel.findById(groupSelected);
+
+        if (!group) {
+          return {
+            message: "Group not found",
+            ok: false,
+          };
+        }
+
+        let eventRulesData = {
+          total: 0,
+          events: [],
+        };
+
+        if (eventRules) eventRulesData = JSON.parse(eventRules);
+
+        const newEvent = new EventModel({
+          date: eventDate,
+          name: eventName,
+          rules: eventRulesData.events,
+          eventName,
+          location,
+          group: group._id,
+          attendees: [],
+          isEventEnded: false,
+          managedBy: userId,
+        });
+
+        await newEvent.save();
 
         return {
-          message: "Event attended successfully",
+          message: "Event created successfully",
           ok: true,
         };
-      } else {
+      } catch (error) {
         return {
-          message: "Already attended",
+          error,
           ok: false,
         };
       }
-    } catch (error) {
-      return {
-        error,
-        ok: false,
-      };
+    },
+    {
+      body: t.Object({
+        location: t.Optional(t.String()),
+        eventName: t.Optional(t.String()),
+        eventRules: t.Optional(t.String()),
+        eventDate: t.Optional(t.String()),
+        groupSelected: t.String(),
+      }),
     }
-  },
-  {
-    body: t.Object({
-      eventId: t.String(),
-    }),
-  }
-);
+  );

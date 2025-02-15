@@ -5,6 +5,7 @@ import {
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
 import { MapPin, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { PersonalFeedPosts } from "./personal-feed-posts";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
@@ -12,6 +13,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useState } from "react";
 
 export default function PersonalFeed() {
+  const router = useRouter();
   const { data } = useQuery({
     queryKey: ["user-Joined-things"],
     queryFn: async () => {
@@ -128,7 +130,7 @@ export default function PersonalFeed() {
 
         <div className='flex w-full max-w-[1200px] mx-auto gap-4'>
           <div className='flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden'>
-            <PersonalFeedPosts />
+            <PersonalFeedPosts createdByMe={false} />
           </div>
 
           <div className='hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit'>
@@ -142,7 +144,12 @@ export default function PersonalFeed() {
                   }}
                 />
 
-                <Button className='relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white'>
+                <Button
+                  onClick={() => {
+                    console.log("Create Event");
+                    router.push("/feed/create-event");
+                  }}
+                  className='relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white'>
                   <Plus />
                   Create Event
                 </Button>

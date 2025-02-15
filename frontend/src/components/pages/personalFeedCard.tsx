@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import CommentSection from "../comment-section";
 import { PostShareModalMobile } from "../post/share-drawer-mobile";
 import { PostShareModalWeb } from "../post/share-modal-web";
 import {
@@ -28,6 +27,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "../ui/drawer";
+import PerosonalFeedCommentSection from "./personalFeedCommentSection";
 
 interface IPostCard {
   title: string;
@@ -45,9 +45,11 @@ interface IPostCard {
 export default function PersonalPostcard({
   post,
   topic,
+  createdByMe,
 }: {
   post: IPostCard;
   topic: string;
+  createdByMe: boolean;
 }) {
   const [viewAllReplies, setViewAllReplies] = useState(false);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
@@ -75,38 +77,46 @@ export default function PersonalPostcard({
       });
     },
     onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
-
-      const previousPosts = queryClient.getQueryData(["projects" + user?.id]);
-
-      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => ({
-            ...page,
-            data: {
-              ...page.data,
-              posts: page.data.posts.map((p: any) =>
-                p._id === post.id
-                  ? {
-                      ...p,
-                      likesCount: !p.likedByMe
-                        ? p.likesCount + 1
-                        : p.likesCount - 1,
-                      likedByMe: !p.likedByMe,
-                    }
-                  : p
-              ),
-            },
-          })),
-        };
+      await queryClient.cancelQueries({
+        queryKey: ["personalfeed" + user?.id, createdByMe],
       });
+
+      const previousPosts = queryClient.getQueryData([
+        "personalfeed" + user?.id,
+        createdByMe,
+      ]);
+
+      queryClient.setQueryData(
+        ["personalfeed" + user?.id, createdByMe],
+        (old: any) => {
+          return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+              ...page,
+              data: {
+                ...page.data,
+                posts: page.data.posts.map((p: any) =>
+                  p._id === post.id
+                    ? {
+                        ...p,
+                        likesCount: !p.likedByMe
+                          ? p.likesCount + 1
+                          : p.likesCount - 1,
+                        likedByMe: !p.likedByMe,
+                      }
+                    : p
+                ),
+              },
+            })),
+          };
+        }
+      );
 
       return { previousPosts };
     },
     onError: (err, newPost, context: any) => {
       queryClient.setQueryData(
-        ["projects" + user?.id, topic],
+        ["personalfeed" + user?.id, createdByMe],
         context.previousPosts
       );
     },
@@ -146,7 +156,7 @@ export default function PersonalPostcard({
             <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
-            <p className="text-[#043A53] text-xs font-medium">300+ Members</p>
+            <p className="text-[#043A53] text-xs font-medium">300+ Groups</p>
           </div>
         </div>
 
@@ -285,7 +295,7 @@ export default function PersonalPostcard({
       </div>
 
       <div>
-        <CommentSection
+        <PerosonalFeedCommentSection
           postId={post.id}
           viewAllReplies={viewAllReplies}
           setViewAllReplies={setViewAllReplies}

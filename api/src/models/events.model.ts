@@ -9,6 +9,7 @@ type IEvent = {
   eventName: string;
   location: string;
   date: Date;
+  managedBy: Types.ObjectId;
   rules: Rules[];
   group: Types.ObjectId;
   isEventEnded: boolean;
@@ -26,6 +27,10 @@ const EventSchema = new Schema<IEvent>(
         subHeading: { type: String },
       },
     ],
+    managedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     group: {
       type: Schema.Types.ObjectId,
       ref: "Group",
