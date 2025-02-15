@@ -40,7 +40,7 @@ export default function Topbar() {
                 <Menu size={24} />
               </div>
             </DrawerTrigger>
-            <DrawerContent className="h-[420px]">
+            <DrawerContent className={!user ? "h-[550px]" : "h-[400px]"}>
               <DrawerHeader>
                 <DrawerTitle></DrawerTitle>
                 <DrawerDescription></DrawerDescription>
@@ -62,20 +62,32 @@ export default function Topbar() {
                     <Link className="" href={"#"}>
                       Contact
                     </Link>
+
+                    <Link className="" href={"/privacy-policy"}>
+                      Privacy Policy
+                    </Link>
+
+                    <Link className="" href={"/terms-of-use"}>
+                      Terms of Use
+                    </Link>
                   </ul>
 
-                  <button
-                    className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
-                    onClick={() => router.push("/login")}
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => router.push("/join-community")}
-                    className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
-                  >
-                    Sign Up
-                  </button>
+                  {!user && (
+                    <div>
+                      <button
+                        className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
+                        onClick={() => router.push("/login")}
+                      >
+                        Log In
+                      </button>
+                      <button
+                        onClick={() => router.push("/join-community")}
+                        className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
+                      >
+                        Sign Up
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </DrawerContent>
@@ -114,16 +126,23 @@ export default function Topbar() {
             Community
           </Link>
           <Link
-            className={pathname === "#" ? "text-contrasttext font-bold" : ""}
-            href={"#"}
+            className={
+              pathname === "/privacy-policy"
+                ? "text-contrasttext font-bold"
+                : ""
+            }
+            href={"/privacy-policy"}
           >
-            About Us
+            Privacy Policy
           </Link>
+
           <Link
-            className={pathname === "#" ? "text-contrasttext font-bold" : ""}
-            href={"#"}
+            className={
+              pathname === "/terms-of-use" ? "text-contrasttext font-bold" : ""
+            }
+            href={"/terms-of-use"}
           >
-            Contact
+            Terms of Use
           </Link>
         </ul>
       </div>

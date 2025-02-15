@@ -6,6 +6,7 @@ import {
 import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from "stream";
+import { slugify } from "./utils";
 
 export const s3Client = new S3Client({
   region: process.env.REGION || "ap-south-1",
@@ -36,7 +37,7 @@ export const saveFile = async (
       "uploads/" +
       parentFolder +
       "/" +
-      blob.name +
+      slugify(blob.name) +
       "." +
       hash +
       `${keyString ? `-${keyString}` : ""}` +

@@ -122,7 +122,7 @@ export const noAuthGroupController = new Elysia({
         let userJoinedGroups = await UserGroupsModel.find({
           userId,
         })
-          .populate("group", "name")
+          .populate("group", "name slug")
           .populate("userId", "name")
           .lean();
 

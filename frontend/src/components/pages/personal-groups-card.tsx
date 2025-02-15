@@ -114,7 +114,7 @@ export function PersonalGroupCard({ group }: Props) {
         <Button
           disabled={isPending}
           className={`${
-            group.canJoin
+            group?.canJoin
               ? "bg-[#F2F5F6] border-[#043A53]"
               : "bg-[#FCF7EA] border-[#AF9654]"
           } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
@@ -124,7 +124,7 @@ export function PersonalGroupCard({ group }: Props) {
                 id: group._id,
               });
             } else {
-              router.push(`/groups/${group.slug}`);
+              router.push(`/groups/${group?.group?.slug}`);
             }
           }}
         >
