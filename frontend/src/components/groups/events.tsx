@@ -93,7 +93,6 @@ export function EventsSection({ groupid, gropuslug }: Props) {
                 <EventCard
                   key={event?._id}
                   event={event}
-                  attending={data?.attending}
                   gropuslug={gropuslug}
                 />
               );
@@ -104,17 +103,6 @@ export function EventsSection({ groupid, gropuslug }: Props) {
             <p className="text-gray-500 text-xs font-semibold">
               No Events found
             </p>
-
-            {/* <Button
-              className="bg-white border-contrasttext border-2 hover:bg-transparent"
-              onClick={() => {
-                router.push(`/groups/${gropuslug}/new-event`);
-              }}
-            >
-              <p className="text-contrasttext text-xs font-semibold cursor-pointer">
-                Create Event
-              </p>
-            </Button> */}
           </div>
         )}
         <div ref={ref} className="h-10"></div>

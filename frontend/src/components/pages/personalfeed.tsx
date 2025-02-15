@@ -1,16 +1,16 @@
+import { _axios } from "@/lib/axios-instance";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@radix-ui/react-collapsible";
-import { MapPin, Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import { PersonalFeedPosts } from "./personal-feed-posts";
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { _axios } from "@/lib/axios-instance";
-import { useState } from "react";
 
 export default function PersonalFeed() {
   const router = useRouter();
@@ -21,9 +21,9 @@ export default function PersonalFeed() {
     },
   });
   const [openSections, setOpenSections] = useState({
-    joinedGroups: false,
+    joinedGroups: true,
     joinedEvents: false,
-    topicsFollowed: false,
+    topicsFollowed: true,
   });
 
   const toggleSection = (section: string) => {
@@ -35,15 +35,16 @@ export default function PersonalFeed() {
 
   return (
     <div>
-      <div className='mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8 '>
-        <div className='lg:max-w-[300px] min-w-[300px] lg:h-[86vh] overflow-y-auto hide-scrollbar'>
+      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8 ">
+        <div className="lg:max-w-[300px] min-w-[300px] lg:h-[86vh] overflow-y-auto hide-scrollbar">
           <Collapsible
             open={openSections.joinedGroups}
-            onOpenChange={() => toggleSection("joinedGroups")}>
-            <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
-              <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
-                <div className='flex gap-3 items-center'>
-                  <Icon icon='gravity-ui:persons' />
+            onOpenChange={() => toggleSection("joinedGroups")}
+          >
+            <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+              <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                <div className="flex gap-3 items-center">
+                  <Icon icon="gravity-ui:persons" />
                   <h1 className={`capitalize text-sm md:text-lg `}>
                     Joined Groups
                   </h1>
@@ -58,9 +59,9 @@ export default function PersonalFeed() {
                 />
               </div>
             </CollapsibleTrigger>
-            <CollapsibleContent className='pt-2 px-4 '>
+            <CollapsibleContent className="pt-2 px-4 ">
               {data?.data?.joinedGroups?.map((group: any) => (
-                <p key={group?._id} className='text-textcol py-1.5  md:py-3'>
+                <p key={group?._id} className="text-textcol py-1.5  md:py-3">
                   {group?.groupName}
                 </p>
               ))}
@@ -69,11 +70,12 @@ export default function PersonalFeed() {
 
           <Collapsible
             open={openSections.joinedEvents}
-            onOpenChange={() => toggleSection("joinedEvents")}>
-            <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
-              <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
-                <div className='flex gap-3 items-center'>
-                  <Icon icon='uiw:date' />
+            onOpenChange={() => toggleSection("joinedEvents")}
+          >
+            <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+              <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                <div className="flex gap-3 items-center">
+                  <Icon icon="uiw:date" />
                   <h1 className={`capitalize text-sm md:text-lg `}>
                     Joined Events
                   </h1>
@@ -88,9 +90,9 @@ export default function PersonalFeed() {
                 />
               </div>
             </CollapsibleTrigger>
-            <CollapsibleContent className='pt-2 px-4 '>
+            <CollapsibleContent className="pt-2 px-4 ">
               {data?.data?.joinedEvents?.map((event: any) => (
-                <p key={event?._id} className='text-textcol py-1.5  md:py-3'>
+                <p key={event?._id} className="text-textcol py-1.5  md:py-3">
                   {event?.eventName}
                 </p>
               ))}
@@ -99,11 +101,12 @@ export default function PersonalFeed() {
 
           <Collapsible
             open={openSections.topicsFollowed}
-            onOpenChange={() => toggleSection("topicsFollowed")}>
-            <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
-              <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
-                <div className='flex gap-3 items-center'>
-                  <Icon icon='hugeicons:note' />
+            onOpenChange={() => toggleSection("topicsFollowed")}
+          >
+            <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
+              <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
+                <div className="flex gap-3 items-center">
+                  <Icon icon="hugeicons:note" />
                   <h1 className={`capitalize text-sm md:text-lg `}>
                     Topics Followed
                   </h1>
@@ -118,9 +121,9 @@ export default function PersonalFeed() {
                 />
               </div>
             </CollapsibleTrigger>
-            <CollapsibleContent className='pt-2 px-4 '>
+            <CollapsibleContent className="pt-2 px-4 ">
               {data?.data?.TopicsFollowed?.map((topic: any) => (
-                <p key={topic?._id} className='text-textcol py-1.5  md:py-3'>
+                <p key={topic?._id} className="text-textcol py-1.5  md:py-3">
                   {topic?.subtopicName}
                 </p>
               ))}
@@ -128,16 +131,16 @@ export default function PersonalFeed() {
           </Collapsible>
         </div>
 
-        <div className='flex w-full max-w-[1200px] mx-auto gap-4'>
-          <div className='flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden'>
+        <div className="flex w-full max-w-[1200px] mx-auto gap-4">
+          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[91vh] hide-scrollbar overflow-hidden">
             <PersonalFeedPosts createdByMe={false} />
           </div>
 
-          <div className='hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit'>
-            <div className='bg-white px-4 rounded-xl w-[350px]'>
-              <div className='relative h-[110px] bg-white flex justify-center items-center overflow-hidden'>
+          <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
+            <div className="bg-white px-4 rounded-xl w-[350px]">
+              <div className="relative h-[110px] bg-white flex justify-center items-center overflow-hidden">
                 <div
-                  className='absolute inset-0 bg-cover bg-center'
+                  className="absolute inset-0 bg-cover bg-center"
                   style={{
                     backgroundImage: "url(/assets/placeholder-hero.jpeg)",
                     opacity: 0.3,
@@ -149,36 +152,40 @@ export default function PersonalFeed() {
                     console.log("Create Event");
                     router.push("/feed/create-event");
                   }}
-                  className='relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white'>
+                  className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white"
+                >
                   <Plus />
                   Create Event
                 </Button>
               </div>
 
-              <h1 className='text-2xl text-textcol my-4 font-semibold'>
+              <h1 className="text-2xl text-textcol my-4 font-semibold">
                 Event
               </h1>
 
-              <div className='flex flex-col  items-start gap-2 my-2'>
-                {data?.data?.joinedEvents?.map((item: any) => (
-                  <div
-                    className='flex justify-between items-center w-full'
-                    key={item?._id}>
-                    <div className='text-textcol flex flex-col gap-2'>
-                      <h4 className='text-[15px] font-medium'>
-                        {item?.eventName}
-                      </h4>
-                      {/* <p className=' text-[#777777] text-xs flex items-center gap-1'>
-                        <MapPin className='h-4 w-4' />
-                        <span>Nagercoil to Kallikesham</span>
-                      </p> */}
-                    </div>
+              <div className="flex flex-col  items-start gap-2 my-2">
+                {data?.data?.joinedEvents?.length ? (
+                  data?.data?.joinedEvents?.map((item: any) => (
+                    <div
+                      className="flex justify-between items-center w-full"
+                      key={item?._id}
+                    >
+                      <div className="text-textcol flex flex-col gap-2">
+                        <h4 className="text-[15px] font-medium">
+                          {item?.eventName}
+                        </h4>
+                      </div>
 
-                    <Button className='rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]'>
-                      View
-                    </Button>
+                      <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
+                        View
+                      </Button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-2 w-full text-fadedtext text-sm">
+                    No events joined
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

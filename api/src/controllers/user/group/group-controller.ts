@@ -117,6 +117,8 @@ export const groupController = new Elysia({
             location: location,
             group: newGroup._id,
             managedBy: userId,
+            attendees: [userId],
+            isEventEnded: false,
           });
 
           newGroup.events.push(newEvent._id);

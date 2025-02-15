@@ -85,7 +85,7 @@ export const EventsController = new Elysia({
           eventName,
           location,
           group: group._id,
-          attendees: [],
+          attendees: [userId],
           isEventEnded: false,
           managedBy: userId,
         });
