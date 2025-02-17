@@ -9,7 +9,6 @@ export const userController = new Elysia({
     tags: ["Client - Users"],
   },
 })
-
   .get(
     "/getall",
     async ({ query }) => {
@@ -61,14 +60,14 @@ export const userController = new Elysia({
         q: t.Optional(
           t.String({
             default: "",
-          })
+          }),
         ),
       }),
       detail: {
         summary: "Get all users for Client site",
         description: "Get all users for Client site",
       },
-    }
+    },
   )
   .get(
     "/:id",
@@ -101,7 +100,7 @@ export const userController = new Elysia({
       detail: {
         summary: "Get a user by id",
       },
-    }
+    },
   )
   .get(
     "/getprofilebyname",
@@ -141,6 +140,5 @@ export const userController = new Elysia({
       detail: {
         summary: "Get a user by slug",
       },
-    }
-  )
-
+    },
+  );

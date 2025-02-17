@@ -27,14 +27,14 @@ export const TopicsController = new Elysia({
           total,
           ok: true,
         };
-      } catch (error) { }
+      } catch (error) {}
     },
     {
       query: t.Object({
         page: t.Optional(t.Number()),
         limit: t.Optional(t.Number()),
       }),
-    }
+    },
   )
   .get(
     "/getsubtopics",
@@ -47,7 +47,7 @@ export const TopicsController = new Elysia({
 
         const subTopic = await SubTopicModel.find(
           query.topic ? { topic: query.topic } : {},
-          "subTopicName slug"
+          "subTopicName slug",
         )
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
@@ -75,5 +75,5 @@ export const TopicsController = new Elysia({
         limit: t.Optional(t.Number()),
         topic: t.Optional(t.String()),
       }),
-    }
+    },
   );

@@ -35,7 +35,7 @@ export default function PersonalFeed() {
     <div>
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8 ">
         <div className="flex w-full max-w-[1200px] mx-auto gap-4">
-          <div className="hidden lg:block lg:max-w-[300px] min-w-[300px] lg:h-[83vh] overflow-y-auto hide-scrollbar">
+          <div className="hidden lg:block lg:max-w-[300px] min-w-[300px] lg:h-[81vh] overflow-y-auto hide-scrollbar">
             <Collapsible
               open={openSections.joinedGroups}
               onOpenChange={() => toggleSection("joinedGroups")}

@@ -111,20 +111,19 @@ export function TopCommunityBar() {
                 >
                   <Menubar className="bg-transparent border-none">
                     <MenubarMenu>
-                      <div className="text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none ">
-                        {topic.topicName}
-                      </div>
-
                       <MenubarTrigger
-                        className="text-lg text-fadedtext bg-transparent cursor-pointer font-normal w-fit data-[state=open]:text-contrasttext"
+                        className="text-lg text-fadedtext flex gap-2 items-center bg-transparent cursor-pointer font-normal w-fit data-[state=open]:text-contrasttext"
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedTopic(topic);
                         }}
                       >
+                        <div className="text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none ">
+                          {topic.topicName}
+                        </div>
                         <Icon
                           icon="icon-park-outline:down"
-                          className="text-xl my-auto h-full  mt-1 text-[#5D5A5A]"
+                          className="text-xl my-auto h-full  mt-[5px] text-[#5D5A5A]"
                         />
                       </MenubarTrigger>
 

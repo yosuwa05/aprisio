@@ -30,6 +30,8 @@ export const PersonalFeedPosts = () => {
   const user = useGlobalAuthStore((state) => state.user);
   const isUserRoute = usePathname().includes("/user/");
 
+  // const {currentUser }
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["personalfeed" + user?.id],

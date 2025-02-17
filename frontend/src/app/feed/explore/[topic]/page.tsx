@@ -9,11 +9,17 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
-import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { ChevronRight, Plus } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "sonner";
+
+type Suggetion = {
+  slug: string;
+  subTopicName: string;
+};
 
 export default function Feed() {
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
@@ -28,7 +34,7 @@ export default function Feed() {
     updateActiveSubTopic(typeof topic === "string" ? topic : "");
   }, [topic]);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["community-info", topic, user?.id],
     queryFn: async () => {
       const res = await _axios.get(
@@ -38,12 +44,42 @@ export default function Feed() {
     },
   });
 
-  console.log(data);
-
   const { data: joined } = useQuery({
     queryKey: ["user-Joined-things"],
     queryFn: async () => {
       return await _axios.get(`/personal/joined-things`);
+    },
+  });
+
+  const { data: suggetions, isLoading: isSuggetionsLoading } = useQuery({
+    queryKey: ["topic-suggetions", topic],
+    queryFn: async () => {
+      let res = await _axios.get(`/subtopics/suggetions?limit=2`);
+      return res.data;
+    },
+  });
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["join-community"],
+    mutationFn: async ({ subTopicId }: { subTopicId: string }) => {
+      const res = await _axios.post(`/community/join`, {
+        subTopicId,
+        userId: user?.id ?? "",
+      });
+      return res;
+    },
+    onSuccess: ({ data }) => {
+      if (data.ok) {
+        console.log(data);
+        refetch();
+      } else {
+        console.log(data);
+        toast.error(data.error.toString());
+      }
+    },
+
+    onError: (_error, _variables, context) => {
+      toast.error("Failed to join the community. Please try again.");
     },
   });
 
@@ -65,11 +101,44 @@ export default function Feed() {
               <Image src={placeholder} className="rounded-xl" alt="" />
 
               {data?.isUserJoined ? null : (
-                <Button className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol">
+                <Button
+                  onClick={() => {
+                    mutate({
+                      subTopicId: data?.subTopic?._id ?? "",
+                    });
+                  }}
+                  disabled={isPending}
+                  className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol"
+                >
                   Join Community
                 </Button>
               )}
             </div>
+
+            {!isSuggetionsLoading && (
+              <div>
+                <h3 className="font-normal text-xl my-4">
+                  Other Sub - Catergories
+                </h3>
+
+                <div className="gap-4 flex flex-col">
+                  {suggetions?.topics?.map((e: Suggetion, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className="flex gap-2 items-center cursor-pointer"
+                        onClick={() => {
+                          router.push(`/feed/explore/${e?.slug}`);
+                        }}
+                      >
+                        <p>{e?.subTopicName}</p>
+                        <ChevronRight />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -8,6 +8,7 @@ interface ISubTopic {
   isDeleted: boolean;
   active: boolean;
   slug: string;
+  members: number;
 }
 
 const subtopicSchema = new Schema<ISubTopic>(

@@ -107,4 +107,35 @@ export const subtopicsController = new Elysia({
         userId: t.Optional(t.String()),
       }),
     }
+  )
+  .get(
+    "/suggetions",
+    async ({ query }) => {
+      try {
+        const randomLimit = query.limit ?? 3;
+
+        const topics = await SubTopicModel.aggregate([
+          { $sample: { size: randomLimit } },
+          { $project: { subTopicName: 1, slug: 1, _id: 0 } },
+        ]);
+        return {
+          topics,
+        };
+      } catch (error) {
+        console.log(error);
+
+        return {
+          error,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        limit: t.Optional(t.Number()),
+      }),
+      detail: {
+        summary: "Get suggested subtopics",
+        description: "Get suggested subtopics",
+      },
+    }
   );
