@@ -33,7 +33,7 @@ export const EventsCommentNoAuthController = new Elysia({
                     { $unwind: "$user" },
                     {
                         $lookup: {
-                            from: "comments",
+                            from: "eventcomments",
                             localField: "parentComment",
                             foreignField: "_id",
                             as: "parentComment",

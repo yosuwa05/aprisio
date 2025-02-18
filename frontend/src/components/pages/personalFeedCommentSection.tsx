@@ -147,6 +147,7 @@ export default function PerosonalFeedCommentSection({
           {hasNextPage && (
             <div className='flex justify-start'>
               <Button
+                className=' text-contrasttext'
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
                 variant='ghost'>

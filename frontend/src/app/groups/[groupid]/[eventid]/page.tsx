@@ -157,8 +157,8 @@ export default function ViewEventPage() {
             ))}
           </article>
 
-          {/* <div className='mt-20 px-5 pb-10'>
-            <div
+          <div className='mt-20 px-5 pb-10'>
+            {/* <div
               className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200  cursor-pointer'
               onClick={() => setViewAllReplies(!viewAllReplies)}>
               <Icon
@@ -169,14 +169,14 @@ export default function ViewEventPage() {
               <p className='text-xs lg:text-sm'>
                 {data?.event?.commentCount ?? 0}
               </p>
-            </div>
+            </div> */}
             <EventCommentSection
               eventId={eventid}
-              viewAllReplies={viewAllReplies}
-              setViewAllReplies={setViewAllReplies}
+              // viewAllReplies={viewAllReplies}
+              // setViewAllReplies={setViewAllReplies}
               // topic={topic}
             />
-          </div> */}
+          </div>
         </div>
       )}
     </main>

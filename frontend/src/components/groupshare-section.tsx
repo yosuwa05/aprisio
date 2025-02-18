@@ -40,7 +40,6 @@ export function GroupShareSection() {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
-  console.log(data);
   return (
     <div className='flex flex-col gap-6 h-[calc(100vh-200px)] overflow-y-auto hide-scrollbar  items-center p-1 lg:p-4'>
       {isLoading ? (

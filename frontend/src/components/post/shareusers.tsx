@@ -31,8 +31,6 @@ export function ShareUsers({ searchKey }: Props) {
       },
     });
 
-  console.log(data);
-
   return (
     <main>
       <div className='flex flex-col gap-3'>

@@ -51,15 +51,12 @@ export function ShareGroups({
       return await _axios.post(`/group/share-post-group`, data);
     },
     onSuccess(data) {
-      console.log(data);
       toast.success("Post shared successfully!");
       setSelectedGroups(new Set());
-      console.log(selectedGroups, "selected");
       CloseDialog();
       CloseDrawer();
     },
     onError(error: any) {
-      console.log(error);
       toast.error(error?.response?.data?.message);
     },
   });

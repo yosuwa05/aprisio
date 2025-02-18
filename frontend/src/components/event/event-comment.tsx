@@ -12,7 +12,7 @@ import { toast } from "sonner";
 interface Props {
   comment: any;
   eventId: string;
-  viewAllReplies?: boolean;
+  // viewAllReplies?: boolean;
 }
 type ICommentLike = {
   commentId: string;
@@ -35,7 +35,7 @@ export default function EventComment({ comment, eventId }: Props) {
 
   const { mutate: likeMutation, isPending: isLikePending } = useMutation({
     mutationFn: async (data: ICommentLike) => {
-      return await _axios.post("/comment/like", data);
+      return await _axios.post("/event-comment/like", data);
     },
     onMutate: async () => {
       await queryClient.cancelQueries({
@@ -83,7 +83,7 @@ export default function EventComment({ comment, eventId }: Props) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: IComment) => {
-      return await _axios.post("/comment", data);
+      return await _axios.post("/event-comment", data);
     },
     onSuccess(data) {
       if (!data.data.ok) return toast.error(data.data.message);
@@ -125,7 +125,7 @@ export default function EventComment({ comment, eventId }: Props) {
           <p className='font-normal text-xs lg:text-sm'>
             {comment?.parentComment && comment.parentComment.user ? (
               <span className='text-sky-500'>
-                {comment.parentComment.user.name}
+                {comment.parentComment.user.name || "hii"}
               </span>
             ) : (
               ""

@@ -56,22 +56,22 @@ export default function Community() {
 
   return (
     <>
-      <div className="mx-2 md:mx-12 mt-6">
+      <div className='mx-2 md:mx-12 mt-6'>
         {isLoading ? (
-          <div className="flex flex-col gap-4 w-full ">
+          <div className='flex flex-col gap-4 w-full '>
             {[...Array(2)].map((_, i) => (
-              <div key={i} className="flex gap-4 w-full">
-                <Skeleton className="w-[50px] h-[50px] rounded-full" />
-                <div className="flex flex-col gap-2 w-full">
-                  <Skeleton className="w-full h-[200px]" />
-                  <Skeleton className="w-full h-[15px]" />
-                  <Skeleton className="w-3/4 h-[15px]" />
+              <div key={i} className='flex gap-4 w-full'>
+                <Skeleton className='w-[50px] h-[50px] rounded-full' />
+                <div className='flex flex-col gap-2 w-full'>
+                  <Skeleton className='w-full h-[200px]' />
+                  <Skeleton className='w-full h-[15px]' />
+                  <Skeleton className='w-3/4 h-[15px]' />
                 </div>
 
-                <div className="flex flex-col gap-2 w-full">
-                  <Skeleton className="w-full h-[200px]" />
-                  <Skeleton className="w-full h-[15px]" />
-                  <Skeleton className="w-3/4 h-[15px]" />
+                <div className='flex flex-col gap-2 w-full'>
+                  <Skeleton className='w-full h-[200px]' />
+                  <Skeleton className='w-full h-[15px]' />
+                  <Skeleton className='w-3/4 h-[15px]' />
                 </div>
               </div>
             ))}
@@ -81,8 +81,8 @@ export default function Community() {
             page.data.topics.length > 0 ? (
               page.data.topics.map((post: any, postIndex: number) => (
                 <div key={`${pageIndex}-${postIndex}`}>
-                  <h1 className="my-4 font-bold text-2xl">{post.topicName}</h1>
-                  <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1   gap-4">
+                  <h1 className='my-4 font-bold text-2xl'>{post.topicName}</h1>
+                  <div className='grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1   gap-4'>
                     {post.subTopic.map(
                       (subTopic: any, subTopicIndex: number) => (
                         <TopicsCard
@@ -92,6 +92,8 @@ export default function Community() {
                           subTopicId={subTopic._id}
                           joined={subTopic.joined}
                           slug={subTopic.slug}
+                          groupCount={subTopic.groupCount}
+                          totalEvents={subTopic.totalEvents}
                         />
                       )
                     )}
@@ -101,21 +103,20 @@ export default function Community() {
             ) : (
               <p
                 key={`${pageIndex}-no-posts`}
-                className="text-gray-500 text-xs font-semibold"
-              >
+                className='text-gray-500 text-xs font-semibold'>
                 No posts found
               </p>
             )
           )
         ) : (
-          <p className="text-gray-500">No posts</p>
+          <p className='text-gray-500'>No posts</p>
         )}
       </div>
 
-      <div ref={ref} className="h-1"></div>
+      <div ref={ref} className='h-1'></div>
 
       {isLoading || isFetchingNextPage ? (
-        <div className="flex justify-center items-center my-4">
+        <div className='flex justify-center items-center my-4'>
           <GlobalLoader />
         </div>
       ) : (

@@ -18,8 +18,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 type Props = {
   eventId: string;
-  viewAllReplies?: boolean;
-  setViewAllReplies?: any;
+  // viewAllReplies?: boolean;
+  // setViewAllReplies?: any;
   // topic: any;
 };
 
@@ -31,9 +31,9 @@ type IComment = {
 
 export default function EventCommentSection({
   eventId,
-  viewAllReplies,
-  setViewAllReplies,
-}: // topic,
+}: // viewAllReplies,
+// setViewAllReplies,
+// topic,
 Props) {
   const [typedComment, setTypedComment] = useState("");
   const user = useGlobalAuthStore((state) => state.user);
@@ -49,41 +49,41 @@ Props) {
     mutationFn: async (data: IComment) => {
       return await _axios.post("/event-comment", data);
     },
-    onMutate: async () => {
-      await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
+    // onMutate: async () => {
+    //   await queryClient.cancelQueries({ queryKey: ["projects" + user?.id] });
 
-      const previousPosts = queryClient.getQueryData([
-        "projects" + user?.id,
-        // topic,
-      ]);
+    //   const previousPosts = queryClient.getQueryData([
+    //     "projects" + user?.id,
+    //     // topic,
+    //   ]);
 
-      queryClient.setQueryData(["projects" + user?.id], (old: any) => {
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => ({
-            ...page,
-            data: {
-              ...page.data,
-              posts: page.data.posts.map((p: any) =>
-                p._id === eventId
-                  ? {
-                      ...p,
-                      commentsCount: p.commentsCount + 1,
-                    }
-                  : p
-              ),
-            },
-          })),
-        };
-      });
+    //   queryClient.setQueryData(["projects" + user?.id], (old: any) => {
+    //     return {
+    //       ...old,
+    //       pages: old.pages.map((page: any) => ({
+    //         ...page,
+    //         data: {
+    //           ...page.data,
+    //           posts: page.data.posts.map((p: any) =>
+    //             p._id === eventId
+    //               ? {
+    //                   ...p,
+    //                   commentsCount: p.commentsCount + 1,
+    //                 }
+    //               : p
+    //           ),
+    //         },
+    //       })),
+    //     };
+    //   });
 
-      return { previousPosts };
-    },
+    //   return { previousPosts };
+    // },
     onSuccess(data) {
       if (!data.data.ok) return toast.error(data.data.message);
 
       toast.success("Comment added");
-      if (!viewAllReplies) setViewAllReplies(!viewAllReplies);
+      // if (!viewAllReplies) setViewAllReplies(!viewAllReplies);
       queryClient.invalidateQueries({
         queryKey: ["event-comments", user?.id, eventId],
       });
@@ -108,7 +108,6 @@ Props) {
       },
     });
 
-  console.log(data);
   return (
     <div>
       <div className='mt-4 flex gap-4 items-center'>
@@ -130,14 +129,14 @@ Props) {
         />
       </div>
 
-      {viewAllReplies && !isLoading && (
+      {!isLoading && (
         <motion.div className='mt-4 flex flex-col gap-6'>
           {data?.pages?.flatMap((page) =>
             page?.comments?.map((comment: any, index: number) => (
               <React.Fragment key={comment._id}>
                 <EventComment
                   comment={comment}
-                  viewAllReplies={viewAllReplies}
+                  // viewAllReplies={viewAllReplies}
                   eventId={eventId}
                 />
               </React.Fragment>
@@ -147,6 +146,7 @@ Props) {
           {hasNextPage && (
             <div className='flex justify-start'>
               <Button
+                className=' text-contrasttext'
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
                 variant='ghost'>
