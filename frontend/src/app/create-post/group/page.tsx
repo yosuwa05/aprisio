@@ -62,7 +62,7 @@ export default function CreatePostGroup() {
   const descriptionValue = watch("description", "");
   const urlValue = watch("url", "");
 
-  const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
+  const activeGroup = useGlobalFeedStore((state) => state.activeGroup);
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -79,8 +79,8 @@ export default function CreatePostGroup() {
     });
 
   useEffect(() => {
-    setSelectedGroupId({ slug: activeSubTopic });
-  }, [activeSubTopic]);
+    setSelectedGroupId({ slug: activeGroup });
+  }, [activeGroup]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
@@ -90,10 +90,12 @@ export default function CreatePostGroup() {
       if (data.data.ok) {
         toast("Post created successfully");
         reset();
-        queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
+        queryClient.invalidateQueries({
+          queryKey: ["groups-feed" + user?.id, selectedGroupId.slug],
+        });
         router.push("/groups/" + selectedGroupId.slug);
       } else {
-        toast("An error occurred while creating post");
+        toast(data.data.message || "An error occurred while creating post");
       }
     },
   });
@@ -182,7 +184,7 @@ export default function CreatePostGroup() {
     queryKey: ["groups for dropdown", debouncedSubTopicSearch],
     queryFn: async () => {
       const res = await _axios.get(
-        `/noauth/group/dropdown?limit=7&q=${debouncedSubTopicSearch}`
+        `/noauth/group/dropdown?limit=7&q=${debouncedSubTopicSearch}`,
       );
       return res.data;
     },
@@ -467,7 +469,7 @@ export default function CreatePostGroup() {
                         </div>
                         <div className="h-[0.5px] bg-[#888383]"></div>
                       </div>
-                    )
+                    ),
                   )
                 ) : (
                   <div className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center">

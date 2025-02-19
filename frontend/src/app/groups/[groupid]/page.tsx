@@ -46,20 +46,6 @@ export default function GroupPage() {
               {data?.group.name}
             </h1>
 
-            {/* <div className="flex gap-2 items-center mt-4">
-              <Icon
-                icon="mynaui:location"
-                fontSize={29}
-                className="text-gray-600"
-              />
-              <p className="text-sm text-textcol">
-                New York, USA <br />
-                <span className="text-sm text-textcol">
-                  (NYC, NY, USA, United States)
-                </span>
-              </p>
-            </div> */}
-
             <div className="flex gap-2 items-center mt-4">
               <Icon
                 icon="mingcute:user-1-line"
@@ -67,7 +53,7 @@ export default function GroupPage() {
                 className="text-gray-600"
               />
               <p className="text-sm text-textcol">
-                {data?.group?.memberCount} Member{" "}
+                {data?.group?.memberCount} Member
                 {data?.group?.memberCount > 1 && "s"}
                 <br />
               </p>
@@ -75,7 +61,7 @@ export default function GroupPage() {
           </div>
         )}
 
-        <div className="flex w-full md:max-w-[1200px] mx-auto gap-4">
+        <div className="flex w-full lg:max-w-[1200px] mx-auto gap-4">
           <div className="flex-1 flex flex-col ">
             <div className="flex justify-between items-center">
               <div className="flex gap-2 items-center text-lg">
@@ -85,7 +71,7 @@ export default function GroupPage() {
                   fontSize={32}
                   onClick={() => router.back()}
                 />
-                <h5>{data?.group.name}</h5> -
+                <h5 className="hidden md:block">{data?.group.name}</h5> -
                 <h5 className="font-bold">About</h5>
               </div>
 

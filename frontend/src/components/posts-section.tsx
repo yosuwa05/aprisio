@@ -36,7 +36,7 @@ export const PostsSection = () => {
       queryKey: ["projects" + user?.id, topic],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`
+          `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`,
         );
         return res;
       },
@@ -54,7 +54,7 @@ export const PostsSection = () => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
+  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="flex flex-col gap-6 items-center p-1 lg:p-4 mb-12 lg:mb-6">
@@ -92,10 +92,12 @@ export const PostsSection = () => {
                   topic={topic?.toString() || ""}
                 />
               </React.Fragment>
-            ))
+            )),
           )
         ) : (
-          <p className="text-gray-500 text-xs font-semibold">No posts found</p>
+          <p className="text-gray-500 text-xs font-semibold">
+            {!isLoading ? "No posts found" : ""}
+          </p>
         )
       ) : (
         <p className="text-gray-500">No posts</p>

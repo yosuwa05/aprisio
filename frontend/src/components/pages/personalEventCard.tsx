@@ -1,16 +1,11 @@
-import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
-import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { useMutation } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 type Props = {
   event: Event;
 };
 
-type Event = {
+export type Event = {
   _id: string;
   eventName: string;
   date: string;
@@ -32,31 +27,12 @@ function formatDateString(date: Date) {
   }).format(date);
 }
 
-type EventBody = {
-  eventId: string;
-};
-
 export function PersonalEventCard({ event }: Props) {
-  const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
-  const { topic } = useParams();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (data: EventBody) => {
-      return await _axios.post("/events/attendevent", data);
-    },
-    onSuccess(data) {
-      if (data.data.ok) {
-        toast(data.data.message || "Attended event successfully");
-      } else {
-        toast(data.data.error || "Something went wrong");
-      }
-    },
-  });
 
   return (
     <div
-      className="p-4 lg:px-8 my-5  rounded-lg transition-all mx-4"
+      className="p-4 lg:px-8 my-2  rounded-lg transition-all mx-4"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}
@@ -83,29 +59,11 @@ export function PersonalEventCard({ event }: Props) {
 
         <div className="flex flex-col gap-4 items-center">
           <p
-            onClick={() => router.push(`/groups/`)}
+            onClick={() => router.push(`/events/${event._id}`)}
             className="text-sm font-semibold text-contrasttext  cursor-pointer"
           >
             View Event
           </p>
-
-          <Button
-            disabled={isPending || event.attending}
-            className={`
-           bg-[#FCF7EA] hover:bg-[#FCF7EA] border-[#AF965447] rounded-3xl border-[0.2px]  text-black`}
-            onClick={() => {
-              if (isPending) return;
-              if (!user) {
-                toast("Login to continue");
-                return;
-              }
-              mutate({
-                eventId: event._id,
-              });
-            }}
-          >
-            {!event.attending ? "Attend Event" : "Joined"}
-          </Button>
         </div>
       </div>
     </div>
