@@ -10,7 +10,7 @@ export default function UserPage() {
 
   return (
     <div className="flex w-full max-w-[1200px] mx-auto gap-4">
-      <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-150px)] hide-scrollbar overflow-hidden">
+      <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-180px)] hide-scrollbar overflow-hidden">
         {activeTab == "created" && <PersonalFeedPosts />}
         {activeTab == "joined" && <PersonalGroupsSection />}
         {activeTab == "events" && <PersonalEventsSection />}

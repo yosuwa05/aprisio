@@ -4,7 +4,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { usePathname } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import GlobalLoader from "../globalloader";
 import { Skeleton } from "../ui/skeleton";
@@ -30,16 +30,18 @@ export const PersonalFeedPosts = () => {
   const user = useGlobalAuthStore((state) => state.user);
   const isUserRoute = usePathname().includes("/user/");
 
-  // const {currentUser }
+  const { userslug } = useParams();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["personalfeed" + user?.id],
+      queryKey: ["personalfeed" + user?.id, userslug],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post/personal?page=${pageParam}&userId=${
-            user?.id ?? ""
-          }&createdByMe=${isUserRoute}`
+          !isUserRoute
+            ? `/post/personal?page=${pageParam}&userId=${
+                user?.id ?? ""
+              }&createdByMe=${isUserRoute}`
+            : `/post/personalprofile?page=${pageParam}&userId=${userslug}`
         );
         return res;
       },

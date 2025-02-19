@@ -7,6 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { formatDate } from "@/lib/utils";
@@ -18,16 +25,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { PostShareModalMobile } from "../post/share-drawer-mobile";
-import { PostShareModalWeb } from "../post/share-modal-web";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from "../ui/drawer";
-import PerosonalFeedCommentSection from "./personalFeedCommentSection";
+import GroupFeedCommentSection from "./group-feed-commentsection";
 
 interface IPostCard {
   title: string;
@@ -42,7 +40,7 @@ interface IPostCard {
   image?: string;
 }
 
-export default function PersonalPostcard({
+export default function GroupsFeedPostcard({
   post,
   topic,
 }: {
@@ -53,6 +51,8 @@ export default function PersonalPostcard({
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [postId, setPostId] = useState("");
+
+  const { groupid } = useParams();
 
   const router = useRouter();
 
@@ -67,7 +67,6 @@ export default function PersonalPostcard({
   const queryClient = useQueryClient();
 
   const user = useGlobalAuthStore((state) => state.user);
-  const { userslug } = useParams();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -77,16 +76,16 @@ export default function PersonalPostcard({
     },
     onMutate: async () => {
       await queryClient.cancelQueries({
-        queryKey: ["personalfeed" + user?.id, userslug],
+        queryKey: ["groups-feed" + user?.id, groupid],
       });
 
       const previousPosts = queryClient.getQueryData([
-        "personalfeed" + user?.id,
-        userslug,
+        "groups-feed" + user?.id,
+        groupid,
       ]);
 
       queryClient.setQueryData(
-        ["personalfeed" + user?.id, userslug],
+        ["groups-feed" + user?.id, groupid],
         (old: any) => {
           return {
             ...old,
@@ -103,20 +102,20 @@ export default function PersonalPostcard({
                           : p.likesCount - 1,
                         likedByMe: !p.likedByMe,
                       }
-                    : p
+                    : p,
                 ),
               },
             })),
           };
-        }
+        },
       );
 
       return { previousPosts };
     },
     onError: (err, newPost, context: any) => {
       queryClient.setQueryData(
-        ["personalfeed" + user?.id, userslug],
-        context.previousPosts
+        ["groups-feed" + user?.id, groupid],
+        context.previousPosts,
       );
     },
     onSuccess: (data) => {
@@ -134,7 +133,7 @@ export default function PersonalPostcard({
 
   return (
     <div
-      className="p-4 lg:px-8 w-full rounded-lg transition-all"
+      className="p-4 lg:px-8 w-full rounded-lg transition-all mt-4"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}
@@ -155,7 +154,7 @@ export default function PersonalPostcard({
             <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
-            <p className="text-[#043A53] text-xs font-medium">300+ Groups</p>
+            <p className="text-[#043A53] text-xs font-medium">300+ Members</p>
           </div>
         </div>
 
@@ -237,10 +236,11 @@ export default function PersonalPostcard({
             />
             <p className="text-xs lg:text-sm">{post.commentCount ?? 0}</p>
           </div>
-          {/* for Dialog web */}
+
           {/* <div
             onClick={() => {
-              setPostId(post.id), setDialogOpen(true);
+              setPostId(post.id);
+              setDialogOpen(true);
             }}
             className="hidden  md:flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200 cursor-pointer "
           >
@@ -256,17 +256,27 @@ export default function PersonalPostcard({
               <DialogHeader>
                 <DialogTitle></DialogTitle>
                 <DialogDescription></DialogDescription>
+                {/* <DialogClose className='absolute bg-red-500 rounded-full  right-2 top-12'>
+                  <div className='p-1'>
+                    <Icon
+                      icon='ic:baseline-close'
+                      className='h-5 w-5 text-gray-600 hover:text-gray-800 cursor-pointer'
+                    />
+                  </div>
+                </DialogClose> */}
               </DialogHeader>
-              <PostShareModalWeb
+              {/* <PostShareModalWeb
                 postId={postId}
                 CloseDialog={CloseDialog}
                 CloseDrawer={CloseDrawer}
-              />
+              /> */}
             </DialogContent>
           </Dialog>
+          {/* for Drawer mobile */}
           <div
             onClick={() => {
-              setPostId(post.id), setDrawerOpen(true);
+              setPostId(post.id);
+              setDrawerOpen(true);
             }}
             className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200 cursor-pointer md:hidden  "
           >
@@ -283,18 +293,18 @@ export default function PersonalPostcard({
                 <DrawerTitle></DrawerTitle>
                 <DrawerDescription></DrawerDescription>
               </DrawerHeader>
-              <PostShareModalMobile
+              {/* <PostShareModalMobile
                 postId={postId}
                 CloseDrawer={CloseDrawer}
                 CloseDialog={CloseDialog}
-              />
+              /> */}
             </DrawerContent>
           </Drawer>
         </div>
       </div>
 
       <div>
-        <PerosonalFeedCommentSection
+        <GroupFeedCommentSection
           postId={post.id}
           viewAllReplies={viewAllReplies}
           setViewAllReplies={setViewAllReplies}

@@ -57,7 +57,7 @@ export const PostsSection = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="flex flex-col gap-6 items-center p-1 lg:p-4 mb-12 lg:mb-0">
+    <div className="flex flex-col gap-6 items-center p-1 lg:p-4 mb-12 lg:mb-6">
       {isLoading ? (
         <div className="flex flex-col gap-4 w-full">
           {[...Array(5)].map((_, i) => (

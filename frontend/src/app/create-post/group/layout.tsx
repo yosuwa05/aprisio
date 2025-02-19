@@ -1,7 +1,6 @@
 "use client";
 
 import { TopCommunityBar } from "@/components/community/top-community-bar";
-import DockMenu from "@/components/dockmenu";
 import Topbar from "@/components/shared/topbar";
 
 export default function CommunityLayout({
@@ -15,7 +14,6 @@ export default function CommunityLayout({
       <TopCommunityBar />
 
       {children}
-      <DockMenu />
     </div>
   );
 }

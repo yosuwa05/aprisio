@@ -1,6 +1,7 @@
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
@@ -10,17 +11,16 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { motion } from "motion/react";
-import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { Button } from "../ui/button";
-import PersonalFeedComment from "./personalFeedComment";
+import GroupFeedComment from "./group-feed-comment";
+import { useParams } from "next/navigation";
 
 type Props = {
   postId: string;
   viewAllReplies?: boolean;
   setViewAllReplies?: any;
-  topic: any;
+  topic: string;
 };
 
 type IComment = {
@@ -29,7 +29,7 @@ type IComment = {
   parentCommentId?: string;
 };
 
-export default function PerosonalFeedCommentSection({
+export default function GroupFeedCommentSection({
   postId,
   viewAllReplies,
   setViewAllReplies,
@@ -40,7 +40,7 @@ export default function PerosonalFeedCommentSection({
   const limit = 4;
   const queryClient = useQueryClient();
 
-  const { userslug } = useParams();
+  const { groupid } = useParams();
 
   function handleSubmit() {
     mutate({ content: typedComment, postId, parentCommentId: undefined });
@@ -53,16 +53,16 @@ export default function PerosonalFeedCommentSection({
     },
     onMutate: async () => {
       await queryClient.cancelQueries({
-        queryKey: ["personalfeed" + user?.id, userslug],
+        queryKey: ["groups-feed" + user?.id, groupid],
       });
 
       const previousPosts = queryClient.getQueryData([
-        "personalfeed" + user?.id,
-        userslug,
+        "groups-feed" + user?.id,
+        groupid,
       ]);
 
       queryClient.setQueryData(
-        ["personalfeed" + user?.id, userslug],
+        ["groups-feed" + user?.id, groupid],
         (old: any) => {
           return {
             ...old,
@@ -76,12 +76,12 @@ export default function PerosonalFeedCommentSection({
                         ...p,
                         commentsCount: p.commentsCount + 1,
                       }
-                    : p
+                    : p,
                 ),
               },
             })),
           };
-        }
+        },
       );
 
       return { previousPosts };
@@ -104,7 +104,7 @@ export default function PerosonalFeedCommentSection({
         const res = await _axios.get(
           `/comment?postId=${postId}&userId=${
             user?.id ?? ""
-          }&page=${pageParam}&limit=${limit}`
+          }&page=${pageParam}&limit=${limit}`,
         );
         return res.data;
       },
@@ -125,7 +125,7 @@ export default function PerosonalFeedCommentSection({
 
         <Input
           placeholder="Write your comment"
-          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-normal font-sans"
+          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -141,13 +141,13 @@ export default function PerosonalFeedCommentSection({
           {data?.pages?.flatMap((page) =>
             page?.comments?.map((comment: any, index: number) => (
               <React.Fragment key={comment._id}>
-                <PersonalFeedComment
+                <GroupFeedComment
                   comment={comment}
                   viewAllReplies={viewAllReplies}
                   postId={postId}
                 />
               </React.Fragment>
-            ))
+            )),
           )}
 
           {hasNextPage && (

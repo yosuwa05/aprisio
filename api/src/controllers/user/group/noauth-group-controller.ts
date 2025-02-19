@@ -61,7 +61,7 @@ export const noAuthGroupController = new Elysia({
         }
 
         const joinedGroupSet = new Set(
-          userJoinedGroups.map((ug) => String(ug.group))
+          userJoinedGroups.map((ug) => String(ug.group)),
         );
 
         const updatedGroups = groups.map((group) => {
@@ -108,7 +108,7 @@ export const noAuthGroupController = new Elysia({
         description: "Get groups",
         summary: "Get groups",
       },
-    }
+    },
   )
   .get(
     "/me",
@@ -161,7 +161,7 @@ export const noAuthGroupController = new Elysia({
         description: "Get groups",
         summary: "Get groups",
       },
-    }
+    },
   )
   .get(
     "/members",
@@ -182,7 +182,7 @@ export const noAuthGroupController = new Elysia({
           {
             group: groupid,
           },
-          "userId role"
+          "userId role",
         )
           .populate("userId", "name")
           .lean();
@@ -207,7 +207,7 @@ export const noAuthGroupController = new Elysia({
       query: t.Object({
         groupid: t.String(),
       }),
-    }
+    },
   )
   .get(
     "/get/:slug",
@@ -244,17 +244,16 @@ export const noAuthGroupController = new Elysia({
         description: "Get Single Group Details.",
         summary: "Get Single Group Details.",
       },
-    }
+    },
   )
   .get(
-    "/events/:groupid",
+    "/events",
     async ({ query, params }) => {
       try {
         let limit = Number(query.limit) || 10;
         let page = Number(query.page) || 1;
 
-        const { groupid } = params;
-        const { userId } = query;
+        const { userId, groupid } = query;
 
         const events = await EventModel.find({ group: groupid })
           .sort({ createdAt: -1, _id: -1 })
@@ -267,12 +266,12 @@ export const noAuthGroupController = new Elysia({
           ...event,
           attending: userId
             ? event.attendees?.some(
-              (attendee) => attendee.toString() === userId
-            )
+                (attendee) => attendee.toString() === userId,
+              )
             : false,
         }));
 
-        console.log(tempEvents)
+        console.log(tempEvents);
 
         return {
           events: tempEvents,
@@ -292,6 +291,7 @@ export const noAuthGroupController = new Elysia({
         page: t.Optional(t.Number()),
         limit: t.Optional(t.Number()),
         userId: t.Optional(t.String()),
+        groupid: t.String(),
       }),
       params: t.Object({
         groupid: t.String(),
@@ -300,7 +300,7 @@ export const noAuthGroupController = new Elysia({
         description: "Get group events",
         summary: "Get group events",
       },
-    }
+    },
   )
   .get(
     "/photos",
@@ -339,7 +339,7 @@ export const noAuthGroupController = new Elysia({
         summary: "Get group photos",
         description: "Get group photos",
       },
-    }
+    },
   )
   .get(
     "/random-groups-events",
@@ -381,7 +381,7 @@ export const noAuthGroupController = new Elysia({
         description: "Get random groups based on subtopic",
         summary: "Get random groups based on subtopic",
       },
-    }
+    },
   )
   .get(
     "/dropdown",
@@ -395,7 +395,7 @@ export const noAuthGroupController = new Elysia({
         if (query.userId && query.userId != "undefined") {
           const userTopics = await UserGroupsModel.find(
             { userId: query.userId },
-            "group"
+            "group",
           ).lean();
 
           const followedGroups = userTopics.map((topic) => topic.group);
@@ -431,5 +431,5 @@ export const noAuthGroupController = new Elysia({
         q: t.Optional(t.String()),
         userId: t.Optional(t.String()),
       }),
-    }
+    },
   );

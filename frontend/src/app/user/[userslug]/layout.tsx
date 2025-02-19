@@ -89,7 +89,7 @@ export default function PersonalProfile({
             </div>
 
             <h1 className="text-[#043A537D] text-2xl px-2 my-4">
-              Topics Mukesh Follow
+              Topics {userslug} Follow
             </h1>
 
             <div className="flex flex-col gap-3">

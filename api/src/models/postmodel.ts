@@ -12,6 +12,7 @@ interface IPost {
   likesCount: number;
   commentsCount: number;
   subTopic: Types.ObjectId;
+  group: Types.ObjectId | null;
 }
 
 const PostSchema = new Schema<IPost>(
@@ -37,6 +38,7 @@ const PostSchema = new Schema<IPost>(
     likesCount: { type: Number, default: 0 },
     commentsCount: { type: Number, default: 0 },
     subTopic: { type: Schema.Types.ObjectId, ref: "subtopics" },
+    group: { type: Schema.Types.ObjectId, ref: "Group" },
   },
   { timestamps: true }
 );

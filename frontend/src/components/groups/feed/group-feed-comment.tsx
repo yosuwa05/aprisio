@@ -11,8 +11,8 @@ import { toast } from "sonner";
 
 interface Props {
   comment: any;
-  eventId: string;
-  // viewAllReplies?: boolean;
+  postId: string;
+  viewAllReplies?: boolean;
 }
 type ICommentLike = {
   commentId: string;
@@ -20,11 +20,11 @@ type ICommentLike = {
 
 type IComment = {
   content: string;
-  eventId: string;
+  postId: string;
   parentCommentId?: string;
 };
 
-export default function EventComment({ comment, eventId }: Props) {
+export default function GroupFeedComment({ comment, postId }: Props) {
   const [repliedContent, setRepliedContent] = useState("");
   const [isReplyOpened, setIsReplyOpened] = useState(false);
 
@@ -34,41 +34,38 @@ export default function EventComment({ comment, eventId }: Props) {
 
   const { mutate: likeMutation, isPending: isLikePending } = useMutation({
     mutationFn: async (data: ICommentLike) => {
-      return await _axios.post("/event-comment/like", data);
+      return await _axios.post("/comment/like", data);
     },
     onMutate: async () => {
       await queryClient.cancelQueries({
-        queryKey: ["event-comments", user?.id, eventId],
+        queryKey: ["comments", user?.id, postId],
       });
 
       const previousComments = queryClient.getQueryData([
-        "event-comments",
+        "comments",
         user?.id,
-        eventId,
+        postId,
       ]);
 
-      queryClient.setQueryData(
-        ["event-comments", user?.id, eventId],
-        (old: any) => {
-          return {
-            ...old,
-            pages: old.pages.map((page: any) => ({
-              ...page,
-              comments: page.comments.map((c: any) =>
-                c._id === comment._id
-                  ? {
-                      ...c,
-                      likesCount: !c.likedByMe
-                        ? c.likesCount + 1
-                        : c.likesCount - 1,
-                      likedByMe: !c.likedByMe,
-                    }
-                  : c
-              ),
-            })),
-          };
-        }
-      );
+      queryClient.setQueryData(["comments", user?.id, postId], (old: any) => {
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
+            ...page,
+            comments: page.comments.map((c: any) =>
+              c._id === comment._id
+                ? {
+                    ...c,
+                    likesCount: !c.likedByMe
+                      ? c.likesCount + 1
+                      : c.likesCount - 1,
+                    likedByMe: !c.likedByMe,
+                  }
+                : c
+            ),
+          })),
+        };
+      });
 
       return { previousComments };
     },
@@ -82,7 +79,7 @@ export default function EventComment({ comment, eventId }: Props) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: IComment) => {
-      return await _axios.post("/event-comment", data);
+      return await _axios.post("/comment", data);
     },
     onSuccess(data) {
       if (!data.data.ok) return toast.error(data.data.message);
@@ -90,13 +87,13 @@ export default function EventComment({ comment, eventId }: Props) {
       toast.success("Comment added");
 
       queryClient.invalidateQueries({
-        queryKey: ["event-comments", user?.id, eventId],
+        queryKey: ["comments", user?.id, postId],
       });
     },
   });
 
   function handleReplySubmit(commentID: string) {
-    mutate({ content: repliedContent, eventId, parentCommentId: commentID });
+    mutate({ content: repliedContent, postId, parentCommentId: commentID });
     setRepliedContent("");
     setIsReplyOpened(false);
   }
@@ -124,7 +121,7 @@ export default function EventComment({ comment, eventId }: Props) {
           <p className="font-normal text-xs lg:text-sm">
             {comment?.parentComment && comment.parentComment.user ? (
               <span className="text-sky-500">
-                {comment.parentComment.user.name || "hii"}
+                {comment.parentComment.user.name}
               </span>
             ) : (
               ""
@@ -147,7 +144,6 @@ export default function EventComment({ comment, eventId }: Props) {
                 toast("Login to like");
                 return;
               }
-
               likeMutation({ commentId: comment._id });
             }}
           />
