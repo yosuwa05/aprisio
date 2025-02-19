@@ -1,30 +1,46 @@
 "use client";
 
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
-type Topic = {
-  _id: string;
-  topicName: string;
-};
 
-export function ProfileTopBar() {
+export function MyProfileTopBar() {
   const activeTabs = [
     {
-      slug: "created",
+      slug: "commented-posts",
+      name: "Commented Posts",
+    },
+    {
+      slug: "created-posts",
       name: "Created Posts",
     },
     {
-      slug: "joined",
-      name: "Groups Joined",
+      slug: "favourite-posts",
+      name: "Favourite Posts",
     },
     {
-      slug: "events",
-      name: "Events Created",
+      slug: "organised-events",
+      name: "Organised Events",
+    },
+    {
+      slug: "events-participated",
+      name: "Events Participated",
+    },
+    {
+      slug: "created-groups",
+      name: "Created Groups",
+    },
+    {
+      slug: "joined-groups",
+      name: "Joined Groups",
+    },
+    {
+      slug: "settings",
+      name: "Settings",
     },
   ];
 
-  const activeTab = useGlobalLayoutStore((state) => state.activeProfileTab);
+  const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
   const setActiveTab = useGlobalLayoutStore(
-    (state) => state.setActiveProfileTab
+    (state) => state.setActiveMyProfileTab
   );
   return (
     <div className='bg-[#F2F5F6] h-[50px] flex items-center overflow-hidden'>
