@@ -56,14 +56,6 @@ export default function GroupsFeedPostcard({
 
   const router = useRouter();
 
-  const CloseDialog = () => {
-    setDialogOpen(false);
-  };
-
-  const CloseDrawer = () => {
-    setDrawerOpen(false);
-  };
-
   const queryClient = useQueryClient();
 
   const user = useGlobalAuthStore((state) => state.user);

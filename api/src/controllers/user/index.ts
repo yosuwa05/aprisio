@@ -19,6 +19,7 @@ import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
 import { EventscommentsController } from "./events/event-comment-auth-controller";
 import { EventsCommentNoAuthController } from "./events/event-comment-controller";
+import { personalController } from "./(personal)/personal-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -35,6 +36,7 @@ export const userrouter = new Elysia({
   .use(subtopicsController)
   .use(noAuthGroupController)
   .use(userController)
+  .use(personalController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 
@@ -80,5 +82,4 @@ export const userrouter = new Elysia({
   .use(subtopicsController)
   .use(EventsController)
   .use(PersonalController)
-  .use(EventscommentsController)
-
+  .use(EventscommentsController);

@@ -96,9 +96,7 @@ export default function PersonalFeed() {
               <CollapsibleContent className="pt-2 px-4 ">
                 {data?.data?.joinedEvents?.map((event: any) => (
                   <p
-                    onClick={() =>
-                      router.push(`/groups/${event?.groupSulg}/${event?._id}`)
-                    }
+                    onClick={() => router.push(`/events/${event?._id}`)}
                     key={event?._id}
                     className="text-textcol py-1.5 cursor-pointer  md:py-3"
                   >

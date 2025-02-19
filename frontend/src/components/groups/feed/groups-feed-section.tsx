@@ -1,8 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
@@ -10,7 +11,6 @@ import React, { useEffect, useRef } from "react";
 import GlobalLoader from "../../globalloader";
 import { Skeleton } from "../../ui/skeleton";
 import GroupsFeedPostcard from "./groups-feed-postcard";
-import { Icon } from "@iconify/react/dist/iconify.js";
 
 type IAuthor = {
   name: string;
@@ -30,10 +30,11 @@ type IPost = {
 
 export const GroupsFeedSection = () => {
   const user = useGlobalAuthStore((state) => state.user);
-
   const { groupid } = useParams();
 
   const router = useRouter();
+
+  const updateActiveGroup = useGlobalFeedStore((state) => state.setActiveGroup);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
@@ -48,7 +49,7 @@ export const GroupsFeedSection = () => {
       },
       initialPageParam: 1,
       retry: false,
-      getNextPageParam: (lastPage: any) => lastPage.data.nextCursor,
+      getNextPageParam: (lastPage) => lastPage.data.nextCursor,
     });
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -66,8 +67,9 @@ export const GroupsFeedSection = () => {
   return (
     <div className="my-4">
       <div
-        className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2"
+        className="flex gap-2 items-center justify-end text-sm text-contrasttext cursor-pointer px-4"
         onClick={() => {
+          updateActiveGroup(typeof groupid === "string" ? groupid : "");
           router.push(`/create-post/group`);
         }}
       >
@@ -113,7 +115,7 @@ export const GroupsFeedSection = () => {
               )),
             )
           ) : (
-            <p className="text-gray-500 text-xs font-semibold">
+            <p className="flex justify-center items-center p-4 text-gray-500 text-xs font-semibold">
               No posts found
             </p>
           )

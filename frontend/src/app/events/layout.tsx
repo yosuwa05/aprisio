@@ -14,7 +14,6 @@ export default function CommunityLayout({
       <TopCommunityBar />
 
       {children}
-      {/* <DockMenu /> */}
     </div>
   );
 }
