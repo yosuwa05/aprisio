@@ -27,7 +27,7 @@ export default function Feed() {
   const { topic } = useParams();
   const router = useRouter();
   const updateActiveSubTopic = useGlobalFeedStore(
-    (state) => state.setActiveSubTopic
+    (state) => state.setActiveSubTopic,
   );
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function Feed() {
     queryKey: ["community-info", topic, user?.id],
     queryFn: async () => {
       const res = await _axios.get(
-        `/community/info?slug=${topic}&userId=${user?.id}`
+        `/community/info?slug=${topic}&userId=${user?.id}`,
       );
       return res.data;
     },
@@ -54,7 +54,7 @@ export default function Feed() {
   const { data: suggetions, isLoading: isSuggetionsLoading } = useQuery({
     queryKey: ["topic-suggetions", topic],
     queryFn: async () => {
-      let res = await _axios.get(`/subtopics/suggetions?limit=2`);
+      const res = await _axios.get(`/subtopics/suggetions?limit=2`);
       return res.data;
     },
   });
