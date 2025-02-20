@@ -7,19 +7,20 @@ import { draftsController } from "./(feed)/drafts-controller";
 import { PersonalController } from "./(feed)/personal-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
+import { personalController } from "./(personal)/personal-controller";
+import { SearchController } from "./(search)/search-controller";
 import { subtopicsController } from "./(subtopics)/subtopics-controller";
 import { TopicsController } from "./(topics)/topics-controller";
 import { authController } from "./auth-controller";
 import { communityController } from "./community/community-controller";
+import { EventscommentsController } from "./events/event-comment-auth-controller";
+import { EventsCommentNoAuthController } from "./events/event-comment-controller";
 import { EventsController } from "./events/events-controller";
 import { formController } from "./form-controller";
 import { groupController } from "./group/group-controller";
 import { noAuthGroupController } from "./group/noauth-group-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
-import { EventscommentsController } from "./events/event-comment-auth-controller";
-import { EventsCommentNoAuthController } from "./events/event-comment-controller";
-import { personalController } from "./(personal)/personal-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -37,6 +38,7 @@ export const userrouter = new Elysia({
   .use(noAuthGroupController)
   .use(userController)
   .use(personalController)
+  .use(SearchController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 

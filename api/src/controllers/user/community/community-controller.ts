@@ -195,55 +195,58 @@ export const communityController = new Elysia({
               pipeline: [
                 {
                   $match: {
-                    $expr: { $eq: ["$subTopic", "$$subTopicId"] }
-                  }
+                    $expr: { $eq: ["$subTopic", "$$subTopicId"] },
+                  },
                 },
                 {
                   $group: {
                     _id: null,
                     groupCount: { $sum: 1 },
-                    groupIds: { $push: "$_id" }
-                  }
-                }
+                    groupIds: { $push: "$_id" },
+                  },
+                },
               ],
-              as: "groupStats"
-            }
+              as: "groupStats",
+            },
           },
           {
             $lookup: {
               from: "events",
-              let: { groupIds: { $ifNull: [{ $arrayElemAt: ["$groupStats.groupIds", 0] }, []] } },
+              let: {
+                groupIds: {
+                  $ifNull: [{ $arrayElemAt: ["$groupStats.groupIds", 0] }, []],
+                },
+              },
               pipeline: [
                 {
                   $match: {
-                    $expr: { $in: ["$group", "$$groupIds"] }
-                  }
+                    $expr: { $in: ["$group", "$$groupIds"] },
+                  },
                 },
                 {
                   $group: {
                     _id: null,
-                    totalEvents: { $sum: 1 }
-                  }
-                }
+                    totalEvents: { $sum: 1 },
+                  },
+                },
               ],
-              as: "eventStats"
-            }
+              as: "eventStats",
+            },
           },
           {
             $addFields: {
               "subTopic.groupCount": {
-                $ifNull: [{ $arrayElemAt: ["$groupStats.groupCount", 0] }, 0]
+                $ifNull: [{ $arrayElemAt: ["$groupStats.groupCount", 0] }, 0],
               },
               "subTopic.totalEvents": {
-                $ifNull: [{ $arrayElemAt: ["$eventStats.totalEvents", 0] }, 0]
-              }
-            }
+                $ifNull: [{ $arrayElemAt: ["$eventStats.totalEvents", 0] }, 0],
+              },
+            },
           },
           {
-            $unset: ["groupStats", "eventStats"]
+            $unset: ["groupStats", "eventStats"],
           }
         );
-
 
         aggregationPipeline.push({
           $group: {
@@ -336,20 +339,20 @@ export const communityController = new Elysia({
     async ({ query, set }) => {
       try {
         const subTopic = await SubTopicModel.findOne({ slug: query.slug });
-        console.log(subTopic)
+        console.log(subTopic);
         if (!subTopic) {
-          set.status = 400
+          set.status = 400;
           return { ok: false, error: "Subtopic not found" };
         }
-        const { userId } = query
-        let isUserJoined = false
+        const { userId } = query;
+        let isUserJoined = false;
         if (userId && userId !== "undefined") {
-          console.log()
+          console.log();
           const userSubTopic = await UserSubTopicModel.findOne({
             userId: new Types.ObjectId(userId),
             subTopicId: subTopic._id,
           }).lean();
-          console.log(userSubTopic)
+          console.log(userSubTopic);
           if (userSubTopic) {
             isUserJoined = true;
           }

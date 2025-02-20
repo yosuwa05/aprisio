@@ -6,19 +6,18 @@ import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Icon } from "@iconify/react";
 import logosmall from "@img/images/final-logo.png";
 import logo from "@img/images/logo.png";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@radix-ui/react-collapsible";
 import { useQuery } from "@tanstack/react-query";
-import { Bell, Menu, Search } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
 import {
   Sheet,
   SheetContent,
@@ -27,6 +26,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { SearchBar } from "./searchbar";
 import { UserAvatar } from "./useravatar";
 
 export default function Topbar() {
@@ -35,7 +35,7 @@ export default function Topbar() {
 
   const user = useGlobalAuthStore((state) => state.user);
 
-  const unwantedRoutes = ["/", "/join-community"];
+  const unwantedRoutes = ["/join-community"];
 
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
 
@@ -166,7 +166,7 @@ export default function Topbar() {
                           <p
                             onClick={() =>
                               router.push(
-                                `/groups/${event?.groupSulg}/${event?._id}`,
+                                `/groups/${event?.groupSulg}/${event?._id}`
                               )
                             }
                             key={event?._id}
@@ -206,7 +206,7 @@ export default function Topbar() {
                           <p
                             onClick={() =>
                               router.push(
-                                `/feed/explore/${topic?.subtopicSlug}`,
+                                `/feed/explore/${topic?.subtopicSlug}`
                               )
                             }
                             key={topic?._id}
@@ -321,25 +321,7 @@ export default function Topbar() {
 
       {user ? (
         <div className="flex gap-2 items-center px-2">
-          {!unwantedRoutes.includes(pathname) && (
-            <div className="hidden lg:flex gap-2 items-center">
-              <div className="relative flex items-center">
-                <Search className="w-4 h-4 absolute left-3" />
-                <Input
-                  className="pl-10 min-w-[400px] h-[35px] border-[#E2E2E2] bg-contrastbg"
-                  placeholder="Search Posts "
-                  name="search"
-                  id="search"
-                />
-              </div>
-            </div>
-          )}
-
-          {!unwantedRoutes.includes(pathname) && (
-            <Button className="border-[1px] bg-contrastbg lg:hidden rounded-lg text-black border-[#E2E2E2] w-[25px] h-[35px] md:w-[35px] md:h-[35px]">
-              <Search className="w-2 h-2" />
-            </Button>
-          )}
+          <SearchBar />
 
           {!unwantedRoutes.includes(pathname) && (
             <Button className="border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]">
@@ -354,7 +336,7 @@ export default function Topbar() {
                 router.push(
                   activeLayout == "group"
                     ? "/feed/create-group/new"
-                    : `/feed/create-post/new`,
+                    : `/feed/create-post/new`
                 );
               }}
             >
