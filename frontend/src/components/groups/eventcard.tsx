@@ -1,8 +1,8 @@
 import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 
@@ -37,11 +37,9 @@ type EventBody = {
   eventId: string;
 };
 
-export function EventCard({ event, gropuslug }: Props) {
+export function EventCard({ event }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
-  const { topic } = useParams();
-  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: EventBody) => {
       return await _axios.post("/events/attendevent", data);
@@ -57,7 +55,7 @@ export function EventCard({ event, gropuslug }: Props) {
 
   return (
     <div
-      className="p-4 lg:px-8 my-5  rounded-lg transition-all mx-4"
+      className="p-4 lg:px-8 my-1  rounded-lg transition-all mx-4"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}

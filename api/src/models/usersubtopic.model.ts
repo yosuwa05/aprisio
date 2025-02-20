@@ -10,12 +10,12 @@ const userSubTopicSchema = new Schema(
     },
     subTopicId: {
       type: Schema.Types.ObjectId,
-      ref: "SubTopic",
+      ref: "subtopic",
       required: true,
       index: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSubTopicSchema.index({ userId: 1, subTopicId: 1 }, { unique: true });

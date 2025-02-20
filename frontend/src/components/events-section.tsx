@@ -1,13 +1,13 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { Icon } from "@iconify/react";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useRef } from "react";
-import GlobalLoader from "../globalloader";
-import { Skeleton } from "../ui/skeleton";
-import { EventCard } from "./eventcard";
+import GlobalLoader from "./globalloader";
+import { EventCard } from "./groups/eventcard";
+import { Event } from "./pages/personalEventCard";
+import { Skeleton } from "./ui/skeleton";
 
 type Props = {
   groupid: string;
@@ -16,7 +16,9 @@ type Props = {
 
 export function EventsSection({ groupid, gropuslug }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
-  const router = useRouter();
+
+  const { topic } = useParams();
+
   const limit = 10;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -24,7 +26,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
       queryKey: ["group-events", user?.id, groupid],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/noauth/group/events?groupid=${groupid}&userId=${user?.id}&page=${pageParam}&limit=${limit}`,
+          `/subtopics/events?userId=${user?.id}&page=${pageParam}&limit=${limit}&topicId=${topic}`,
         );
         return res?.data;
       },
@@ -50,18 +52,8 @@ export function EventsSection({ groupid, gropuslug }: Props) {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="my-4">
-      <div
-        className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2"
-        onClick={() => {
-          router.push(`/feed/create-event/`);
-        }}
-      >
-        <Icon icon="tabler:plus" fontSize={22} />
-        <h3 className="font-semibold text-sm">Create Event</h3>
-      </div>
-
-      <div className="mt-6 flex-col flex gap-4">
+    <div className="">
+      <div className="flex-col flex gap-4">
         {isLoading ? (
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-3 gap-4">
@@ -80,14 +72,10 @@ export function EventsSection({ groupid, gropuslug }: Props) {
             </div>
           </div>
         ) : hasevents ? (
-          data?.pages?.flatMap((page: any) =>
-            page?.events?.map((event: any, index: number) => {
+          data?.pages?.flatMap((page) =>
+            page?.events?.map((event: Event, index: number) => {
               return (
-                <EventCard
-                  key={event?._id}
-                  event={event}
-                  gropuslug={gropuslug}
-                />
+                <EventCard key={index} event={event} gropuslug={gropuslug} />
               );
             }),
           )
