@@ -43,7 +43,7 @@ export const GroupsFeedSection = () => {
         const res = await _axios.get(
           `/post/group?page=${pageParam}&userId=${
             user?.id ?? ""
-          }&groupid=${groupid}`,
+          }&groupid=${groupid}`
         );
         return res;
       },
@@ -65,8 +65,8 @@ export const GroupsFeedSection = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="my-4">
-      <div
+    <div className='my-4'>
+      {/* <div
         className="flex gap-2 items-center justify-end text-sm text-contrasttext cursor-pointer px-4"
         onClick={() => {
           updateActiveGroup(typeof groupid === "string" ? groupid : "");
@@ -75,18 +75,18 @@ export const GroupsFeedSection = () => {
       >
         <Icon icon="tabler:plus" fontSize={22} />
         <h3 className="font-semibold text-sm">Create Post</h3>
-      </div>
+      </div> */}
 
-      <div className="max-h-[calc(100vh-280px)] w-full overflow-scroll hide-scrollbar p-2">
+      <div className='max-h-[calc(100vh-280px)] w-full overflow-scroll hide-scrollbar p-2'>
         {isLoading ? (
-          <div className="flex flex-col gap-4 w-full">
+          <div className='flex flex-col gap-4 w-full'>
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex gap-4 w-full">
-                <Skeleton className="w-[50px] h-[50px] rounded-full" />
-                <div className="flex flex-col gap-2 w-full">
-                  <Skeleton className="w-full h-[200px]" />
-                  <Skeleton className="w-full h-[15px]" />
-                  <Skeleton className="w-3/4 h-[15px]" />
+              <div key={i} className='flex gap-4 w-full'>
+                <Skeleton className='w-[50px] h-[50px] rounded-full' />
+                <div className='flex flex-col gap-2 w-full'>
+                  <Skeleton className='w-full h-[200px]' />
+                  <Skeleton className='w-full h-[15px]' />
+                  <Skeleton className='w-3/4 h-[15px]' />
                 </div>
               </div>
             ))}
@@ -112,20 +112,20 @@ export const GroupsFeedSection = () => {
                     topic={groupid?.toString() || ""}
                   />
                 </React.Fragment>
-              )),
+              ))
             )
           ) : (
-            <p className="flex justify-center items-center p-4 text-gray-500 text-xs font-semibold">
+            <p className='flex justify-center items-center p-4 text-gray-500 text-xs font-semibold'>
               No posts found
             </p>
           )
         ) : (
-          <p className="text-gray-500">No posts</p>
+          <p className='text-gray-500'>No posts</p>
         )}
 
-        <div ref={ref} className="h-1"></div>
+        <div ref={ref} className='h-1'></div>
 
-        <div className="flex justify-center items-center p-4">
+        <div className='flex justify-center items-center p-4'>
           {isFetchingNextPage && <GlobalLoader />}
         </div>
       </div>

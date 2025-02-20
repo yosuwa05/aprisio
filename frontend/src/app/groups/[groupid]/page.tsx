@@ -31,90 +31,89 @@ export default function GroupPage() {
   });
 
   return (
-    <div>
-      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
+    <div className='px-1 md:px-8 lg:px-16 xl:px-20 py-6'>
+      <div className='flex flex-col lg:flex-row gap-8'>
         {isLoading ? (
-          <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
+          <Skeleton className='w-full lg:max-w-[300px] min-w-[250px]' />
         ) : (
-          <div className="lg:max-w-[300px] min-w-[250px]">
-            <div className="mt-4 flex flex-col gap-3 items-center">
-              <Image src={placeholder} className="rounded-xl" alt="" />
+          <div className='w-full lg:max-w-[300px] min-w-[250px] text-center lg:text-left'>
+            <div className='flex lg:hidden gap-2 items-center text-lg'>
+              <Icon
+                icon='ic:round-chevron-left'
+                className='cursor-pointer'
+                fontSize={32}
+                onClick={() => router.back()}
+              />
+              <h5 className=''>{data?.group.name}</h5> -
+              <h5 className='font-bold'>About</h5>
             </div>
-            <p className="font-medium text-[#353535CC] opacity-80 mt-2"></p>
-
-            <h1 className="font-[600] text-2xl text-textcol capitalize">
+            <div className='mt-4 flex flex-col gap-3 items-center'>
+              <Image src={placeholder} className='rounded-xl ' alt='' />
+            </div>
+            <h1 className='font-[600] text-2xl text-textcol capitalize '>
               {data?.group.name}
             </h1>
-
-            <div className="flex gap-2 items-center mt-4">
+            <div className='flex gap-2 items-center  mt-4'>
               <Icon
-                icon="mingcute:user-1-line"
+                icon='mingcute:user-1-line'
                 fontSize={29}
-                className="text-gray-600"
+                className='text-gray-600'
               />
-              <p className="text-sm text-textcol">
+              <p className='text-sm text-textcol'>
                 {data?.group?.memberCount} Member
                 {data?.group?.memberCount > 1 && "s"}
-                <br />
               </p>
             </div>
           </div>
         )}
 
-        <div className="flex w-full lg:max-w-[1200px] mx-auto gap-4">
-          <div className="flex-1 flex flex-col ">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center text-lg">
-                <Icon
-                  icon={"ic:round-chevron-left"}
-                  className="cursor-pointer"
-                  fontSize={32}
-                  onClick={() => router.back()}
-                />
-                <h5 className="hidden md:block">{data?.group.name}</h5> -
-                <h5 className="font-bold">About</h5>
-              </div>
-
-              <div className="flex">
-                {tabs.map((tab, index: number) => (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      setActiveIndex(index);
-                    }}
-                    className={`flex cursor-pointer text-lg mx-4 ${
-                      index != activeIndex
-                        ? "text-fadedtext"
-                        : "text-contrasttext font-bold"
-                    }`}
-                  >
-                    <h3>{tab}</h3>
-                  </div>
-                ))}
-              </div>
+        <div className='flex-1 flex flex-col'>
+          <div className='flex flex-wrap justify-between items-center gap-4'>
+            <div className='hidden lg:flex gap-2 items-center text-lg'>
+              <Icon
+                icon='ic:round-chevron-left'
+                className='cursor-pointer'
+                fontSize={32}
+                onClick={() => router.back()}
+              />
+              <h5 className='hidden md:block'>{data?.group.name}</h5> -
+              <h5 className='font-bold'>About</h5>
             </div>
+            <div className='flex overflow-x-auto whitespace-nowrap hide-scrollbar'>
+              {tabs.map((tab, index) => (
+                <div
+                  key={index}
+                  onClick={() => setActiveIndex(index)}
+                  className={`cursor-pointer text-lg px-4 py-2 rounded-md transition-all duration-300 ${
+                    index !== activeIndex
+                      ? "text-fadedtext"
+                      : "text-contrasttext font-bold "
+                  }`}>
+                  {tab}
+                </div>
+              ))}
+            </div>
+          </div>
 
-            {activeIndex == 0 && <GroupsFeedSection />}
-
-            {activeIndex == 1 && (
-              <div className="mx-6 my-4">
-                <h3 className="font-semibold text-2xl">What We Are</h3>
-
-                <p className="text-[#353535] leading-relaxed text-[16px] mt-5 font-normal">
+          <div className='mt-3'>
+            {activeIndex === 0 && <GroupsFeedSection />}
+            {activeIndex === 1 && (
+              <div className='px-4'>
+                <h3 className='font-semibold text-2xl'>What We Are</h3>
+                <p className='text-[#353535] leading-relaxed text-[16px] mt-5 font-normal'>
                   {data?.group.description}
                 </p>
               </div>
             )}
-
-            {activeIndex == 2 && (
+            {activeIndex === 2 && (
               <EventsSection
                 groupid={data?.group._id}
                 gropuslug={data?.group?.slug}
               />
             )}
-            {activeIndex == 3 && <PersonsSection groupid={data?.group._id} />}
-            {activeIndex == 4 && <PhotosSection groupid={data?.group._id} />}
-            {activeIndex == 5 && <GroupShareSection />}
+            {activeIndex === 3 && <PersonsSection groupid={data?.group._id} />}
+            {activeIndex === 4 && <PhotosSection groupid={data?.group._id} />}
+            {activeIndex === 5 && <GroupShareSection />}
           </div>
         </div>
       </div>
