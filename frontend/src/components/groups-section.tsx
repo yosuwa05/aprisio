@@ -22,7 +22,7 @@ export const GroupsSection = () => {
         const res = await _axios.get(
           `/noauth/group?page=${pageParam}&userId=${
             user?.id ?? ""
-          }&subTopic=${topic}&limit=${10}`
+          }&subTopic=${topic}&limit=${10}`,
         );
         return res;
       },
@@ -44,25 +44,25 @@ export const GroupsSection = () => {
     if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
+  }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className='flex flex-col gap-6 items-center p-1 lg:p-4'>
+    <div className="flex flex-col gap-6 items-center p-1 lg:p-4">
       {isLoading ? (
-        <div className='flex flex-col gap-4 w-full '>
+        <div className="flex flex-col gap-4 w-full ">
           {[...Array(1)].map((_, i) => (
-            <div key={i} className='flex gap-4 w-full'>
-              <Skeleton className='w-[50px] h-[50px] rounded-full' />
-              <div className='flex flex-col gap-2 w-full'>
-                <Skeleton className='w-full h-[200px]' />
-                <Skeleton className='w-full h-[15px]' />
-                <Skeleton className='w-3/4 h-[15px]' />
+            <div key={i} className="flex gap-4 w-full">
+              <Skeleton className="w-[50px] h-[50px] rounded-full" />
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="w-full h-[200px]" />
+                <Skeleton className="w-full h-[15px]" />
+                <Skeleton className="w-3/4 h-[15px]" />
               </div>
 
-              <div className='flex flex-col gap-2 w-full'>
-                <Skeleton className='w-full h-[200px]' />
-                <Skeleton className='w-full h-[15px]' />
-                <Skeleton className='w-3/4 h-[15px]' />
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="w-full h-[200px]" />
+                <Skeleton className="w-full h-[15px]" />
+                <Skeleton className="w-3/4 h-[15px]" />
               </div>
             </div>
           ))}
@@ -78,16 +78,17 @@ export const GroupsSection = () => {
           ) : (
             <p
               key={`${pageIndex}-no-groups`}
-              className='text-gray-500 text-xs font-semibold'>
+              className="text-gray-500 text-xs font-semibold"
+            >
               No Groups found
             </p>
-          )
+          ),
         )
       ) : (
-        <p className='text-gray-500'>No Groups</p>
+        <p className="text-gray-500">No Groups</p>
       )}
 
-      <div ref={ref} className='h-1'></div>
+      <div ref={ref} className="h-1"></div>
 
       {isLoading || isFetchingNextPage ? <GlobalLoader /> : <div></div>}
     </div>

@@ -9,7 +9,7 @@ import profileimage from "@img/assets/person.png";
 import chevronleft from "@img/icons/chevron-left.svg";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 export default function PersonalProfile({
   children,
@@ -17,6 +17,8 @@ export default function PersonalProfile({
   children: React.ReactNode;
 }>) {
   const { userslug } = useParams();
+
+  const router = useRouter();
 
   const { data, isLoading } = useQuery({
     queryKey: ["user", userslug],
@@ -93,18 +95,28 @@ export default function PersonalProfile({
             </h1>
 
             <div className="flex flex-col gap-3">
-              <div>
-                <Button className="bg-[#F6F5F2] rounded-2xl text-contrasttext font-bold text-lg p-5 hover:bg-[#F6F5F2]">
-                  Career & Business
-                  <Image src={chevronleft} height={20} width={20} alt="arrow" />
-                </Button>
-              </div>
-              <div>
-                <Button className="bg-[#F6F5F2] rounded-2xl text-contrasttext font-bold text-lg p-5 hover:bg-[#F6F5F2]">
-                  Yoga
-                  <Image src={chevronleft} height={20} width={20} alt="arrow" />
-                </Button>
-              </div>
+              {data?.followedByUser &&
+                data?.followedByUser.map((topic: any, index: number) => (
+                  <div
+                    key={index}
+
+                  >
+                    <Button
+                      onClick={() => {
+                        router.push(`/feed/explore/${topic?.subTopicId?.slug}`);
+                      }}
+                      className="bg-[#F6F5F2] flex flex-start rounded-2xl text-contrasttext font-bold text-lg p-5 hover:bg-[#F6F5F2]"
+                    >
+                      {topic?.subTopicId?.subTopicName}
+                      <Image
+                        src={chevronleft}
+                        height={20}
+                        width={20}
+                        alt="arrow"
+                      />
+                    </Button>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

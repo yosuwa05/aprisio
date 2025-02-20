@@ -248,7 +248,7 @@ export const noAuthGroupController = new Elysia({
   )
   .get(
     "/events",
-    async ({ query, params }) => {
+    async ({ query }) => {
       try {
         let limit = Number(query.limit) || 10;
         let page = Number(query.page) || 1;
@@ -271,8 +271,6 @@ export const noAuthGroupController = new Elysia({
             : false,
         }));
 
-        console.log(tempEvents);
-
         return {
           events: tempEvents,
           ok: true,
@@ -291,9 +289,6 @@ export const noAuthGroupController = new Elysia({
         page: t.Optional(t.Number()),
         limit: t.Optional(t.Number()),
         userId: t.Optional(t.String()),
-        groupid: t.String(),
-      }),
-      params: t.Object({
         groupid: t.String(),
       }),
       detail: {

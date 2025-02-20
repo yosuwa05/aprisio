@@ -1,5 +1,6 @@
 "use client";
 
+import { EventsSection } from "@/components/events-section";
 import { GroupsSection } from "@/components/groups-section";
 import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
@@ -144,6 +145,7 @@ export default function Feed() {
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-180px)] hide-scrollbar overflow-hidden">
             {activeLayout == "post" && <PostsSection />}
             {activeLayout == "group" && <GroupsSection />}
+            {activeLayout == "event" && <EventsSection />}
           </div>
 
           <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">

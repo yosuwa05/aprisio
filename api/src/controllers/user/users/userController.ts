@@ -119,10 +119,19 @@ export const userController = new Elysia({
           UserSubTopicModel.countDocuments({ userId: user._id }),
         ]);
 
+        const followedByUser = await UserSubTopicModel.find({
+          userId: user._id,
+        })
+          .populate("subTopicId", "subTopicName slug")
+          .limit(2)
+          .sort({ createdAt: -1 })
+          .lean();
+
         return {
           user,
           groupsCount,
           subtopicsFollowed,
+          followedByUser,
           status: "success",
         };
       } catch (error) {
