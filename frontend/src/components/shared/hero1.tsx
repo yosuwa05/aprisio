@@ -43,7 +43,7 @@ function Hero1() {
             src={avatar}
             alt=''
             loading='eager'
-            className='xl:h-[5.7rem] xl:w-60 lg:w-44 lg:h-16 w-[10.6rem] h-16'
+            className='xl:h-[5.7rem] xl:w-60 lg:w-44 lg:h-16 w-[10.6rem] h-16 invisible'
           />
         </div>
       </section>

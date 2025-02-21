@@ -108,7 +108,7 @@ export default function About() {
               whose careers may be behind them but their best days are ahead of
               them. This community seeks to explore new opportunities to stay
               connected, foster new, meaningful connections to stay connected,
-              and pursue new interests to retain their zest for life.watch our
+              and pursue new interests to retain their zest for life. Watch our
               founder talk about Aprisio.
             </p>
           </div>
