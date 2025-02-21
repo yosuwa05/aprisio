@@ -21,6 +21,7 @@ import { groupController } from "./group/group-controller";
 import { noAuthGroupController } from "./group/noauth-group-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
+import { MyProfileController } from "./users/myprofile-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
