@@ -20,6 +20,7 @@ import { verifyController } from "./verify-controller";
 import { EventscommentsController } from "./events/event-comment-auth-controller";
 import { EventsCommentNoAuthController } from "./events/event-comment-controller";
 import { personalController } from "./(personal)/personal-controller";
+import { MyProfileController } from "./users/myprofile-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -82,4 +83,5 @@ export const userrouter = new Elysia({
   .use(subtopicsController)
   .use(EventsController)
   .use(PersonalController)
-  .use(EventscommentsController);
+  .use(EventscommentsController)
+  .use(MyProfileController)

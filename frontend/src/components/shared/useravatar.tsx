@@ -25,25 +25,31 @@ export function UserAvatar() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
+        <Avatar className='h-8 w-8 lg:h-10 lg:w-10'>
           <AvatarImage
-            className=""
+            className=''
             src={user ? "/assets/person.png" : "/user.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className='cursor-pointer'
+          onClick={() => router.push("/my-profile")}>
+          My Account
+        </DropdownMenuItem>
+        {/* <DropdownMenuSeparator /> */}
         {user ? (
-          <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+          <DropdownMenuItem className='cursor-pointer' onClick={logout}>
+            Logout
+          </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
+            className='cursor-pointer'
             onClick={() => {
               router.push("/login");
-            }}
-          >
+            }}>
             Login
           </DropdownMenuItem>
         )}
