@@ -10,8 +10,8 @@ import heroboy from "../../../public/images/hero-boy.png";
 import herogirl from "../../../public/images/hero-girl.png";
 function Hero1() {
   return (
-    <main className='relative  mb-10'>
-      <section className=' flex flex-col gap-14'>
+    <main className='relative md:mb-10 mb-0'>
+      <section className=' flex flex-col   md:gap-14'>
         <div className='flex 2xl:mt-24 xl:mt-20 mt-14 flex-col justify-center 2xl:gap-20 xl:gap-8 lg:gap-8 md:gap-8 gap-5 items-center'>
           <h1 className='2xl:text-7xl xl:text-7xl w-[90%] z-10 leading-normal text-center lg:text-5xl md:text-5xl text-3xl font-semibold text-[#353535]'>
             Your Career May Be Behind You
@@ -27,7 +27,7 @@ function Hero1() {
             </p>
           </div>
         </div>
-        <div className='flex justify-center items-center '>
+        <div className='flex justify-center items-center mt-5 md:mt-0'>
           <Link href={"/join-community"}>
             <button className='flex lg:py-3 xl:py-4 py-3 xl:text-2xl lg:text-xl text-xl xl:px-8 lg:px-6 px-5 font-mulish font-bold bg-[#C9A74E] rounded-full justify-center items-center gap-5'>
               Join Aprisio
@@ -38,7 +38,7 @@ function Hero1() {
           </Link>
         </div>
         <div
-          className={` xl:ml-16 lg:ml-12 lg:mt-2 xl:mt-20 md:mt-20 mt-10 flex lg:flex-row flex-col items-center`}>
+          className={` xl:ml-16 lg:ml-12 lg:mt-2 xl:mt-20 md:mt-20  flex lg:flex-row flex-col items-center`}>
           <Image
             src={avatar}
             alt=''

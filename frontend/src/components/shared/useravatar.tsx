@@ -34,11 +34,13 @@ export function UserAvatar() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem
-          className='cursor-pointer'
-          onClick={() => router.push("/my-profile")}>
-          My Account
-        </DropdownMenuItem>
+        {user ? (
+          <DropdownMenuItem
+            className='cursor-pointer'
+            onClick={() => router.push("/my-profile")}>
+            My Account
+          </DropdownMenuItem>
+        ) : null}
         {/* <DropdownMenuSeparator /> */}
         {user ? (
           <DropdownMenuItem className='cursor-pointer' onClick={logout}>
