@@ -1,4 +1,4 @@
-import { CommentModel, EventModel, PostModel } from "@/models";
+import { CommentModel, EventModel, LikeModel, PostModel, UserModel } from "@/models";
 import { GroupModel } from "@/models/group.model";
 import { UserGroupsModel } from "@/models/usergroup.model";
 import { Elysia, t } from "elysia";
@@ -181,6 +181,190 @@ export const MyProfileController = new Elysia({
             detail: {
                 description: "Get posts the user has commented on",
                 summary: "Fetch user commented posts",
+            },
+        }
+    )
+    .get(
+        "/favourite-posts",
+        async ({ query, set }) => {
+            const { page = 1, limit = 10, userId } = query;
+
+            if (!userId) {
+                set.status = 400;
+                return {
+                    message: "User ID is required",
+                    ok: false,
+                };
+            }
+
+            try {
+                const sanitizedPage = Math.max(1, page);
+                const sanitizedLimit = Math.max(1, Math.min(limit, 20));
+
+                const LikesPostIds = await LikeModel.aggregate([
+                    {
+                        $match: {
+                            user: new Types.ObjectId(userId),
+                        },
+                    },
+                    {
+                        $sort: { createdAt: -1 },
+                    },
+                    {
+                        $group: {
+                            _id: "$post",
+                            latestLike: { $first: "$createdAt" },
+                        },
+                    },
+                    {
+                        $sort: { latestLike: -1 },
+                    },
+                    {
+                        $skip: (sanitizedPage - 1) * sanitizedLimit,
+                    },
+                    {
+                        $limit: sanitizedLimit,
+                    },
+                    {
+                        $project: {
+                            _id: 1,
+                            latestLike: 1
+                        },
+                    },
+                ]);
+
+
+
+                if (LikesPostIds.length === 0) {
+                    return {
+                        commentedPosts: [],
+                        nextCursor: undefined,
+                        ok: true,
+                    };
+                }
+
+                const postIds = LikesPostIds.map((post) => post._id);
+
+                const posts = await PostModel.aggregate([
+                    {
+                        $match: {
+                            _id: { $in: postIds },
+                        },
+                    },
+                    {
+                        $addFields: {
+                            sortOrder: { $indexOfArray: [postIds, "$_id"] },
+                        },
+                    },
+                    {
+                        $sort: { sortOrder: 1 },
+                    },
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "author",
+                            foreignField: "_id",
+                            as: "author",
+                            pipeline: [
+                                {
+                                    $project: {
+                                        name: 1,
+                                        email: 1,
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: "likes",
+                            localField: "_id",
+                            foreignField: "post",
+                            as: "likes",
+                        },
+                    },
+                    {
+                        $lookup: {
+                            from: "comments",
+                            localField: "_id",
+                            foreignField: "post",
+                            as: "comments",
+                        },
+                    },
+                    ...(userId
+                        ? [
+                            {
+                                $lookup: {
+                                    from: "likes",
+                                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                                    pipeline: [
+                                        {
+                                            $match: {
+                                                $expr: {
+                                                    $and: [
+                                                        { $eq: ["$post", "$$postId"] },
+                                                        { $eq: ["$user", "$$userId"] },
+                                                    ],
+                                                },
+                                            },
+                                        },
+                                    ],
+                                    as: "likedByMe",
+                                },
+                            },
+                        ]
+                        : []),
+                    {
+                        $project: {
+                            title: 1,
+                            description: 1,
+                            author: { $arrayElemAt: ["$author", 0] },
+                            createdAt: 1,
+                            likesCount: { $size: "$likes" },
+                            commentsCount: { $size: "$comments" },
+                            url: 1,
+                            image: 1,
+                            likedByMe: {
+                                $cond: {
+                                    if: { $eq: [userId, null] },
+                                    then: false,
+                                    else: {
+                                        $gt: [{ $size: { $ifNull: ["$likedByMe", []] } }, 0],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                ]);
+
+                const totalPosts = await CommentModel.countDocuments({ user: new Types.ObjectId(userId) });
+                const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
+
+                return {
+                    posts,
+                    nextCursor: hasNextPage ? sanitizedPage + 1 : undefined,
+                    ok: true,
+                    totalPosts,
+                };
+            } catch (error: any) {
+                console.error("Error fetching commented posts:", error.message || error);
+
+                set.status = 500;
+                return {
+                    message: "An internal error occurred while fetching commented posts.",
+                    ok: false,
+                };
+            }
+        },
+        {
+            query: t.Object({
+                page: t.Optional(t.Number()),
+                limit: t.Optional(t.Number()),
+                userId: t.String(),
+            }),
+            detail: {
+                description: "Get posts the user has Likes on",
+                summary: "Fetch user Liked posts",
             },
         }
     )
@@ -506,6 +690,47 @@ export const MyProfileController = new Elysia({
             userId: t.String()
         })
     })
-// .put("")
+    .put("/edit-profile", async ({ set, query, body }) => {
+        try {
+
+            const { userId } = query
+            const { name, email } = body
+            const isUserExist = await UserModel.findById(userId)
+
+            if (!isUserExist) {
+                set.status = 400
+                return {
+                    message: "User Not found"
+                }
+            }
+
+            isUserExist.name = name
+            isUserExist.email = email
+
+            await isUserExist.save()
+
+            set.status = 200
+
+            return {
+                message: "User updated successfully"
+            }
+
+        } catch (error: any) {
+            console.log(error)
+            set.status = 500
+            return {
+                message: error
+            }
+        }
+    }, {
+        detail: {
+            summary: "Edit User Profile",
+            description: "Edit User Profile"
+        },
+        body: t.Object({
+            name: t.String(),
+            email: t.String()
+        })
+    })
 
 

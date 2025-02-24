@@ -4,12 +4,14 @@ import chevronleft from "@img/icons/chevron-left.svg";
 import Image from "next/image";
 import { Label } from "../ui/label";
 import profileimage from "@img/assets/person.png";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { _axios } from "@/lib/axios-instance";
 
 interface IUSER {
   name: string;
@@ -34,8 +36,8 @@ export function EditProfile() {
   const userData: IUSERDATA | undefined = queryClient.getQueryData([
     "user personal",
   ]);
-  console.log(userData);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const user = useGlobalAuthStore((state) => state.user);
 
   const {
     register,
@@ -67,19 +69,37 @@ export function EditProfile() {
     const file = event.target.files?.[0];
     if (file) {
       console.log("Selected File:", file);
-      setValue("image", file.name, { shouldDirty: true });
+      //   setValue("image", file.name);
     }
   };
 
+  const { isPending, mutate } = useMutation({
+    mutationFn: async (data: unknown) => {
+      return await _axios.put(
+        `/myprofile/edit-profile?userId=${user?.id}`,
+        data
+      );
+    },
+    onSuccess(data) {
+      console.log(data);
+      toast.success("Profile updated successfully!");
+    },
+    onError(data) {
+      console.log(data);
+      toast.error("Some thing went wrong");
+    },
+  });
+
   const onSubmit = (data: UserFormValues) => {
-    console.log("Updated Data:", data);
-    toast.success("Profile updated successfully!");
+    const formData = new FormData();
+    console.log("Updated Data:", formData);
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    mutate(formData);
   };
 
-  const watchedValues = watch();
-
   return (
-    <div>
+    <div className='px-4'>
       <h1 className='text-xl font-semibold py-4 xl:text-3xl'>Edit Profile</h1>
       <form
         className='flex flex-col gap-6 w-full'
@@ -122,8 +142,8 @@ export function EditProfile() {
           <Button
             className='rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol disabled:opacity-50 disabled:cursor-not-allowed'
             type='submit'
-            disabled={!isDirty}>
-            Submit
+            disabled={!isDirty || isPending}>
+            Save
             <Image src={chevronleft} alt='chevron-left' />
           </Button>
         </div>

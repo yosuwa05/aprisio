@@ -117,4 +117,74 @@ export const EventsController = new Elysia({
         summary: "Create an event",
       },
     }
-  );
+  )
+  .put("/edit", async ({ set, body, store }) => {
+    try {
+      const userId = (store as any)["id"];
+      const { eventId, eventDate, location, eventName, eventRules, groupSelected } = body;
+
+      const event = await EventModel.findById(eventId);
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not found",
+          ok: false,
+        };
+      }
+
+      if (event.managedBy.toString() !== userId) {
+        set.status = 400
+        return {
+          message: "You are not authorized to edit this event",
+          ok: false,
+        };
+      }
+
+      let updateFields: any = {}
+      if (eventDate) updateFields.date = eventDate;
+      if (location) updateFields.location = location;
+      if (eventName) updateFields.name = eventName;
+      if (eventRules) {
+        const parsedRules = JSON.parse(eventRules);
+        updateFields.rules = parsedRules.events || [];
+      }
+
+      if (groupSelected) {
+        const group = await GroupModel.findById(groupSelected);
+        if (!group) {
+          return {
+            message: "Group not found",
+            ok: false,
+          };
+        }
+        updateFields.group = group._id;
+      }
+      await EventModel.findByIdAndUpdate(eventId, updateFields, { new: true });
+
+      return {
+        message: "Event updated successfully",
+        ok: true,
+      };
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  }, {
+    body: t.Object({
+      location: t.Optional(t.String()),
+      eventName: t.Optional(t.String()),
+      eventRules: t.Optional(t.String()),
+      eventDate: t.Optional(t.String()),
+      groupSelected: t.String(),
+      eventId: t.String(),
+    }),
+    detail: {
+      description: "Create an event",
+      summary: "Create an event",
+    },
+  })

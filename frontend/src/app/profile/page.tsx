@@ -9,6 +9,7 @@ import { MyProfileCommentedPosts } from "@/components/my-profile/tabsection/mypr
 import { MyProfileCreatedPosts } from "@/components/my-profile/tabsection/myprofile-created-posts";
 import { ChatBase } from "@/components/chat/chat-base";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
+import { MyProfileLikedPosts } from "@/components/my-profile/tabsection/my-profile-favourite-posts";
 
 export default function MyProfilePage() {
   const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
@@ -18,6 +19,7 @@ export default function MyProfilePage() {
       <div className='flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-90px)] hide-scrollbar overflow-hidden '>
         {activeTab == "commented-posts" && <MyProfileCommentedPosts />}
         {activeTab == "created-posts" && <MyProfileCreatedPosts />}
+        {activeTab == "favourite-posts" && <MyProfileLikedPosts />}
         {activeTab == "organised-events" && <MyProfileOrganisedEvents />}
         {activeTab == "participated-events" && <MyProfileParticipatedEvents />}
         {activeTab == "created-groups" && <MyProfileCreatedGroups />}
