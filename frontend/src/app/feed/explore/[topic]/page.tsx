@@ -6,7 +6,6 @@ import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
-import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
@@ -99,18 +98,7 @@ export default function Feed() {
             </p>
 
             <div className="mt-4 flex flex-col gap-3 items-center">
-              {data?.subTopic?.image ? (
-                <Image
-                  src={BASE_URL + `/file?key=${data?.subTopic?.image}`}
-                  className="rounded-xl"
-                  width={200}
-                  height={200}
-                  alt=""
-                />
-              ) : (
-                <Image src={placeholder} className="rounded-xl" alt="" />
-              )}
-
+              <Image src={placeholder} className="rounded-xl" alt="" />
               {!data?.isUserJoined && (
                 <Button
                   onClick={() => {
@@ -129,7 +117,7 @@ export default function Feed() {
             {!isSuggetionsLoading && (
               <div>
                 <h3 className="font-normal text-xl my-4">
-                  Other Sub - Catergories
+                  Other Sub - Communities
                 </h3>
 
                 <div className="gap-4 flex flex-col">
@@ -158,7 +146,7 @@ export default function Feed() {
             {activeLayout == "post" && <PostsSection />}
             {activeLayout == "group" && <GroupsSection />}
             {activeLayout == "event" && (
-              <EventsSection gropuslug={""} groupid="" />
+              <EventsSection groupid={""} gropuslug={""} />
             )}
           </div>
 
@@ -192,23 +180,19 @@ export default function Feed() {
                 {joined?.data?.joinedEvents?.length ? (
                   joined?.data?.joinedEvents?.map((item: any) => (
                     <div
-                      onClick={() => router.push(`/events/${item?._id}`)}
-                      className="flex justify-between items-center w-full"
+                      onClick={() =>
+                        router.push(`/groups/${item?.groupSulg}/${item?._id}`)
+                      }
+                      className="flex justify-between items-center cursor-pointer  w-full"
                       key={item?._id}
                     >
-                      <div className="text-textcol flex flex-col gap-2 cursor-pointer  ">
-                        <h4
-                          className="text-[15px] font-medium"
-                          onClick={() => router.push(`/events/${item?._id}`)}
-                        >
+                      <div className="text-textcol flex flex-col gap-2">
+                        <h4 className="text-[15px] font-medium">
                           {item?.eventName}
                         </h4>
                       </div>
 
-                      <Button
-                        onClick={() => router.push(`/events/${item?._id}`)}
-                        className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]"
-                      >
+                      <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
                         View
                       </Button>
                     </div>

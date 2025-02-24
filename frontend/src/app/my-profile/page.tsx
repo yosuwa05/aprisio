@@ -1,5 +1,7 @@
 "use client";
 
+import { MyProfileCommentedPosts } from "@/components/my-profile/myprofile-commented-posts";
+import { MyProfileCreatedPosts } from "@/components/my-profile/myprofile-created-posts";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 
 export default function MyProfilePage() {
@@ -8,9 +10,8 @@ export default function MyProfilePage() {
   return (
     <div className='flex w-full max-w-[1200px] mx-auto gap-4'>
       <div className='flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-180px)] hide-scrollbar overflow-hidden'>
-        {/* {activeTab == "created" && <PersonalFeedPosts />}
-        {activeTab == "joined" && <PersonalGroupsSection />}
-        {activeTab == "events" && <PersonalEventsSection />} */}
+        {activeTab == "commented-posts" && <MyProfileCommentedPosts />}
+        {activeTab == "created-posts" && <MyProfileCreatedPosts />}
       </div>
 
       <div className='hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit'>

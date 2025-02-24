@@ -266,8 +266,8 @@ export const noAuthGroupController = new Elysia({
           ...event,
           attending: userId
             ? event.attendees?.some(
-                (attendee) => attendee.toString() === userId,
-              )
+              (attendee) => attendee.toString() === userId,
+            )
             : false,
         }));
 

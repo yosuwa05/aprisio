@@ -94,7 +94,10 @@ export function TopicsCard({
   };
 
   return (
-    <div className=' border-[1px] border-[#C0C0C0] rounded-xl p-4 cursor-pointer'>
+    <div
+      className={` border-[1px] border-[#C0C0C0] ${
+        joined ? "border-buttoncol border-[2px]" : ""
+      }  rounded-xl p-4 cursor-pointer`}>
       <div className='flex justify-between'>
         <div className='flex flex-col gap-2'>
           <h2
