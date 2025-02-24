@@ -31,7 +31,7 @@ type UserFormValues = z.infer<typeof userSchema>;
 
 export function EditProfile() {
   const queryClient = useQueryClient();
-  const userData: IUSER | undefined = queryClient.getQueryData([
+  const userData: IUSERDATA | undefined = queryClient.getQueryData([
     "user personal",
   ]);
   console.log(userData);
@@ -56,9 +56,9 @@ export function EditProfile() {
   useEffect(() => {
     if (userData) {
       reset({
-        name: userData.us,
-        email: userData.email,
-        image: userData.image || "",
+        name: userData.user.name,
+        email: userData.user.email,
+        image: userData.user.image || "",
       });
     }
   }, [userData, reset]);
