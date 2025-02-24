@@ -48,7 +48,7 @@ export default function RootLayout({
         <link rel="manifest" href="/assets/favicon/site.webmanifest" />
       </head>
       <body
-        className={`${openSans.variable} ${robotoSans.variable} antialiased`}
+        className={`${openSans.variable} ${robotoSans.variable} antialiased hide-scrollbar`}
       >
         <Providers>{children}</Providers>
       </body>

@@ -56,7 +56,7 @@ export const EventscommentsController = new Elysia({
         description: "Add a comment to the event",
         summary: "Add a comment to the event",
       },
-    },
+    }
   )
   .post(
     "/like",
@@ -117,5 +117,5 @@ export const EventscommentsController = new Elysia({
         description: "Like or unlike Event   comment",
         summary: "Like or unlike Event  comment",
       },
-    },
+    }
   );

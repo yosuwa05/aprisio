@@ -40,7 +40,7 @@ export default function MyProfile({
         <MyProfileTopBar />
       </div>
 
-      <div className="mx-2 md:mx-8 mt-2 flex flex-col lg:flex-row gap-8 my-8">
+      <div className="mx-2 md:mx-8 mt-2 flex flex-col lg:flex-row gap-8 my-8 overflow-hidden">
         <div className="lg:max-w-[350px] min-w-[350px]">
           <div className="flex flex-col gap-4">
             <div className=" shadow-xl rounded-xl p-4">
