@@ -2,7 +2,6 @@ import { db } from "@/lib/firebase";
 import { UserModel } from "@/models";
 import { ChatModel } from "@/models/chatmodel";
 import { StoreType } from "@/types";
-import { CryptoHasher } from "bun";
 import Elysia, { t } from "elysia";
 
 export const chatController = new Elysia({
@@ -11,30 +10,44 @@ export const chatController = new Elysia({
 })
   .get(
     "/contacts",
-    async ({ query, store }) => {
+    async ({ store }) => {
       try {
-        const userId = (store as StoreType)["id"];
+        const userId = (store as StoreType)?.id;
+        if (!userId) return { error: "Unauthorized" };
 
-        const contacts = await UserModel.find({ _id: { $ne: userId } })
-          .select("name email")
-          .limit(5)
+        const contacts = await ChatModel.find({
+          users: { $in: [userId] },
+        })
+          .select("lastMessage lastUpdated chatId")
           .lean();
 
+        const withProfile = await Promise.all(
+          contacts.map(async (contact: any) => {
+            const otherUserId = contact.chatId.split("_")[0];
+            const user = await UserModel.findOne({ _id: otherUserId }).select(
+              "name email"
+            );
+
+            return {
+              ...contact,
+              profile: user || null,
+            };
+          })
+        );
+
         return {
-          contacts,
+          contacts: withProfile,
           status: true,
         };
       } catch (error) {
-        console.log(error);
-        return {
-          error,
-        };
+        console.log("Contacts Fetch Error:", error);
+        return { error: "Something went wrong" };
       }
     },
     {
       detail: {
         description: "Get chat contacts",
-        summary: "Get chat contacts",
+        summary: "Get only users the current user has chatted with",
       },
     }
   )
@@ -47,10 +60,7 @@ export const chatController = new Elysia({
 
         const { receiverId, text } = body;
 
-        const hasher = new CryptoHasher("md5");
-        hasher.update([userId, receiverId].sort().join("_"));
-
-        const chatId = hasher.digest("hex");
+        const chatId = [userId, receiverId].sort().join("_");
 
         const message = {
           senderId: userId,
@@ -81,14 +91,14 @@ export const chatController = new Elysia({
         const messageWrite = batch.commit();
 
         const chatUpdate = ChatModel.findOneAndUpdate(
-          { _id: chatId },
+          { chatId },
           {
             $set: {
               lastMessage: text,
               lastUpdated: message.timestamp,
             },
             $setOnInsert: {
-              _id: chatId,
+              chatId,
               users: [userId, receiverId],
             },
           },
