@@ -6,7 +6,7 @@ export const personalController = new Elysia({
   tags: ["User - Personal Controller"],
 }).get(
   "/events",
-  async ({ query, params }) => {
+  async ({ query }) => {
     try {
       let limit = Number(query.limit) || 10;
       let page = Number(query.page) || 1;
@@ -52,5 +52,5 @@ export const personalController = new Elysia({
       description: "Get Personal events",
       summary: "Get Personal events",
     },
-  },
+  }
 );

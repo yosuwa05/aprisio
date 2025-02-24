@@ -50,10 +50,12 @@ export default function Feed() {
     queryFn: async () => {
       return await _axios.get(`/personal/joined-things`);
     },
+    retry: false,
   });
 
   const { data: suggetions, isLoading: isSuggetionsLoading } = useQuery({
     queryKey: ["topic-suggetions", topic],
+    retry: false,
     queryFn: async () => {
       const res = await _axios.get(`/subtopics/suggetions?limit=2`);
       return res.data;
@@ -102,6 +104,7 @@ export default function Feed() {
               {!data?.isUserJoined && (
                 <Button
                   onClick={() => {
+                    if (!user) return toast.error("Login to join");
                     mutate({
                       subTopicId: data?.subTopic?._id ?? "",
                     });
@@ -114,7 +117,7 @@ export default function Feed() {
               )}
             </div>
 
-            {!isSuggetionsLoading && (
+            {!isSuggetionsLoading && user && (
               <div>
                 <h3 className="font-normal text-xl my-4">
                   Other Sub - Communities
@@ -163,6 +166,7 @@ export default function Feed() {
 
                 <Button
                   onClick={() => {
+                    if (!user) return toast.error("Login to continue");
                     router.push("/feed/create-event");
                   }}
                   className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white"
@@ -180,9 +184,7 @@ export default function Feed() {
                 {joined?.data?.joinedEvents?.length ? (
                   joined?.data?.joinedEvents?.map((item: any) => (
                     <div
-                      onClick={() =>
-                        router.push(`/groups/${item?.groupSulg}/${item?._id}`)
-                      }
+                      onClick={() => router.push(`/events/${item?._id}`)}
                       className="flex justify-between items-center cursor-pointer  w-full"
                       key={item?._id}
                     >

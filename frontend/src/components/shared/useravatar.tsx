@@ -7,8 +7,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
@@ -25,9 +23,9 @@ export function UserAvatar() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar className='h-8 w-8 lg:h-10 lg:w-10'>
+        <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
           <AvatarImage
-            className=''
+            className=""
             src={user ? "/assets/person.png" : "/user.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
@@ -36,22 +34,23 @@ export function UserAvatar() {
       <DropdownMenuContent>
         {user ? (
           <DropdownMenuItem
-            className='cursor-pointer'
-            onClick={() => router.push("/my-profile")}>
+            className="cursor-pointer"
+            onClick={() => router.push("/profile")}
+          >
             My Account
           </DropdownMenuItem>
         ) : null}
-        {/* <DropdownMenuSeparator /> */}
         {user ? (
-          <DropdownMenuItem className='cursor-pointer' onClick={logout}>
+          <DropdownMenuItem className="cursor-pointer" onClick={logout}>
             Logout
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem
-            className='cursor-pointer'
+            className="cursor-pointer"
             onClick={() => {
               router.push("/login");
-            }}>
+            }}
+          >
             Login
           </DropdownMenuItem>
         )}

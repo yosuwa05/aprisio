@@ -339,7 +339,7 @@ export const communityController = new Elysia({
     async ({ query, set }) => {
       try {
         const subTopic = await SubTopicModel.findOne({ slug: query.slug });
-        console.log(subTopic);
+
         if (!subTopic) {
           set.status = 400;
           return { ok: false, error: "Subtopic not found" };

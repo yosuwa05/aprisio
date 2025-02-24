@@ -216,10 +216,7 @@ export default function PersonalPostcard({
               color={post.likedByMe ? "red" : "black"}
               onClick={() => {
                 if (isPending) return;
-                if (!user) {
-                  toast("Login to like");
-                  return;
-                }
+                if (!user) return toast.error("Login to like");
                 mutate();
               }}
             />
@@ -266,6 +263,7 @@ export default function PersonalPostcard({
           </Dialog>
           <div
             onClick={() => {
+              if (!user) return toast.error("Login to share");
               setPostId(post.id), setDrawerOpen(true);
             }}
             className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200 cursor-pointer md:hidden  "

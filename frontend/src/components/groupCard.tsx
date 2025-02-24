@@ -61,7 +61,7 @@ export default function GroupCard({ group }: Props) {
             data: {
               ...page.data,
               groups: page.data.groups.map((g: any) =>
-                g._id === group._id ? { ...g, canJoin: false } : g,
+                g._id === group._id ? { ...g, canJoin: false } : g
               ),
             },
           })),
@@ -126,6 +126,7 @@ export default function GroupCard({ group }: Props) {
               : "bg-[#FCF7EA] border-[#AF9654]"
           } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
           onClick={() => {
+            if (!user) return toast.error("Login to join");
             if (group.canJoin) {
               mutate({
                 id: group._id,

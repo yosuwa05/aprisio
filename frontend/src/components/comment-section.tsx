@@ -8,7 +8,6 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { ChevronsDown, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -41,6 +40,11 @@ export default function CommentSection({
   const queryClient = useQueryClient();
 
   function handleSubmit() {
+    if (!user) {
+      setTypedComment("");
+      toast.error("Login to comment");
+      return;
+    }
     mutate({ content: typedComment, postId, parentCommentId: undefined });
     setTypedComment("");
   }
@@ -110,15 +114,15 @@ export default function CommentSection({
 
   return (
     <div>
-      <div className='mt-4 flex gap-4 items-center'>
-        <Avatar className='h-8 w-8'>
-          <AvatarImage src='/assets/person.png' />
+      <div className="mt-4 flex gap-4 items-center">
+        <Avatar className="h-8 w-8">
+          <AvatarImage src="/assets/person.png" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
 
         <Input
-          placeholder='Write your comment'
-          className='border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold'
+          placeholder="Write your comment"
+          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -130,7 +134,7 @@ export default function CommentSection({
       </div>
 
       {viewAllReplies && !isLoading && (
-        <motion.div className='mt-4 flex flex-col gap-6'>
+        <motion.div className="mt-4 flex flex-col gap-6">
           {data?.pages?.flatMap((page) =>
             page?.comments?.map((comment: any, index: number) => (
               <React.Fragment key={comment._id}>
@@ -144,12 +148,13 @@ export default function CommentSection({
           )}
 
           {hasNextPage && (
-            <div className='flex justify-start'>
+            <div className="flex justify-start">
               <Button
-                className=' text-contrasttext'
+                className=" text-contrasttext"
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
-                variant='ghost'>
+                variant="ghost"
+              >
                 See More
               </Button>
             </div>

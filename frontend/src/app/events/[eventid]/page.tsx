@@ -17,9 +17,11 @@ export default function ViewEventPage() {
   const user = useGlobalAuthStore((state) => state.user);
 
   const { data, isLoading, refetch } = useQuery<any>({
-    queryKey: ["view -single-Event", eventid],
+    queryKey: ["view-single-Event", eventid],
     queryFn: async () => {
-      const res = await _axios.get(`/events/view-event?eventId=${eventid}`);
+      const res = await _axios.get(
+        `/events/noauth/view-event?eventId=${eventid}&userId=${user?.id}`
+      );
       return res.data;
     },
   });
@@ -80,7 +82,6 @@ export default function ViewEventPage() {
                 <p className="text-contrasttext">
                   {" "}
                   {formatDateString(new Date(data?.event?.date))}
-                  {/* {data?.event?.date} */}
                 </p>
               </div>
               <div className="flex items-center gap-2 text-lg  md:text-2xl font-sans font-medium">
@@ -98,10 +99,7 @@ export default function ViewEventPage() {
               <Button
                 onClick={() => {
                   if (isPending) return;
-                  if (!user) {
-                    toast("Login to continue");
-                    return;
-                  }
+                  if (!user) return toast.error("Login to continue");
                   mutate({
                     eventId: eventid,
                   });

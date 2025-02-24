@@ -7,6 +7,7 @@ import { draftsController } from "./(feed)/drafts-controller";
 import { PersonalController } from "./(feed)/personal-controller";
 import { authenticatedPostController } from "./(feed)/post-auth-controller";
 import { postController } from "./(feed)/post-controller";
+import { personalAuthController } from "./(personal)/personal-auth-controller";
 import { personalController } from "./(personal)/personal-controller";
 import { SearchController } from "./(search)/search-controller";
 import { subtopicsController } from "./(subtopics)/subtopics-controller";
@@ -16,12 +17,13 @@ import { communityController } from "./community/community-controller";
 import { EventscommentsController } from "./events/event-comment-auth-controller";
 import { EventsCommentNoAuthController } from "./events/event-comment-controller";
 import { EventsController } from "./events/events-controller";
+import { EventsNoAuthController } from "./events/events-noauth-controller";
 import { formController } from "./form-controller";
 import { groupController } from "./group/group-controller";
 import { noAuthGroupController } from "./group/noauth-group-controller";
+import { MyProfileController } from "./users/myprofile-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
-import { MyProfileController } from "./users/myprofile-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -38,8 +40,10 @@ export const userrouter = new Elysia({
   .use(subtopicsController)
   .use(noAuthGroupController)
   .use(userController)
+  .use(TopicsController)
   .use(personalController)
   .use(SearchController)
+  .use(EventsNoAuthController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 
@@ -75,15 +79,13 @@ export const userrouter = new Elysia({
       return { message: "Unauthorized" };
     }
   })
+  .use(personalAuthController)
   .use(validatorController)
   .use(authenticatedPostController)
   .use(draftsController)
   .use(commentsController)
-  .use(TopicsController)
-  .use(communityController)
   .use(groupController)
-  .use(subtopicsController)
   .use(EventsController)
   .use(PersonalController)
   .use(EventscommentsController)
-  .use(MyProfileController)
+  .use(MyProfileController);

@@ -3,7 +3,15 @@ import { devtools, persist } from "zustand/middleware";
 
 type layout = "post" | "group" | "event";
 type tab = "created" | "joined" | "events";
-type myProfileTab = "commented-posts" | "created-posts" | "favourite-posts" | "organised-events" | "events-participated" | "created-groups" | "joined-groups" | "settings";
+type myProfileTab =
+  | "commented-posts"
+  | "created-posts"
+  | "favourite-posts"
+  | "organised-events"
+  | "events-participated"
+  | "created-groups"
+  | "joined-groups"
+  | "settings";
 
 interface LayoutState {
   activeLayout: layout;
@@ -23,9 +31,9 @@ export const useGlobalLayoutStore = create<LayoutState>()(
         activeProfileTab: "created",
         setActiveProfileTab: (activeProfileTab: tab) =>
           set({ activeProfileTab }),
-        activeMyProfileTab: "commented-post",
+        activeMyProfileTab: "commented-posts",
         setActiveMyProfileTab: (activeMyProfileTab: myProfileTab) =>
-          set({ activeMyProfileTab })
+          set({ activeMyProfileTab }),
       }),
       {
         name: "layout-storage",
