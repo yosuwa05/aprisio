@@ -7,6 +7,8 @@ import { Contact, MessageCard } from "./message-card";
 import { SingleChat } from "./single-chat";
 
 export function ChatContact() {
+  const selectedChat = useChatStore((state) => state.selectedChat);
+
   const { data, isLoading } = useQuery({
     queryKey: ["chat-contacts"],
     queryFn: async () => {
@@ -16,12 +18,10 @@ export function ChatContact() {
     retry: false,
   });
 
-  const selectedChat = useChatStore((state) => state.selectedChat);
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="pb-4 bg-white flex flex-col gap-2 h-fit flex-1">
+    <div className=" bg-white flex flex-col gap-2 h-fit flex-1">
       {selectedChat.selected ? (
         <SingleChat />
       ) : (
