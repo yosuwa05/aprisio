@@ -35,7 +35,7 @@
 	});
 </script>
 
-<div class="text-maintext font-pt mx-auto mt-6 w-[calc(100vw-420px)] overflow-auto">
+<div class="text-maintext font-karla mx-auto mt-6 w-[calc(100vw-420px)] overflow-auto">
 	<div class="mb-4 ml-auto w-[40%]">
 		<div class="relative grid gap-2">
 			<Input

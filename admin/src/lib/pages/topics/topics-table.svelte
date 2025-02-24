@@ -68,7 +68,7 @@
 </script>
 
 <div>
-	<div class="text-maintext font-pt mx-auto mt-6">
+	<div class="text-maintext font-karla mx-auto mt-6">
 		<div class="ml-auto w-[40%]">
 			<div class="relative grid gap-2">
 				<Input

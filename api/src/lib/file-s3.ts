@@ -76,6 +76,7 @@ export const deleteFile = (key: any) => {
     );
   } catch (error) {
     console.error(error);
+    throw new Error("Failed to delete file");
   }
 };
 

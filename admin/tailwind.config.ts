@@ -15,7 +15,7 @@ const config: Config = {
 			}
 		},
 		fontFamily: {
-			karla: ['PT Serif', ...fontFamily.sans]
+			karla: ['PT Sans', ...fontFamily.sans]
 		},
 		extend: {
 			backgroundImage: {

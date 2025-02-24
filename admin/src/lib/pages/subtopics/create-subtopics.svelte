@@ -10,11 +10,16 @@
 	import { toast } from 'svelte-sonner';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { _subTopicsSchema, type CreateTopicsData, subTopicsStore } from './subtopics-store';
+	import { _subTopicsSchema, subTopicsStore } from './subtopics-store';
 
 	let edit = $state(false);
+	let image = $state(null);
+	let elem: any = null;
+
 	$effect(() => {
 		edit = $subTopicsStore.mode == 'create' && $subTopicsStore.id ? true : false;
+
+		elem = document.getElementById('image') as HTMLInputElement | null;
 	});
 
 	async function fetchTopics() {
@@ -27,8 +32,8 @@
 		queryFn: () => fetchTopics()
 	});
 
-	const createManagerMutation = createMutation({
-		mutationFn: (data: CreateTopicsData) =>
+	const createSubtopicMutation = createMutation({
+		mutationFn: (data: any) =>
 			edit
 				? _axios.put(`/subtopic/${$subTopicsStore.id}`, data)
 				: _axios.post('/subtopic/create', data),
@@ -41,9 +46,10 @@
 			queryClient.refetchQueries({
 				queryKey: ['subtopic fetch']
 			});
+			if (elem) elem.value = '';
 			$subTopicsStore.mode = 'list';
-			toast(edit ? 'Subtopic Updated ✅' : 'Subtopic Created ✅');
 			reset();
+			toast(edit ? 'Subtopic Updated ✅' : 'Subtopic Created ✅');
 		},
 		onError(error, variables, context) {
 			console.error('onError', error, variables, context);
@@ -58,19 +64,26 @@
 			clearOnSubmit: 'none',
 			invalidateAll: false,
 			resetForm: false,
-			async onSubmit({}) {
-				let _data: CreateTopicsData = {
-					subTopicName: $form.subTopicName,
-					topic: $form.topic,
-					description: $form.description
-				};
+			async onSubmit() {
+				if (!image) {
+					toast('Please upload image');
+					return;
+				}
 
 				const { valid } = await validateForm({
 					focusOnError: true
 				});
 
 				if (!valid) return;
-				$createManagerMutation.mutate(_data);
+
+				let formData = new FormData();
+
+				formData.append('file', image);
+				formData.append('subTopicName', $form.subTopicName);
+				formData.append('topic', $form.topic);
+				formData.append('description', $form.description);
+
+				$createSubtopicMutation.mutate(formData);
 			}
 		}
 	);
@@ -84,8 +97,38 @@
 			$form.subTopicName = '';
 			$form.topic = '';
 			$form.description = '';
+			image = null;
 		}
 	});
+
+	function handleFileSelect(event: any) {
+		const file = event.target.files[0];
+
+		// if (file.size > 51200) {
+		// 	toast.error('File size is too large! Max size is 50KB');
+
+		// 	if (elem) elem.value = '';
+
+		// 	return;
+		// }
+
+		// const img = new Image();
+		// img.src = URL.createObjectURL(file);
+
+		// img.onload = () => {
+		// 	const { width, height } = img;
+
+		// 	if (width > 35 || height > 35) {
+		// 		toast.error('image dimensions must below 35x35 pixels.');
+		// 		if (elem) elem.value = '';
+		// 		return;
+		// 	}
+
+		// 	image = file;
+		// };
+
+		image = file;
+	}
 </script>
 
 <div class="text-maintext mx-auto max-w-[80%]">
@@ -136,7 +179,19 @@
 			</Select.Root>
 		</div>
 
-		<div>
+		<div class="col-span-2">
+			<Label for="image">Image</Label>
+			<Input
+				id="image"
+				required={edit ? false : true}
+				class="mt-1 pr-10 text-black placeholder:text-gray-400"
+				type="file"
+				accept=".jpg, .jpeg, .png, .webp"
+				onchange={handleFileSelect}
+			/>
+		</div>
+
+		<div class="col-span-2">
 			<Label>Description</Label>
 			<Textarea
 				class="mt-1 pr-10"
@@ -151,10 +206,8 @@
 				>{/if}
 		</div>
 
-		<div></div>
-
-		<Button class="w-[40%] text-white" type="submit" disabled={$createManagerMutation.isPending}>
-			{edit ? 'Update' : $createManagerMutation.isPending ? 'Creating...' : 'Create'}
+		<Button class="w-[40%] text-white" type="submit" disabled={$createSubtopicMutation.isPending}>
+			{edit ? 'Update' : $createSubtopicMutation.isPending ? 'Creating...' : 'Create'}
 		</Button>
 	</form>
 </div>

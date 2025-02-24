@@ -51,7 +51,7 @@
 </script>
 
 <div
-	class="font-pt hidescrollbarthumb hidden h-screen min-w-[300px] max-w-[300px] border-r border-r-[#6F7E5F] bg-[#6F7E5F] text-white md:block"
+	class="font-karla hidescrollbarthumb hidden h-screen min-w-[300px] max-w-[300px] border-r border-r-[#6F7E5F] bg-[#6F7E5F] text-white md:block"
 >
 	<div
 		class="hidescrollbarthumb flex h-[calc(100vh)] flex-col justify-between gap-2 overflow-y-auto"

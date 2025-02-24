@@ -9,6 +9,7 @@ interface ISubTopic {
   active: boolean;
   slug: string;
   members: number;
+  image: string;
 }
 
 const subtopicSchema = new Schema<ISubTopic>(
@@ -32,13 +33,17 @@ const subtopicSchema = new Schema<ISubTopic>(
       type: Boolean,
       default: false,
     },
+    image: {
+      type: String,
+      default: "",
+    },
     slug: {
       type: String,
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 subtopicSchema.index({ slug: 1 });

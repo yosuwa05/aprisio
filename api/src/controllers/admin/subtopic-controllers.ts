@@ -1,3 +1,4 @@
+import { deleteFile, saveFile } from "@/lib/file-s3";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import Elysia, { t } from "elysia";
 import { Types } from "mongoose";
@@ -13,7 +14,7 @@ export const subtopicController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      let { subTopicName, topic, description } = body;
+      let { subTopicName, topic, description, file } = body;
 
       topic = topic.split(" -&- ")[0];
 
@@ -29,12 +30,29 @@ export const subtopicController = new Elysia({
           };
         }
 
+        let fileUrl = "";
+
+        if (file) {
+          const { filename, ok } = await saveFile(file, "subtopicimage");
+
+          if (ok) {
+            fileUrl = filename;
+          } else {
+            set.status = 400;
+            return {
+              message: "File upload failed",
+              ok: false,
+            };
+          }
+        }
+
         const newSubTopic = new SubTopicModel({
           subTopicName,
           topic,
           description,
           active: true,
           isDeleted: false,
+          image: fileUrl,
         });
 
         await newSubTopic.save();
@@ -54,6 +72,7 @@ export const subtopicController = new Elysia({
         subTopicName: t.String(),
         topic: t.String(),
         description: t.String(),
+        file: t.File(),
       }),
       detail: {
         description: "Create subtopic",
@@ -120,7 +139,7 @@ export const subtopicController = new Elysia({
   .put(
     "/:id",
     async ({ body, set, params }) => {
-      let { subTopicName, topic, description } = body;
+      let { subTopicName, topic, description, file } = body;
       const { id } = params;
 
       topic = topic.split(" -&- ")[0];
@@ -134,6 +153,24 @@ export const subtopicController = new Elysia({
           };
         }
 
+        let fileUrl = "";
+
+        if (file) {
+          const { filename, ok } = await saveFile(file, "subtopicimage");
+
+          if (ok) {
+            fileUrl = filename;
+
+            deleteFile(subtopic.image);
+          } else {
+            return {
+              message: "Failed to save file",
+              ok: false,
+            };
+          }
+        }
+
+        subtopic.image = fileUrl;
         subtopic.subTopicName = subTopicName;
         subtopic.topic = new Types.ObjectId(topic);
         subtopic.description = description;
@@ -159,6 +196,7 @@ export const subtopicController = new Elysia({
         subTopicName: t.String(),
         topic: t.String(),
         description: t.String(),
+        file: t.Optional(t.File()),
       }),
       detail: {
         description: "Update subtopic",
