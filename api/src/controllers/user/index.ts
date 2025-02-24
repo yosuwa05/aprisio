@@ -13,6 +13,7 @@ import { SearchController } from "./(search)/search-controller";
 import { subtopicsController } from "./(subtopics)/subtopics-controller";
 import { TopicsController } from "./(topics)/topics-controller";
 import { authController } from "./auth-controller";
+import { chatController } from "./chat/chat-controller";
 import { communityController } from "./community/community-controller";
 import { EventscommentsController } from "./events/event-comment-auth-controller";
 import { EventsCommentNoAuthController } from "./events/event-comment-controller";
@@ -79,6 +80,7 @@ export const userrouter = new Elysia({
       return { message: "Unauthorized" };
     }
   })
+  .use(chatController)
   .use(personalAuthController)
   .use(validatorController)
   .use(authenticatedPostController)
