@@ -1,4 +1,6 @@
 import { CommentModel, EventModel, PostModel } from "@/models";
+import { GroupModel } from "@/models/group.model";
+import { UserGroupsModel } from "@/models/usergroup.model";
 import { Elysia, t } from "elysia";
 import { Types } from "mongoose";
 
@@ -342,6 +344,7 @@ export const MyProfileController = new Elysia({
             const _limit = Number(limit) || 10
 
             const events = await EventModel.find({ managedBy: userId })
+                .populate("group", "name slug")
                 .sort({ createdAt: -1, _id: -1 })
                 .skip((_page - 1) * _limit)
                 .limit(_limit)
@@ -373,5 +376,136 @@ export const MyProfileController = new Elysia({
             userId: t.String()
         })
     })
+    .get("/participated-events", async ({ set, query }) => {
+        try {
+            const { page, limit, userId } = query;
+
+            const _page = Number(page) || 1
+            const _limit = Number(limit) || 10
+
+            const events = await EventModel.find({
+                attendees: {
+                    $in: [new Types.ObjectId(userId)]
+                }
+            })
+                .populate("group", "name slug")
+                .sort({ createdAt: -1, _id: -1 })
+                .skip((_page - 1) * _limit)
+                .limit(_limit)
+                .select("-unnecessaryField")
+                .lean();
+
+            set.status = 200
+
+            return {
+                events,
+                ok: true,
+            };
+
+        } catch (error: any) {
+            console.log(error)
+            set.status = 500
+            return {
+                message: error
+            }
+        }
+    }, {
+        detail: {
+            summary: "Participated Events ",
+            description: "Get Participated Events"
+        },
+        query: t.Object({
+            page: t.Optional(t.String()),
+            limit: t.Optional(t.String()),
+            userId: t.String()
+        })
+    })
+    .get("/created-groups", async ({ set, query }) => {
+        try {
+            const { page, limit, userId } = query;
+
+            const _page = Number(page) || 1
+            const _limit = Number(limit) || 10
+
+            const groups = await GroupModel.find({ groupAdmin: userId })
+                .populate("groupAdmin", "name")
+                .sort({ createdAt: -1, _id: -1 })
+                .skip((_page - 1) * _limit)
+                .limit(_limit)
+                .lean();
+
+
+            set.status = 200
+
+            return {
+                groups,
+                ok: true,
+            };
+
+        } catch (error: any) {
+            console.log(error)
+            set.status = 500
+            return {
+                message: error
+            }
+        }
+    }, {
+        detail: {
+            summary: "created groups by  user",
+            description: "created groups by user"
+        },
+        query: t.Object({
+            page: t.Optional(t.String()),
+            limit: t.Optional(t.String()),
+            userId: t.String()
+        })
+    })
+    .get("/joined-groups", async ({ set, query }) => {
+        try {
+            const { page, limit, userId } = query;
+
+            const _page = Number(page) || 1
+            const _limit = Number(limit) || 10
+
+            const groups = await UserGroupsModel.find({ userId: userId })
+                .populate({
+                    path: "group",
+                    populate: {
+                        path: "groupAdmin",
+                        select: "name"
+                    }
+                })
+                .sort({ createdAt: -1, _id: -1 })
+                .skip((_page - 1) * _limit)
+                .limit(_limit)
+                .lean();
+
+
+            set.status = 200
+
+            return {
+                groups,
+                ok: true,
+            };
+
+        } catch (error: any) {
+            console.log(error)
+            set.status = 500
+            return {
+                message: error
+            }
+        }
+    }, {
+        detail: {
+            summary: "Joined groups by  user",
+            description: "Joined groups by user"
+        },
+        query: t.Object({
+            page: t.Optional(t.String()),
+            limit: t.Optional(t.String()),
+            userId: t.String()
+        })
+    })
+// .put("")
 
 

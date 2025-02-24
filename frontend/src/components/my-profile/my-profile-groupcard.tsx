@@ -32,56 +32,8 @@ interface IGroup {
   id: string;
 }
 
-export default function GroupCard({ group }: Props) {
-  const user = useGlobalAuthStore((state) => state.user);
-  const { topic } = useParams();
+export default function MyProfileGroupCard({ group }: Props) {
   const router = useRouter();
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: async (group: IGroup) => {
-      return await _axios.post("/group/join", {
-        groupId: group.id,
-      });
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries({
-        queryKey: ["groups" + user?.id, topic],
-      });
-
-      const previousGroups = queryClient.getQueryData([
-        "groups" + user?.id,
-        topic,
-      ]);
-
-      queryClient.setQueryData(["groups" + user?.id, topic], (old: any) => {
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => ({
-            ...page,
-            data: {
-              ...page.data,
-              groups: page.data.groups.map((g: any) =>
-                g._id === group._id ? { ...g, canJoin: false } : g
-              ),
-            },
-          })),
-        };
-      });
-
-      return { previousGroups };
-    },
-    onSuccess: (data) => {
-      if (data.data.ok) {
-        toast(data.data.message || "Joined group successfully");
-        queryClient.invalidateQueries({
-          queryKey: ["groups" + user?.id, topic],
-        });
-      } else {
-        toast.error(data.data.message || "Something went wrong");
-      }
-    },
-  });
 
   return (
     <div
@@ -119,27 +71,9 @@ export default function GroupCard({ group }: Props) {
           </div>
         </div>
         <Button
-          disabled={isPending}
-          className={`${
-            group.canJoin
-              ? "bg-[#F2F5F6] border-[#043A53]"
-              : "bg-[#FCF7EA] border-[#AF9654]"
-          } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
-          onClick={() => {
-            if (!user) return toast.error("Login to join");
-            if (group.canJoin) {
-              mutate({
-                id: group._id,
-              });
-            } else {
-              router.push(`/groups/${group.slug}`);
-            }
-          }}>
-          {group?.groupAdmin?._id === user?.id
-            ? "Edit"
-            : group.canJoin
-            ? "Join"
-            : "View"}
+          onClick={() => router.push(`/groups/${group?.slug}`)}
+          className={` rounded-3xl border-[0.2px] bg-[#FCF7EA]  hover:bg-[#FCF7EA] text-black`}>
+          View
         </Button>
       </div>
     </div>

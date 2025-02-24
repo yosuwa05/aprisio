@@ -8,10 +8,11 @@ type myProfileTab =
   | "created-posts"
   | "favourite-posts"
   | "organised-events"
-  | "events-participated"
+  | "participated-events"
   | "created-groups"
   | "joined-groups"
-  | "settings";
+  | "settings"
+  | "edit-profile";
 
 interface LayoutState {
   activeLayout: layout;

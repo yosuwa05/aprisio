@@ -43,7 +43,7 @@ export function MyProfileTopBar() {
       name: "Organised Events",
     },
     {
-      slug: "events-participated",
+      slug: "participated-events",
       name: "Events Participated",
     },
     {

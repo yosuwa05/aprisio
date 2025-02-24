@@ -7,6 +7,7 @@ interface User {
   active: boolean;
   email: string;
   password: string;
+  image: string
 }
 
 const UserSchema = new Schema<User>(
@@ -29,6 +30,9 @@ const UserSchema = new Schema<User>(
     },
     password: {
       type: String,
+    },
+    image: {
+      type: String
     },
     email: {
       type: String,
