@@ -47,7 +47,7 @@ export const authController = new Elysia({
         ) {
           const verificationToken = generateVerificationToken();
           const hashedToken = hashToken(verificationToken);
-          const tokenExpiration = addHours(new Date(), 24);
+          const tokenExpiration = addHours(new Date(), 12);
 
           user.emailVerificationToken = hashedToken;
           user.emailVerificationTokenExpiry = tokenExpiration;

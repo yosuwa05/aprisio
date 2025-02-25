@@ -1,6 +1,7 @@
 import Elysia from "elysia";
 import { adminController } from "./adminController";
 import { adminAuthController } from "./auth";
+import { eventsController } from "./events-controller";
 import { subtopicController } from "./subtopic-controllers";
 import { topicsController } from "./topics-controller";
 import { userController } from "./userController";
@@ -12,4 +13,5 @@ export const adminrouter = new Elysia({
   .use(userController)
   .use(adminController)
   .use(topicsController)
-  .use(subtopicController);
+  .use(subtopicController)
+  .use(eventsController);

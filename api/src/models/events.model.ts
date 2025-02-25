@@ -15,6 +15,9 @@ type IEvent = {
   isEventEnded: boolean;
   attendees: Types.ObjectId[];
   commentsCount: number;
+  isManagedByAdmin: boolean;
+  eventImage: string;
+  eventsDateString: string;
 };
 
 const EventSchema = new Schema<IEvent>(
@@ -38,12 +41,15 @@ const EventSchema = new Schema<IEvent>(
     },
     commentsCount: { type: Number, default: 0 },
     isEventEnded: { type: Boolean, default: false },
+    eventImage: { type: String, default: "" },
+    eventsDateString: { type: String, default: "" },
     attendees: [
       {
         type: Schema.Types.ObjectId,
         ref: "User",
       },
     ],
+    isManagedByAdmin: { type: Boolean, default: false },
   },
   {
     timestamps: true,
