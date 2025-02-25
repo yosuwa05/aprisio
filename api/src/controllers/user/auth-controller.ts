@@ -58,7 +58,8 @@ export const authController = new Elysia({
             user.emailVerificationTokenExpiry = tokenExpiration;
             await user.save();
 
-            const verificationLink = `http://localhost:3001/verify-email?token=${hashedToken}`;
+            // const verificationLink = `http://localhost:3001/verify-email?token=${hashedToken}`;
+            const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
 
             let content = `
             <html>

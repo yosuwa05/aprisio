@@ -86,7 +86,8 @@ export const formController = new Elysia({
   </html>
 `;
 
-        const verificationLink = `http://localhost:3001/form/verify-email?token=${verificationToken}`;
+        // const verificationLink = `http://localhost:3001/form/verify-email?token=${verificationToken}`;
+        const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
 
         await sendEmail({
           subject: "New User Joined",
