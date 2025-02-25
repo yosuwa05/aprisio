@@ -166,7 +166,7 @@ export default function MyProfilePostCard({ post }: { post: IPostCard }) {
             <Button
               variant={"link"}
               onClick={() => {
-                if (post.subTopic == null) {
+                if (post?.group?.[0]?.name) {
                   router.push(`/edit-post/group/${post.id}`);
                 } else {
                   router.push(`/feed/edit-post/${post.id}`);

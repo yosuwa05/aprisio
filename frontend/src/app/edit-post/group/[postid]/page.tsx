@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,11 +50,11 @@ export default function CreatePostGroup() {
     resolver: zodResolver(postSchema),
   });
   const titleValue = watch("title", "");
-  const descriptionValue = watch("description", "");
-  const urlValue = watch("url", "");
 
   const activeGroup = useGlobalFeedStore((state) => state.activeGroup);
   const user = useGlobalAuthStore((state) => state.user);
+
+  const [deletedFile, setDeletedFile] = useState(false);
 
   const router = useRouter();
   const { postid } = useParams();
@@ -65,7 +66,10 @@ export default function CreatePostGroup() {
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
-      return await _axios.post("/authenticated/post/create-group-post", data);
+      return await _axios.post(
+        "/authenticated/post/edit-group-post?postId=" + postid,
+        data
+      );
     },
     onSuccess(data) {
       if (data.data.ok) {
@@ -92,8 +96,6 @@ export default function CreatePostGroup() {
     retry: false,
   });
 
-  console.log(postData);
-
   const onSubmit = (data: any) => {
     if (!selectedGroupId.slug) return toast("Please select a group");
 
@@ -107,16 +109,21 @@ export default function CreatePostGroup() {
     formData.append("description", data.description);
     formData.append("url", data.url);
     formData.append("selectedgroup", selectedGroupId.slug);
+    formData.append("deletedFile", deletedFile.toString());
     mutate(formData);
   };
 
   const tabs = ["Text", "Image & Video", "Link"];
 
   useEffect(() => {
-    setValue("title", "");
-    setValue("description", "");
-    setValue("url", "");
-  }, []);
+    setValue("title", postData?.post?.title || "");
+    setValue("description", postData?.post?.description || "");
+    setValue("url", postData?.post?.url || "");
+
+    if (postData?.post?.group) {
+      setSelectedGroupId(postData?.post?.group);
+    }
+  }, [postData]);
 
   const imageRendered = useMemo(() => {
     if (uploadedFile) {
@@ -252,6 +259,8 @@ export default function CreatePostGroup() {
                   className="absolute top-4 right-4 cursor-pointer text-red"
                   color="red"
                   onClick={() => {
+                    let elem: any = document.getElementById("file");
+                    if (elem) elem.value = "";
                     setUploadedFile(null);
                   }}
                 />
@@ -260,10 +269,33 @@ export default function CreatePostGroup() {
                   alt=""
                   width={100}
                   height={100}
-                  className="w-[300px] h-[300px] object-cover rounded-2xl"
+                  className="w-[300px] h-[200px] object-cover rounded-2xl"
                 />
               </div>
             )}
+
+            {activeIndex == 1 &&
+              !uploadedFile &&
+              postData?.post?.image &&
+              !deletedFile && (
+                <div className="relative w-[300px] h-[200px]">
+                  <Trash2
+                    className="absolute top-4 right-4 cursor-pointer text-red"
+                    color="red"
+                    onClick={() => {
+                      setUploadedFile(null);
+                      setDeletedFile(true);
+                    }}
+                  />
+                  <Image
+                    src={BASE_URL + `/file?key=${postData?.post?.image}`}
+                    alt=""
+                    width={100}
+                    height={100}
+                    className="w-[300px] h-[200px] object-cover rounded-2xl"
+                  />
+                </div>
+              )}
 
             <input
               type="file"

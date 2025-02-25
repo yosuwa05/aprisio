@@ -139,7 +139,7 @@ export const authenticatedPostController = new Elysia({
     async ({ body, set, store, query }) => {
       const { postId } = query;
       const { title, description, url, file, slug, deletedFile } = body;
- 
+
       try {
         const userId = (store as StoreType)["id"];
 
@@ -219,6 +219,7 @@ export const authenticatedPostController = new Elysia({
         existingPost.url = url || existingPost.url;
         existingPost.slug = slugify(title) || existingPost.slug;
         existingPost.image = fileUrl;
+        existingPost.subTopic = subtopic._id;
 
         await existingPost.save();
 
@@ -318,8 +319,6 @@ export const authenticatedPostController = new Elysia({
     "/create-group-post",
     async ({ body, set, store }) => {
       const { title, description, url, file, selectedgroup } = body;
-
-      console.log(body);
 
       try {
         const userId = (store as StoreType)["id"];
@@ -427,6 +426,122 @@ export const authenticatedPostController = new Elysia({
       },
     }
   )
+  .post(
+    "/edit-group-post",
+    async ({ body, set, store, query }) => {
+      const { title, description, url, file, selectedgroup, deletedFile } =
+        body;
+      const { postId } = query;
+
+      try {
+        const userId = (store as StoreType)["id"];
+
+        if (!userId) {
+          set.status = 401;
+          return {
+            message: "Unauthorized",
+            ok: false,
+          };
+        }
+
+        if (title.length > 100) {
+          set.status = 400;
+          return {
+            message: "Title is too long. Max length is 100 characters.",
+            ok: false,
+          };
+        }
+
+        const existingPost = await PostModel.findById(postId);
+
+        if (!existingPost) {
+          return {
+            message: "Post not found",
+            ok: false,
+          };
+        }
+
+        let fileUrl = "";
+
+        if (file) {
+          const { ok, filename } = await saveFile(file, "group-posts");
+
+          if (existingPost.image) deleteFile(existingPost.image);
+
+          if (ok) {
+            fileUrl = filename;
+          } else {
+            set.status = 400;
+            return {
+              message: "File upload failed",
+              ok: false,
+            };
+          }
+        }
+
+        if (deletedFile == "true") {
+          deleteFile(existingPost.image);
+          fileUrl = "";
+        }
+
+        const group = await GroupModel.findOne({
+          slug: selectedgroup,
+        });
+
+        if (!group) {
+          set.status = 400;
+          return {
+            message: "Group not found",
+            ok: false,
+          };
+        }
+
+        existingPost.title = title || existingPost.title;
+        existingPost.description = description || existingPost.description;
+        existingPost.url = url || existingPost.url;
+        existingPost.slug = slugify(title) || existingPost.slug;
+        existingPost.image = fileUrl;
+        existingPost.group = group.id;
+
+        await existingPost.save();
+
+        set.status = 200;
+        return { message: "Post updated successfully", ok: true };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: "An internal error occurred while processing the post.",
+          ok: false,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        postId: t.String(),
+      }),
+      body: t.Object({
+        title: t.String(),
+        description: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        url: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        file: t.Optional(t.File()),
+        selectedgroup: t.String(),
+        deletedFile: t.String(),
+      }),
+      detail: {
+        description: "Create post inside group!",
+        summary: "Create post inside group!",
+      },
+    }
+  )
   .get(
     "/getsingle",
     async ({ query, set, store }) => {
@@ -436,6 +551,7 @@ export const authenticatedPostController = new Elysia({
         const post = await PostModel.findById(postId)
           .populate("author")
           .populate("subTopic", "slug _id")
+          .populate("group", "slug _id")
           .lean();
 
         if (!post) {

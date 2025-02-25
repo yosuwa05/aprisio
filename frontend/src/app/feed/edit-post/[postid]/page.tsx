@@ -79,13 +79,13 @@ export default function EditPost() {
       );
       return res.data;
     },
-    refetchOnWindowFocus: false,
+    retry: false,
   });
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
       return await _axios.post(
-        "/authenticated/post/edit?postId=" + postid,
+        "/authenticated/post/edit-group-post?postId=" + postid,
         data
       );
     },
@@ -263,6 +263,8 @@ export default function EditPost() {
                   className="absolute top-4 right-4 cursor-pointer text-red"
                   color="red"
                   onClick={() => {
+                    let elem: any = document.getElementById("file");
+                    if (elem) elem.value = "";
                     setUploadedFile(null);
                   }}
                 />
