@@ -37,7 +37,7 @@ const PostSchema = new Schema<IPost>(
     ],
     likesCount: { type: Number, default: 0 },
     commentsCount: { type: Number, default: 0 },
-    subTopic: { type: Schema.Types.ObjectId, ref: "subtopics" },
+    subTopic: { type: Schema.Types.ObjectId, ref: "subtopic" },
     group: { type: Schema.Types.ObjectId, ref: "Group" },
   },
   { timestamps: true }

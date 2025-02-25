@@ -2,13 +2,6 @@
 
 import GlobalLoader from "@/components/globalloader";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -22,13 +15,11 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/chevron-left.svg";
-import pencil from "@img/icons/pencil.svg";
-import trash from "@img/icons/trash.svg";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronDown, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -41,7 +32,6 @@ const postSchema = z.object({
 });
 
 export default function CreatePostGroup() {
-  const [draftsModelOpen, setDraftsModelOpen] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -63,20 +53,11 @@ export default function CreatePostGroup() {
   const urlValue = watch("url", "");
 
   const activeGroup = useGlobalFeedStore((state) => state.activeGroup);
-
   const user = useGlobalAuthStore((state) => state.user);
 
   const router = useRouter();
+  const { postid } = useParams();
   const queryClient = useQueryClient();
-
-  const { isLoading, data: { drafts, ok } = { drafts: [], ok: false } } =
-    useQuery({
-      queryFn: async () => {
-        const res = await _axios.get("/drafts");
-        return res.data;
-      },
-      queryKey: ["drafts"],
-    });
 
   useEffect(() => {
     setSelectedGroupId({ slug: activeGroup });
@@ -95,60 +76,23 @@ export default function CreatePostGroup() {
         });
         router.push("/groups/" + selectedGroupId.slug);
       } else {
-        console.log(data);
         toast(data.data.message || "An error occurred while creating post");
       }
     },
   });
 
-  type Draft = {
-    title: string;
-    description: string;
-    link: string;
-    image?: any;
-    selectedTopic: string;
-  };
-
-  const { mutate: createDraft } = useMutation({
-    mutationKey: ["createDraft"],
-    mutationFn: async (data: Draft) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      formData.append("link", data.link);
-      formData.append("selectedGroup", selectedGroupId.slug);
-
-      if (data.image) {
-        formData.append("image", data.image);
-      }
-
-      const res = await _axios.post("/drafts/create", data);
+  const { data: postData, isLoading: isPostLoading } = useQuery({
+    queryKey: [],
+    queryFn: async () => {
+      const res = await _axios.get(
+        "/authenticated/post/getsingle?postId=" + postid
+      );
       return res.data;
     },
-    onSuccess: () => {
-      toast("Draft Saved!");
-      queryClient.invalidateQueries({ queryKey: ["drafts"] });
-      reset();
-    },
-    onError: () => {
-      toast("An error occurred while creating post");
-    },
+    retry: false,
   });
 
-  const { mutate: deleteDraft, isPending: deletingDraft } = useMutation({
-    mutationKey: ["deleteDraft"],
-    mutationFn: async (id: string) => {
-      const res = await _axios.delete(`/drafts/${id}`);
-      return res.data;
-    },
-    onSuccess: () => {
-      toast("Draft Deleted!");
-      queryClient.invalidateQueries({ queryKey: ["drafts"] });
-    },
-    onError: () => {
-      toast("An error occurred while creating post");
-    },
-  });
+  console.log(postData);
 
   const onSubmit = (data: any) => {
     if (!selectedGroupId.slug) return toast("Please select a group");
@@ -191,41 +135,11 @@ export default function CreatePostGroup() {
     },
   });
 
-  function handleDraftClick(draft: {
-    _id: string;
-    title: string;
-    description: string;
-    url: string;
-  }) {
-    setValue("title", draft.title);
-    setValue("description", draft.description);
-    setValue("url", draft.url);
-
-    setDraftsModelOpen(false);
-  }
-
   return (
     <div>
       <div className="mx-2 xl:mx-12">
         <div className="flex justify-between items-center xl:items-end mx-2">
-          <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
-            Create Post
-          </h1>
-
-          <Button
-            className="rounded-full p-[20px] bg-[#FCF7EA] border-[#AF965447] font-bold border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol"
-            onClick={() => {
-              setDraftsModelOpen(true);
-            }}
-            type="button"
-          >
-            Drafts{" "}
-            {!isLoading && drafts && drafts.length > 0 && (
-              <span className="bg-[#534B04] text-[#FCF7EA] rounded-full px-2 py-1">
-                {drafts.length}
-              </span>
-            )}
-          </Button>
+          <h1 className="text-3xl font-semibold py-4 xl:text-5xl">Edit Post</h1>
         </div>
 
         <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
@@ -333,7 +247,7 @@ export default function CreatePostGroup() {
             )}
 
             {activeIndex == 1 && uploadedFile && (
-              <div className="relative">
+              <div className="relative w-[300px] h-[200px]">
                 <Trash2
                   className="absolute top-4 right-4 cursor-pointer text-red"
                   color="red"
@@ -346,7 +260,7 @@ export default function CreatePostGroup() {
                   alt=""
                   width={100}
                   height={100}
-                  className="w-full h-[300px] object-cover rounded-2xl"
+                  className="w-[300px] h-[300px] object-cover rounded-2xl"
                 />
               </div>
             )}
@@ -378,110 +292,17 @@ export default function CreatePostGroup() {
 
             <div className="flex gap-6 justify-end mt-4">
               <Button
-                className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold"
-                onClick={() => {
-                  if (!titleValue || !descriptionValue || !selectedGroupId.slug)
-                    return toast("Please fill in all the fields");
-
-                  createDraft({
-                    description: descriptionValue,
-                    title: titleValue,
-                    link: urlValue,
-                    image: uploadedFile ? uploadedFile : "",
-                    selectedTopic: selectedGroupId.slug,
-                  });
-                }}
-                type="button"
-              >
-                Save as Draft
-              </Button>
-
-              <Button
-                className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol"
+                className="rounded-full py-[25px] w-[160px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol"
                 type="submit"
                 disabled={isPending}
               >
-                Submit
+                Update Post
                 <Image src={chevronleft} alt="chevron-left" />
               </Button>
             </div>
           </form>
         </div>
       </div>
-      <Dialog open={draftsModelOpen} onOpenChange={setDraftsModelOpen}>
-        <DialogContent className="w-full px-0">
-          <DialogHeader>
-            <DialogTitle className="text-3xl w-[95%] mx-auto">
-              Drafts
-              {!isLoading && ok && drafts && (
-                <span className="text-xl ml-4 text-[#5D5A5A]">
-                  {drafts.length} / 5
-                </span>
-              )}
-            </DialogTitle>
-            <DialogDescription asChild key={"fragment"}>
-              <div>
-                {drafts && drafts.length > 0 && ok ? (
-                  drafts.map(
-                    (draft: {
-                      _id: string;
-                      title: string;
-                      description: string;
-                      url: string;
-                    }) => (
-                      <div key={draft._id}>
-                        <div
-                          className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center"
-                          key={draft._id}
-                        >
-                          <div
-                            className="flex flex-col items-start gap-2 mt-4 py-2"
-                            onClick={() => {
-                              handleDraftClick(draft);
-                            }}
-                          >
-                            <div className="text-[#534B04] text-xl">
-                              {draft.title}
-                            </div>
-                            <div className="text-contrasttext text-sm">
-                              {draft.description}
-                            </div>
-                          </div>
-
-                          <div className="flex gap-3">
-                            <Image
-                              src={pencil}
-                              alt="pencil"
-                              className="cursor-pointer"
-                              onClick={() => {
-                                handleDraftClick(draft);
-                              }}
-                            />
-                            <Image
-                              src={trash}
-                              alt="trash"
-                              className="cursor-pointer"
-                              onClick={() => {
-                                if (deletingDraft) return;
-                                deleteDraft(draft._id);
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div className="h-[0.5px] bg-[#888383]"></div>
-                      </div>
-                    )
-                  )
-                ) : (
-                  <div className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center">
-                    <p>No drafts</p>
-                  </div>
-                )}
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

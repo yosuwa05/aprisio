@@ -16,7 +16,7 @@ export const s3Client = new S3Client({
   },
 });
 
-const bucketName = process.env.BUCKET_NAME || "kings-chic";
+const bucketName = process.env.BUCKET_NAME || "aprisio";
 
 export const saveFile = async (
   blob: Blob | undefined,
