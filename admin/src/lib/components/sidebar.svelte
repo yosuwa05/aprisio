@@ -42,6 +42,12 @@
 			href: '/admin/dashboard/subtopics/',
 			icon: 'mdi:books',
 			subRoutes: '-'
+		},
+		{
+			name: 'Events',
+			href: '/admin/dashboard/events/',
+			icon: 'material-symbols:event-rounded',
+			subRoutes: '-'
 		}
 	]);
 

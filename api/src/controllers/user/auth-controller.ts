@@ -33,13 +33,6 @@ export const authController = new Elysia({
           };
         }
 
-        if (!user.emailVerified) {
-          return {
-            message: "Please verify your email address to continue",
-            ok: false,
-          };
-        }
-
         const isMatch = await Bun.password.verify(password, user.password);
 
         if (!isMatch) {
@@ -112,7 +105,6 @@ export const authController = new Elysia({
             ok: true,
           };
         } else {
-          // Email is verified and token is not expired, log in the user
           const token = await PasetoUtil.encodePaseto({
             email: user.email.toString(),
             id: user._id.toString(),
