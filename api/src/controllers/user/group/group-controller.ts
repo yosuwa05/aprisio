@@ -158,6 +158,17 @@ export const groupController = new Elysia({
       },
     }
   )
+  .put("/edit", async ({ body, set, store }) => {
+    try {
+      // const {groupId,name,description,subTopic} = body
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  })
   .post(
     "/join",
     async ({ body, set, store }) => {
@@ -215,7 +226,6 @@ export const groupController = new Elysia({
       }),
     }
   )
-
   .post(
     "/share-post-group",
     async ({ set, body }) => {
@@ -321,29 +331,29 @@ export const groupController = new Elysia({
           },
           ...(userId
             ? [
-                {
-                  $lookup: {
-                    from: "likes",
-                    let: {
-                      postId: "$post._id",
-                      userId: new Types.ObjectId(userId),
-                    },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $and: [
-                              { $eq: ["$post", "$$postId"] },
-                              { $eq: ["$user", "$$userId"] },
-                            ],
-                          },
+              {
+                $lookup: {
+                  from: "likes",
+                  let: {
+                    postId: "$post._id",
+                    userId: new Types.ObjectId(userId),
+                  },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            { $eq: ["$post", "$$postId"] },
+                            { $eq: ["$user", "$$userId"] },
+                          ],
                         },
                       },
-                    ],
-                    as: "likedByMe",
-                  },
+                    },
+                  ],
+                  as: "likedByMe",
                 },
-              ]
+              },
+            ]
             : []),
           {
             $sort: { "post.createdAt": -1, "post._id": -1 },
