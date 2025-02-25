@@ -147,60 +147,6 @@ export default function PersonalFeed() {
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[82vh] hide-scrollbar overflow-hidden">
             <PersonalFeedPosts />
           </div>
-
-          {/* <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
-            <div className="bg-white px-4 rounded-xl w-[350px]">
-              <div className="relative h-[110px] bg-white flex justify-center items-center overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url(/assets/placeholder-hero.jpeg)",
-                    opacity: 0.3,
-                  }}
-                />
-
-                <Button
-                  onClick={() => {
-                    console.log("Create Event");
-                    router.push("/feed/create-event");
-                  }}
-                  className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white"
-                >
-                  <Plus />
-                  Create Event
-                </Button>
-              </div>
-
-              <h1 className="text-2xl text-textcol my-4 font-semibold">
-                Event
-              </h1>
-
-              <div className="flex flex-col  items-start gap-2 my-2">
-                {data?.data?.joinedEvents?.length ? (
-                  data?.data?.joinedEvents?.map((item: any) => (
-                    <div
-                      className="flex justify-between items-center w-full"
-                      key={item?._id}
-                    >
-                      <div className="text-textcol flex flex-col gap-2">
-                        <h4 className="text-[15px] font-medium">
-                          {item?.eventName}
-                        </h4>
-                      </div>
-
-                      <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
-                        View
-                      </Button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-2 w-full text-fadedtext text-sm">
-                    No events joined
-                  </div>
-                )}
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

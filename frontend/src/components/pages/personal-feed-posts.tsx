@@ -24,6 +24,8 @@ type IPost = {
   likedByMe: boolean;
   url?: string;
   image?: string;
+  subTopic?: any;
+  group?: any;
 };
 
 export const PersonalFeedPosts = () => {
@@ -93,6 +95,8 @@ export const PersonalFeedPosts = () => {
                     likedByMe: post.likedByMe,
                     url: post.url || "",
                     image: post.image || "",
+                    subTopic: post?.subTopic ?? null,
+                    group: post?.group ?? null,
                   }}
                   topic={"technology"?.toString() || ""}
                 />

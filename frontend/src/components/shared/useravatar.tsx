@@ -1,6 +1,8 @@
 "use client";
 
+import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
@@ -15,9 +17,20 @@ export function UserAvatar() {
 
   const user = useGlobalAuthStore((state) => state.user);
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      let res = await _axios.post("/auth/logout");
+      return res.data;
+    },
+    onSuccess: () => {
+      useGlobalAuthStore.getState().setUser(null);
+      router.push("/login");
+    },
+  });
+
   function logout() {
-    useGlobalAuthStore.getState().setUser(null);
-    router.push("/login");
+    if (isPending) return;
+    mutate();
   }
 
   return (
