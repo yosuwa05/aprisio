@@ -11,10 +11,10 @@ _axios.interceptors.response.use(
 		return response;
 	},
 	(error) => {
-		if (error.status === 401) {
-			window.location.href = '/admin';
-			return Promise.reject(error);
-		}
+		// if (error.status === 401) {
+		// 	window.location.href = '/admin';
+		// 	return Promise.reject(error);
+		// }
 
 		return Promise.reject(error);
 	}

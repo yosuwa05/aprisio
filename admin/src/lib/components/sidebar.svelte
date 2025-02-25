@@ -1,20 +1,22 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { _axios } from '$lib/_axios';
 	import Icon from '@iconify/svelte';
+	import { createMutation } from '@tanstack/svelte-query';
 	import { toast } from 'svelte-sonner';
 
 	const routes = $state([
-		{
-			type: 'heading',
-			name: 'Analytics'
-		},
-		{
-			name: 'Dashboard',
-			href: '/admin/dashboard/',
-			icon: 'uil:analysis',
-			subRoutes: '-'
-		},
+		// {
+		// 	type: 'heading',
+		// 	name: 'Analytics'
+		// },
+		// {
+		// 	name: 'Dashboard',
+		// 	href: '/admin/dashboard/',
+		// 	icon: 'uil:analysis',
+		// 	subRoutes: '-'
+		// },
 		{
 			type: 'heading',
 			name: 'Dashboard'
@@ -43,7 +45,21 @@
 		}
 	]);
 
+	const logoutMutation = createMutation({
+		mutationFn: async () => {
+			let res = await _axios.post('/auth/logout');
+			return res.data;
+		},
+		onSuccess: (data) => {
+			toast('User has been banned successfully');
+		},
+		onError: (error) => {
+			console.log(error);
+		}
+	});
+
 	function logout() {
+		$logoutMutation.mutate();
 		sessionStorage.clear();
 		toast('You have been logged out successfully');
 		goto('/');

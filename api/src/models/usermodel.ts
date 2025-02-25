@@ -7,7 +7,12 @@ interface User {
   active: boolean;
   email: string;
   password: string;
-  image: string
+  image: string;
+  emailVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  emailVerificationToken: string | null;
+  emailVerificationTokenExpiry: Date | null;
 }
 
 const UserSchema = new Schema<User>(
@@ -21,6 +26,10 @@ const UserSchema = new Schema<User>(
       required: [true, "Please enter mobile number"],
       unique: true,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
     address: {
       type: String,
     },
@@ -32,7 +41,10 @@ const UserSchema = new Schema<User>(
       type: String,
     },
     image: {
-      type: String
+      type: String,
+    },
+    emailVerificationToken: {
+      type: String,
     },
     email: {
       type: String,

@@ -305,8 +305,10 @@ export default function Topbar() {
             </Link>
           )}
           <Link
-            className={pathname === "#" ? "text-contrasttext font-bold" : ""}
-            href={"#"}
+            className={
+              pathname === "/contact" ? "text-contrasttext font-bold" : ""
+            }
+            href={"/contact"}
           >
             Contact
           </Link>

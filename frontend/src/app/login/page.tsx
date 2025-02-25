@@ -156,11 +156,12 @@ export default function LoginForm({}) {
             </div>
 
             <div className="flex justify-between items-start">
-              <Link href={"#"}>
+              {/* <Link href={"#"}>
                 <p className="text-[#043A53] font-roboto font-normal xl:text-xl text-lg">
                   Forgot Password ?
                 </p>
-              </Link>
+              </Link> */}
+              <div></div>
 
               <Button
                 disabled={isPending}
