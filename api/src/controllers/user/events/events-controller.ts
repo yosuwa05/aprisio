@@ -10,7 +10,7 @@ export const EventsController = new Elysia({
 })
   .post(
     "/attendevent",
-    async ({ body, store }) => {
+    async ({ body, store, set }) => {
       const { eventId } = body;
       try {
         const userId = (store as any)["id"];
@@ -18,6 +18,7 @@ export const EventsController = new Elysia({
         const event = await EventModel.findOne({ _id: eventId });
 
         if (!event) {
+          set.status = 400;
           return {
             error: "Event not found",
             ok: false,
@@ -32,6 +33,7 @@ export const EventsController = new Elysia({
             ok: true,
           };
         } else {
+          set.status = 400
           return {
             message: "Already attended",
             ok: false,
