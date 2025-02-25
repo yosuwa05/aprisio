@@ -46,6 +46,9 @@ const UserSchema = new Schema<User>(
     emailVerificationToken: {
       type: String,
     },
+    emailVerificationTokenExpiry: {
+      type: Date,
+    },
     email: {
       type: String,
       required: [true, "Please enter Email"],

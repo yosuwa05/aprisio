@@ -4,11 +4,11 @@ import { Elysia, t } from "elysia";
 import { createHash, randomBytes } from "node:crypto";
 import { UserModel } from "../../models/usermodel";
 
-function generateVerificationToken(): string {
+export function generateVerificationToken(): string {
   return randomBytes(32).toString("hex");
 }
 
-function hashToken(token: string): string {
+export function hashToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
 
@@ -86,7 +86,7 @@ export const formController = new Elysia({
   </html>
 `;
 
-        const verificationLink = `http://localhost:3000/verify-email?token=${verificationToken}`;
+        const verificationLink = `http://localhost:3001/form/verify-email?token=${verificationToken}`;
 
         await sendEmail({
           subject: "New User Joined",
@@ -231,7 +231,7 @@ export const formController = new Elysia({
       if (user) {
         user.emailVerified = true;
         user.emailVerificationToken = null;
-        user.emailVerificationTokenExpires = null;
+        user.emailVerificationTokenExpiry = null;
         await user.save();
         set.status = 200;
         return {
