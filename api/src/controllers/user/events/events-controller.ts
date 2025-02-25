@@ -257,7 +257,6 @@ export const EventsController = new Elysia({
       const events = await EventModel.find({
         group: groupId,
         managedBy: { $ne: userId },
-
       })
         .populate("group", "name slug")
         .sort({ createdAt: -1, _id: -1 })

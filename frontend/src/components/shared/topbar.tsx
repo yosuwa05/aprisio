@@ -61,19 +61,18 @@ export default function Topbar() {
   };
 
   return (
-    <nav className="w-full flex px-4 my-4 justify-between md:px-6 ">
-      <div className="flex  items-center">
-        <div className="flex gap-2">
+    <nav className='w-full flex px-4 my-4 justify-between md:px-6 '>
+      <div className='flex  items-center'>
+        <div className='flex gap-2'>
           <Sheet>
-            <SheetTrigger asChild className="md:hidden">
-              <div className="flex">
+            <SheetTrigger asChild className='md:hidden'>
+              <div className='flex'>
                 <Menu size={24} />
               </div>
             </SheetTrigger>
             <SheetContent
-              className="h-screen overflow-scroll p-0 px-2 flex flex-col justify-between  bg-white z-50"
-              side={"left"}
-            >
+              className='h-screen overflow-scroll p-0 px-2 flex flex-col justify-between  bg-white z-50'
+              side={"left"}>
               <div>
                 <SheetHeader>
                   <SheetTitle></SheetTitle>
@@ -82,12 +81,11 @@ export default function Topbar() {
 
                 <Link
                   href={"/feed"}
-                  className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-12"
-                >
-                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                    <div className="flex gap-3 items-center">
+                  className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-12'>
+                  <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                    <div className='flex gap-3 items-center'>
                       <Icon
-                        icon="material-symbols:explore-outline-rounded"
+                        icon='material-symbols:explore-outline-rounded'
                         fontSize={20}
                       />
 
@@ -101,14 +99,13 @@ export default function Topbar() {
                 {user && (
                   <>
                     <Collapsible
-                      className="my-3"
+                      className='my-3'
                       open={openSections.joinedGroups}
-                      onOpenChange={() => toggleSection("joinedGroups")}
-                    >
-                      <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                        <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                          <div className="flex gap-3 items-center">
-                            <Icon icon="gravity-ui:persons" />
+                      onOpenChange={() => toggleSection("joinedGroups")}>
+                      <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
+                        <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                          <div className='flex gap-3 items-center'>
+                            <Icon icon='gravity-ui:persons' />
                             <h1 className={`capitalize text-sm md:text-lg `}>
                               Joined Groups
                             </h1>
@@ -123,15 +120,14 @@ export default function Topbar() {
                           />
                         </div>
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="pt-2 px-4 ">
+                      <CollapsibleContent className='pt-2 px-4 '>
                         {data?.data?.joinedGroups?.map((group: any) => (
                           <p
                             onClick={() =>
                               router.push(`/groups/${group?.groupSlug}`)
                             }
                             key={group?._id}
-                            className="text-textcol py-1.5 cursor-pointer  md:py-3"
-                          >
+                            className='text-textcol py-1.5 cursor-pointer  md:py-3'>
                             {group?.groupName}
                           </p>
                         ))}
@@ -139,14 +135,13 @@ export default function Topbar() {
                     </Collapsible>
 
                     <Collapsible
-                      className="my-3"
+                      className='my-3'
                       open={openSections.joinedEvents}
-                      onOpenChange={() => toggleSection("joinedEvents")}
-                    >
-                      <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                        <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                          <div className="flex gap-3 items-center">
-                            <Icon icon="uiw:date" />
+                      onOpenChange={() => toggleSection("joinedEvents")}>
+                      <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
+                        <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                          <div className='flex gap-3 items-center'>
+                            <Icon icon='uiw:date' />
                             <h1 className={`capitalize text-sm md:text-lg `}>
                               Joined Events
                             </h1>
@@ -161,7 +156,7 @@ export default function Topbar() {
                           />
                         </div>
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="pt-2 px-4 ">
+                      <CollapsibleContent className='pt-2 px-4 '>
                         {data?.data?.joinedEvents?.map((event: any) => (
                           <p
                             onClick={() =>
@@ -170,8 +165,7 @@ export default function Topbar() {
                               )
                             }
                             key={event?._id}
-                            className="text-textcol py-1.5 cursor-pointer  md:py-3"
-                          >
+                            className='text-textcol py-1.5 cursor-pointer  md:py-3'>
                             {event?.eventName}
                           </p>
                         ))}
@@ -179,14 +173,13 @@ export default function Topbar() {
                     </Collapsible>
 
                     <Collapsible
-                      className="my-3"
+                      className='my-3'
                       open={openSections.topicsFollowed}
-                      onOpenChange={() => toggleSection("topicsFollowed")}
-                    >
-                      <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                        <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                          <div className="flex gap-3 items-center">
-                            <Icon icon="hugeicons:note" />
+                      onOpenChange={() => toggleSection("topicsFollowed")}>
+                      <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
+                        <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                          <div className='flex gap-3 items-center'>
+                            <Icon icon='hugeicons:note' />
                             <h1 className={`capitalize text-sm md:text-lg `}>
                               Topics Followed
                             </h1>
@@ -201,7 +194,7 @@ export default function Topbar() {
                           />
                         </div>
                       </CollapsibleTrigger>
-                      <CollapsibleContent className="pt-2 px-4 ">
+                      <CollapsibleContent className='pt-2 px-4 '>
                         {data?.data?.TopicsFollowed?.map((topic: any) => (
                           <p
                             onClick={() =>
@@ -210,8 +203,7 @@ export default function Topbar() {
                               )
                             }
                             key={topic?._id}
-                            className="text-textcol py-1.5 cursor-pointer md:py-3"
-                          >
+                            className='text-textcol py-1.5 cursor-pointer md:py-3'>
                             {topic?.subtopicName}
                           </p>
                         ))}
@@ -220,10 +212,10 @@ export default function Topbar() {
                   </>
                 )}
 
-                <div className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4">
-                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                    <div className="flex gap-3 items-center">
-                      <Icon icon="ix:about" />
+                <div className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4'>
+                  <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                    <div className='flex gap-3 items-center'>
+                      <Icon icon='ix:about' />
 
                       <h1 className={`capitalize text-sm md:text-lg `}>
                         About Us
@@ -232,10 +224,10 @@ export default function Topbar() {
                   </div>
                 </div>
 
-                <div className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4">
-                  <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                    <div className="flex gap-3 items-center">
-                      <Icon icon="material-symbols:call-outline-sharp" />
+                <div className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4'>
+                  <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                    <div className='flex gap-3 items-center'>
+                      <Icon icon='material-symbols:call-outline-sharp' />
 
                       <h1 className={`capitalize text-sm md:text-lg `}>
                         Contact
@@ -246,17 +238,15 @@ export default function Topbar() {
               </div>
 
               {!user && (
-                <div className="flex flex-col my-2 gap-3">
+                <div className='flex flex-col my-2 gap-3'>
                   <button
-                    className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]"
-                    onClick={() => router.push("/login")}
-                  >
+                    className='bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px]'
+                    onClick={() => router.push("/login")}>
                     Log In
                   </button>
                   <button
                     onClick={() => router.push("/join-community")}
-                    className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold "
-                  >
+                    className='bg-[#C9A74E] rounded-full py-3 px-6 font-semibold '>
                     Sign Up
                   </button>
                 </div>
@@ -267,24 +257,23 @@ export default function Topbar() {
 
         <Image
           src={logo}
-          className="w-[120px] xl:w-[180px] cursor-pointer hidden md:block"
-          alt="logo"
+          className='w-[120px] xl:w-[180px] cursor-pointer hidden md:block'
+          alt='logo'
           priority={true}
           onClick={() => router.push("/")}
         />
 
         <Image
           src={logosmall}
-          className="w-[25px] cursor-pointer md:hidden ml-3"
-          alt="logo"
+          className='w-[25px] cursor-pointer md:hidden ml-3'
+          alt='logo'
           onClick={() => router.push("/")}
         />
 
-        <ul className="hidden xl:flex gap-8 text-textcol font-semibold mx-4 text-xl">
+        <ul className='hidden xl:flex gap-8 text-textcol font-semibold mx-4 text-xl'>
           <Link
             className={pathname === "/" ? "text-contrasttext font-bold" : ""}
-            href={"/"}
-          >
+            href={"/"}>
             Home
           </Link>
 
@@ -292,15 +281,13 @@ export default function Topbar() {
             className={
               pathname === "/feed" ? "text-contrasttext font-bold" : ""
             }
-            href={"/feed"}
-          >
+            href={"/feed"}>
             Community
           </Link>
           {!user && (
             <Link
               className={pathname === "#" ? "text-contrasttext font-bold" : ""}
-              href={"#"}
-            >
+              href={"#"}>
               About Us
             </Link>
           )}
@@ -308,57 +295,60 @@ export default function Topbar() {
             className={
               pathname === "/contact" ? "text-contrasttext font-bold" : ""
             }
-            href={"/contact"}
-          >
+            href={"/contact"}>
             Contact
+          </Link>
+          <Link
+            className={
+              pathname === "/top-events" ? "text-contrasttext font-bold" : ""
+            }
+            href={"/top-events"}>
+            Events
           </Link>
         </ul>
       </div>
 
       {!user && (
-        <div className="md:hidden">
+        <div className='md:hidden'>
           <UserAvatar />
         </div>
       )}
 
       {user ? (
-        <div className="flex gap-2 items-center px-2">
+        <div className='flex gap-2 items-center px-2'>
           <SearchBar />
 
           {!unwantedRoutes.includes(pathname) && (
-            <Button className="border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]">
+            <Button className='border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]'>
               <Bell />
             </Button>
           )}
 
           {!unwantedRoutes.includes(pathname) && (
             <Button
-              className="rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold"
+              className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
               onClick={() => {
                 router.push(
                   activeLayout == "group"
                     ? "/feed/create-group/new"
                     : `/feed/create-post/new`
                 );
-              }}
-            >
+              }}>
               {activeLayout == "group" ? "Create Group" : "Create Post"}
             </Button>
           )}
           <UserAvatar />
         </div>
       ) : (
-        <div className="gap-2 hidden md:flex">
+        <div className='gap-2 hidden md:flex'>
           <button
-            className="bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px] "
-            onClick={() => router.push("/login")}
-          >
+            className='bg-white rounded-full font-semibold py-3 px-6 shadow border-[0.5px] '
+            onClick={() => router.push("/login")}>
             Log In
           </button>
           <button
             onClick={() => router.push("/join-community")}
-            className="bg-[#C9A74E] rounded-full py-3 px-6 font-semibold"
-          >
+            className='bg-[#C9A74E] rounded-full py-3 px-6 font-semibold'>
             Sign Up
           </button>
         </div>

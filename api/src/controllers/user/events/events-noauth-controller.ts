@@ -6,55 +6,90 @@ export const EventsNoAuthController = new Elysia({
   detail: {
     tags: ["User - Events - NoAuth"],
   },
-}).get(
-  "/view-event",
-  async ({ set, query }) => {
-    try {
-      const userId = query.userId;
+})
+  .get(
+    "/view-event",
+    async ({ set, query }) => {
+      try {
+        const userId = query.userId;
 
-      const { eventId } = query;
-      const event = await EventModel.findOne({ _id: eventId })
-        .populate("group", "name")
-        .populate("managedBy", "name")
-        .lean();
+        const { eventId } = query;
+        const event = await EventModel.findOne({ _id: eventId })
+          .populate("group", "name")
+          .populate("managedBy", "name")
+          .lean();
 
-      if (!event) {
-        set.status = 400;
-        return {
-          message: "Event not found",
-        };
-      }
+        if (!event) {
+          set.status = 400;
+          return {
+            message: "Event not found",
+          };
+        }
 
-      let eventTemp = {
-        ...event,
-        attending:
-          userId && userId !== "undefined"
-            ? event.attendees?.some(
+        let eventTemp = {
+          ...event,
+          attending:
+            userId && userId !== "undefined"
+              ? event.attendees?.some(
                 (attendee) => attendee.toString() === userId
               )
-            : false,
-      };
+              : false,
+        };
 
-      return {
-        event: eventTemp,
-        ok: true,
-      };
+        return {
+          event: eventTemp,
+          ok: true,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        eventId: t.String(),
+        userId: t.String(),
+      }),
+      detail: {
+        description: "Get an event",
+        summary: "Get an event",
+      },
+    }
+  )
+  .get("/admin-events", async ({ set, query }) => {
+    try {
+      const { page, limit } = query;
+      const _page = Number(page) || 1;
+      const _limit = Number(limit) || 10;
+
+      const events = await EventModel.find({
+        isManagedByAdmin: true
+      })
+        .populate("group", "name slug")
+        .sort({ createdAt: -1, _id: -1 })
+        .skip((_page - 1) * _limit)
+        .limit(_limit)
+        .select("-unnecessaryField")
+        .lean();
+
+      set.status = 200;
+      return { events, ok: true };
+
     } catch (error: any) {
       console.log(error);
       set.status = 500;
-      return {
-        message: error,
-      };
+      return { ok: false, message: "Internal Server Error" };
     }
-  },
-  {
-    query: t.Object({
-      eventId: t.String(),
-      userId: t.String(),
-    }),
+  }, {
     detail: {
-      description: "Get an event",
-      summary: "Get an event",
+      summary: "Admni Events ",
+      description: "Admin events",
     },
-  }
-);
+    query: t.Object({
+      page: t.Optional(t.String()),
+      limit: t.Optional(t.String()),
+    }),
+  });
