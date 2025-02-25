@@ -1,4 +1,4 @@
-import { saveFile } from "@/lib/file-s3";
+import { deleteFile, saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
 import { LikeModel, PostModel } from "@/models";
 import { GroupModel } from "@/models/group.model";
@@ -127,6 +127,130 @@ export const authenticatedPostController = new Elysia({
         ),
         slug: t.String(),
         file: t.Optional(t.File()),
+      }),
+      detail: {
+        description: "Create post",
+        summary: "Create post",
+      },
+    }
+  )
+  .post(
+    "/edit",
+    async ({ body, set, store, query }) => {
+      const { postId } = query;
+      const { title, description, url, file, slug, deletedFile } = body;
+ 
+      try {
+        const userId = (store as StoreType)["id"];
+
+        if (!userId) {
+          set.status = 401;
+          return {
+            message: "Unauthorized",
+            ok: false,
+          };
+        }
+
+        if (title.length > 100) {
+          set.status = 400;
+          return {
+            message: "Title is too long. Max length is 100 characters.",
+            ok: false,
+          };
+        }
+
+        const existingPost = await PostModel.findById(postId);
+
+        if (!existingPost) {
+          return {
+            message: "Post not found",
+            ok: false,
+          };
+        }
+
+        let fileUrl = "";
+
+        if (file) {
+          const { ok, filename } = await saveFile(file, "posts");
+
+          if (existingPost.image) deleteFile(existingPost.image);
+
+          if (ok) {
+            fileUrl = filename;
+          } else {
+            set.status = 400;
+            return {
+              message: "File upload failed",
+              ok: false,
+            };
+          }
+        }
+
+        if (deletedFile == "true") {
+          deleteFile(existingPost.image);
+          fileUrl = "";
+        }
+
+        const subtopic = await SubTopicModel.findOne({ slug });
+
+        if (!subtopic) {
+          set.status = 400;
+          return {
+            message: "SubTopic not found",
+            ok: false,
+          };
+        }
+
+        const userSubtopic = await UserSubTopicModel.findOne({
+          userId,
+          subTopicId: subtopic._id,
+        });
+
+        if (!userSubtopic) {
+          set.status = 400;
+          return {
+            message: "Follow the topic to post",
+            ok: false,
+          };
+        }
+
+        existingPost.title = title || existingPost.title;
+        existingPost.description = description || existingPost.description;
+        existingPost.url = url || existingPost.url;
+        existingPost.slug = slugify(title) || existingPost.slug;
+        existingPost.image = fileUrl;
+
+        await existingPost.save();
+
+        set.status = 200;
+        return { message: "Post updated successfully", ok: true };
+      } catch (error: any) {
+        set.status = 500;
+        return {
+          message: "An internal error occurred while processing the post.",
+          ok: false,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        postId: t.String(),
+      }),
+      body: t.Object({
+        title: t.String(),
+        description: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        url: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        slug: t.String(),
+        file: t.Optional(t.Any()),
+        deletedFile: t.String(),
       }),
       detail: {
         description: "Create post",
@@ -300,6 +424,47 @@ export const authenticatedPostController = new Elysia({
       detail: {
         description: "Create post inside group!",
         summary: "Create post inside group!",
+      },
+    }
+  )
+  .get(
+    "/getsingle",
+    async ({ query, set, store }) => {
+      const { postId } = query;
+
+      try {
+        const post = await PostModel.findById(postId)
+          .populate("author")
+          .populate("subTopic", "slug _id")
+          .lean();
+
+        if (!post) {
+          set.status = 404;
+          return {
+            message: "Post not found",
+            ok: false,
+          };
+        }
+
+        set.status = 200;
+        return { message: "Post found", ok: true, post };
+      } catch (error: any) {
+        console.error("Error getting post:", error);
+
+        set.status = 500;
+        return {
+          message: "An internal error occurred while processing the post.",
+          ok: false,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        postId: t.String(),
+      }),
+      detail: {
+        description: "Get single post",
+        summary: "Get single post",
       },
     }
   );
