@@ -1,13 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
-import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import personImage from "@img/assets/person.png";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface IGroupCard {
   name: string;
@@ -37,33 +33,34 @@ export default function MyProfileGroupCard({ group }: Props) {
 
   return (
     <div
-      className='p-2 w-full rounded-lg transition-all'
+      className="p-2 w-full rounded-lg transition-all"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
-      }}>
-      <div className='flex gap-2 w-full items-center justify-between  h-[70px]'>
-        <div className='flex gap-4 items-center'>
+      }}
+    >
+      <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
+        <div className="flex gap-4 items-center">
           <Image
             src={personImage}
-            alt='person'
+            alt="person"
             width={50}
             height={50}
-            className='rounded-lg'
+            className="rounded-lg"
           />
 
-          <div className='flex flex-col gap-2'>
-            <h2 className='font-semibold text-base lg'>{group?.name}</h2>
+          <div className="flex flex-col gap-2">
+            <h2 className="font-semibold text-base lg">{group?.name}</h2>
 
-            <div className='flex gap-6 items-center justify-between'>
-              <p className='text-[#043A53] text-xs font-medium'>
-                {group?.memberCount} Member
+            <div className="flex gap-6 items-center justify-between">
+              <p className="text-[#043A53] text-xs font-medium">
+                {group?.memberCount} Member{group?.memberCount > 1 && "s"}
               </p>
-              <p className='text-gray-500 text-xs font-medium hidden lg:block'>
-                <span className=''>Created</span> {formatDate(group?.createdAt)}
+              <p className="text-gray-500 text-xs font-medium hidden lg:block">
+                <span className="">Created</span> {formatDate(group?.createdAt)}
               </p>
-              <p className='text-[#828485] text-xs font-medium'>
+              <p className="text-[#828485] text-xs font-medium">
                 Organized by{" "}
-                <span className='font-bold text-[#636566]'>
+                <span className="font-bold text-[#636566]">
                   {group?.groupAdmin?.name}
                 </span>
               </p>
@@ -72,7 +69,8 @@ export default function MyProfileGroupCard({ group }: Props) {
         </div>
         <Button
           onClick={() => router.push(`/groups/${group?.slug}`)}
-          className={` rounded-3xl border-[0.2px] bg-[#FCF7EA]  hover:bg-[#FCF7EA] text-black`}>
+          className={` rounded-3xl border-[0.2px] bg-[#FCF7EA]  hover:bg-[#FCF7EA] text-black`}
+        >
           View
         </Button>
       </div>

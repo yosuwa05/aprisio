@@ -8,8 +8,9 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import profileimage from "@img/assets/person.png";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function MyProfile({
   children,
@@ -17,7 +18,6 @@ export default function MyProfile({
   children: React.ReactNode;
 }>) {
   const user = useGlobalAuthStore((state) => state.user);
-  const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
   const setActiveTab = useGlobalLayoutStore(
     (state) => state.setActiveMyProfileTab
   );
@@ -28,6 +28,24 @@ export default function MyProfile({
       return res;
     },
   });
+
+  const router = useRouter();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => {
+      let res = await _axios.post("/auth/logout");
+      return res.data;
+    },
+    onSuccess: () => {
+      useGlobalAuthStore.getState().setUser(null);
+      router.push("/login");
+    },
+  });
+
+  function logout() {
+    if (isPending) return;
+    mutate();
+  }
 
   if (isLoading || !user) {
     return (
@@ -44,8 +62,8 @@ export default function MyProfile({
         <MyProfileTopBar />
       </div>
 
-      <div className="mx-2 md:mx-8 mt-2 flex flex-col lg:flex-row gap-8 my-8 overflow-hidden">
-        <div className="lg:max-w-[350px] min-w-[350px] m-2">
+      <div className="mx-2 md:mx-8 mt-2 flex flex-col lg:flex-row gap-8">
+        <div className="lg:max-w-[350px] min-w-[350px]">
           <div className="flex flex-col gap-4">
             <div className=" shadow-xl rounded-xl p-4">
               <div className="h-[150px] bg-[#F5F5F5] flex flex-col items-center justify-center relative">
@@ -83,25 +101,25 @@ export default function MyProfile({
                 <div className="pt-2 grid gap-6  grid-cols-2">
                   <div className="flex flex-col gap-3 justify-center">
                     <h1 className="text-2xl text-contrasttext font-semibold">
-                      50
+                      {data?.totalPostsCreated}
                     </h1>
                     <p className="text-base text-fadedtext">Total Threads</p>
                   </div>
                   <div className="flex flex-col gap-3 justify-center">
                     <h1 className="text-2xl text-contrasttext font-semibold">
-                      50
+                      {data?.postsCommented}
                     </h1>
                     <p className="text-base text-fadedtext">Post Comments</p>
                   </div>
                   <div className="flex flex-col gap-3 justify-center">
                     <h1 className="text-2xl text-contrasttext font-semibold">
-                      50
+                      {data?.eventsOrganized}
                     </h1>
                     <p className="text-base text-fadedtext">Events Organized</p>
                   </div>
                   <div className="flex flex-col gap-3 justify-center">
                     <h1 className="text-2xl text-contrasttext font-semibold">
-                      50
+                      {data?.eventsParticipated}
                     </h1>
                     <p className="text-base text-fadedtext">
                       Event Participated
@@ -109,13 +127,13 @@ export default function MyProfile({
                   </div>
                   <div className="flex flex-col gap-3 justify-center">
                     <h1 className="text-2xl text-contrasttext font-semibold">
-                      50
+                      {data?.groupsCreated}
                     </h1>
                     <p className="text-base text-fadedtext">Group Created</p>
                   </div>
                   <div className="flex flex-col gap-3 justify-center">
                     <h1 className="text-2xl text-contrasttext font-semibold">
-                      50
+                      {data?.groupParticipated}
                     </h1>
                     <p className="text-base text-fadedtext">
                       Group Participated
@@ -124,7 +142,7 @@ export default function MyProfile({
                 </div>
               </div>
 
-              <div className="border-b pb-4">
+              {/* <div className="border-b pb-4">
                 <h1 className="text-xl py-2  text-contrasttext/50">Create</h1>
                 <div className="flex gap-3">
                   <Button
@@ -138,20 +156,21 @@ export default function MyProfile({
                     Group
                   </Button>
                 </div>
-              </div>
+              </div> */}
               <div className="pb-4">
                 <h1 className="text-xl py-2  text-contrasttext/50">Account</h1>
                 <div className="flex flex-wrap gap-3">
                   <Button
                     className={`rounded-3xl border-[0.2px] text-black transition-all duration-500 bg-[#F2F5F6] border-[#043A53] hover:bg-[#FCF7EA] hover:border-[#AF9654]`}
+                    onClick={logout}
                   >
                     Logout
                   </Button>
-                  <Button
+                  {/* <Button
                     className={`rounded-3xl border-[0.2px] text-black transition-all duration-500 bg-[#F2F5F6] border-[#043A53] hover:bg-[#FCF7EA] hover:border-[#AF9654]`}
                   >
                     Delete Account
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </div>

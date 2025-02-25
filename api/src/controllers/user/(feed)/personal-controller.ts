@@ -12,112 +12,113 @@ export const PersonalController = new Elysia({
     tags: ["User - Personal"],
   },
 })
-  .get("/joined-things", async ({ query, set, store }) => {
-    try {
+  .get(
+    "/joined-things",
+    async ({ query, set, store }) => {
+      try {
+        const userId = (store as StoreType)["id"];
 
-      const userId = (store as StoreType)["id"];
+        const joinedGroups = await UserGroupsModel.aggregate([
+          { $match: { userId: new Types.ObjectId(userId) } },
+          {
+            $sample: {
+              size: 4,
+            },
+          },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+            },
+          },
+          {
+            $unwind: "$group",
+          },
+          {
+            $project: {
+              groupName: "$group.name",
+              groupSlug: "$group.slug",
+            },
+          },
+        ]);
 
-      const joinedGroups = await UserGroupsModel.aggregate([
-        { $match: { userId: new Types.ObjectId(userId) } },
-        {
-          $sample: {
-            size: 4
-          }
-        },
-        {
-          $lookup: {
-            from: "groups",
-            localField: "group",
-            foreignField: "_id",
-            as: "group"
-          }
-        },
-        {
-          $unwind: "$group"
-        },
-        {
-          $project: {
-            groupName: "$group.name",
-            groupSlug: "$group.slug"
-          }
-        }
-      ])
+        const TopicsFollowed = await UserSubTopicModel.aggregate([
+          { $match: { userId: new Types.ObjectId(userId) } },
 
-      const TopicsFollowed = await UserSubTopicModel.aggregate([
-        { $match: { userId: new Types.ObjectId(userId) } },
+          {
+            $sample: {
+              size: 4,
+            },
+          },
+          {
+            $lookup: {
+              from: "subtopics",
+              localField: "subTopicId",
+              foreignField: "_id",
+              as: "subtopic",
+            },
+          },
+          {
+            $unwind: "$subtopic",
+          },
+          {
+            $project: {
+              subtopicName: "$subtopic.subTopicName",
+              subtopicSlug: "$subtopic.slug",
+            },
+          },
+        ]);
 
-        {
-          $sample: {
-            size: 4
-          }
-        },
-        {
-          $lookup: {
-            from: "subtopics",
-            localField: "subTopicId",
-            foreignField: "_id",
-            as: "subtopic"
-          }
-        },
-        {
-          $unwind: "$subtopic"
-        },
-        {
-          $project: {
-            subtopicName: "$subtopic.subTopicName",
-            subtopicSlug: "$subtopic.slug"
-          }
-        }
-      ])
+        const joinedEvents = await EventModel.aggregate([
+          { $match: { attendees: new Types.ObjectId(userId) } },
+          {
+            $sample: {
+              size: 4,
+            },
+          },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+            },
+          },
+          {
+            $unwind: "$group",
+          },
+          {
+            $project: {
+              eventName: "$eventName",
+              groupSulg: "$group.slug",
+            },
+          },
+        ]);
 
-      const joinedEvents = await EventModel.aggregate([
-        { $match: { attendees: new Types.ObjectId(userId) } },
-        {
-          $sample: {
-            size: 4
-          }
-        },
-        {
-          $lookup: {
-            from: "groups",
-            localField: "group",
-            foreignField: "_id",
-            as: "group"
-          }
-        },
-        {
-          $unwind: "$group"
-        },
-        {
-          $project: {
-            eventName: "$eventName",
-            groupSulg: "$group.slug"
-          }
-        }
-      ])
+        set.status = 200;
 
-      set.status = 200
-
-      return {
-        joinedGroups,
-        TopicsFollowed,
-        joinedEvents
+        return {
+          joinedGroups,
+          TopicsFollowed,
+          joinedEvents,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
+        };
       }
-
-
-    } catch (error: any) {
-      console.log(error)
-      set.status = 500
-      return {
-        message: error
-      }
+    },
+    {
+      detail: {
+        summary: "Get User joined things",
+        description: "Get User joined things",
+      },
     }
-  }, {
-    detail: {
-      summary: "Get User joined things",
-      description: "Get User joined things",
-    }
-  })
+  )
   .get(
     "/groups",
     async ({ set, query, store }) => {
@@ -152,4 +153,4 @@ export const PersonalController = new Elysia({
         page: t.Number(),
       }),
     }
-  )
+  );

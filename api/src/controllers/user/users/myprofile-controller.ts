@@ -112,6 +112,38 @@ export const MyProfileController = new Elysia({
               as: "comments",
             },
           },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "subtopics",
+              localField: "subTopic",
+              foreignField: "_id",
+              as: "subTopic",
+              pipeline: [
+                {
+                  $project: {
+                    subTopicName: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
           ...(userId
             ? [
               {
@@ -143,7 +175,8 @@ export const MyProfileController = new Elysia({
               createdAt: 1,
               likesCount: { $size: "$likes" },
               commentsCount: { $size: "$comments" },
-
+              subTopic: 1,
+              group: 1,
               url: 1,
               image: 1,
               likedByMe: {
@@ -300,6 +333,38 @@ export const MyProfileController = new Elysia({
               as: "comments",
             },
           },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "subtopics",
+              localField: "subTopic",
+              foreignField: "_id",
+              as: "subTopic",
+              pipeline: [
+                {
+                  $project: {
+                    subTopicName: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
           ...(userId
             ? [
               {
@@ -331,6 +396,8 @@ export const MyProfileController = new Elysia({
               createdAt: 1,
               likesCount: { $size: "$likes" },
               commentsCount: { $size: "$comments" },
+              subTopic: 1,
+              group: 1,
               url: 1,
               image: 1,
               likedByMe: {

@@ -14,6 +14,7 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -40,6 +41,8 @@ interface IPostCard {
   commentCount?: number;
   url?: string;
   image?: string;
+  subTopic: any;
+  group: any;
 }
 
 export default function PersonalPostcard({
@@ -155,7 +158,24 @@ export default function PersonalPostcard({
             <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
-            <p className="text-[#043A53] text-xs font-medium">300+ Groups</p>
+            <p className="text-[#043A53] text-xs font-medium">
+              {post?.subTopic?.[0]?.subTopicName && (
+                <Link href={`/feed/explore/${post.subTopic[0].slug}`}>
+                  {post.subTopic[0].subTopicName}
+                </Link>
+              )}
+              {post?.group?.[0]?.name && (
+                <>
+                  {" | "}
+                  <Link
+                    href={`/groups/${post.group[0].slug}`}
+                    className="text-fadedtext"
+                  >
+                    {post.group[0].name}
+                  </Link>
+                </>
+              )}
+            </p>
           </div>
         </div>
 

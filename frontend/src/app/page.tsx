@@ -1,5 +1,6 @@
 "use client";
 
+import { TopCommunityBar } from "@/components/community/top-community-bar";
 import PersonalFeed from "@/components/pages/personalfeed";
 import Hero1 from "@/components/shared/hero1";
 import Topbar from "@/components/shared/topbar";
@@ -14,7 +15,6 @@ import FAQ2 from "../components/shared/faq-two";
 import Footer from "../components/shared/footer";
 import Join from "../components/shared/join";
 import Testimonial from "../components/shared/testimonials";
-import { TopCommunityBar } from "@/components/community/top-community-bar";
 
 export default function Home() {
   const router = useRouter();

@@ -150,7 +150,7 @@ export const postController = new Elysia({
         userId: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         subTopic: t.String({
           default: "",
@@ -160,7 +160,7 @@ export const postController = new Elysia({
         description: "Get posts",
         summary: "Get posts",
       },
-    },
+    }
   )
   .get(
     "/personal",
@@ -175,7 +175,7 @@ export const postController = new Elysia({
           {
             userId: userId,
           },
-          "subTopicId",
+          "subTopicId"
         );
 
         if (!userJoinedSubtopics || userJoinedSubtopics.length === 0) {
@@ -187,7 +187,7 @@ export const postController = new Elysia({
         }
 
         const subTopicIds = userJoinedSubtopics.map(
-          (subTopic) => subTopic.subTopicId,
+          (subTopic) => subTopic.subTopicId
         );
 
         const posts = await PostModel.aggregate([
@@ -237,6 +237,38 @@ export const postController = new Elysia({
               as: "comments",
             },
           },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "subtopics",
+              localField: "subTopic",
+              foreignField: "_id",
+              as: "subTopic",
+              pipeline: [
+                {
+                  $project: {
+                    subTopicName: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
           ...(userId
             ? [
                 {
@@ -268,6 +300,8 @@ export const postController = new Elysia({
               createdAt: 1,
               likesCount: { $size: "$likes" },
               commentsCount: { $size: "$comments" },
+              subTopic: 1,
+              group: 1,
               url: 1,
               image: 1,
               likedByMe: {
@@ -310,7 +344,7 @@ export const postController = new Elysia({
         userId: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         createdByMe: t.Boolean({
           default: false,
@@ -320,7 +354,7 @@ export const postController = new Elysia({
         description: "Get personal posts",
         summary: "Get personal posts",
       },
-    },
+    }
   )
   .get(
     "/personalprofile",
@@ -464,7 +498,7 @@ export const postController = new Elysia({
         userId: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         createdByMe: t.Boolean({
           default: false,
@@ -474,7 +508,7 @@ export const postController = new Elysia({
         description: "Get posts posted by user",
         summary: "Get posts posted by user",
       },
-    },
+    }
   )
   .get(
     "/group",
@@ -614,17 +648,17 @@ export const postController = new Elysia({
         userId: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         groupid: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
       }),
       detail: {
         description: "Get personal posts",
         summary: "Get personal posts",
       },
-    },
+    }
   );

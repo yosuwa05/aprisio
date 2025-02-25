@@ -16,7 +16,7 @@ export default function MyProfilePage() {
 
   return (
     <div className="flex w-full max-w-[1200px] mx-auto gap-4 hide-scrollbar">
-      <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-90px)] hide-scrollbar overflow-hidden ">
+      <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-120px)] hide-scrollbar overflow-hidden ">
         {activeTab == "commented-posts" && <MyProfileCommentedPosts />}
         {activeTab == "created-posts" && <MyProfileCreatedPosts />}
         {activeTab == "favourite-posts" && <MyProfileLikedPosts />}
