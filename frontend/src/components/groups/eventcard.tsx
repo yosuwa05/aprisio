@@ -62,9 +62,11 @@ export function EventCard({ event }: Props) {
     onSuccess(data) {
       if (data.data.ok) {
         toast(data.data.message || "Attended event successfully");
-      } else {
-        toast(data.data.error || "Something went wrong");
       }
+    },
+    onError(error: any) {
+      console.log(error);
+      toast.error(error.response.data.message || "Something went wrong");
     },
   });
 
