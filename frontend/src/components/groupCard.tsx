@@ -127,6 +127,9 @@ export default function GroupCard({ group }: Props) {
           } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
           onClick={() => {
             if (!user) return toast.error("Login to join");
+            if (group?.groupAdmin?._id === user?.id) {
+              return console.log(group);
+            }
             if (group.canJoin) {
               mutate({
                 id: group._id,
