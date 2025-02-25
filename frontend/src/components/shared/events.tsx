@@ -47,7 +47,6 @@ export default function Events() {
       <div className='lg:px-14 relative z-20 px-5 lg:pt-14  pt-7 flex justify-between items-center'>
         <h1 className='text-[#353535] flex lg:gap-6 gap-1 flex-col xl:text-7xl lg:text-4xl text-2xl font-roboto font-semibold'>
           <span> Upcoming Experiences</span>
-          {/* <span>On this Year</span> */}
         </h1>
         <p className='flex flex-col text-right'>
           <span className='text-[#043A53] xl:text-6xl lg:text-4xl text-2xl font-semibold font-roboto'>
@@ -104,35 +103,7 @@ export default function Events() {
           ))}
         </Swiper>
       </div>
-      {/* <div className='block py-8  pb-16 lg:hidden'>
-        {data.map((item, index) => (
-          <div key={index} className='flex pt-8 justify-center'>
-            <div className='relative h-96 w-[90%] max-w-[400px] rounded-2xl overflow-hidden'>
-              <Image
-                src={item.src}
-                alt={item.title}
-                unoptimized
-                className='h-[450px] w-full object-left rounded-2xl'
-              />
 
-             
-              <div className='absolute px-4 py-4 flex justify-between  bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]'>
-                <div>
-                  <p className='font-mulish  flex items-center text-left text-[1.25rem] text-[#353535]'>
-                    {item.title}
-                  </p>
-                  <p className='font-mulish  flex items-center text-left text-[1.25rem] text-[#353535]'>
-                    {item.date} - {item?.loc}
-                  </p>
-                </div>
-                <div>
-                  <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div> */}
       <div className='block py-8 pb-16 lg:hidden'>
         {data.map((item, index) => (
           <div key={index} className='flex pt-8 justify-center'>
