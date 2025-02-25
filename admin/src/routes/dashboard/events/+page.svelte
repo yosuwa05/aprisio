@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import CreateEvents from '$lib/pages/events/create-events.svelte';
+	import { eventsStore } from '$lib/pages/events/events-store';
 	import EventsTable from '$lib/pages/events/events-table.svelte';
 	import { topicsStore } from '$lib/pages/topics/topics-store';
 	import Icon from '@iconify/svelte';
@@ -17,10 +18,13 @@
 	class="w-full p-4"
 	onValueChange={(value) => {
 		goto(`/admin/dashboard/events?mode=${value}`);
-		$topicsStore = {
+		$eventsStore = {
 			mode: value,
 			id: '',
-			topicName: ''
+			eventName: '',
+			date: '',
+			location: '',
+			eventRules: []
 		};
 	}}
 >

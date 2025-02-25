@@ -1,6 +1,5 @@
 import { saveFile } from "@/lib/file-s3";
 import { EventModel } from "@/models";
-import { TopicModel } from "@/models/topicsmodel";
 import Elysia, { t } from "elysia";
 
 export const eventsController = new Elysia({
@@ -88,9 +87,9 @@ export const eventsController = new Elysia({
       const { page = 1, limit = 10, q } = query;
 
       try {
-        const topics = await TopicModel.find({
-          isDeleted: false,
-          topicName: {
+        const events = await EventModel.find({
+          isManagedByAdmin: true,
+          eventName: {
             $regex: q,
             $options: "i",
           },
@@ -99,20 +98,21 @@ export const eventsController = new Elysia({
           .skip((page - 1) * limit)
           .limit(limit);
 
-        const totalTopics = await TopicModel.countDocuments({
-          isDeleted: false,
-          topicName: {
+        const totalEvents = await EventModel.countDocuments({
+          isManagedByAdmin: true,
+          eventName: {
             $regex: q,
             $options: "i",
           },
         });
 
         return {
-          topics,
-          total: totalTopics,
+          events,
+          total: totalEvents,
           ok: true,
         };
       } catch (error: any) {
+        console.error(error);
         set.status = 500;
         return {
           message: "An internal error occurred while fetching topics.",
@@ -129,6 +129,49 @@ export const eventsController = new Elysia({
       detail: {
         description: "Get topics",
         summary: "Get topics",
+      },
+    }
+  )
+  .delete(
+    "/:id",
+    async ({ query, set, store, params }) => {
+      const { permanent } = query;
+      const { id } = params;
+
+      try {
+        const event = await EventModel.findById(id);
+
+        if (!event) {
+          return {
+            message: "Event not found",
+          };
+        }
+
+        await EventModel.findOneAndDelete({ _id: id });
+
+        set.status = 200;
+        return {
+          message: "Event Deleted Successfully",
+          ok: true,
+        };
+      } catch (error: any) {
+        set.status = 500;
+        return {
+          message: "An internal error occurred while deleting event.",
+          ok: false,
+        };
+      }
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+      query: t.Object({
+        permanent: t.Optional(t.Boolean()),
+      }),
+      detail: {
+        description: "Delete event",
+        summary: "Delete event",
       },
     }
   );

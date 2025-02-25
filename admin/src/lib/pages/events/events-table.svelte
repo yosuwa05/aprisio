@@ -4,7 +4,6 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Input } from '$lib/components/ui/input';
-	import { Switch } from '$lib/components/ui/switch';
 	import * as Table from '$lib/components/ui/table';
 	import TableCaption from '$lib/components/ui/table/table-caption.svelte';
 	import { queryClient } from '$lib/query-client';
@@ -15,7 +14,7 @@
 	import { eventsStore } from './events-store';
 
 	async function fetchTopics(limit = 10, page = 1, search = '') {
-		const res = await _axios.get(`/topics/all?limit=${limit}&page=${page}&q=${search}`);
+		const res = await _axios.get(`/events/all?limit=${limit}&page=${page}&q=${search}`);
 		const data = await res.data;
 		return data;
 	}
@@ -42,7 +41,7 @@
 
 	const deleteMutation = createMutation({
 		mutationFn: ({ id, permanent }: { id: string; permanent: boolean }) =>
-			_axios.delete(`/topics/${id}?permanent=${permanent}`),
+			_axios.delete(`/events/${id}?permanent=${permanent}`),
 		onSuccess({ data }) {
 			queryClient.refetchQueries({
 				queryKey: ['topics fetch']
@@ -101,7 +100,7 @@
 			{#if $query.isLoading}
 				<Table.Caption>Loading....</Table.Caption>
 			{:else if $query?.data?.total === 0}
-				<TableCaption class="w-full text-center text-xs">No Managers Found!</TableCaption>
+				<TableCaption class="w-full text-center text-xs">No Events Found!</TableCaption>
 			{/if}
 			<Table.Header>
 				<Table.Row class="">
@@ -109,38 +108,29 @@
 					<Table.Head>Topic Name</Table.Head>
 
 					<Table.Head class="">Created At</Table.Head>
-					<Table.Head class="">Active</Table.Head>
+					<Table.Head>Members</Table.Head>
 					<Table.Head>Actions</Table.Head>
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each $query.data?.topics || [] as topic, i}
+				{#each $query.data?.events || [] as event, i}
 					<Table.Row>
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
-						<Table.Cell>{topic.topicName}</Table.Cell>
+						<Table.Cell>{event.eventName}</Table.Cell>
 						<Table.Cell class="flex items-center"
-							>{formatDate(new Date(topic.createdAt))}</Table.Cell
+							>{formatDate(new Date(event.createdAt))}</Table.Cell
 						>
 						<Table.Cell>
-							<Switch
-								class="text-right"
-								disabled={$deleteMutation.isPending}
-								checked={topic.active}
-								onclick={() =>
-									$deleteMutation.mutate({
-										id: topic._id,
-										permanent: false
-									})}
-							/>
+							{event?.attendees?.length}
 						</Table.Cell>
 						<Table.Cell class="flex gap-2">
 							<button
 								onclick={() => {
 									$eventsStore = {
-										id: topic._id,
+										id: event._id,
 										mode: 'create',
-										eventName: topic.topicName,
-										date: topic.createdAt,
+										eventName: event.topicName,
+										date: event.createdAt,
 										eventRules: [],
 										location: ''
 									};
@@ -151,7 +141,7 @@
 
 							<button
 								onclick={() => (
-									(modelOpen = true), ($eventsStore = { ...$eventsStore, id: topic._id })
+									(modelOpen = true), ($eventsStore = { ...$eventsStore, id: event._id })
 								)}
 							>
 								<Icon icon={'mingcute:delete-2-fill'} class="text-xl hover:text-red-500" />
@@ -165,7 +155,9 @@
 		<Dialog.Root open={modelOpen} onOpenChange={(e) => (modelOpen = e)}>
 			<Dialog.Content class="p-6">
 				<Dialog.Header class="text-center">
-					<Dialog.Title class="text-center">Do you want to delete this Manager ?</Dialog.Title>
+					<Dialog.Title class="text-center"
+						>Do you want to delete this Event Permanently ?</Dialog.Title
+					>
 				</Dialog.Header>
 
 				<div class="flex justify-around gap-4">

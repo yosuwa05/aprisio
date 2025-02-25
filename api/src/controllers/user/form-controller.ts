@@ -220,12 +220,10 @@ export const formController = new Elysia({
     "/verify-email",
     async ({ query, set }) => {
       const token = query.token as string;
-      const hashedToken = token
-      const currentTime = new Date();
-      console.log(hashedToken)
+      const hashedToken = token;
+
       const user = await UserModel.findOne({
         emailVerificationToken: hashedToken,
-        emailVerificationTokenExpires: { $gt: currentTime },
       });
 
       if (user) {
