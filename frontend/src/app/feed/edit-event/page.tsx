@@ -70,8 +70,6 @@ export default function NewEvent() {
 
   useEffect(() => {
     if (currentEvent && currentEvent.eventName) {
-      console.log("Updating form with event:", currentEvent);
-
       setValue("eventName", currentEvent.eventName || "");
       setValue("location", currentEvent.location || "");
 
@@ -94,7 +92,6 @@ export default function NewEvent() {
           events: [{ heading: "", subHeading: "" }],
         });
       }
-
       setDate(currentEvent.date ? new Date(currentEvent.date) : undefined);
       setSelectedSubTopic({
         _id: currentEvent.group?._id || "",
@@ -122,7 +119,7 @@ export default function NewEvent() {
         });
         router.back();
       } else {
-        toast(data.data.message || "An error occurred while creating post");
+        toast(data.data.message || "An error occurred ");
       }
     },
   });

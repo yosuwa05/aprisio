@@ -1,7 +1,7 @@
 import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";

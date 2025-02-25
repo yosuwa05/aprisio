@@ -160,13 +160,67 @@ export const groupController = new Elysia({
   )
   .put("/edit", async ({ body, set, store }) => {
     try {
-      // const {groupId,name,description,subTopic} = body
+      const userId = (store as any)["id"];
+      const { groupId, name, description, subTopic } = body;
+
+      const group = await GroupModel.findById(groupId)
+
+      if (!group) {
+        set.status = 400
+        return {
+          message: "Group not found",
+          ok: false,
+        };
+      }
+
+      if (group.groupAdmin.toString() !== userId) {
+        set.status = 400
+        return {
+          message: "You are not authorized to edit this group",
+          ok: false,
+        };
+      }
+
+      let updateFields: any = {}
+      if (name) updateFields.name = name;
+      if (description) updateFields.description = description;
+
+
+      if (subTopic) {
+        const subTopicExist = await SubTopicModel.findOne({ slug: subTopic })
+        if (!subTopicExist) {
+          return {
+            message: "Topic not found",
+            ok: false,
+          };
+        }
+        updateFields.subTopic = subTopicExist._id
+      }
+
+      await GroupModel.findByIdAndUpdate(groupId, updateFields, { new: true })
+
+      return {
+        message: "Group updated successfully",
+        ok: true,
+      };
+
     } catch (error: any) {
       console.log(error)
       set.status = 500
       return {
         message: error
       }
+    }
+  }, {
+    body: t.Object({
+      name: t.String(),
+      description: t.String(),
+      subTopic: t.String(),
+      groupId: t.String()
+    }),
+    detail: {
+      summary: "Edit a group",
+      description: "Edit a group"
     }
   })
   .post(

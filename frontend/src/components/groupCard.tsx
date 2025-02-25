@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
+import useGroupStore from "@/stores/edit-section/GroupStrore";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import personImage from "@img/assets/person.png";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -11,12 +12,17 @@ import { toast } from "sonner";
 
 interface IGroupCard {
   name: string;
+  description: string;
   createdAt: string;
   groupAdmin: IAdmin;
   canJoin: boolean;
   slug: string;
   memberCount: number;
   _id: string;
+  subTopic: {
+    _id: string;
+    slug: string;
+  };
 }
 
 interface IAdmin {
@@ -128,7 +134,17 @@ export default function GroupCard({ group }: Props) {
           onClick={() => {
             if (!user) return toast.error("Login to join");
             if (group?.groupAdmin?._id === user?.id) {
-              return console.log(group);
+              // return console.log(group);
+              useGroupStore.getState().setCurrentGroup({
+                name: group.name,
+                description: group.description,
+                groupId: group._id,
+                subTopic: {
+                  _id: group.subTopic._id,
+                  slug: group.subTopic.slug,
+                },
+              });
+              return router.push("/edit-group");
             }
             if (group.canJoin) {
               mutate({
