@@ -3,8 +3,9 @@
 import { _axios } from "@/lib/axios-instance";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function VerifyEmail({ error }: { error?: string }) {
+function VerifyEmailContent({ error }: { error?: string }) {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   console.log(token);
@@ -79,5 +80,27 @@ export default function VerifyEmail({ error }: { error?: string }) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function VerifyEmail({ error }: { error?: string }) {
+  return (
+    <Suspense
+      fallback={
+        <div className='flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-6'>
+          <div className='max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center'>
+            <div className='animate-pulse'>
+              <div className='flex justify-center mb-6'>
+                <div className='h-20 w-20 rounded-full bg-gray-200'></div>
+              </div>
+              <div className='h-8 bg-gray-200 rounded mb-4'></div>
+              <div className='h-4 bg-gray-200 rounded mb-6'></div>
+              <div className='h-12 bg-gray-200 rounded'></div>
+            </div>
+          </div>
+        </div>
+      }>
+      <VerifyEmailContent error={error} />
+    </Suspense>
   );
 }
