@@ -54,12 +54,12 @@ export const adminAuthController = new Elysia({
       try {
         const admin = await AdminAuthModel.findOne({ email });
         if (!admin) {
-          set.status = 401; // 401 Unauthorized
+          set.status = 401;
           return { message: "Invalid email or password." };
         }
 
         if (password !== admin.password) {
-          set.status = 401; // 401 Unauthorized
+          set.status = 401;
           return { message: "Invalid email or password." };
         }
 

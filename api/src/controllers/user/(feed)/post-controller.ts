@@ -55,6 +55,11 @@ export const postController = new Elysia({
               as: "author",
               pipeline: [
                 {
+                  $match: {
+                    active: true,
+                  },
+                },
+                {
                   $project: {
                     name: 1,
                     email: 1,
@@ -62,6 +67,9 @@ export const postController = new Elysia({
                 },
               ],
             },
+          },
+          {
+            $match: { "author.0": { $exists: true } },
           },
           {
             $lookup: {
@@ -213,6 +221,11 @@ export const postController = new Elysia({
               as: "author",
               pipeline: [
                 {
+                  $match: {
+                    active: true,
+                  },
+                },
+                {
                   $project: {
                     name: 1,
                     email: 1,
@@ -220,6 +233,9 @@ export const postController = new Elysia({
                 },
               ],
             },
+          },
+          {
+            $match: { "author.0": { $exists: true } },
           },
           {
             $lookup: {
@@ -398,6 +414,11 @@ export const postController = new Elysia({
               as: "author",
               pipeline: [
                 {
+                  $match: {
+                    active: true,
+                  },
+                },
+                {
                   $project: {
                     name: 1,
                     email: 1,
@@ -405,6 +426,9 @@ export const postController = new Elysia({
                 },
               ],
             },
+          },
+          {
+            $match: { "author.0": { $exists: true } },
           },
           {
             $lookup: {
@@ -551,6 +575,11 @@ export const postController = new Elysia({
               as: "author",
               pipeline: [
                 {
+                  $match: {
+                    active: true,
+                  },
+                },
+                {
                   $project: {
                     name: 1,
                     email: 1,
@@ -558,6 +587,9 @@ export const postController = new Elysia({
                 },
               ],
             },
+          },
+          {
+            $match: { "author.0": { $exists: true } },
           },
           {
             $lookup: {

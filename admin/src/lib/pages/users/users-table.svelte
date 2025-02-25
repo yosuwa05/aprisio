@@ -2,11 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { _axios } from '$lib/_axios';
 	import Paginator from '$lib/components/paginator.svelte';
+	import { Badge } from '$lib/components/ui/badge';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import * as Table from '$lib/components/ui/table';
 	import { formatDate } from '$lib/utils';
 	import Icon from '@iconify/svelte';
-	import { createQuery } from '@tanstack/svelte-query';
+	import { createMutation, createQuery } from '@tanstack/svelte-query';
 	import { tick } from 'svelte';
 
 	async function fetchUsers(limit = 10, page = 1, search = '') {
@@ -32,6 +33,19 @@
 	const query = createQuery({
 		queryKey: ['users fetch', debounceSearch],
 		queryFn: () => fetchUsers(limit, page, search)
+	});
+
+	const banMutation = createMutation({
+		mutationFn: async ({ id }: { id: string }) => {
+			let res = await _axios.post('/user/banuser/' + id);
+			return res.data;
+		},
+		onSuccess: (data) => {
+			$query.refetch();
+		},
+		onError: (error) => {
+			console.log(error);
+		}
 	});
 </script>
 
@@ -98,7 +112,16 @@
 						<Table.Cell>{user.mobile}</Table.Cell>
 						<Table.Cell>{user.email || '-'}</Table.Cell>
 						<Table.Cell>{formatDate(user.createdAt)}</Table.Cell>
-						<Table.Cell>{user.active ? 'Yes' : 'No'}</Table.Cell>
+						<Table.Cell>
+							<button onclick={() => $banMutation.mutate({ id: user._id })}>
+								<Badge
+									class={`ml-2 ${!user.active ? 'bg-green-500 text-white hover:bg-green-700' : 'bg-red-500 text-white hover:bg-red-700'}`}
+									variant="secondary"
+								>
+									{user.active ? 'Deactivate' : 'Activate'}
+								</Badge>
+							</button>
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>

@@ -13,9 +13,7 @@ export const userController = new Elysia({
         let _limit = limit || 10;
         let _page = page || 1;
 
-        const searchQuery: any = {
-          active: true,
-        };
+        const searchQuery: any = {};
 
         if (q) {
           searchQuery.name = { $regex: q, $options: "i" };
@@ -28,9 +26,7 @@ export const userController = new Elysia({
           .select("email address name mobile active createdAt")
           .exec();
 
-        const totalUsers = await UserModel.countDocuments({
-          active: true,
-        });
+        const totalUsers = await UserModel.countDocuments({});
 
         return {
           users,
@@ -94,6 +90,41 @@ export const userController = new Elysia({
       }),
       detail: {
         summary: "Get a user by id",
+      },
+    }
+  )
+  .post(
+    "/banuser/:id",
+    async ({ params }) => {
+      try {
+        const { id } = params;
+
+        const user = await UserModel.findById(id);
+        if (!user) {
+          return { message: "User not found" };
+        }
+
+        user.active = !user.active;
+        await user.save();
+
+        return {
+          user,
+          status: "success",
+        };
+      } catch (error) {
+        console.log(error);
+        return {
+          error,
+          status: "error",
+        };
+      }
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+      detail: {
+        summary: "Deactivate a user by id",
       },
     }
   );

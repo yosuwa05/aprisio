@@ -23,6 +23,13 @@ export const authController = new Elysia({
           };
         }
 
+        if (!user.active) {
+          return {
+            message: "Your account is not active! Please contact admin",
+            ok: false,
+          };
+        }
+
         const isMatch = await Bun.password.verify(password, user.password);
 
         if (!isMatch) {
