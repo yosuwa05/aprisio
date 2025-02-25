@@ -23,7 +23,7 @@
 
 	let showPassword = false;
 	let editMode = false;
-	let previewImage: string | undefined; // Store the profile image preview URL
+	let previewImage: string | undefined;
 	let ImageUploaded = false;
 	const { form, errors, enhance, constraints, reset } = superForm(defaults(zod(_settingsSchema)), {
 		SPA: true,
