@@ -220,9 +220,9 @@ export const formController = new Elysia({
     "/verify-email",
     async ({ query, set }) => {
       const token = query.token as string;
-      const hashedToken = hashToken(token);
+      const hashedToken = token
       const currentTime = new Date();
-
+      console.log(hashedToken)
       const user = await UserModel.findOne({
         emailVerificationToken: hashedToken,
         emailVerificationTokenExpires: { $gt: currentTime },
@@ -247,6 +247,9 @@ export const formController = new Elysia({
       }
     },
     {
+      query: t.Object({
+        token: t.String(),
+      }),
       detail: {
         description: "Verify email",
         summary: "Verify email",
