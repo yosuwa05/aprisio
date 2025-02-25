@@ -85,7 +85,7 @@ export default function EditPost() {
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
       return await _axios.post(
-        "/authenticated/post/edit-group-post?postId=" + postid,
+        "/authenticated/post/edit?postId=" + postid,
         data
       );
     },
