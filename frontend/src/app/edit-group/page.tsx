@@ -1,8 +1,8 @@
 "use client";
 
+import { GroupEventSection } from "@/components/edit-group-secrtion/events-section";
 import GlobalLoader from "@/components/globalloader";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -12,16 +12,15 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
+import useGroupStore from "@/stores/edit-section/GroupStrore";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
+import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/chevron-left.svg";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { ChevronDown, PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -34,63 +33,56 @@ const postSchema = z.object({
 
 export default function CreateGroup() {
   const [activeIndex, setActiveIndex] = useState(0);
-
   const [subTopicSearch, setSubTopicSearch] = useState("");
   const [subTopicOpen, setSubTopicOpen] = useState(false);
   const [selectedSubTopic, setSelectedSubTopic] = useState({
     slug: "",
   });
-
   const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
-
   const { register, reset, handleSubmit, setValue } = useForm({
     resolver: zodResolver(postSchema),
   });
 
-  useEffect(() => {
-    setValue("groupName", "");
-    setValue("description", "");
-  }, []);
-
-  const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
-
-  useEffect(() => {
-    setSelectedSubTopic({ slug: activeSubTopic });
-  }, [activeSubTopic]);
-
   const user = useGlobalAuthStore((state) => state.user);
-
-  const router = useRouter();
+  const currentGroup = useGroupStore((state) => state.currentGroup);
   const queryClient = useQueryClient();
+  const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
+  useEffect(() => {
+    if (currentGroup && currentGroup.name) {
+      console.log(currentGroup);
+      setValue("groupName", currentGroup.name || "");
+      setValue("description", currentGroup.description || "");
+      setSelectedSubTopic({ slug: currentGroup.subTopic.slug });
+    }
+  }, [currentGroup, setValue]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
-      return await _axios.post("/group/create", data);
+      return await _axios.put("/group/edit", data);
     },
     onSuccess(data) {
       if (data.data.ok) {
-        toast("Group created successfully");
-        reset();
-        queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
+        toast.success(data.data.message || "Group Updated Sucessfully");
         queryClient.invalidateQueries({
-          queryKey: ["groups" + user?.id, selectedSubTopic?.slug],
+          queryKey: ["my-profile-created-groups", user?.id, activeTab],
         });
-        router.back();
+        useGroupStore.getState().resetCurrentGroup();
       } else {
         toast(data.data.message || "An error occurred while creating post");
       }
     },
   });
-
+  console.log(currentGroup.groupId);
   const onSubmit = (data: any) => {
     if (!selectedSubTopic.slug) return toast("Please select a topic");
-
+    console.log(data);
+    console.log(selectedSubTopic.slug);
     const formData = new FormData();
 
-    formData.append("groupName", data.groupName);
+    formData.append("name", data.groupName);
     formData.append("description", data.description);
-    formData.append("subtopicId", selectedSubTopic.slug);
-
+    formData.append("subTopic", selectedSubTopic.slug);
+    formData.append("groupId", currentGroup.groupId);
     mutate(formData);
   };
 
@@ -210,6 +202,9 @@ export default function CreateGroup() {
                 </Button>
               </div>
             </form>
+          )}
+          {activeIndex == 1 && (
+            <GroupEventSection groupId={currentGroup.groupId} />
           )}
         </div>
       </div>

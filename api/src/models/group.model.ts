@@ -29,7 +29,7 @@ const GroupSchema = new Schema<IGroup>(
     },
     subTopic: {
       type: Schema.Types.ObjectId,
-      ref: "subtopics",
+      ref: "subtopic",
     },
     groupAdmin: {
       type: Schema.Types.ObjectId,

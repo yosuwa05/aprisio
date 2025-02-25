@@ -114,26 +114,26 @@ export const MyProfileController = new Elysia({
           },
           ...(userId
             ? [
-                {
-                  $lookup: {
-                    from: "likes",
-                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $and: [
-                              { $eq: ["$post", "$$postId"] },
-                              { $eq: ["$user", "$$userId"] },
-                            ],
-                          },
+              {
+                $lookup: {
+                  from: "likes",
+                  let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            { $eq: ["$post", "$$postId"] },
+                            { $eq: ["$user", "$$userId"] },
+                          ],
                         },
                       },
-                    ],
-                    as: "likedByMe",
-                  },
+                    },
+                  ],
+                  as: "likedByMe",
                 },
-              ]
+              },
+            ]
             : []),
           {
             $project: {
@@ -302,26 +302,26 @@ export const MyProfileController = new Elysia({
           },
           ...(userId
             ? [
-                {
-                  $lookup: {
-                    from: "likes",
-                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $and: [
-                              { $eq: ["$post", "$$postId"] },
-                              { $eq: ["$user", "$$userId"] },
-                            ],
-                          },
+              {
+                $lookup: {
+                  from: "likes",
+                  let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            { $eq: ["$post", "$$postId"] },
+                            { $eq: ["$user", "$$userId"] },
+                          ],
                         },
                       },
-                    ],
-                    as: "likedByMe",
-                  },
+                    },
+                  ],
+                  as: "likedByMe",
                 },
-              ]
+              },
+            ]
             : []),
           {
             $project: {
@@ -493,26 +493,26 @@ export const MyProfileController = new Elysia({
           },
           ...(userId
             ? [
-                {
-                  $lookup: {
-                    from: "likes",
-                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                    pipeline: [
-                      {
-                        $match: {
-                          $expr: {
-                            $and: [
-                              { $eq: ["$post", "$$postId"] },
-                              { $eq: ["$user", "$$userId"] },
-                            ],
-                          },
+              {
+                $lookup: {
+                  from: "likes",
+                  let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                  pipeline: [
+                    {
+                      $match: {
+                        $expr: {
+                          $and: [
+                            { $eq: ["$post", "$$postId"] },
+                            { $eq: ["$user", "$$userId"] },
+                          ],
                         },
                       },
-                    ],
-                    as: "likedByMe",
-                  },
+                    },
+                  ],
+                  as: "likedByMe",
                 },
-              ]
+              },
+            ]
             : []),
           {
             $project: {
@@ -670,6 +670,7 @@ export const MyProfileController = new Elysia({
 
         const groups = await GroupModel.find({ groupAdmin: userId })
           .populate("groupAdmin", "name")
+          .populate("subTopic", "slug")
           .sort({ createdAt: -1, _id: -1 })
           .skip((_page - 1) * _limit)
           .limit(_limit)
