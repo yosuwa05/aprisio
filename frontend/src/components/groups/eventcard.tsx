@@ -5,10 +5,16 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import useEventStore from "@/stores/edit-section/EventStore";
 
 type Props = {
   event: Event;
   gropuslug: string;
+};
+type EventRule = {
+  heading: string;
+  subHeading: string;
+  _id: string;
 };
 
 type Event = {
@@ -19,6 +25,14 @@ type Event = {
   createdAt: string;
   attending: boolean;
   managedBy: string;
+  rules: Array<EventRule>;
+  group: {
+    name: string;
+    slug: string;
+    _id: string;
+  };
+  attendees: Array<string>;
+  isEventEnded: boolean;
 };
 
 function formatDateString(date: Date) {
@@ -93,6 +107,25 @@ export function EventCard({ event }: Props) {
            bg-[#FCF7EA] hover:bg-[#FCF7EA] border-[#AF965447] rounded-3xl border-[0.2px]  text-black`}
             onClick={() => {
               if (isPending) return;
+              if (event?.managedBy === user?.id) {
+                useEventStore.getState().setCurrentEvent({
+                  eventId: event._id,
+                  location: event.location,
+                  date: event.date,
+                  eventName: event.eventName,
+                  rules: event.rules,
+                  group: {
+                    _id: event.group._id,
+                    name: event.group.name,
+                    slug: event.group.slug,
+                  },
+                  createdAt: event.createdAt,
+                  managedBy: event.managedBy,
+                  isEventEnded: event.isEventEnded,
+                  attendees: event.attendees,
+                });
+                return router.push(`/feed/edit-event`);
+              }
               if (!user) return toast.error("Login to continue");
               mutate({
                 eventId: event._id,

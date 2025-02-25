@@ -86,7 +86,7 @@ export const EventsController = new Elysia({
           eventName,
           location,
           group: group._id,
-          attendees: [userId],
+          attendees: [],
           isEventEnded: false,
           managedBy: userId,
         });
@@ -144,7 +144,7 @@ export const EventsController = new Elysia({
       let updateFields: any = {}
       if (eventDate) updateFields.date = eventDate;
       if (location) updateFields.location = location;
-      if (eventName) updateFields.name = eventName;
+      if (eventName) updateFields.eventName = eventName;
       if (eventRules) {
         const parsedRules = JSON.parse(eventRules);
         updateFields.rules = parsedRules.events || [];
@@ -187,4 +187,55 @@ export const EventsController = new Elysia({
       description: "Create an event",
       summary: "Create an event",
     },
+  })
+  .post("/decline-event", async ({ set, query, store }) => {
+    try {
+
+      const { eventId } = query
+      const userId = (store as any)["id"];
+      const event = await EventModel.findById(eventId)
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not found",
+          ok: false,
+        };
+      }
+
+      const isUserParticipated = event.attendees.includes(userId)
+
+      if (!isUserParticipated) {
+        set.status = 400;
+        return {
+          message: "You are not a participant of this event",
+          ok: false,
+        };
+      }
+
+      await EventModel.findByIdAndUpdate(eventId, {
+        $pull: { attendees: userId }
+      })
+
+      set.status = 200;
+      return {
+        message: "event declined successfully",
+        ok: true,
+      };
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  }, {
+    detail: {
+      summary: "Decline Event",
+      description: "Decline Event"
+    },
+    query: t.Object({
+      eventId: t.String()
+    })
   })

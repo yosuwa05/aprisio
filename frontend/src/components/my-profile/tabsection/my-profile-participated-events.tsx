@@ -67,7 +67,7 @@ export function MyProfileParticipatedEvents() {
           </div>
         ) : hasevents ? (
           data?.pages?.flatMap((page: any) =>
-            page?.events?.map((event: any, index: number) => {
+            page?.events?.map((event: any) => {
               return <EventCard key={event?._id} event={event} />;
             })
           )
