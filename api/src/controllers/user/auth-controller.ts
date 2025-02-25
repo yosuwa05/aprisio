@@ -1,6 +1,9 @@
+import { sendEmail } from "@/lib/mail";
+import { addHours } from "date-fns";
 import Elysia, { t } from "elysia";
 import { PasetoUtil } from "../../lib/paseto";
 import { UserModel } from "../../models/usermodel";
+import { generateVerificationToken, hashToken } from "./form-controller";
 
 export const authController = new Elysia({
   prefix: "/auth",
@@ -30,41 +33,116 @@ export const authController = new Elysia({
           };
         }
 
+        if (!user.emailVerified) {
+          return {
+            message: "Please verify your email address to continue",
+            ok: false,
+          };
+        }
+
         const isMatch = await Bun.password.verify(password, user.password);
 
         if (!isMatch) {
           return { message: "Kindly check your password", ok: false };
         }
 
-        const token = await PasetoUtil.encodePaseto({
-          email: user.email.toString(),
-          id: user._id.toString(),
-          role: "user",
-        });
+        const currentTime = new Date();
+        if (
+          !user.emailVerified ||
+          (user.emailVerificationTokenExpiry &&
+            user.emailVerificationTokenExpiry < currentTime)
+        ) {
+          const verificationToken = generateVerificationToken();
+          const hashedToken = hashToken(verificationToken);
+          const tokenExpiration = addHours(new Date(), 24);
 
-        set.cookie = {
-          you: {
-            value: token,
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            path: "/",
-            maxAge: 1000 * 60 * 60 * 24,
-            expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
-          },
-        };
+          user.emailVerificationToken = hashedToken;
+          user.emailVerificationTokenExpiry = tokenExpiration;
+          await user.save();
 
-        return {
-          message: "User logged in successfully",
-          token,
-          ok: true,
-          status: true,
-          user: {
+          const verificationLink = `http://localhost:3000/verify-email?token=${verificationToken}`;
+
+          let content = `
+          <html>
+            <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
+                <tr>
+                  <td align="center">
+                    <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                      <tr>
+                        <td style="padding: 20px; text-align: center;">
+                          <h2 style="color: #333;">Welcome to Aprisio!</h2>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 20px;">
+                          <p>Hello ${user.name},</p>
+                          <p>Thank you for joining Aprisio! We're excited to have you on board.</p>
+                          <p>To get started, please verify your email address by clicking the link below:</p>
+                          <p style="text-align: center; margin: 20px 0;">
+                            <a href="${verificationLink}" style="background-color: #007BFF; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Your Email</a>
+                          </p>
+                          <p>If you didn't sign up for an Aprisio account, you can safely ignore this email.</p>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 20px; text-align: center;">
+                          <hr style="border: 1px solid #ddd; width: 80%;">
+                          <p style="color: #777; font-size: 14px;">If you have any questions, feel free to contact us at support@aprisio.com.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+          </html>
+        `;
+
+          await sendEmail({
+            subject: "Welcome to Aprisio! Verify Your Email",
+            to: email,
+            html: content,
+            from: "noreply@aprisio.com",
+          });
+
+          return {
+            message:
+              "Verification email sent. Please check your email to continue.",
+            ok: true,
+          };
+        } else {
+          // Email is verified and token is not expired, log in the user
+          const token = await PasetoUtil.encodePaseto({
             email: user.email.toString(),
-            name: user.name,
             id: user._id.toString(),
-          },
-        };
+            role: "user",
+          });
+
+          set.cookie = {
+            you: {
+              value: token,
+              httpOnly: true,
+              secure: true,
+              sameSite: "none",
+              path: "/",
+              maxAge: 1000 * 60 * 60 * 24,
+              expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+            },
+          };
+
+          return {
+            message: "User logged in successfully",
+            token,
+            ok: true,
+            status: true,
+            user: {
+              email: user.email.toString(),
+              name: user.name,
+              id: user._id.toString(),
+            },
+          };
+        }
       } catch (error: any) {
         console.error("Error logging in:", error);
 
