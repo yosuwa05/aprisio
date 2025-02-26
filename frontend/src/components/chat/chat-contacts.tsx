@@ -24,10 +24,12 @@ export function ChatContact() {
     <div className=" bg-white flex flex-col gap-2 h-fit flex-1">
       {selectedChat.selected ? (
         <SingleChat />
-      ) : (
-        data?.contacts?.map((contact: Contact, index: number) => (
+      ) : data?.contacts?.length > 0 ? (
+        data.contacts.map((contact: Contact, index: number) => (
           <MessageCard key={index} contact={contact} />
         ))
+      ) : (
+        <div className="text-center p-4 text-gray-400 text-sm">No contacts</div>
       )}
     </div>
   );

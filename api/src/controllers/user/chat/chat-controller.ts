@@ -23,7 +23,10 @@ export const chatController = new Elysia({
 
         const withProfile = await Promise.all(
           contacts.map(async (contact: any) => {
-            const otherUserId = contact.chatId.split("_")[0];
+            const otherUserId = contact.chatId
+              .split("_")
+              .find((id: string) => id !== userId);
+
             const user = await UserModel.findOne({ _id: otherUserId }).select(
               "name email"
             );

@@ -43,7 +43,7 @@ export function MyProfileParticipatedEvents() {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
-  console.log(data);
+
   return (
     <div className="my-2">
       <div className=" flex-col flex gap-4">

@@ -5,10 +5,11 @@ import { useChatStore } from "@/stores/ChatStore";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import person from "@img/assets/person.png";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { ChevronLeft, Send } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
@@ -29,11 +30,13 @@ export function SingleChat() {
 
   const user = useGlobalAuthStore((state) => state.user);
 
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
   useEffect(() => {
-    if (!selectedChat.userId) return;
+    if (!selectedChat.userId || !user?.id) return;
 
-    const chatId = [selectedChat.userId, user?.id].sort().join("_");
-
+    const chatId = [selectedChat.userId, user.id].sort().join("_");
     const messagesRef = collection(db, "chats", chatId, "messages");
     const q = query(messagesRef, orderBy("timestamp", "asc"));
 
@@ -46,7 +49,7 @@ export function SingleChat() {
     });
 
     return () => unsubscribe();
-  }, [selectedChat.userId]);
+  }, [selectedChat.userId, user?.id]);
 
   const { isPending, mutate } = useMutation({
     mutationKey: ["chat", "sendMessage"],
@@ -58,33 +61,46 @@ export function SingleChat() {
   });
 
   function handleSendMessage() {
+    if (!user?.id) return toast.error("User not authenticated");
     if (message.trim().length === 0)
       return toast.error("Message cannot be empty");
 
-    mutate({
+    const newMessage: IMessage = {
+      id: Date.now().toString(),
       receiverId: selectedChat.userId,
       text: message,
-      senderId: user?.id.toString() || "",
+      senderId: user.id.toString(),
       timestamp: Date.now(),
+    };
+
+    setMessages((prev) => [...prev, newMessage]);
+
+    mutate(newMessage, {
+      onError: () => {
+        setMessages((prev) => prev.filter((msg) => msg.id !== newMessage.id));
+        toast.error("Message failed to send");
+      },
     });
 
     setMessage("");
+  }
+
+  function goBack() {
+    updateChat({
+      selected: false,
+      name: "",
+      userId: "",
+    });
+    queryClient.invalidateQueries({
+      queryKey: ["chat-contacts"],
+    });
   }
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center p-3">
         <div className="flex gap-2 items-center">
-          <ChevronLeft
-            className="cursor-pointer"
-            onClick={() =>
-              updateChat({
-                selected: false,
-                name: "",
-                userId: "",
-              })
-            }
-          />
+          <ChevronLeft className="cursor-pointer" onClick={goBack} />
           <div className="flex gap-2 items-center">
             <Image
               src={person}
@@ -106,7 +122,7 @@ export function SingleChat() {
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
         {messages.map((msg, index) => (
           <div
-            key={index}
+            key={msg.id ?? index}
             className={`max-w-[70%] w-fit p-2 rounded-2xl text-sm ${
               msg.senderId === user?.id.toString()
                 ? "bg-blue-500 text-white self-end ml-auto"

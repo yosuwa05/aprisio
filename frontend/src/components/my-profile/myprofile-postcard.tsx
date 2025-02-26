@@ -135,7 +135,12 @@ export default function MyProfilePostCard({ post }: { post: IPostCard }) {
           </Avatar>
 
           <div className="self-end">
-            <h3 className="text-textcol font-semibold text-xs">
+            <h3
+              className="text-textcol font-semibold text-xs cursor-pointer"
+              onClick={() => {
+                router.push("/user/" + post.author);
+              }}
+            >
               {post.author}
             </h3>
             <p className="text-[#043A53] text-xs font-medium">

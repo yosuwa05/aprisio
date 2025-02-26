@@ -4,10 +4,12 @@ import { ProfileTopBar } from "@/components/profile/profile-top-bar";
 import Topbar from "@/components/shared/topbar";
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
+import { useChatStore } from "@/stores/ChatStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import profileimage from "@img/assets/person.png";
 import chevronleft from "@img/icons/chevron-left.svg";
 import { useQuery } from "@tanstack/react-query";
+import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 
@@ -19,6 +21,8 @@ export default function PersonalProfile({
   const { userslug } = useParams();
 
   const router = useRouter();
+
+  const updateChat = useChatStore((state) => state.setSelectedChat);
 
   const { data, isLoading } = useQuery({
     queryKey: ["user", userslug],
@@ -48,7 +52,7 @@ export default function PersonalProfile({
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
         <div className="lg:max-w-[300px] min-w-[300px]">
           <div className="flex flex-col gap-4">
-            <div className="h-[380px] shadow-xl rounded-xl p-4">
+            <div className="h-[420px] shadow-xl rounded-xl p-4">
               <div className="h-[150px] bg-[#F5F5F5] flex flex-col items-center justify-center relative">
                 <div className="absolute -bottom-10 flex flex-col items-center">
                   <div className="p-2 bg-white rounded-2xl shadow border-none">
@@ -70,6 +74,25 @@ export default function PersonalProfile({
                 <div className="flex gap-2 items-center text-sm text-fadedtext">
                   <Icon icon="ic:outline-email" />
                   <p>{data?.user.email}</p>
+                </div>
+
+                <div className="flex gap-2 items-center text-sm text-fadedtext">
+                  <Button
+                    size={"sm"}
+                    variant={"secondary"}
+                    className="text-sm bg-gray-300 hover:bg-gray-300"
+                    onClick={() => {
+                      router.push("/profile");
+                      updateChat({
+                        name: data?.user?.name,
+                        userId: data?.user._id,
+                        selected: true,
+                      });
+                    }}
+                  >
+                    <MessageCircle size={32} />
+                    Chat
+                  </Button>
                 </div>
               </div>
 
@@ -97,10 +120,7 @@ export default function PersonalProfile({
             <div className="flex flex-col gap-3">
               {data?.followedByUser &&
                 data?.followedByUser.map((topic: any, index: number) => (
-                  <div
-                    key={index}
-
-                  >
+                  <div key={index}>
                     <Button
                       onClick={() => {
                         router.push(`/feed/explore/${topic?.subTopicId?.slug}`);
