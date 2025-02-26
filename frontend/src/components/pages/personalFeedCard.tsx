@@ -43,6 +43,7 @@ interface IPostCard {
   image?: string;
   subTopic: any;
   group: any;
+  makeCommentsOpen?: boolean;
 }
 
 export default function PersonalPostcard({
@@ -52,7 +53,9 @@ export default function PersonalPostcard({
   post: IPostCard;
   topic: string;
 }) {
-  const [viewAllReplies, setViewAllReplies] = useState(false);
+  const [viewAllReplies, setViewAllReplies] = useState(
+    post.makeCommentsOpen ?? false
+  );
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [postId, setPostId] = useState("");

@@ -727,4 +727,188 @@ export const postController = new Elysia({
         summary: "Get personal posts",
       },
     }
+  )
+  .get(
+    "/singlepost",
+    async ({ query, set }) => {
+      const { page = 1, limit = 1, userId, postSlug } = query;
+
+      try {
+        const sanitizedPage = Math.max(1, page);
+        const sanitizedLimit = Math.max(1, Math.min(limit, 20)); // Limit to a maximum of 20 posts per page
+
+        const posts = await PostModel.aggregate([
+          {
+            $match: {
+              slug: postSlug,
+            },
+          },
+          {
+            $sort: { createdAt: -1 },
+          },
+          {
+            $skip: (sanitizedPage - 1) * sanitizedLimit,
+          },
+          {
+            $limit: sanitizedLimit,
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "author",
+              foreignField: "_id",
+              as: "author",
+              pipeline: [
+                {
+                  $match: {
+                    active: true,
+                  },
+                },
+                {
+                  $project: {
+                    name: 1,
+                    email: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $match: { "author.0": { $exists: true } },
+          },
+          {
+            $lookup: {
+              from: "likes",
+              localField: "_id",
+              foreignField: "post",
+              as: "likes",
+            },
+          },
+          {
+            $lookup: {
+              from: "comments",
+              localField: "_id",
+              foreignField: "post",
+              as: "comments",
+            },
+          },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: "subtopics",
+              localField: "subTopic",
+              foreignField: "_id",
+              as: "subTopic",
+              pipeline: [
+                {
+                  $project: {
+                    subTopicName: 1,
+                    slug: 1,
+                  },
+                },
+              ],
+            },
+          },
+          ...(userId
+            ? [
+                {
+                  $lookup: {
+                    from: "likes",
+                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$post", "$$postId"] },
+                              { $eq: ["$user", "$$userId"] },
+                            ],
+                          },
+                        },
+                      },
+                    ],
+                    as: "likedByMe",
+                  },
+                },
+              ]
+            : []),
+          {
+            $project: {
+              title: 1,
+              description: 1,
+              author: { $arrayElemAt: ["$author", 0] },
+              createdAt: 1,
+              likesCount: { $size: "$likes" },
+              commentsCount: { $size: "$comments" },
+              subTopic: 1,
+              group: 1,
+              url: 1,
+              image: 1,
+              likedByMe: {
+                $cond: {
+                  if: { $eq: [userId, null] },
+                  then: false,
+                  else: {
+                    $gt: [{ $size: { $ifNull: ["$likedByMe", []] } }, 0],
+                  },
+                },
+              },
+            },
+          },
+        ]);
+
+        const totalPosts = await PostModel.countDocuments({
+          slug: postSlug,
+        });
+        const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
+
+        return {
+          posts,
+          nextCursor: hasNextPage ? sanitizedPage + 1 : undefined,
+          ok: true,
+        };
+      } catch (error: any) {
+        console.error("Error fetching posts:", error.message || error);
+
+        set.status = 500;
+        return {
+          message: "An internal error occurred while fetching posts.",
+          ok: false,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        page: t.Optional(t.Number()),
+        limit: t.Optional(t.Number()),
+        userId: t.Optional(
+          t.String({
+            default: "",
+          })
+        ),
+        postSlug: t.String(),
+        createdByMe: t.Boolean({
+          default: false,
+        }),
+      }),
+      detail: {
+        description: "Get personal posts",
+        summary: "Get personal posts",
+      },
+    }
   );

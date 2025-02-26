@@ -1,10 +1,12 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useQuery } from "@tanstack/react-query";
 import { Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Input } from "../ui/input";
 
@@ -12,6 +14,8 @@ export function SearchBar() {
   const pathname = usePathname();
   const unwantedRoutes = ["/join-community"];
   const [search, setSearch] = useState("");
+
+  const router = useRouter();
 
   const [debouncedSubTopicSearch] = useDebouncedValue(search, 400);
 
@@ -62,10 +66,17 @@ export function SearchBar() {
                         </h3>
                         <div className="border-b border-gray-200 my-2"></div>
                         {posts.posts.map(
-                          (item: { title: string }, index: number) => (
+                          (
+                            item: { title: string; slug: string },
+                            index: number
+                          ) => (
                             <div
                               key={index}
                               className="px-3 py-2 hover:bg-gray-100 cursor-pointer rounded-md text-sm text-gray-900 font-medium"
+                              onClick={() => {
+                                setSearch("");
+                                router.push("/feed/post/" + item.slug);
+                              }}
                             >
                               {item.title}
                             </div>
@@ -81,9 +92,16 @@ export function SearchBar() {
                         </h3>
                         <div className="border-b border-gray-200 my-2"></div>
                         {posts.topics.map(
-                          (item: { subTopicName: string }, index: number) => (
+                          (
+                            item: { subTopicName: string; slug: string },
+                            index: number
+                          ) => (
                             <div
                               key={index}
+                              onClick={() => {
+                                setSearch("");
+                                router.push("/feed/explore/" + item.slug);
+                              }}
                               className="px-3 py-2 hover:bg-gray-100 cursor-pointer rounded-md text-sm text-gray-900 font-medium"
                             >
                               {item.subTopicName}
