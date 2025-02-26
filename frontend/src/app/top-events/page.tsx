@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BASE_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
 export default function Events() {
-  const limit = 3;
+  const limit = 10;
   const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
@@ -26,13 +26,11 @@ export default function Events() {
         return lastPage?.events?.length === limit ? nextPage : undefined;
       },
     });
-  function formatDate(dateStr: any) {
-    return new Date(dateStr).toLocaleString("en-GB", {
+  function formatDate(dateStr: string) {
+    return new Date(dateStr).toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "long",
       year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
       timeZone: "UTC",
     });
   }
@@ -52,7 +50,7 @@ export default function Events() {
       </div>
 
       <div className='px-4 md:px-8 lg:px-14 py-3 lg:py-5 h-[70vh] overflow-y-auto hide-scrollbar'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-10'>
+        <div className='grid grid-cols-1  md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4  gap-10'>
           {isLoading &&
             Array.from({ length: limit }).map((_, idx) => (
               <Skeleton key={idx} className='w-full h-[250px]  rounded-lg' />
