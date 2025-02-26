@@ -124,7 +124,7 @@
 							{event?.attendees?.length}
 						</Table.Cell>
 						<Table.Cell class="flex gap-2">
-							<button
+							<!-- <button
 								onclick={() => {
 									$eventsStore = {
 										id: event._id,
@@ -137,7 +137,7 @@
 								}}
 							>
 								<Icon icon={'basil:edit-outline'} class="text-xl hover:text-red-500" />
-							</button>
+							</button> -->
 
 							<button
 								onclick={() => (
