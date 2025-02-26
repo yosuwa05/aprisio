@@ -1,6 +1,8 @@
 "use client";
 
 import { GroupEventSection } from "@/components/edit-group-secrtion/events-section";
+import { GroupPhotoSection } from "@/components/edit-group-secrtion/images-section";
+import { GroupMembersSection } from "@/components/edit-group-secrtion/member-scection";
 import GlobalLoader from "@/components/globalloader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -86,7 +88,7 @@ export default function CreateGroup() {
     mutate(formData);
   };
 
-  const tabs = ["About", "Event", "Photos"];
+  const tabs = ["About", "Event", "Members", "Photos"];
 
   const { data, isLoading: isSubTopicsLoading } = useQuery({
     queryKey: ["subtopics for dropdown", debouncedSubTopicSearch],
@@ -205,6 +207,13 @@ export default function CreateGroup() {
           )}
           {activeIndex == 1 && (
             <GroupEventSection groupId={currentGroup.groupId} />
+          )}
+
+          {activeIndex == 2 && (
+            <GroupMembersSection groupId={currentGroup.groupId} />
+          )}
+          {activeIndex == 3 && (
+            <GroupPhotoSection groupid={currentGroup.groupId} />
           )}
         </div>
       </div>

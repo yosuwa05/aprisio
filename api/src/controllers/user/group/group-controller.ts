@@ -1,4 +1,4 @@
-import { saveFile } from "@/lib/file-s3";
+import { deleteFile, saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
 import { EventModel } from "@/models/events.model";
 import { GroupModel } from "@/models/group.model";
@@ -223,6 +223,226 @@ export const groupController = new Elysia({
       description: "Edit a group"
     }
   })
+  .get(
+    "/members",
+    async ({ query }) => {
+      try {
+        const { groupid, page, limit } = query;
+
+        const _page = Number(page) || 1
+        const _limit = Number(limit) || 10
+        const skip = (_page - 1) * _limit;
+
+        let group = await GroupModel.findById(groupid);
+
+        if (!group) {
+          return {
+            message: "Group not found",
+            ok: false,
+          };
+        }
+
+        const totalMembers = await UserGroupsModel.countDocuments({ group: groupid });
+
+        const members = await UserGroupsModel.find(
+          { group: groupid },
+          "userId role"
+        )
+          .populate("userId", "name")
+          .skip(skip)
+          .limit(_limit)
+          .lean();
+
+        const userIds = members.map((member) => member.userId._id);
+
+        const joinedGroupsCounts = await UserGroupsModel.aggregate([
+          { $match: { userId: { $in: userIds } } },
+          {
+            $group: {
+              _id: "$userId",
+              count: { $sum: 1 },
+            },
+          },
+        ]);
+
+        const joinedGroupsMap = new Map(
+          joinedGroupsCounts.map(({ _id, count }) => [_id.toString(), count])
+        );
+
+        const mergedMembers = members.map((member: any) => ({
+          _id: member.userId._id,
+          name: member.userId.name,
+          role: member.role,
+          joinedGroupsCount: joinedGroupsMap.get(member.userId._id.toString()) || 0,
+        }));
+
+        return {
+          ok: true,
+          message: "Members fetched successfully",
+          members: mergedMembers,
+
+        };
+      } catch (error) {
+        return {
+          error,
+          ok: false,
+        };
+      }
+    },
+    {
+      detail: {
+        description: "Get group members with pagination",
+        summary: "Get paginated group members",
+      },
+      query: t.Object({
+        groupid: t.String(),
+        limit: t.Optional(t.String()),
+        page: t.Optional(t.String()),
+      }),
+    }
+  )
+  .get(
+    "/photos",
+    async ({ query }) => {
+      try {
+        const { groupid } = query;
+
+        const page = query.page || 1;
+        const limit = query.limit || 10;
+
+        const photoEntries = await GroupPhotoModel.find({
+          group: groupid,
+        })
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .lean();
+
+        return { photos: photoEntries, ok: true };
+      } catch (error) {
+        console.error(error);
+
+        return {
+          error,
+          ok: false,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        groupid: t.String(),
+        limit: t.Optional(t.Number()),
+        page: t.Optional(t.Number()),
+      }),
+      detail: {
+        summary: "Get group photos",
+        description: "Get group photos",
+      },
+    },
+  )
+  .post("/upload-images", async ({ set, body }) => {
+    try {
+      const { groupId, file } = body
+
+      const group: any = await GroupModel.findById(groupId)
+
+      if (!group) {
+        set.status = 400
+        return {
+          message: "Group not found"
+        }
+      }
+
+      let filePromises = [];
+
+      if (file && file.length > 0) {
+        for (let i of file) {
+          const { filename, ok } = await saveFile(i, "group-images");
+
+          if (!ok) {
+            return {
+              message: "Error uploading file",
+              ok: false,
+            };
+          }
+
+          let newPic = new GroupPhotoModel({
+            group: group._id,
+            photo: filename,
+          });
+
+          filePromises.push(newPic.save());
+        }
+      }
+
+      await Promise.all(filePromises);
+      set.status = 200;
+      return { message: "Image Added", ok: true };
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  }, {
+    body: t.Object({
+      file: t.Optional(
+        t.Files({
+          default: [],
+        })
+      ),
+      groupId: t.String()
+    }),
+    detail: {
+      summary: "Add Image Existing Group",
+      description: "Add Image Existing Group"
+    }
+  })
+  .delete("/group-image", async ({ set, query }) => {
+    try {
+
+      const { imageId } = query
+
+      const image = await GroupPhotoModel.findById(imageId)
+
+      if (!image) {
+        set.status = 400
+        return {
+          messsge: "Image Not Found"
+        }
+      }
+
+      if (image.photo) {
+        deleteFile(image.photo);
+      }
+
+      await GroupPhotoModel.findByIdAndDelete(imageId)
+
+      set.status = 200
+      return {
+        message: "Image Deleted"
+      }
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error,
+        ok: true
+      }
+    }
+  }, {
+    detail: {
+      summary: "Delete Group Image",
+      description: "Delete a group image"
+    },
+    query: t.Object({
+      imageId: t.String()
+    })
+  })
+
+
   .post(
     "/join",
     async ({ body, set, store }) => {

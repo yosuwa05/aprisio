@@ -106,7 +106,11 @@ export default function GroupCard({ group }: Props) {
           />
 
           <div className='flex flex-col gap-2'>
-            <h2 className='font-semibold text-base lg'>{group?.name}</h2>
+            <h2
+              onClick={() => router.push(`/groups/${group?.slug}`)}
+              className='font-semibold text-base lg cursor-pointer'>
+              {group?.name}
+            </h2>
 
             <div className='flex gap-6 items-center justify-between'>
               <p className='text-[#043A53] text-xs font-medium'>

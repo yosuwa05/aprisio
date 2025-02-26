@@ -217,15 +217,24 @@ export const formController = new Elysia({
       }),
     }
   )
-  .get(
+  .post(
     "/verify-email",
     async ({ query, set }) => {
       const token = query.token as string;
       const hashedToken = token;
 
-      const user = await UserModel.findOne({
+      const user: any = await UserModel.findOne({
         emailVerificationToken: hashedToken,
       });
+
+      if (!user) {
+        set.status = 400;
+        return {
+          message: "Invalid or expired token.",
+          ok: false,
+        };
+      }
+
 
       if (user) {
         user.emailVerified = true;
@@ -237,7 +246,9 @@ export const formController = new Elysia({
           message: "Email verified successfully!",
           ok: true,
         };
-      } else {
+      }
+
+      else {
         set.status = 400;
         return {
           message: "Invalid or expired token.",

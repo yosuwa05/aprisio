@@ -44,14 +44,14 @@ export default function GroupPage() {
                 fontSize={32}
                 onClick={() => router.back()}
               />
-              <h5 className=''>{data?.group.name}</h5> -
+              <h5 className=''>{data?.group?.name}</h5> -
               <h5 className='font-bold'>About</h5>
             </div>
             <div className='mt-4 flex flex-col gap-3 items-center'>
               <Image src={placeholder} className='rounded-xl ' alt='' />
             </div>
             <h1 className='font-[600] text-2xl text-textcol capitalize '>
-              {data?.group.name}
+              {data?.group?.name}
             </h1>
             <div className='flex gap-2 items-center  mt-4'>
               <Icon
@@ -76,7 +76,7 @@ export default function GroupPage() {
                 fontSize={32}
                 onClick={() => router.back()}
               />
-              <h5 className='hidden md:block'>{data?.group.name}</h5> -
+              <h5 className='hidden md:block'>{data?.group?.name}</h5> -
               <h5 className='font-bold'>About</h5>
             </div>
             <div className='flex overflow-x-auto whitespace-nowrap hide-scrollbar'>

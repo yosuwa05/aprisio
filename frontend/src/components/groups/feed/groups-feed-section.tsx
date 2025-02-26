@@ -66,16 +66,15 @@ export const GroupsFeedSection = () => {
 
   return (
     <div className='my-4'>
-      {/* <div
-        className="flex gap-2 items-center justify-end text-sm text-contrasttext cursor-pointer px-4"
+      <div
+        className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
         onClick={() => {
           updateActiveGroup(typeof groupid === "string" ? groupid : "");
           router.push(`/create-post/group`);
-        }}
-      >
-        <Icon icon="tabler:plus" fontSize={22} />
-        <h3 className="font-semibold text-sm">Create Post</h3>
-      </div> */}
+        }}>
+        <Icon icon='tabler:plus' fontSize={22} />
+        <h3 className='font-semibold text-sm'>Create Post</h3>
+      </div>
 
       <div className='max-h-[calc(100vh-280px)] w-full overflow-scroll hide-scrollbar p-2'>
         {isLoading ? (
@@ -91,10 +90,10 @@ export const GroupsFeedSection = () => {
               </div>
             ))}
           </div>
-        ) : data && data.pages && data.pages.length > 0 ? (
-          data.pages.some((page) => page.data.posts.length > 0) ? (
-            data.pages.map((page, pageIndex) =>
-              page.data.posts.map((post: IPost, postIndex: number) => (
+        ) : data && data?.pages && data?.pages?.length > 0 ? (
+          data?.pages?.some((page) => page?.data?.posts?.length > 0) ? (
+            data?.pages?.map((page, pageIndex) =>
+              page?.data?.posts?.map((post: IPost, postIndex: number) => (
                 <React.Fragment key={`${pageIndex}-${postIndex}`}>
                   <GroupsFeedPostcard
                     post={{

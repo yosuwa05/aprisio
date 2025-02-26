@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BASE_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
 export default function Events() {
-  const limit = 10;
+  const limit = 3;
   const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
@@ -45,14 +45,14 @@ export default function Events() {
         <Image src={heart1} alt='heart' className='lg:w-12  lg:h-12 h-6 w-6 ' />
       </div>
 
-      <div className='lg:px-14 relative z-20 px-5 pb-5  lg:pt-14  pt-7 flex justify-between items-center'>
+      <div className='lg:px-14 relative z-20 px-5 pb-5  lg:pt-7  pt-4 flex justify-between items-center'>
         <h1 className='text-[#353535] flex lg:gap-6 gap-1 flex-col xl:text-7xl lg:text-4xl text-2xl font-roboto font-semibold'>
           <span>Popular Events</span>
         </h1>
       </div>
 
-      <div className='px-4 md:px-8 lg:px-14 py-10 lg:py-20 h-[70vh] overflow-y-auto hide-scrollbar'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10'>
+      <div className='px-4 md:px-8 lg:px-14 py-3 lg:py-5 h-[70vh] overflow-y-auto hide-scrollbar'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-10'>
           {isLoading &&
             Array.from({ length: limit }).map((_, idx) => (
               <Skeleton key={idx} className='w-full h-[250px]  rounded-lg' />
@@ -66,15 +66,16 @@ export default function Events() {
             data?.pages?.flatMap((page) =>
               page?.events?.map((event: any) => (
                 <div
+                  onClick={() => router.push(`/events/${event._id}`)}
                   key={event?._id}
-                  className='relative rounded-2xl overflow-hidden'>
+                  className='relative rounded-2xl overflow-hidden cursor-pointer'>
                   <Image
                     loading='eager'
                     src={BASE_URL + `/file?key=${event.eventImage}`}
                     alt={"image"}
                     width={500}
                     height={500}
-                    className='w-full h-[350px] md:h-[400px] lg:h-[450px] object-cover rounded-2xl'
+                    className='w-full h-[250px] md:h-[400px] lg:h-[400px] object-cover rounded-2xl'
                   />
 
                   <div className='absolute bottom-0 w-full bg-white/80 px-4 py-4 flex justify-between items-center'>
@@ -86,9 +87,7 @@ export default function Events() {
                         {formatDate(event?.date)} - {event.location}
                       </p>
                     </div>
-                    <div
-                      onClick={() => router.push(`/events/${event._id}`)}
-                      className='cursor-pointer'>
+                    <div className='cursor-pointer'>
                       <Image src={arrow2} alt='Arrow' className='w-12 h-12' />
                     </div>
                   </div>

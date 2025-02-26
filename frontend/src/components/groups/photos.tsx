@@ -27,7 +27,6 @@ export function PhotosSection({ groupid }: Props) {
         return res.data;
       },
       staleTime: 0,
-
       initialPageParam: 1,
       getNextPageParam: (lastPage: any, allPages: any) => {
         const nextPage = allPages?.length + 1;

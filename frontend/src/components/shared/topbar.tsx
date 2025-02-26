@@ -303,7 +303,7 @@ export default function Topbar() {
               pathname === "/top-events" ? "text-contrasttext font-bold" : ""
             }
             href={"/top-events"}>
-            Events
+            Experiences
           </Link>
         </ul>
       </div>

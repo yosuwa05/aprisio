@@ -1,22 +1,30 @@
 "use client";
 
 import { _axios } from "@/lib/axios-instance";
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect } from "react";
+import { toast } from "sonner";
 
 function VerifyEmailContent({ error }: { error?: string }) {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  console.log(token);
+  const router = useRouter();
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["verify-email"],
-    queryFn: async () => {
-      const res = await _axios.get(`/form/verify-email?token=${token}`);
-      return res.data;
+  const { mutate } = useMutation({
+    mutationFn: () => {
+      return _axios.post(`/form/verify-email?token=${token}`, {
+        token,
+      });
+    },
+    onSuccess(data) {
+      toast.success(data.data.message);
     },
   });
+
+  useEffect(() => {
+    mutate();
+  }, [mutate]);
 
   return (
     <div className='flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 px-6'>
@@ -44,7 +52,9 @@ function VerifyEmailContent({ error }: { error?: string }) {
               Verification Failed
             </h2>
             <p className='text-red-600 text-center'>{error}</p>
-            <button className='mt-4 w-full py-3 bg-buttoncol hover:bg-buttoncol text-white font-medium rounded-lg transition-colors duration-300'>
+            <button
+              onClick={() => router.push("/login")}
+              className='mt-4 w-full py-3 bg-buttoncol hover:bg-buttoncol text-white font-medium rounded-lg transition-colors duration-300'>
               Try Again
             </button>
           </div>
@@ -73,7 +83,9 @@ function VerifyEmailContent({ error }: { error?: string }) {
             <p className='text-gray-600 text-center'>
               Your account has been successfully verified.
             </p>
-            <button className='mt-6 w-full py-3 bg-buttoncol hover:bg-buttoncol text-white font-medium rounded-lg transition-colors duration-300'>
+            <button
+              onClick={() => router.push("/login")}
+              className='mt-6 w-full py-3 bg-buttoncol hover:bg-buttoncol text-white font-medium rounded-lg transition-colors duration-300'>
               Continue with Apriso
             </button>
           </div>
