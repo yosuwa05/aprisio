@@ -91,7 +91,7 @@ export const formController = new Elysia({
 
         await sendEmail({
           subject: "New User Joined",
-          to: "programmer.rasla@gmail.com",
+          to: "support@aprisio.com",
           html: content,
           from: "noreply@aprisio.com",
         });
@@ -193,7 +193,7 @@ export const formController = new Elysia({
 
         await sendEmail({
           subject: "New Contact Message",
-          to: "programmer.rasla@gmail.com",
+          to: "support@aprisio.com",
           html: content,
           from: "noreply@aprisio.com",
         });
