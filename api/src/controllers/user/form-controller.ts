@@ -136,7 +136,7 @@ export const formController = new Elysia({
         await sendEmail({
           subject: "Verify Your Email to Log In",
           to: email,
-          html: content,
+          html: content2,
           from: "noreply@aprisio.com",
         });
 
