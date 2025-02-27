@@ -1,6 +1,5 @@
-"use client";
-
 import ContactForm from "@/components/shared/contactform";
+
 export default function ContactPage() {
   return (
     <section className=" bg-[#F2F5F6]  pb-28">

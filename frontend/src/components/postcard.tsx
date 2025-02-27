@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
-import { formatDate } from "@/lib/utils";
+import { formatDate, makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -40,6 +41,10 @@ interface IPostCard {
   commentCount?: number;
   url?: string;
   image?: string;
+  subTopic: any;
+  group: any;
+  makeCommentsOpen?: boolean;
+  userImage: string;
 }
 
 export default function Postcard({
@@ -141,15 +146,35 @@ export default function Postcard({
           }}
         >
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/assets/person.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage
+              className="object-cover rounded-full"
+              src={BASE_URL + `/file?key=${post.userImage}`}
+            />
+            <AvatarFallback>{makeUserAvatarSlug(post.author)}</AvatarFallback>
           </Avatar>
 
           <div className="self-end">
             <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
-            <p className="text-[#043A53] text-xs font-medium">300+ Members</p>
+            <p className="text-[#043A53] text-xs font-medium">
+              {post?.subTopic?.[0]?.subTopicName && (
+                <Link href={`/feed/explore/${post.subTopic[0].slug}`}>
+                  {post.subTopic[0].subTopicName}
+                </Link>
+              )}
+              {post?.group?.[0]?.name && (
+                <>
+                  {" | "}
+                  <Link
+                    href={`/groups/${post.group[0].slug}`}
+                    className="text-fadedtext"
+                  >
+                    {post.group[0].name}
+                  </Link>
+                </>
+              )}
+            </p>
           </div>
         </div>
 

@@ -1,3 +1,4 @@
+import { deleteFile, saveFile } from "@/lib/file-s3";
 import {
   CommentModel,
   EventModel,
@@ -96,6 +97,7 @@ export const MyProfileController = new Elysia({
                   $project: {
                     name: 1,
                     email: 1,
+                    image: 1,
                   },
                 },
               ],
@@ -154,26 +156,26 @@ export const MyProfileController = new Elysia({
           },
           ...(userId
             ? [
-              {
-                $lookup: {
-                  from: "likes",
-                  let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            { $eq: ["$post", "$$postId"] },
-                            { $eq: ["$user", "$$userId"] },
-                          ],
+                {
+                  $lookup: {
+                    from: "likes",
+                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$post", "$$postId"] },
+                              { $eq: ["$user", "$$userId"] },
+                            ],
+                          },
                         },
                       },
-                    },
-                  ],
-                  as: "likedByMe",
+                    ],
+                    as: "likedByMe",
+                  },
                 },
-              },
-            ]
+              ]
             : []),
           {
             $project: {
@@ -325,6 +327,7 @@ export const MyProfileController = new Elysia({
                   $project: {
                     name: 1,
                     email: 1,
+                    image: 1,
                   },
                 },
               ],
@@ -383,26 +386,26 @@ export const MyProfileController = new Elysia({
           },
           ...(userId
             ? [
-              {
-                $lookup: {
-                  from: "likes",
-                  let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            { $eq: ["$post", "$$postId"] },
-                            { $eq: ["$user", "$$userId"] },
-                          ],
+                {
+                  $lookup: {
+                    from: "likes",
+                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$post", "$$postId"] },
+                              { $eq: ["$user", "$$userId"] },
+                            ],
+                          },
                         },
                       },
-                    },
-                  ],
-                  as: "likedByMe",
+                    ],
+                    as: "likedByMe",
+                  },
                 },
-              },
-            ]
+              ]
             : []),
           {
             $project: {
@@ -526,6 +529,7 @@ export const MyProfileController = new Elysia({
                   $project: {
                     name: 1,
                     email: 1,
+                    image: 1,
                   },
                 },
               ],
@@ -584,26 +588,26 @@ export const MyProfileController = new Elysia({
           },
           ...(userId
             ? [
-              {
-                $lookup: {
-                  from: "likes",
-                  let: { postId: "$_id", userId: new Types.ObjectId(userId) },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            { $eq: ["$post", "$$postId"] },
-                            { $eq: ["$user", "$$userId"] },
-                          ],
+                {
+                  $lookup: {
+                    from: "likes",
+                    let: { postId: "$_id", userId: new Types.ObjectId(userId) },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$post", "$$postId"] },
+                              { $eq: ["$user", "$$userId"] },
+                            ],
+                          },
                         },
                       },
-                    },
-                  ],
-                  as: "likedByMe",
+                    ],
+                    as: "likedByMe",
+                  },
                 },
-              },
-            ]
+              ]
             : []),
           {
             $project: {
@@ -846,20 +850,34 @@ export const MyProfileController = new Elysia({
     async ({ set, query, body }) => {
       try {
         const { userId } = query;
-        const { name, email } = body;
-        const isUserExist = await UserModel.findById(userId);
+        const { name, email, image } = body;
+        const user = await UserModel.findById(userId);
 
-        if (!isUserExist) {
+        if (!user) {
           set.status = 400;
           return {
             message: "User Not found",
           };
         }
 
-        isUserExist.name = name;
-        isUserExist.email = email;
+        user.name = name;
+        user.email = email;
 
-        await isUserExist.save();
+        let fileLink = "";
+
+        if (image) {
+          const { ok, filename } = await saveFile(image, "profile-images");
+
+          if (ok) fileLink = filename;
+
+          deleteFile(user.image);
+        } else {
+          return { ok: false, message: "Something went wrong" };
+        }
+
+        user.image = fileLink;
+
+        await user.save();
 
         set.status = 200;
 
@@ -882,6 +900,7 @@ export const MyProfileController = new Elysia({
       body: t.Object({
         name: t.String(),
         email: t.String(),
+        image: t.File(),
       }),
     }
   );

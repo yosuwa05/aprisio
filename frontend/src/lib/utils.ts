@@ -35,7 +35,9 @@ export function formatDate(date: string) {
     return "Invalid date";
   }
 
-  const diffInSeconds = Math.floor((now.getTime() - givenDate.getTime()) / 1000);
+  const diffInSeconds = Math.floor(
+    (now.getTime() - givenDate.getTime()) / 1000
+  );
 
   const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 
@@ -62,4 +64,12 @@ export const makeSlug = (str: string) => {
     .replace(/--+/g, "-")
     .replace(/^-+/, "")
     .replace(/-+$/, "");
+};
+
+export const makeUserAvatarSlug = (text: string) => {
+  if (!text) return "";
+  return text
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase())
+    .join("");
 };

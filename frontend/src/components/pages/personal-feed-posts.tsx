@@ -12,6 +12,7 @@ import PersonalPostcard from "./personalFeedCard";
 
 type IAuthor = {
   name: string;
+  image: string;
 };
 type IPost = {
   author: IAuthor;
@@ -97,6 +98,7 @@ export const PersonalFeedPosts = () => {
                     image: post.image || "",
                     subTopic: post?.subTopic ?? null,
                     group: post?.group ?? null,
+                    userImage: post?.author?.image || "",
                   }}
                   topic={"technology"?.toString() || ""}
                 />

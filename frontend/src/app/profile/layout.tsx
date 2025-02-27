@@ -2,14 +2,15 @@
 
 import { MyProfileTopBar } from "@/components/my-profile/my-profile-top-bar";
 import Topbar from "@/components/shared/topbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
+import { makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import profileimage from "@img/assets/person.png";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function MyProfile({
@@ -69,13 +70,15 @@ export default function MyProfile({
               <div className="h-[150px] bg-[#F5F5F5] flex flex-col items-center justify-center relative">
                 <div className="absolute -bottom-10 flex flex-col items-center">
                   <div className="p-2 bg-white rounded-2xl shadow border-none">
-                    <Image
-                      src={profileimage}
-                      className="rounded-2xl bg-white"
-                      width={90}
-                      height={90}
-                      alt=""
-                    />
+                    <Avatar className="w-32 h-32 font-bold text-3xl text-white cursor-pointer  rounded-md">
+                      <AvatarImage
+                        className="object-cover w-full h-full"
+                        src={BASE_URL + `/file?key=${user?.image}`}
+                      />
+                      <AvatarFallback className="">
+                        {makeUserAvatarSlug(data?.user.name ?? "")}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
                 </div>
               </div>

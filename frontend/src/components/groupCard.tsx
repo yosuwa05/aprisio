@@ -91,79 +91,92 @@ export default function GroupCard({ group }: Props) {
 
   return (
     <div
-      className='p-2 w-full rounded-lg transition-all'
+      className="p-2 w-full rounded-lg transition-all"
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
-      }}>
-      <div className='flex gap-2 w-full items-center justify-between  h-[70px]'>
-        <div className='flex gap-4 items-center'>
+      }}
+    >
+      <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
+        <div className="flex gap-4 items-center">
           <Image
             src={personImage}
-            alt='person'
+            alt="person"
             width={50}
             height={50}
-            className='rounded-lg'
+            className="rounded-lg"
           />
 
-          <div className='flex flex-col gap-2'>
+          <div className="flex flex-col gap-2">
             <h2
               onClick={() => router.push(`/groups/${group?.slug}`)}
-              className='font-semibold text-base lg cursor-pointer'>
+              className="font-semibold text-base lg cursor-pointer"
+            >
               {group?.name}
             </h2>
 
-            <div className='flex gap-6 items-center justify-between'>
-              <p className='text-[#043A53] text-xs font-medium'>
-                {group?.memberCount} Member
+            <div className="flex gap-6 items-center justify-between">
+              <p className="text-[#043A53] text-xs font-medium">
+                {group?.memberCount + 1} Member
               </p>
-              <p className='text-gray-500 text-xs font-medium hidden lg:block'>
-                <span className=''>Created</span> {formatDate(group?.createdAt)}
+              <p className="text-gray-500 text-xs font-medium hidden lg:block">
+                <span className="">Created</span> {formatDate(group?.createdAt)}
               </p>
-              <p className='text-[#828485] text-xs font-medium'>
+              <p className="text-[#828485] text-xs font-medium">
                 Organized by{" "}
-                <span className='font-bold text-[#636566]'>
+                <span className="font-bold text-[#636566]">
                   {group?.groupAdmin?.name}
                 </span>
               </p>
             </div>
           </div>
         </div>
-        <Button
-          disabled={isPending}
-          className={`${
-            group.canJoin
-              ? "bg-[#F2F5F6] border-[#043A53]"
-              : "bg-[#FCF7EA] border-[#AF9654]"
-          } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
-          onClick={() => {
-            if (!user) return toast.error("Login to join");
-            if (group?.groupAdmin?._id === user?.id) {
-              // return console.log(group);
-              useGroupStore.getState().setCurrentGroup({
-                name: group.name,
-                description: group.description,
-                groupId: group._id,
-                subTopic: {
-                  _id: group.subTopic._id,
-                  slug: group.subTopic.slug,
-                },
-              });
-              return router.push("/edit-group");
-            }
-            if (group.canJoin) {
-              mutate({
-                id: group._id,
-              });
-            } else {
-              router.push(`/groups/${group.slug}`);
-            }
-          }}>
-          {group?.groupAdmin?._id === user?.id
-            ? "Edit"
-            : group.canJoin
-            ? "Join"
-            : "View"}
-        </Button>
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            disabled={isPending}
+            className={`${
+              group.canJoin
+                ? "bg-[#F2F5F6] border-[#043A53]"
+                : "bg-[#FCF7EA] border-[#AF9654]"
+            } rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black`}
+            onClick={() => {
+              if (!user) return toast.error("Login to join");
+              if (group?.groupAdmin?._id === user?.id) {
+                useGroupStore.getState().setCurrentGroup({
+                  name: group.name,
+                  description: group.description,
+                  groupId: group._id,
+                  subTopic: {
+                    _id: group.subTopic._id,
+                    slug: group.subTopic.slug,
+                  },
+                });
+                return router.push("/edit-group");
+              }
+              if (group.canJoin) {
+                mutate({
+                  id: group._id,
+                });
+              } else {
+                router.push(`/groups/${group.slug}`);
+              }
+            }}
+          >
+            {group?.groupAdmin?._id === user?.id
+              ? "Edit"
+              : group.canJoin
+              ? "Join"
+              : "View"}
+          </Button>
+
+          {group?.groupAdmin?._id === user?.id && (
+            <p
+              onClick={() => router.push(`/groups/${group.slug}`)}
+              className="text-xs font-semibold text-contrasttext  cursor-pointer "
+            >
+              View
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

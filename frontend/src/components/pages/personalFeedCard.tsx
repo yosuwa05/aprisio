@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
-import { formatDate } from "@/lib/utils";
+import { formatDate, makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -44,6 +44,7 @@ interface IPostCard {
   subTopic: any;
   group: any;
   makeCommentsOpen?: boolean;
+  userImage: string;
 }
 
 export default function PersonalPostcard({
@@ -153,8 +154,8 @@ export default function PersonalPostcard({
           }}
         >
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/assets/person.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage src={BASE_URL + `/file?key=${post.userImage}`} />
+            <AvatarFallback>{makeUserAvatarSlug(post.author)}</AvatarFallback>
           </Avatar>
 
           <div className="self-end">

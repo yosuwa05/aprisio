@@ -5,14 +5,15 @@ interface IUser {
   name: string;
   email: string;
   id: string;
+  image: string;
 }
 
-interface BearState {
+interface UserState {
   user: IUser | null;
   setUser: (user: IUser | null) => void;
 }
 
-export const useGlobalAuthStore = create<BearState>()(
+export const useGlobalAuthStore = create<UserState>()(
   devtools(
     persist(
       (set) => ({

@@ -12,6 +12,7 @@ import { Skeleton } from "./ui/skeleton";
 
 type IAuthor = {
   name: string;
+  image: string;
 };
 type IPost = {
   author: IAuthor;
@@ -24,6 +25,8 @@ type IPost = {
   likedByMe: boolean;
   url?: string;
   image?: string;
+  subTopic?: any;
+  group?: any;
 };
 
 export const PostsSection = () => {
@@ -36,7 +39,7 @@ export const PostsSection = () => {
       queryKey: ["projects" + user?.id, topic],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`,
+          `/post?page=${pageParam}&userId=${user?.id ?? ""}&subTopic=${topic}`
         );
         return res;
       },
@@ -88,11 +91,14 @@ export const PostsSection = () => {
                     likedByMe: post.likedByMe,
                     url: post.url || "",
                     image: post.image || "",
+                    subTopic: post?.subTopic ?? null,
+                    group: post?.group ?? null,
+                    userImage: post?.author?.image || "",
                   }}
                   topic={topic?.toString() || ""}
                 />
               </React.Fragment>
-            )),
+            ))
           )
         ) : (
           <p className="text-gray-500 text-xs font-semibold">

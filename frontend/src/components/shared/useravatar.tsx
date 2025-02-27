@@ -1,6 +1,7 @@
 "use client";
 
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -38,8 +39,12 @@ export function UserAvatar() {
       <DropdownMenuTrigger>
         <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
           <AvatarImage
-            className=""
-            src={user ? "/assets/person.png" : "/user.png"}
+            className="object-cover rounded-full"
+            src={
+              user
+                ? BASE_URL + `/file?key=${user?.image}`
+                : "/assets/person.png"
+            }
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
