@@ -25,6 +25,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -38,6 +39,8 @@ export default function MyProfile({
 }>) {
   const user = useGlobalAuthStore((state) => state.user);
   const [chatOpen, isChatOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
+
   const setActiveTab = useGlobalLayoutStore(
     (state) => state.setActiveMyProfileTab
   );
@@ -177,7 +180,7 @@ export default function MyProfile({
                 <div className='flex flex-wrap gap-3'>
                   <Button
                     className={`rounded-3xl border-[0.2px] text-black transition-all duration-500 bg-[#F2F5F6] border-[#043A53] hover:bg-[#FCF7EA] hover:border-[#AF9654]`}
-                    onClick={logout}>
+                    onClick={() => setLogoutOpen(true)}>
                     Logout
                   </Button>
                 </div>
@@ -225,6 +228,24 @@ export default function MyProfile({
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <ChatBase />
+        </DialogContent>
+      </Dialog>
+      <Dialog open={logoutOpen} onOpenChange={setLogoutOpen}>
+        <DialogContent className='max-w-sm w-full p-6'>
+          <DialogHeader>
+            <DialogTitle>Confirm Logout</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to log out?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className='flex justify-end gap-2'>
+            <Button variant='outline' onClick={() => setLogoutOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant='destructive' onClick={logout}>
+              Confirm
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

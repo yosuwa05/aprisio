@@ -45,7 +45,7 @@ export default function Events() {
 
       <div className='lg:px-14 relative z-20 px-5 pb-5  lg:pt-7  pt-4 flex justify-between items-center'>
         <h1 className='text-[#353535] flex lg:gap-6 gap-1 flex-col xl:text-7xl lg:text-4xl text-2xl font-roboto font-semibold'>
-          <span>Popular Events</span>
+          <span>Popular Experiences</span>
         </h1>
       </div>
 

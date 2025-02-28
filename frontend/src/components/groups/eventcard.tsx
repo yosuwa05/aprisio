@@ -72,7 +72,7 @@ export function EventCard({ event }: Props) {
 
   return (
     <div
-      className='p-4 lg:px-8 my-1  rounded-lg transition-all mx-4'
+      className='p-4 lg:px-8 my-1  rounded-lg transition-all mx-1'
       style={{
         boxShadow: "0px 0px 10px -1px rgba(2, 80, 124, 0.25)",
       }}>
@@ -87,7 +87,7 @@ export function EventCard({ event }: Props) {
 
       <div className='flex justify-between items-center mt-4'>
         <div>
-          <h1 className='text-2xl font-semibold font-sans'>
+          <h1 className='text-lg md:text-2xl font-semibold font-sans'>
             {event.eventName}
           </h1>
           <h3 className='mt-3 font-normal text-contrasttext text-lg'>
