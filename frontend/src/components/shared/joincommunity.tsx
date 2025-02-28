@@ -16,6 +16,7 @@ import { RiArrowRightLine } from "react-icons/ri";
 // import { GiCheckMark } from 'react-icons/gi';
 import { _axios } from "@/lib/axios-instance";
 import { AxiosError } from "axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ImSpinner2 } from "react-icons/im";
 import { ToastContainer } from "react-toastify";
@@ -174,62 +175,6 @@ const JoinCommunityForm = () => {
     }
   };
 
-  // const handleSendOtp = async (email: string) => {
-  //   console.log("OTPlessSignin:", window?.OTPlessSignin);
-  //   if (window?.OTPlessSignin) {
-  //     console.log("Initiating OTP send...");
-  //     try {
-  //       await window?.OTPlessSignin?.initiate({ channel: "EMAIL", email: email });
-  //       setEmailVerificationSent(true); // Set this to true when email is sent
-  //     } catch (error) {
-  //       console.error("Error sending verification email:", error);
-  //     }
-  //   } else {
-  //     console.error("OTPlessSignin is not available on the window object.");
-  //   }
-  // };
-  // const handleSendVerification = async (email: string) => {
-  //   setIsVerifying(true);
-  //   try {
-  //     const response = await _axios.post('/verify/email', { email });
-
-  //     // Store email verification state in localStorage
-  //     localStorage.setItem('aprisioEmail', email);
-  //     localStorage.setItem('verified', 'false');
-
-  //     setEmailVerificationSent(true);
-
-  //     if (response.data.success) {
-  //       setEmailVerificationSent(true);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error sending verification email:', error);
-  //   } finally {
-  //     setIsVerifying(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (emailValue) {
-  //     const isValid = z.string().email().safeParse(emailValue).success;
-  //     setIsEmailValid(isValid);
-  //     if (!isValid) setEmailVerified(false);
-  //   } else {
-  //     setIsEmailValid(false);
-  //     setEmailVerified(false);
-  //   }
-  // }, [emailValue]);
-
-  //   useEffect(() => {
-  //     window.handleOTPlessSuccess = () => {
-  //         setEmailVerified(true);
-  //     };
-  //     return () => {
-  //         window.handleOTPlessSuccess = undefined;
-  //     };
-  // }, []);
-
-  // Real-time mobile validation
   useEffect(() => {
     if (mobileValue) {
       const isValid = mobileValue.length === 10 && /^\d+$/.test(mobileValue);
@@ -283,56 +228,6 @@ const JoinCommunityForm = () => {
 
   return (
     <>
-      {/* <Script
-        id="otpless-sdk"
-        src="https://otpless.com/v4/headless.js"
-        data-appid="HYRAB3PGUFKD9MFNZN2N"
-        strategy="lazyOnload"
-        onError={(e: Error) => {
-            console.error('OTPLess Script failed to load', e)
-          }}
-      ></Script>
- <Script id="otpless-init" strategy="lazyOnload"  onError={(e: Error) => {
-          console.error('OTPLess-init Script failed to load', e)
-        }}>
-  {`
-    const callback = (eventCallback) => {
-      const ONETAP = () => {
-        const { response } = eventCallback;
-        console.log("OneTap Response:", response);
-        if(response.status==="SUCCESS"){
-           window.handleOTPlessSuccess?.();
-        }
-      };
-
-      const OTP_AUTO_READ = () => {
-        const { response: { otp } } = eventCallback;
-        console.log("Auto-read OTP:", otp);
-      };
-
-      const FAILED = () => {
-        const { response } = eventCallback;
-        console.error("Verification failed:", response);
-      };
-
-      const FALLBACK_TRIGGERED = () => {
-        const { response } = eventCallback;
-        console.warn("Fallback triggered:", response);
-      };
-
-      const EVENTS_MAP = {
-        ONETAP,
-        OTP_AUTO_READ,
-        FAILED,
-        FALLBACK_TRIGGERED
-      };
-
-      if ("responseType" in eventCallback) EVENTS_MAP[eventCallback.responseType]?.();
-    };
-
-      window.OTPlessSignin = new OTPless(callback);
-  `}
-</Script> */}
       <ToastContainer />
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -575,9 +470,13 @@ const JoinCommunityForm = () => {
                 </div>
               </div>
               <p className="text-[#353535] -mt-1 text-xl">
-                I agree to the{" "}
-                <span className="text-[#043A53] font-semibold cursor-pointer hover:underline">
-                  Terms & Conditions
+                I agree to the
+                <span className="text-[#043A53] font-semibold cursor-pointer mx-2">
+                  <Link href={"/terms-of-use"}>Terms of Use</Link>
+                </span>
+                and
+                <span className="text-[#043A53] font-semibold cursor-pointer ml-2">
+                  <Link href={"/privacy-policy"}>Privacy Policy</Link>
                 </span>
               </p>
             </div>

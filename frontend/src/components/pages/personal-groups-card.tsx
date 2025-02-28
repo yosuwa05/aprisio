@@ -3,9 +3,7 @@ import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import personImage from "@img/assets/person.png";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -84,15 +82,15 @@ export function PersonalGroupCard({ group }: Props) {
     >
       <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
         <div className="flex gap-4 items-center">
-          <Image
+          {/* <Image
             src={personImage}
             alt="person"
             width={50}
             height={50}
             className="rounded-lg"
-          />
+          /> */}
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 ml-4">
             <h2 className="font-semibold">{group?.group?.name}</h2>
 
             <div className="flex gap-6 items-center justify-between">

@@ -28,7 +28,7 @@ export const chatController = new Elysia({
               .find((id: string) => id !== userId);
 
             const user = await UserModel.findOne({ _id: otherUserId }).select(
-              "name email"
+              "name email image"
             );
 
             return {
@@ -160,5 +160,35 @@ export const chatController = new Elysia({
         description: "Get chat messages",
         summary: "Get chat messages",
       },
+    }
+  )
+  .patch(
+    "/deletemessage/:chatId/:messageId",
+    async ({ params, store }) => {
+      try {
+        const userId = (store as StoreType)?.id;
+        if (!userId) return { error: "Unauthorized" };
+
+        const { chatId, messageId } = params;
+
+        const messageRef = db
+          .collection("chats")
+          .doc(chatId)
+          .collection("messages")
+          .doc(messageId);
+
+        await messageRef.update({
+          text: "This message was deleted",
+          deleted: true,
+        });
+
+        return { status: true };
+      } catch (error) {
+        console.error("SoftDeleteMessage Error:", error);
+        return { error: "Something went wrong" };
+      }
+    },
+    {
+      detail: { summary: "Soft delete a message" },
     }
   );

@@ -15,6 +15,8 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import PersonalFeedComment from "./personalFeedComment";
+import { BASE_URL } from "@/lib/config";
+import { makeUserAvatarSlug } from "@/lib/utils";
 
 type Props = {
   postId: string;
@@ -118,9 +120,11 @@ export default function PerosonalFeedCommentSection({
   return (
     <div>
       <div className="mt-4 flex gap-4 items-center">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="/assets/person.png" />
-          <AvatarFallback>CN</AvatarFallback>
+        <Avatar className="h-9 w-9 object-cover">
+          <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
+          <AvatarFallback>
+            {makeUserAvatarSlug(user?.name ?? "")}
+          </AvatarFallback>
         </Avatar>
 
         <Input

@@ -4,9 +4,8 @@ import { _axios } from "@/lib/axios-instance";
 import { formatDate } from "@/lib/utils";
 import useGroupStore from "@/stores/edit-section/GroupStrore";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
-import personImage from "@img/assets/person.png";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -98,15 +97,15 @@ export default function GroupCard({ group }: Props) {
     >
       <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
         <div className="flex gap-4 items-center">
-          <Image
+          {/* <Image
             src={personImage}
             alt="person"
             width={50}
             height={50}
             className="rounded-lg"
-          />
+          /> */}
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pl-4">
             <h2
               onClick={() => router.push(`/groups/${group?.slug}`)}
               className="font-semibold text-base lg cursor-pointer"
@@ -123,8 +122,10 @@ export default function GroupCard({ group }: Props) {
               </p>
               <p className="text-[#828485] text-xs font-medium">
                 Organized by{" "}
-                <span className="font-bold text-[#636566]">
-                  {group?.groupAdmin?.name}
+                <span className="font-bold text-[#636566] cursor-pointer">
+                  <Link href={`/user/${group?.groupAdmin?.name}`}>
+                    {group?.groupAdmin?.name}
+                  </Link>
                 </span>
               </p>
             </div>

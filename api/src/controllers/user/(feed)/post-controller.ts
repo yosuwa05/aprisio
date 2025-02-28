@@ -168,7 +168,9 @@ export const postController = new Elysia({
           },
         ]);
 
-        const totalPosts = await PostModel.countDocuments();
+        const totalPosts = await PostModel.countDocuments({
+          subTopic: subTopic._id,
+        });
         const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
 
         return {

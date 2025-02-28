@@ -29,8 +29,6 @@ export function MyProfileLikedPosts() {
       },
     });
 
-  console.log(data);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref, entry } = useIntersection({
     root: containerRef.current,
@@ -78,6 +76,7 @@ export function MyProfileLikedPosts() {
                     image: post?.image || "",
                     subTopic: post?.subTopic ?? null,
                     group: post?.group ?? null,
+                    userImage: post?.author?.image || "",
                   }}
                 />
               </React.Fragment>

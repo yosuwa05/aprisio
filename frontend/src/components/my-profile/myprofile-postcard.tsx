@@ -2,7 +2,7 @@
 
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
-import { formatDate } from "@/lib/utils";
+import { formatDate, makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Icon } from "@iconify/react";
@@ -30,6 +30,7 @@ interface IPostCard {
   image?: string;
   subTopic: any;
   group: any;
+  userImage: string;
 }
 
 export default function MyProfilePostCard({ post }: { post: IPostCard }) {
@@ -130,8 +131,11 @@ export default function MyProfilePostCard({ post }: { post: IPostCard }) {
       <div className="flex items-center gap-2 justify-between">
         <div className="flex gap-2">
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/assets/person.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage
+              className="object-cover rounded-full"
+              src={BASE_URL + `/file?key=${post.userImage}`}
+            />
+            <AvatarFallback>{makeUserAvatarSlug(post.author)}</AvatarFallback>
           </Avatar>
 
           <div className="self-end">

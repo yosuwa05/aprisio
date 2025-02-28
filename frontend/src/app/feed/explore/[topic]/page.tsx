@@ -88,63 +88,62 @@ export default function Feed() {
   return (
     <div>
       <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
-        {isLoading ? (
-          <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
-        ) : (
-          <div className="lg:max-w-[300px] min-w-[250px]">
-            <h1 className="font-[600] text-3xl text-textcol capitalize">
-              {data?.subTopic?.subTopicName}
-            </h1>
-            <p className="font-medium text-[#353535CC] opacity-80 mt-2">
-              {data?.subTopic?.description}
-            </p>
+        <div className="flex w-full max-w-[1400px] mx-auto gap-4">
+          {isLoading ? (
+            <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
+          ) : (
+            <div className="lg:max-w-[300px] min-w-[250px]">
+              <h1 className="font-[600] text-3xl text-textcol capitalize">
+                {data?.subTopic?.subTopicName}
+              </h1>
+              <p className="font-medium text-[#353535CC] opacity-80 mt-2">
+                {data?.subTopic?.description}
+              </p>
 
-            <div className="mt-4 flex flex-col gap-3 items-center">
-              <Image src={placeholder} className="rounded-xl" alt="" />
-              {!data?.isUserJoined && (
-                <Button
-                  onClick={() => {
-                    if (!user) return toast.error("Login to join");
-                    mutate({
-                      subTopicId: data?.subTopic?._id ?? "",
-                    });
-                  }}
-                  disabled={isPending}
-                  className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol"
-                >
-                  Join Community
-                </Button>
+              <div className="mt-4 flex flex-col gap-3 items-center">
+                <Image src={placeholder} className="rounded-xl" alt="" />
+                {!data?.isUserJoined && (
+                  <Button
+                    onClick={() => {
+                      if (!user) return toast.error("Login to join");
+                      mutate({
+                        subTopicId: data?.subTopic?._id ?? "",
+                      });
+                    }}
+                    disabled={isPending}
+                    className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol"
+                  >
+                    Join Community
+                  </Button>
+                )}
+              </div>
+
+              {!isSuggetionsLoading && user && (
+                <div>
+                  <h3 className="font-normal text-xl my-4">
+                    Other Sub - Communities
+                  </h3>
+
+                  <div className="gap-4 flex flex-col">
+                    {suggetions?.topics?.map((e: Suggetion, index: number) => {
+                      return (
+                        <div
+                          key={index}
+                          className="flex gap-2 items-center cursor-pointer"
+                          onClick={() => {
+                            router.push(`/feed/explore/${e?.slug}`);
+                          }}
+                        >
+                          <p>{e?.subTopicName}</p>
+                          <ChevronRight />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
             </div>
-
-            {!isSuggetionsLoading && user && (
-              <div>
-                <h3 className="font-normal text-xl my-4">
-                  Other Sub - Communities
-                </h3>
-
-                <div className="gap-4 flex flex-col">
-                  {suggetions?.topics?.map((e: Suggetion, index: number) => {
-                    return (
-                      <div
-                        key={index}
-                        className="flex gap-2 items-center cursor-pointer"
-                        onClick={() => {
-                          router.push(`/feed/explore/${e?.slug}`);
-                        }}
-                      >
-                        <p>{e?.subTopicName}</p>
-                        <ChevronRight />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="flex w-full max-w-[1200px] mx-auto gap-4">
+          )}
           <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-180px)] hide-scrollbar overflow-hidden">
             {activeLayout == "post" && <PostsSection />}
             {activeLayout == "group" && <GroupsSection />}

@@ -80,6 +80,8 @@ export function EditProfile() {
     }
   };
 
+  const setUser = useGlobalAuthStore((state) => state.setUser);
+
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
       return await _axios.put(
@@ -89,6 +91,13 @@ export function EditProfile() {
     },
     onSuccess(data) {
       toast.success("Profile updated successfully!");
+      setUser({
+        image: data.data.image,
+        email: user?.email ?? "",
+        name: data.data.name,
+        id: user?.id ?? "",
+      });
+      console.log(data.data.image);
     },
     onError(data) {
       toast.error("Some thing went wrong");
@@ -99,7 +108,7 @@ export function EditProfile() {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("email", data.email);
-    formData.append("image", file);
+    if (file) formData.append("image", file);
     mutate(formData);
   };
 

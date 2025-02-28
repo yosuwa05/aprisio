@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MessageCircle } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 export default function PersonalProfile({
   children,
@@ -33,6 +34,13 @@ export default function PersonalProfile({
       return res;
     },
   });
+
+  const userName = useMemo(() => {
+    if (userslug) {
+      return decodeURIComponent(userslug.toString());
+    }
+    return "";
+  }, [userslug]);
 
   if (isLoading) {
     return (
@@ -114,7 +122,7 @@ export default function PersonalProfile({
             </div>
 
             <h1 className="text-[#043A537D] text-2xl px-2 my-4">
-              Topics {userslug} Follow
+              Topics {userName} Follow
             </h1>
 
             <div className="flex flex-col gap-3">

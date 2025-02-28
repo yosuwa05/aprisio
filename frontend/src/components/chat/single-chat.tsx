@@ -7,7 +7,7 @@ import { Icon } from "@iconify/react";
 import person from "@img/assets/person.png";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { ChevronLeft, Send } from "lucide-react";
+import { ChevronLeft, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -60,6 +60,35 @@ export function SingleChat() {
     },
   });
 
+  const { mutate: deleteMessage } = useMutation({
+    mutationKey: ["chat", "softDeleteMessage"],
+    mutationFn: async ({
+      chatId,
+      messageId,
+    }: {
+      chatId: string;
+      messageId: string;
+    }) => {
+      await _axios.patch(`/chat/deletemessage/${chatId}/${messageId}`);
+    },
+    onSuccess: (_, { messageId }) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId
+            ? { ...msg, text: "This message was deleted", deleted: true }
+            : msg
+        )
+      );
+    },
+  });
+
+  function handleDeleteMessage(messageId: string) {
+    if (!selectedChat.userId || !user?.id) return;
+
+    const chatId = [selectedChat.userId, user.id].sort().join("_");
+    deleteMessage({ chatId, messageId });
+  }
+
   function handleSendMessage() {
     if (!user?.id) return toast.error("User not authenticated");
     if (message.trim().length === 0)
@@ -76,6 +105,11 @@ export function SingleChat() {
     setMessages((prev) => [...prev, newMessage]);
 
     mutate(newMessage, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["chat-messages", selectedChat.userId],
+        });
+      },
       onError: () => {
         setMessages((prev) => prev.filter((msg) => msg.id !== newMessage.id));
         toast.error("Message failed to send");
@@ -120,16 +154,31 @@ export function SingleChat() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
-        {messages.map((msg, index) => (
-          <div
-            key={msg.id ?? index}
-            className={`max-w-[70%] w-fit p-2 rounded-2xl text-sm ${
-              msg.senderId === user?.id.toString()
-                ? "bg-blue-500 text-white self-end ml-auto"
-                : "bg-gray-200 text-gray-800 self-start"
-            }`}
-          >
-            {msg.text}
+        {messages.map((msg: any) => (
+          <div key={msg.id} className="flex items-center">
+            <div
+              className={`max-w-[70%] w-fit p-2 rounded-2xl text-sm ${
+                msg.senderId === user?.id.toString()
+                  ? "bg-blue-500 text-white self-end ml-auto"
+                  : "bg-gray-200 text-gray-800 self-start"
+              }`}
+            >
+              {msg.deleted ? (
+                <span className="italic text-gray-200">
+                  This message was deleted
+                </span>
+              ) : (
+                msg.text
+              )}
+            </div>
+
+            {msg.senderId === user?.id.toString() && !msg.deleted && (
+              <Trash2
+                className="ml-2 cursor-pointer text-red-500"
+                size={16}
+                onClick={() => handleDeleteMessage(msg.id!)}
+              />
+            )}
           </div>
         ))}
       </div>

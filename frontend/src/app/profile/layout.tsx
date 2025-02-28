@@ -63,7 +63,7 @@ export default function MyProfile({
         <MyProfileTopBar />
       </div>
 
-      <div className="mx-2 md:mx-8 mt-2 flex flex-col lg:flex-row gap-8">
+      <div className="mt-2 flex flex-col lg:flex-row gap-8  max-w-[1200px] mx-auto">
         <div className="lg:max-w-[350px] min-w-[350px]">
           <div className="flex flex-col gap-4">
             <div className=" shadow-xl rounded-xl p-4">
@@ -101,46 +101,60 @@ export default function MyProfile({
               </div>
 
               <div className="border-b pb-4">
-                <div className="pt-2 grid gap-6  grid-cols-2">
-                  <div className="flex flex-col gap-3 justify-center">
+                <div className="pt-2 grid gap-2  grid-cols-2">
+                  <div
+                    className="flex flex-col gap-3 justify-center cursor-pointer hover:bg-muted rounded-lg p-2"
+                    onClick={() => setActiveTab("created-posts")}
+                  >
                     <h1 className="text-2xl text-contrasttext font-semibold">
                       {data?.totalPostsCreated}
                     </h1>
-                    <p className="text-base text-fadedtext">Total Threads</p>
+                    <p className="text-sm text-fadedtext">Total Threads</p>
                   </div>
-                  <div className="flex flex-col gap-3 justify-center">
+                  <div
+                    onClick={() => setActiveTab("commented-posts")}
+                    className="flex flex-col gap-3 justify-center cursor-pointer hover:bg-muted rounded-lg p-2"
+                  >
                     <h1 className="text-2xl text-contrasttext font-semibold">
                       {data?.postsCommented}
                     </h1>
-                    <p className="text-base text-fadedtext">Post Comments</p>
+                    <p className="text-sm text-fadedtext">Post Comments</p>
                   </div>
-                  <div className="flex flex-col gap-3 justify-center">
+                  <div
+                    className="flex flex-col gap-3 justify-center cursor-pointer hover:bg-muted rounded-lg p-2"
+                    onClick={() => setActiveTab("organised-events")}
+                  >
                     <h1 className="text-2xl text-contrasttext font-semibold">
                       {data?.eventsOrganized}
                     </h1>
-                    <p className="text-base text-fadedtext">Events Organized</p>
+                    <p className="text-sm text-fadedtext">Events Organized</p>
                   </div>
-                  <div className="flex flex-col gap-3 justify-center">
+                  <div
+                    className="flex flex-col gap-3 justify-center cursor-pointer hover:bg-muted rounded-lg p-2"
+                    onClick={() => setActiveTab("participated-events")}
+                  >
                     <h1 className="text-2xl text-contrasttext font-semibold">
                       {data?.eventsParticipated}
                     </h1>
-                    <p className="text-base text-fadedtext">
-                      Event Participated
-                    </p>
+                    <p className="text-sm text-fadedtext">Event Participated</p>
                   </div>
-                  <div className="flex flex-col gap-3 justify-center">
+                  <div
+                    className="flex flex-col gap-3 justify-center cursor-pointer hover:bg-muted rounded-lg p-2"
+                    onClick={() => setActiveTab("created-groups")}
+                  >
                     <h1 className="text-2xl text-contrasttext font-semibold">
                       {data?.groupsCreated}
                     </h1>
-                    <p className="text-base text-fadedtext">Group Created</p>
+                    <p className="text-sm text-fadedtext">Group Created</p>
                   </div>
-                  <div className="flex flex-col gap-3 justify-center">
+                  <div
+                    className="flex flex-col gap-3 justify-center cursor-pointer hover:bg-muted rounded-lg p-2"
+                    onClick={() => setActiveTab("joined-groups")}
+                  >
                     <h1 className="text-2xl text-contrasttext font-semibold">
                       {data?.groupParticipated}
                     </h1>
-                    <p className="text-base text-fadedtext">
-                      Group Participated
-                    </p>
+                    <p className="text-sm text-fadedtext">Group Participated</p>
                   </div>
                 </div>
               </div>

@@ -1,13 +1,10 @@
 "use client";
 
-import Image from "next/image";
-import { RiArrowDownLine } from "react-icons/ri";
-import join from "../../../public/images/retirement.png";
 import JoinCommunityForm from "../../components/shared/joincommunity";
 export default function JoinCommunity() {
   return (
-    <section className="pt-28 bg-[#F2F5F6]">
-      <div className="bg-[#F2F5F6] flex w-full ">
+    <section className="pt-2bg-[#F2F5F6]">
+      {/* <div className="bg-[#F2F5F6] flex w-full ">
         <div className="flex flex-col justify-between lg:w-2/3 w-full lg:gap-0 gap-16 px-5 lg:px-0 lg:pl-32 lg:py-16 py-5">
           <div className="">
             <h1 className="font-semibold tracking-tight lg:text-5xl text-3xl !leading-normal lg:text-left  text-center font-mulish text-[#043A53]">
@@ -41,19 +38,15 @@ export default function JoinCommunity() {
         <div className="lg:flex hidden  justify-end items-end right-0">
           <Image src={join} alt="image" className="h-[500px] w-full" />
         </div>
-      </div>
+      </div> */}
       <div className="lg:py-16 lg:px-28 px-5 pt-5 bg-white">
         <div className="text-center flex w-full  flex-col gap-10 lg:pb-24 pb-10">
           <h1 className="lg:text-8xl text-3xl pt-5 font-bold text-center font-mulish">
-            Join Community
+            Join Aprisio
           </h1>
-          {/* <p className="font-mulish lg:text-2xl text-xl font-light">
-      Lorem incididunt Mollit in laborum tempor Lorem incididunt irure. Aute eu ex ad sunt. Pariatur sint culpa do incididunt 
-    </p> */}
         </div>
-        <div>
-          <JoinCommunityForm />
-        </div>
+
+        <JoinCommunityForm />
       </div>
     </section>
   );

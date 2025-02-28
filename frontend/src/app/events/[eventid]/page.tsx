@@ -17,7 +17,7 @@ export default function ViewEventPage() {
   const user = useGlobalAuthStore((state) => state.user);
 
   const { data, isLoading, refetch } = useQuery<any>({
-    queryKey: ["view-single-Event", eventid],
+    queryKey: ["view-single-Event", eventid, user?.id],
     queryFn: async () => {
       const res = await _axios.get(
         `/events/noauth/view-event?eventId=${eventid}&userId=${user?.id}`
@@ -92,7 +92,9 @@ export default function ViewEventPage() {
             <div className=" text-base md:text-2xl">
               Organised by{" "}
               <span className="text-textcol font-semibold ">
-                {data?.event?.group?.name}
+                {data?.event?.isManagedByAdmin
+                  ? "Aprisio"
+                  : data?.event?.group?.name}
               </span>
             </div>
             <div>

@@ -863,19 +863,27 @@ export const MyProfileController = new Elysia({
         user.name = name;
         user.email = email;
 
-        let fileLink = "";
+        let url = "";
 
         if (image) {
           const { ok, filename } = await saveFile(image, "profile-images");
 
-          if (ok) fileLink = filename;
-
-          deleteFile(user.image);
-        } else {
-          return { ok: false, message: "Something went wrong" };
+          if (ok) {
+            url = filename;
+            deleteFile(user.image);
+          } else {
+            return {
+              message: "Cant able to upload the image.",
+              ok: false,
+            };
+          }
         }
 
-        user.image = fileLink;
+        console.log(url);
+
+        if (url) {
+          user.image = url;
+        }
 
         await user.save();
 
@@ -883,6 +891,8 @@ export const MyProfileController = new Elysia({
 
         return {
           message: "User updated successfully",
+          ok: true,
+          image: user.image,
         };
       } catch (error: any) {
         console.log(error);
@@ -900,7 +910,7 @@ export const MyProfileController = new Elysia({
       body: t.Object({
         name: t.String(),
         email: t.String(),
-        image: t.File(),
+        image: t.Optional(t.File()),
       }),
     }
   );

@@ -76,6 +76,7 @@ export function MyProfileCommentedPosts() {
                     image: post?.image || "",
                     subTopic: post?.subTopic ?? null,
                     group: post?.group ?? null,
+                    userImage: post?.author?.image || "",
                   }}
                 />
               </React.Fragment>

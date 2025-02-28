@@ -1,13 +1,15 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BASE_URL } from "@/lib/config";
+import { makeUserAvatarSlug } from "@/lib/utils";
 import { useChatStore } from "@/stores/ChatStore";
-import person from "@img/assets/person.png";
 import { format } from "date-fns";
-import Image from "next/image";
 
 export type Contact = {
   profile: {
     name: string;
     email: string;
     _id: string;
+    image: string;
   };
   lastMessage: string;
   lastUpdated: number;
@@ -37,13 +39,15 @@ export function MessageCard({ contact }: Props) {
       }
     >
       <div className="flex gap-2 items-center">
-        <Image
-          src={person}
-          alt="person"
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
+        <Avatar className="h-9 w-9 bg-gray-400">
+          <AvatarImage
+            className="object-cover rounded-full"
+            src={BASE_URL + `/file?key=${contact?.profile?.image}`}
+          />
+          <AvatarFallback>
+            {makeUserAvatarSlug(contact?.profile?.name)}
+          </AvatarFallback>
+        </Avatar>
 
         <div className="flex flex-col">
           <h5 className="text-textcol text-sm font-normal m-0 p-0">

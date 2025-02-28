@@ -2,6 +2,7 @@
 
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
+import { makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -46,7 +47,9 @@ export function UserAvatar() {
                 : "/assets/person.png"
             }
           />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>
+            {makeUserAvatarSlug(user?.name ?? "")}
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

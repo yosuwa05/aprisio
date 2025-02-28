@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
-import { formatDate } from "@/lib/utils";
+import { BASE_URL } from "@/lib/config";
+import { formatDate, makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -165,9 +166,11 @@ export default function GroupFeedComment({ comment, postId }: Props) {
       <div>
         {isReplyOpened && (
           <motion.div className="mt-4 flex gap-4 items-center">
-            <Avatar className="h-6 w-6">
-              <AvatarImage src="/assets/person.png" />
-              <AvatarFallback>CN</AvatarFallback>
+            <Avatar className="h-9 w-9 object-cover">
+              <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
+              <AvatarFallback>
+                {makeUserAvatarSlug(user?.name ?? "")}
+              </AvatarFallback>
             </Avatar>
 
             <Input

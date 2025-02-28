@@ -13,7 +13,6 @@ import Events from "../components/shared/events";
 import FAQ1 from "../components/shared/faq-one";
 import FAQ2 from "../components/shared/faq-two";
 import Footer from "../components/shared/footer";
-import Join from "../components/shared/join";
 import Testimonial from "../components/shared/testimonials";
 
 export default function Home() {
@@ -52,9 +51,9 @@ export default function Home() {
             <Events />
           </div>
           <Testimonial />
-          <div id="join">
+          {/* <div id="join">
             <Join />
-          </div>
+          </div> */}
           <div id="footer">
             <Footer />
           </div>
