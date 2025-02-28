@@ -16,32 +16,73 @@ export const noAuthGroupController = new Elysia({
     "/",
     async ({ query }) => {
       try {
-        const { userId, search } = query;
+        const { subTopic, userId, search } = query;
 
         const page = query.page || 1;
         const limit = query.limit || 10;
 
+        let subTopicData = await SubTopicModel.findOne({ slug: subTopic });
+
         let _limit = limit ?? 10;
         let _page = page ?? 1;
 
-        let groups = await UserGroupsModel.find(
-          {
-            userId,
-          },
-          "group"
-        )
-          .populate("group", "name")
-          .limit(_limit)
-          .skip((_page - 1) * _limit)
-          .sort({ createdAt: -1 })
-          .lean();
+        if (!subTopicData) {
+          return {
+            data: [],
+            message: "Invalid subtopic",
+            ok: false,
+          };
+        }
 
-        let total = await UserGroupsModel.countDocuments({
-          userId,
+        let searchQuery: any = {
+          subTopic: subTopicData._id,
+        };
+
+        if (search) {
+          searchQuery.$or = [{ name: { $regex: search, $options: "i" } }];
+        }
+
+        const groups = await GroupModel.find(searchQuery)
+          .populate("groupAdmin", "name")
+          .sort({ createdAt: -1 })
+          .skip((_page - 1) * _limit)
+          .limit(_limit)
+          .lean()
+          .exec();
+
+        const groupIds = groups.map((g) => g._id);
+
+        let userJoinedGroups: any[] = [];
+        if (userId) {
+          userJoinedGroups = await UserGroupsModel.find({
+            userId,
+            group: { $in: groupIds },
+          }).lean();
+        }
+
+        const joinedGroupSet = new Set(
+          userJoinedGroups.map((ug) => String(ug.group))
+        );
+
+        const updatedGroups = groups.map((group) => {
+          let canJoin = true;
+
+          if (userId) {
+            if (
+              String(group.groupAdmin?._id) === userId ||
+              joinedGroupSet.has(String(group._id))
+            ) {
+              canJoin = false;
+            }
+          }
+
+          return { ...group, canJoin };
         });
 
+        const total = await GroupModel.countDocuments(searchQuery);
+
         return {
-          groups,
+          groups: updatedGroups,
           ok: true,
           page,
           limit,
@@ -81,7 +122,7 @@ export const noAuthGroupController = new Elysia({
         let userJoinedGroups = await UserGroupsModel.find({
           userId,
         })
-          .populate("group", "name slug")
+          .populate("group", "name slug memberCount")
           .populate("userId", "name")
           .lean();
 

@@ -21,7 +21,7 @@ export function PersonalEventsSection({}) {
       queryKey: ["group-events", user?.id],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/profile/personal/events?userId=${userslug}&page=${pageParam}&limit=${limit}`,
+          `/profile/personal/events?userId=${userslug}&page=${pageParam}&limit=${limit}`
         );
         return res?.data;
       },
@@ -70,7 +70,7 @@ export function PersonalEventsSection({}) {
           data?.pages?.flatMap((page) =>
             page?.events?.map((event: Event) => {
               return <PersonalEventCard key={event?._id} event={event} />;
-            }),
+            })
           )
         ) : (
           <div className="flex flex-col justify-center items-center gap-4">

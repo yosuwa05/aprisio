@@ -472,11 +472,15 @@ const JoinCommunityForm = () => {
               <p className="text-[#353535] -mt-1 text-xl">
                 I agree to the
                 <span className="text-[#043A53] font-semibold cursor-pointer mx-2">
-                  <Link href={"/terms-of-use"}>Terms of Use</Link>
+                  <Link href={"/terms-of-use"} target="_blank">
+                    Terms of Use
+                  </Link>
                 </span>
                 and
                 <span className="text-[#043A53] font-semibold cursor-pointer ml-2">
-                  <Link href={"/privacy-policy"}>Privacy Policy</Link>
+                  <Link href={"/privacy-policy"} target="_blank">
+                    Privacy Policy
+                  </Link>
                 </span>
               </p>
             </div>

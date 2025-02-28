@@ -112,7 +112,6 @@ export function SearchBar() {
                     )}
                   </>
                 ) : (
-                  // No Results Found
                   <div className="text-center text-gray-500 text-sm py-3">
                     No search results found
                   </div>

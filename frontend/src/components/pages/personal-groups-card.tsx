@@ -82,20 +82,13 @@ export function PersonalGroupCard({ group }: Props) {
     >
       <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
         <div className="flex gap-4 items-center">
-          {/* <Image
-            src={personImage}
-            alt="person"
-            width={50}
-            height={50}
-            className="rounded-lg"
-          /> */}
-
           <div className="flex flex-col gap-2 ml-4">
             <h2 className="font-semibold">{group?.group?.name}</h2>
 
             <div className="flex gap-6 items-center justify-between">
               <p className="text-[#043A53] text-xs font-medium">
-                {group.memberCount} Member
+                {group?.group?.memberCount}
+                {group?.group?.memberCount > 1 ? " members" : " member"}
               </p>
               <p className="text-gray-500 text-xs font-medium">
                 Created {formatDate(group.createdAt)}

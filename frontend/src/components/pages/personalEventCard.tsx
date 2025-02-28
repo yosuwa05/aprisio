@@ -12,6 +12,7 @@ export type Event = {
   location: string;
   createdAt: string;
   attending: boolean;
+  attendees: string[];
 };
 
 function formatDateString(date: Date) {
@@ -54,7 +55,10 @@ export function PersonalEventCard({ event }: Props) {
           <h3 className="mt-3 font-normal text-contrasttext text-lg">
             {event.location}
           </h3>
-          <p className="mt-4 text-fadedtext text-sm font-medium">500 Members</p>
+          <p className="mt-4 text-fadedtext text-sm font-medium">
+            {event?.attendees?.length}{" "}
+            {event?.attendees?.length === 1 ? "Person" : "People"}
+          </p>
         </div>
 
         <div className="flex flex-col gap-4 items-center">

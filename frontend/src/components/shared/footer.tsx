@@ -62,20 +62,24 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Navigations */}
         <div className="flex flex-col lg:items-end">
           <div>
-            <h1 className="text-[#043A53] xl:pb-8 pb-4 font-roboto xl:text-3xl text-2xl font-semibold">
-              Navigations
-            </h1>
             <ul className="flex flex-col xl:gap-4 lg:gap-2 font-mulish">
-              <Link href={"/privacy-policy"}>
+              <Link href="/#home">
+                <li className="xl:text-2xl text-xl text-[#353535E3]">Home</li>
+              </Link>
+              <Link href="/#footer">
+                <li className="xl:text-2xl text-xl text-[#353535E3]">
+                  Contact
+                </li>
+              </Link>
+              <Link href={"/privacy-policy"} target="_blank">
                 <li className="xl:text-2xl text-xl text-[#353535E3]">
                   Privacy Policy
                 </li>
               </Link>
 
-              <Link href={"/terms-of-use"}>
+              <Link href={"/terms-of-use"} target="_blank">
                 {" "}
                 <li className="xl:text-2xl text-xl text-[#353535E3]">
                   Terms of Use
