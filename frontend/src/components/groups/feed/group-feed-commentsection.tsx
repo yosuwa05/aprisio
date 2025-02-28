@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
+import { makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import {
   useInfiniteQuery,
@@ -11,10 +13,10 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { motion } from "motion/react";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import GroupFeedComment from "./group-feed-comment";
-import { useParams } from "next/navigation";
 
 type Props = {
   postId: string;
@@ -76,12 +78,12 @@ export default function GroupFeedCommentSection({
                         ...p,
                         commentsCount: p.commentsCount + 1,
                       }
-                    : p,
+                    : p
                 ),
               },
             })),
           };
-        },
+        }
       );
 
       return { previousPosts };
@@ -104,7 +106,7 @@ export default function GroupFeedCommentSection({
         const res = await _axios.get(
           `/comment?postId=${postId}&userId=${
             user?.id ?? ""
-          }&page=${pageParam}&limit=${limit}`,
+          }&page=${pageParam}&limit=${limit}`
         );
         return res.data;
       },
@@ -118,9 +120,11 @@ export default function GroupFeedCommentSection({
   return (
     <div>
       <div className="mt-4 flex gap-4 items-center">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src="/assets/person.png" />
-          <AvatarFallback>CN</AvatarFallback>
+        <Avatar className="h-9 w-9 object-cover">
+          <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
+          <AvatarFallback className="text-xs">
+            {makeUserAvatarSlug(user?.name ?? "")}
+          </AvatarFallback>
         </Avatar>
 
         <Input
@@ -147,7 +151,7 @@ export default function GroupFeedCommentSection({
                   postId={postId}
                 />
               </React.Fragment>
-            )),
+            ))
           )}
 
           {hasNextPage && (

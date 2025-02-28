@@ -103,9 +103,11 @@ export default function GroupFeedComment({ comment, postId }: Props) {
     <motion.div className="lg:w-[90%] lg:ml-auto w-[85%] ml-auto">
       <div className="flex items-center gap-6 justify-between">
         <div className="flex gap-2">
-          <Avatar className="w-5 h-5">
-            <AvatarImage src="/assets/person.png" />
-            <AvatarFallback>CN</AvatarFallback>
+          <Avatar className="h-5 w-5 object-cover">
+            <AvatarImage src={BASE_URL + `/file?key=${comment?.user?.image}`} />
+            <AvatarFallback className="text-xs">
+              {makeUserAvatarSlug(comment?.user?.name ?? "")}
+            </AvatarFallback>
           </Avatar>
           <div className="self-center">
             <h3 className="text-textcol font-semibold text-sm">

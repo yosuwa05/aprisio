@@ -1,18 +1,9 @@
-import personImage from "@img/assets/person.png";
-import Image from "next/image";
+import { BASE_URL } from "@/lib/config";
+import { makeUserAvatarSlug } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-type Props = {
-  member: Member;
-};
-
-type Member = {
-  _id: string;
-  userId: any;
-  role: string;
-};
-
-export default function PersonCard({ member }: Props) {
+export default function PersonCard({ member }: any) {
   const router = useRouter();
 
   return (
@@ -24,21 +15,23 @@ export default function PersonCard({ member }: Props) {
     >
       <div
         className="cursor-pointer"
-        onClick={() => router.push("/user/" + member?.userId?.name)}
+        onClick={() => router.push("/user/" + member?.name)}
       >
         <div className="flex items-center justify-between">
           <div className="flex gap-4 items-center">
-            <Image
-              src={personImage}
-              alt="person"
-              width={70}
-              height={70}
-              className="rounded-lg"
-            />
+            <Avatar className="h-12 w-12 rounded-sm">
+              <AvatarImage
+                src={BASE_URL + `/file?key=${member?.image}`}
+                className="h-12 w-12 object-cover rounded-sm"
+              />
+              <AvatarFallback>
+                {makeUserAvatarSlug(member?.name)}
+              </AvatarFallback>
+            </Avatar>
 
             <div className="flex flex-col gap-2">
               <h2 className="font-normal text-lg">
-                {member?.userId?.name}
+                {member?.name}
                 <span className="text-xs ml-2 text-fadedtext font-bold">
                   {member?.role === "admin" ? "Admin" : ""}
                 </span>
@@ -46,7 +39,7 @@ export default function PersonCard({ member }: Props) {
 
               <div className="flex gap-6 items-center justify-between">
                 <p className="text-[#043A53] font-medium text-sm">
-                  {12}+ Joined Groups
+                  {member?.joinedGroups} Joined Groups
                 </p>
               </div>
             </div>

@@ -41,16 +41,16 @@ export function GroupShareSection() {
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
   return (
-    <div className='flex flex-col gap-6 h-[calc(100vh-200px)] overflow-y-auto hide-scrollbar  items-center p-1 lg:p-4'>
+    <div className="flex flex-col gap-6 h-[calc(100vh-200px)] overflow-y-auto hide-scrollbar  items-center p-1 lg:p-4">
       {isLoading ? (
-        <div className='flex flex-col gap-4 w-full'>
+        <div className="flex flex-col gap-4 w-full">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className='flex gap-4 w-full'>
-              <Skeleton className='w-[50px] h-[50px] rounded-full' />
-              <div className='flex flex-col gap-2 w-full'>
-                <Skeleton className='w-full h-[200px]' />
-                <Skeleton className='w-full h-[15px]' />
-                <Skeleton className='w-3/4 h-[15px]' />
+            <div key={i} className="flex gap-4 w-full">
+              <Skeleton className="w-[50px] h-[50px] rounded-full" />
+              <div className="flex flex-col gap-2 w-full">
+                <Skeleton className="w-full h-[200px]" />
+                <Skeleton className="w-full h-[15px]" />
+                <Skeleton className="w-3/4 h-[15px]" />
               </div>
             </div>
           ))}
@@ -72,6 +72,7 @@ export function GroupShareSection() {
                     likedByMe: post?.likedByMe,
                     url: post?.url || "",
                     image: post?.image || "",
+                    userImage: post?.userImage || "",
                   }}
                   groupid={groupid?.toString() ?? ""}
                 />
@@ -80,12 +81,12 @@ export function GroupShareSection() {
           })
         )
       ) : (
-        <p className='text-gray-500 text-xs font-semibold'>No posts found</p>
+        <p className="text-gray-500 text-xs font-semibold">No posts found</p>
       )}
-      <div ref={ref} className='h-10'></div>
+      <div ref={ref} className="h-10"></div>
 
       {isLoading || isFetchingNextPage ? (
-        <div className='flex justify-center items-center my-4'>
+        <div className="flex justify-center items-center my-4">
           <GlobalLoader />
         </div>
       ) : (

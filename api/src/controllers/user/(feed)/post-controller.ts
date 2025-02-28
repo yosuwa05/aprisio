@@ -728,7 +728,7 @@ export const postController = new Elysia({
         ]);
 
         const totalPosts = await PostModel.countDocuments({
-          group: { $in: [group._id, null] },
+          group: group._id,
         });
         const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
 

@@ -158,79 +158,83 @@ export const groupController = new Elysia({
       },
     }
   )
-  .put("/edit", async ({ body, set, store }) => {
-    try {
-      const userId = (store as any)["id"];
-      const { groupId, name, description, subTopic } = body;
+  .put(
+    "/edit",
+    async ({ body, set, store }) => {
+      try {
+        const userId = (store as any)["id"];
+        const { groupId, name, description, subTopic } = body;
 
-      const group = await GroupModel.findById(groupId)
+        const group = await GroupModel.findById(groupId);
 
-      if (!group) {
-        set.status = 400
-        return {
-          message: "Group not found",
-          ok: false,
-        };
-      }
-
-      if (group.groupAdmin.toString() !== userId) {
-        set.status = 400
-        return {
-          message: "You are not authorized to edit this group",
-          ok: false,
-        };
-      }
-
-      let updateFields: any = {}
-      if (name) updateFields.name = name;
-      if (description) updateFields.description = description;
-
-
-      if (subTopic) {
-        const subTopicExist = await SubTopicModel.findOne({ slug: subTopic })
-        if (!subTopicExist) {
+        if (!group) {
+          set.status = 400;
           return {
-            message: "Topic not found",
+            message: "Group not found",
             ok: false,
           };
         }
-        updateFields.subTopic = subTopicExist._id
+
+        if (group.groupAdmin.toString() !== userId) {
+          set.status = 400;
+          return {
+            message: "You are not authorized to edit this group",
+            ok: false,
+          };
+        }
+
+        let updateFields: any = {};
+        if (name) updateFields.name = name;
+        if (description) updateFields.description = description;
+
+        if (subTopic) {
+          const subTopicExist = await SubTopicModel.findOne({ slug: subTopic });
+          if (!subTopicExist) {
+            return {
+              message: "Topic not found",
+              ok: false,
+            };
+          }
+          updateFields.subTopic = subTopicExist._id;
+        }
+
+        await GroupModel.findByIdAndUpdate(groupId, updateFields, {
+          new: true,
+        });
+
+        return {
+          message: "Group updated successfully",
+          ok: true,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
+        };
       }
-
-      await GroupModel.findByIdAndUpdate(groupId, updateFields, { new: true })
-
-      return {
-        message: "Group updated successfully",
-        ok: true,
-      };
-
-    } catch (error: any) {
-      console.log(error)
-      set.status = 500
-      return {
-        message: error
-      }
+    },
+    {
+      body: t.Object({
+        name: t.String(),
+        description: t.String(),
+        subTopic: t.String(),
+        groupId: t.String(),
+      }),
+      detail: {
+        summary: "Edit a group",
+        description: "Edit a group",
+      },
     }
-  }, {
-    body: t.Object({
-      name: t.String(),
-      description: t.String(),
-      subTopic: t.String(),
-      groupId: t.String()
-    }),
-    detail: {
-      summary: "Edit a group",
-      description: "Edit a group"
-    }
-  })
+  )
   .get(
     "/members",
     async ({ query }) => {
       try {
         const { groupid, page, limit } = query;
 
-        const _page = Number(page) || 1
-        const _limit = Number(limit) || 10
+        const _page = Number(page) || 1;
+        const _limit = Number(limit) || 10;
         const skip = (_page - 1) * _limit;
 
         let group = await GroupModel.findById(groupid);
@@ -242,7 +246,9 @@ export const groupController = new Elysia({
           };
         }
 
-        const totalMembers = await UserGroupsModel.countDocuments({ group: groupid });
+        const totalMembers = await UserGroupsModel.countDocuments({
+          group: groupid,
+        });
 
         const members = await UserGroupsModel.find(
           { group: groupid },
@@ -273,14 +279,14 @@ export const groupController = new Elysia({
           _id: member.userId._id,
           name: member.userId.name,
           role: member.role,
-          joinedGroupsCount: joinedGroupsMap.get(member.userId._id.toString()) || 0,
+          joinedGroupsCount:
+            joinedGroupsMap.get(member.userId._id.toString()) || 0,
         }));
 
         return {
           ok: true,
           message: "Members fetched successfully",
           members: mergedMembers,
-
         };
       } catch (error) {
         return {
@@ -338,110 +344,115 @@ export const groupController = new Elysia({
         summary: "Get group photos",
         description: "Get group photos",
       },
-    },
+    }
   )
-  .post("/upload-images", async ({ set, body }) => {
-    try {
-      const { groupId, file } = body
+  .post(
+    "/upload-images",
+    async ({ set, body }) => {
+      try {
+        const { groupId, file } = body;
 
-      const group: any = await GroupModel.findById(groupId)
+        const group: any = await GroupModel.findById(groupId);
 
-      if (!group) {
-        set.status = 400
-        return {
-          message: "Group not found"
+        if (!group) {
+          set.status = 400;
+          return {
+            message: "Group not found",
+          };
         }
-      }
 
-      let filePromises = [];
+        let filePromises = [];
 
-      if (file && file.length > 0) {
-        for (let i of file) {
-          const { filename, ok } = await saveFile(i, "group-images");
+        if (file && file.length > 0) {
+          for (let i of file) {
+            const { filename, ok } = await saveFile(i, "group-images");
 
-          if (!ok) {
-            return {
-              message: "Error uploading file",
-              ok: false,
-            };
+            if (!ok) {
+              return {
+                message: "Error uploading file",
+                ok: false,
+              };
+            }
+
+            let newPic = new GroupPhotoModel({
+              group: group._id,
+              photo: filename,
+            });
+
+            filePromises.push(newPic.save());
           }
-
-          let newPic = new GroupPhotoModel({
-            group: group._id,
-            photo: filename,
-          });
-
-          filePromises.push(newPic.save());
         }
-      }
 
-      await Promise.all(filePromises);
-      set.status = 200;
-      return { message: "Image Added", ok: true };
-    } catch (error: any) {
-      console.log(error)
-      set.status = 500
-      return {
-        message: error
-      }
-    }
-  }, {
-    body: t.Object({
-      file: t.Optional(
-        t.Files({
-          default: [],
-        })
-      ),
-      groupId: t.String()
-    }),
-    detail: {
-      summary: "Add Image Existing Group",
-      description: "Add Image Existing Group"
-    }
-  })
-  .delete("/group-image", async ({ set, query }) => {
-    try {
-
-      const { imageId } = query
-
-      const image = await GroupPhotoModel.findById(imageId)
-
-      if (!image) {
-        set.status = 400
+        await Promise.all(filePromises);
+        set.status = 200;
+        return { message: "Image Added", ok: true };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
         return {
-          messsge: "Image Not Found"
-        }
+          message: error,
+        };
       }
-
-      if (image.photo) {
-        deleteFile(image.photo);
-      }
-
-      await GroupPhotoModel.findByIdAndDelete(imageId)
-
-      set.status = 200
-      return {
-        message: "Image Deleted"
-      }
-
-    } catch (error: any) {
-      console.log(error)
-      set.status = 500
-      return {
-        message: error,
-        ok: true
-      }
-    }
-  }, {
-    detail: {
-      summary: "Delete Group Image",
-      description: "Delete a group image"
     },
-    query: t.Object({
-      imageId: t.String()
-    })
-  })
+    {
+      body: t.Object({
+        file: t.Optional(
+          t.Files({
+            default: [],
+          })
+        ),
+        groupId: t.String(),
+      }),
+      detail: {
+        summary: "Add Image Existing Group",
+        description: "Add Image Existing Group",
+      },
+    }
+  )
+  .delete(
+    "/group-image",
+    async ({ set, query }) => {
+      try {
+        const { imageId } = query;
 
+        const image = await GroupPhotoModel.findById(imageId);
+
+        if (!image) {
+          set.status = 400;
+          return {
+            messsge: "Image Not Found",
+          };
+        }
+
+        if (image.photo) {
+          deleteFile(image.photo);
+        }
+
+        await GroupPhotoModel.findByIdAndDelete(imageId);
+
+        set.status = 200;
+        return {
+          message: "Image Deleted",
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
+          ok: true,
+        };
+      }
+    },
+    {
+      detail: {
+        summary: "Delete Group Image",
+        description: "Delete a group image",
+      },
+      query: t.Object({
+        imageId: t.String(),
+      }),
+    }
+  )
 
   .post(
     "/join",
@@ -605,29 +616,29 @@ export const groupController = new Elysia({
           },
           ...(userId
             ? [
-              {
-                $lookup: {
-                  from: "likes",
-                  let: {
-                    postId: "$post._id",
-                    userId: new Types.ObjectId(userId),
-                  },
-                  pipeline: [
-                    {
-                      $match: {
-                        $expr: {
-                          $and: [
-                            { $eq: ["$post", "$$postId"] },
-                            { $eq: ["$user", "$$userId"] },
-                          ],
+                {
+                  $lookup: {
+                    from: "likes",
+                    let: {
+                      postId: "$post._id",
+                      userId: new Types.ObjectId(userId),
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$post", "$$postId"] },
+                              { $eq: ["$user", "$$userId"] },
+                            ],
+                          },
                         },
                       },
-                    },
-                  ],
-                  as: "likedByMe",
+                    ],
+                    as: "likedByMe",
+                  },
                 },
-              },
-            ]
+              ]
             : []),
           {
             $sort: { "post.createdAt": -1, "post._id": -1 },
@@ -643,6 +654,7 @@ export const groupController = new Elysia({
               title: "$post.title",
               description: "$post.description",
               authorName: { $arrayElemAt: ["$author.name", 0] },
+              userImage: { $arrayElemAt: ["$author.image", 0] },
               sharedBy: { $arrayElemAt: ["$sharedByUser.name", 0] },
               createdAt: "$post.createdAt",
               likesCount: { $size: "$likes" },

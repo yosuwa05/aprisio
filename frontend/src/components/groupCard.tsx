@@ -97,14 +97,6 @@ export default function GroupCard({ group }: Props) {
     >
       <div className="flex gap-2 w-full items-center justify-between  h-[70px]">
         <div className="flex gap-4 items-center">
-          {/* <Image
-            src={personImage}
-            alt="person"
-            width={50}
-            height={50}
-            className="rounded-lg"
-          /> */}
-
           <div className="flex flex-col gap-2 pl-4">
             <h2
               onClick={() => router.push(`/groups/${group?.slug}`)}
@@ -131,7 +123,16 @@ export default function GroupCard({ group }: Props) {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex  items-center gap-4">
+          {group?.groupAdmin?._id === user?.id && (
+            <Button
+              onClick={() => router.push(`/groups/${group.slug}`)}
+              className="rounded-3xl border-[0.2px]  hover:bg-[#FCF7EA] text-black bg-[#F2F5F6] border-[#043A53]"
+            >
+              View
+            </Button>
+          )}
+
           <Button
             disabled={isPending}
             className={`${
@@ -168,15 +169,6 @@ export default function GroupCard({ group }: Props) {
               ? "Join"
               : "View"}
           </Button>
-
-          {group?.groupAdmin?._id === user?.id && (
-            <p
-              onClick={() => router.push(`/groups/${group.slug}`)}
-              className="text-xs font-semibold text-contrasttext  cursor-pointer "
-            >
-              View
-            </p>
-          )}
         </div>
       </div>
     </div>

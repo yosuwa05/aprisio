@@ -14,6 +14,8 @@ import GroupsFeedPostcard from "./groups-feed-postcard";
 
 type IAuthor = {
   name: string;
+  _id: string;
+  image?: string;
 };
 type IPost = {
   author: IAuthor;
@@ -26,6 +28,7 @@ type IPost = {
   likedByMe: boolean;
   url?: string;
   image?: string;
+  userImage?: string;
 };
 
 export const GroupsFeedSection = () => {
@@ -65,27 +68,28 @@ export const GroupsFeedSection = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className='my-4'>
+    <div className="my-4">
       <div
-        className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
+        className="flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4"
         onClick={() => {
           updateActiveGroup(typeof groupid === "string" ? groupid : "");
           router.push(`/create-post/group`);
-        }}>
-        <Icon icon='tabler:plus' fontSize={22} />
-        <h3 className='font-semibold text-sm'>Create Post</h3>
+        }}
+      >
+        <Icon icon="tabler:plus" fontSize={22} />
+        <h3 className="font-semibold text-sm">Create Post</h3>
       </div>
 
-      <div className='max-h-[calc(100vh-280px)] w-full overflow-scroll hide-scrollbar p-2'>
+      <div className="max-h-[calc(100vh-280px)] w-full overflow-scroll hide-scrollbar p-2">
         {isLoading ? (
-          <div className='flex flex-col gap-4 w-full'>
+          <div className="flex flex-col gap-4 w-full">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className='flex gap-4 w-full'>
-                <Skeleton className='w-[50px] h-[50px] rounded-full' />
-                <div className='flex flex-col gap-2 w-full'>
-                  <Skeleton className='w-full h-[200px]' />
-                  <Skeleton className='w-full h-[15px]' />
-                  <Skeleton className='w-3/4 h-[15px]' />
+              <div key={i} className="flex gap-4 w-full">
+                <Skeleton className="w-[50px] h-[50px] rounded-full" />
+                <div className="flex flex-col gap-2 w-full">
+                  <Skeleton className="w-full h-[200px]" />
+                  <Skeleton className="w-full h-[15px]" />
+                  <Skeleton className="w-3/4 h-[15px]" />
                 </div>
               </div>
             ))}
@@ -107,6 +111,7 @@ export const GroupsFeedSection = () => {
                       likedByMe: post.likedByMe,
                       url: post.url || "",
                       image: post.image || "",
+                      userImage: post?.author?.image || "",
                     }}
                     topic={groupid?.toString() || ""}
                   />
@@ -114,17 +119,17 @@ export const GroupsFeedSection = () => {
               ))
             )
           ) : (
-            <p className='flex justify-center items-center p-4 text-gray-500 text-xs font-semibold'>
+            <p className="flex justify-center items-center p-4 text-gray-500 text-xs font-semibold">
               No posts found
             </p>
           )
         ) : (
-          <p className='text-gray-500'>No posts</p>
+          <p className="text-gray-500">No posts</p>
         )}
 
-        <div ref={ref} className='h-1'></div>
+        <div ref={ref} className="h-1"></div>
 
-        <div className='flex justify-center items-center p-4'>
+        <div className="flex justify-center items-center p-4">
           {isFetchingNextPage && <GlobalLoader />}
         </div>
       </div>

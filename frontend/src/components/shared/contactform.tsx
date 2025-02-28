@@ -16,7 +16,7 @@ import user from "../../../public/images/user-icon.png";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  message: z.string().min(2, "Message must be at least 2 characters"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
   email: z.string().email("Please enter a valid email"),
 });
 
@@ -118,12 +118,12 @@ export default function ContactForm() {
             rows={5}
             placeholder="Type your message here"
             className={`w-full lg:text-xl text-base py-6 lg:pl-20 pl-10  pr-3 lg:h-20  border max-h-[250px] min-h-[250px] ${
-              errors.email ? "border-red-500" : "border-gray-300"
+              errors.message ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
           />
-          {errors?.email && (
+          {errors?.message && (
             <p className="absolute text-red-500">
-              {errors.email.message?.toString()}
+              {errors.message.message?.toString()}
             </p>
           )}
         </div>

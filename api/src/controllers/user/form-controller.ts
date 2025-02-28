@@ -212,7 +212,7 @@ export const formController = new Elysia({
     {
       body: t.Object({
         name: t.String(),
-        email: t.String({ format: "email" }),
+        email: t.String(),
         message: t.String(),
       }),
     }
@@ -235,7 +235,6 @@ export const formController = new Elysia({
         };
       }
 
-
       if (user) {
         user.emailVerified = true;
         user.emailVerificationToken = null;
@@ -246,9 +245,7 @@ export const formController = new Elysia({
           message: "Email verified successfully!",
           ok: true,
         };
-      }
-
-      else {
+      } else {
         set.status = 400;
         return {
           message: "Invalid or expired token.",

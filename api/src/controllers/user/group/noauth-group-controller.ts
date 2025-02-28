@@ -4,6 +4,7 @@ import { GroupPhotoModel } from "@/models/groupphotos.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
 import Elysia, { t } from "elysia";
+import { Types } from "mongoose";
 
 export const noAuthGroupController = new Elysia({
   prefix: "/noauth/group",
@@ -178,17 +179,44 @@ export const noAuthGroupController = new Elysia({
           };
         }
 
-        const members = await UserGroupsModel.find(
+        const newMembers = await UserGroupsModel.aggregate([
+          { $match: { group: new Types.ObjectId(groupid) } },
           {
-            group: groupid,
+            $lookup: {
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user",
+            },
           },
-          "userId role"
-        )
-          .populate("userId", "name")
-          .lean();
+          { $unwind: "$user" },
+          {
+            $addFields: {
+              name: "$user.name",
+              image: "$user.image",
+            },
+          },
+          {
+            $lookup: {
+              from: "usergroups",
+              let: { userId: "$userId" },
+              pipeline: [
+                { $match: { $expr: { $eq: ["$userId", "$$userId"] } } },
+                { $count: "joinedGroups" },
+              ],
+              as: "joinedGroups",
+            },
+          },
+          {
+            $addFields: {
+              joinedGroups: { $arrayElemAt: ["$joinedGroups.joinedGroups", 0] },
+            },
+          },
+          { $project: { user: 0 } },
+        ]);
 
         return {
-          members,
+          members: newMembers,
           ok: true,
           message: "Members fetched successfully",
         };

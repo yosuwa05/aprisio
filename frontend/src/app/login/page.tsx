@@ -185,7 +185,7 @@ export default function LoginForm({}) {
               <Link href={"/join-community"}>
                 <p className="text-[#043A53] font-roboto font-normal text-sm">
                   {`Don't have an account ?`}{" "}
-                  <span className="font-semibold">Register</span>
+                  <span className="font-semibold">Sign Up</span>
                 </p>
               </Link>
             </div>

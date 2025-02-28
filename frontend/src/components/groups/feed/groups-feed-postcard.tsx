@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/drawer";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
-import { formatDate } from "@/lib/utils";
+import { formatDate, makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -38,6 +38,7 @@ interface IPostCard {
   commentCount?: number;
   url?: string;
   image?: string;
+  userImage: string;
 }
 
 export default function GroupsFeedPostcard({
@@ -94,12 +95,12 @@ export default function GroupsFeedPostcard({
                           : p.likesCount - 1,
                         likedByMe: !p.likedByMe,
                       }
-                    : p,
+                    : p
                 ),
               },
             })),
           };
-        },
+        }
       );
 
       return { previousPosts };
@@ -107,7 +108,7 @@ export default function GroupsFeedPostcard({
     onError: (err, newPost, context: any) => {
       queryClient.setQueryData(
         ["groups-feed" + user?.id, groupid],
-        context.previousPosts,
+        context.previousPosts
       );
     },
     onSuccess: (data) => {
@@ -138,15 +139,18 @@ export default function GroupsFeedPostcard({
           }}
         >
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/assets/person.png" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarImage
+              src={BASE_URL + `/file?key=${post.userImage}`}
+              className="rounded-full object-cover"
+            />
+            <AvatarFallback>{makeUserAvatarSlug(post.author)}</AvatarFallback>
           </Avatar>
 
           <div className="self-end">
             <h3 className="text-textcol font-semibold text-xs">
               {post.author}
             </h3>
-            <p className="text-[#043A53] text-xs font-medium">300+ Members</p>
+            <p className="text-[#043A53] text-xs font-medium">{groupid}</p>
           </div>
         </div>
 

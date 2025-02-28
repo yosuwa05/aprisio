@@ -325,14 +325,27 @@ export default function Topbar() {
             Experiences
           </Link>
 
-          <Link
-            className={
-              pathname === "/about" ? "text-contrasttext font-bold" : ""
-            }
-            href={"#"}
-          >
-            About
-          </Link>
+          {!user && (
+            <Link
+              className={
+                pathname === "/about" ? "text-contrasttext font-bold" : ""
+              }
+              href={"#"}
+              onClick={(e) => {
+                if (!user) {
+                  e.preventDefault();
+                  if (pathname !== "/") {
+                    router.push("/");
+                    scrollToSection("about");
+                  } else {
+                    scrollToSection("about");
+                  }
+                }
+              }}
+            >
+              About
+            </Link>
+          )}
 
           <Link
             className={
