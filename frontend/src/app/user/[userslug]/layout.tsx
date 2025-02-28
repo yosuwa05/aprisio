@@ -57,7 +57,7 @@ export default function PersonalProfile({
         <ProfileTopBar />
       </div>
 
-      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
+      <div className="mt-4 flex flex-col lg:flex-row gap-8  max-w-[1200px] mx-auto">
         <div className="lg:max-w-[300px] min-w-[300px]">
           <div className="flex flex-col gap-4">
             <div className="h-[420px] shadow-xl rounded-xl p-4">
@@ -148,7 +148,6 @@ export default function PersonalProfile({
             </div>
           </div>
         </div>
-
         {children}
       </div>
     </div>

@@ -33,7 +33,7 @@ export function SearchBar() {
   return (
     <>
       {!unwantedRoutes.includes(pathname) && (
-        <div className="hidden lg:flex flex-col gap-2 items-center relative w-[400px]">
+        <div className="hidden bxl:flex flex-col gap-2 items-center relative w-[400px]">
           <div className="relative flex items-center w-full">
             <Search className="w-4 h-4 absolute left-3 text-gray-400" />
             <Input
@@ -124,7 +124,7 @@ export function SearchBar() {
       )}
 
       {!unwantedRoutes.includes(pathname) && (
-        <Button className="border-[1px] bg-contrastbg lg:hidden rounded-lg text-black border-[#E2E2E2] w-[25px] h-[35px] md:w-[35px] md:h-[35px]">
+        <Button className="border-[1px] bg-contrastbg bxl:hidden rounded-lg text-black border-[#E2E2E2] w-[25px] h-[35px] md:w-[35px] md:h-[35px]">
           <Search className="w-2 h-2" />
         </Button>
       )}

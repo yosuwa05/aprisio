@@ -6,10 +6,10 @@ import { PostsSection } from "@/components/posts-section";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
-import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ChevronRight, Plus } from "lucide-react";
 import Image from "next/image";
@@ -101,7 +101,13 @@ export default function Feed() {
               </p>
 
               <div className="mt-4 flex flex-col gap-3 items-center">
-                <Image src={placeholder} className="rounded-xl" alt="" />
+                <Image
+                  src={BASE_URL + `/file?key=${data?.subTopic?.image}`}
+                  className="rounded-xl"
+                  alt=""
+                  width={200}
+                  height={200}
+                />
                 {!data?.isUserJoined && (
                   <Button
                     onClick={() => {

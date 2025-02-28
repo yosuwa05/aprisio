@@ -66,7 +66,7 @@ export const PersonalGroupsSection = () => {
         </div>
       ) : data && data.pages && data?.pages.length > 0 ? (
         data.pages.map((page, pageIndex) =>
-          page.data.groups.length > 0 ? (
+          page.data?.groups?.length > 0 ? (
             page.data.groups.map((group: any, postIndex: number) => (
               <React.Fragment key={`${postIndex}`}>
                 <PersonalGroupCard group={group} />

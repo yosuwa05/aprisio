@@ -63,6 +63,7 @@ export default {
         lg: "1024px",
         xl: "1200px",
         "2xl": "1536px",
+        bxl: "1436px",
       },
       fontFamily: {
         sans: ["Open Sans", "ui-sans-serif", "system-ui"],
