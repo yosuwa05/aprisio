@@ -1,7 +1,7 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
-import { ChevronsDown, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -23,7 +23,7 @@ export function ShareGroups({
   CloseDrawer,
 }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
-  const limit = 5;
+  const limit = 8;
   const subTopic = usePathname().split("/")[3];
 
   const [selectedGroups, setSelectedGroups] = useState<Set<string>>(new Set());
@@ -33,7 +33,7 @@ export function ShareGroups({
       queryKey: ["selected-groups", subTopic, user?.id, searchKey, limit],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/noauth/group?subTopic=${subTopic}&userId=${
+          `/noauth/group/getgroupsforshare?userId=${
             user?.id ?? ""
           }&page=${pageParam}&limit=${limit}&search=${searchKey}`
         );
@@ -132,7 +132,7 @@ export function ShareGroups({
               {isFetchingNextPage ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                <ChevronsDown className="h-5 w-5" />
+                <div className="flex items-center gap-2">Load More...</div>
               )}
             </Button>
           </div>

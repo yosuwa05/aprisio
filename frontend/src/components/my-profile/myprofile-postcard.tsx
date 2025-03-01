@@ -14,7 +14,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { PostShareModalWeb } from "../post/share-modal-web";
 import { Button } from "../ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import MyProfileCommentSection from "./myprofile-comment-section";
 
 interface IPostCard {
@@ -275,12 +283,11 @@ export default function MyProfilePostCard({ post }: { post: IPostCard }) {
             />
             <p className="text-xs lg:text-xs font-bold">{"Share"}</p>
           </div>
-          {/* <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogContent className='min-w-[calc(60vw-100px)] h-[calc(70vh-4rem)]  flex flex-col '>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogContent className="min-w-[calc(60vw-100px)] h-[calc(70vh-4rem)]  flex flex-col ">
               <DialogHeader>
                 <DialogTitle></DialogTitle>
                 <DialogDescription></DialogDescription>
-               
               </DialogHeader>
               <PostShareModalWeb
                 postId={postId}
@@ -288,7 +295,7 @@ export default function MyProfilePostCard({ post }: { post: IPostCard }) {
                 CloseDrawer={CloseDrawer}
               />
             </DialogContent>
-          </Dialog> */}
+          </Dialog>
           {/* for Drawer mobile */}
           <div
             onClick={() => {

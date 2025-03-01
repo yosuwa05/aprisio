@@ -5,25 +5,18 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import chevronleft from "@img/icons/blue-chevron-left.svg";
-import key from "@img/images/key.svg";
 import loginimage from "@img/images/login_img.webp";
 import logo from "@img/images/logo.png";
 import mail from "@img/images/mail.png";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import eyeclose from "../../../public/icons/eye-close.svg";
-import eye from "../../../public/icons/eye.svg";
 import { formSchema } from "./schema";
 
 export default function LoginForm({}) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(true);
   const user = useGlobalAuthStore((state) => state.user);
 
   const {
@@ -34,7 +27,6 @@ export default function LoginForm({}) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
@@ -42,48 +34,23 @@ export default function LoginForm({}) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      const res = await _axios.post("/auth/login", values);
+      const res = await _axios.post("/auth/reset-password", values);
       return res;
     },
     onSuccess(data) {
-      if (
-        data &&
-        data.data.ok &&
-        data?.data?.message == "User logged in successfully"
-      ) {
-        toast("Logged in successfully");
-
-        const globalState = useGlobalAuthStore.getState();
-        globalState.setUser(data.data.user);
-
-        router.push("/feed/");
+      if (data && data.data.ok) {
+        toast(data?.data?.message || "Password reset mail sent successfully");
       } else {
         toast.error(data.data.message || "An Error Occured");
       }
     },
     onError: (error: any) => {
-      console.log(error);
       toast.error(error.response.data.message || "An Error Occured");
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutate(values);
-  }
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (user) {
-        router.push("/feed/");
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-    }, 500);
-  }, [user, router]);
-
-  if (loading) {
-    return <div className="w-screen h-screen bg-white"></div>;
   }
 
   return (
@@ -108,8 +75,12 @@ export default function LoginForm({}) {
           />
 
           <h1 className="text-3xl xl:text-5xl font-semibold mt-4">
-            User Login
+            Forgot Password
           </h1>
+
+          <p className="mt-4 text-gray-500">
+            We will send a password reset link to your registered email address.
+          </p>
 
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -135,40 +106,8 @@ export default function LoginForm({}) {
                 </p>
               )}
             </div>
-            <div className="relative">
-              <Image
-                src={key}
-                alt="Password"
-                className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
-              />
-              <input
-                {...register("password")}
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border placeholder:text-[#2A4D5C] ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
-              />
-              {errors?.password && (
-                <p className="text-red-500 absolute mt-1">
-                  {errors.password.message?.toString()}
-                </p>
-              )}
-
-              <Image
-                src={showPassword ? eyeclose : eye}
-                alt="Key"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute cursor-pointer lg:right-[5%] right-2 top-[50%] transform -translate-y-1/2 w-7 h-7"
-              />
-            </div>
 
             <div className="flex justify-between items-start">
-              <Link href={"/forgot-password"}>
-                <p className="text-[#043A53] font-roboto font-normal xl:text-xl text-lg">
-                  Forgot Password ?
-                </p>
-              </Link>
               <div></div>
 
               <Button
@@ -179,15 +118,6 @@ export default function LoginForm({}) {
                 {isPending ? "Submitting..." : "Submit"}
                 {!isPending && <Image src={chevronleft} alt="chevron-left" />}
               </Button>
-            </div>
-
-            <div className="flex justify-end">
-              <Link href={"/join-community"}>
-                <p className="text-[#043A53] font-roboto font-normal text-sm">
-                  {`Don't have an account ?`}{" "}
-                  <span className="font-semibold">Sign Up</span>
-                </p>
-              </Link>
             </div>
           </form>
         </div>

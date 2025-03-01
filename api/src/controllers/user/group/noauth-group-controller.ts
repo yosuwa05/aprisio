@@ -455,4 +455,78 @@ export const noAuthGroupController = new Elysia({
         userId: t.Optional(t.String()),
       }),
     }
+  )
+  .get(
+    "/getgroupsforshare",
+    async ({ set, query }) => {
+      try {
+        const { userId, limit = 10, page = 1, search } = query;
+
+        const matchStage: any = {};
+        if (userId) {
+          matchStage.userId = new Types.ObjectId(userId);
+        }
+
+        const pipeline: any[] = [
+          { $match: matchStage },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+            },
+          },
+          { $unwind: "$group" },
+          search
+            ? { $match: { "group.name": { $regex: search, $options: "i" } } }
+            : null,
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+          {
+            $project: {
+              "group.name": 1,
+              "group.slug": 1,
+              userId: 1,
+              "group._id": 1,
+            },
+          },
+        ].filter(Boolean);
+
+        const groups = await UserGroupsModel.aggregate(pipeline);
+
+        set.status = 200;
+        return {
+          ok: true,
+          groups,
+        };
+      } catch (error) {
+        set.status = 500;
+        return {
+          ok: false,
+          message: "Error while getting groups for share modal",
+        };
+      }
+    },
+    {
+      detail: {
+        description: "Get Groups for share modal",
+      },
+      query: t.Object({
+        userId: t.String(),
+
+        limit: t.Optional(
+          t.Number({
+            default: 10,
+          })
+        ),
+        page: t.Optional(
+          t.Number({
+            default: 1,
+          })
+        ),
+        search: t.Optional(t.String()),
+      }),
+    }
   );

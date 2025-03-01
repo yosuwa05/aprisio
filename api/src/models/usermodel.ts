@@ -13,6 +13,7 @@ interface User {
   updatedAt: Date;
   emailVerificationToken: string | null;
   emailVerificationTokenExpiry: Date | null;
+  passwordResetToken: string | null;
 }
 
 const UserSchema = new Schema<User>(
@@ -48,6 +49,9 @@ const UserSchema = new Schema<User>(
     },
     emailVerificationTokenExpiry: {
       type: Date,
+    },
+    passwordResetToken: {
+      type: String,
     },
     email: {
       type: String,

@@ -200,4 +200,128 @@ export const authController = new Elysia({
         summary: "Logout a user",
       },
     }
+  )
+  .post(
+    "/reset-password",
+    async ({ body }) => {
+      const { email } = body;
+
+      try {
+        const user = await UserModel.findOne({ email });
+
+        if (!user) {
+          return {
+            ok: false,
+            message: "User not found",
+          };
+        }
+
+        const verificationToken = generateVerificationToken();
+        const hashedToken = hashToken(verificationToken);
+
+        const resetLink = `https://development.aprisio.com/reset-password/${hashedToken}`;
+
+        user.passwordResetToken = hashedToken;
+
+        let content2 = `
+        <html>
+          <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
+              <tr>
+                <td align="center">
+                  <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                      <td style="padding: 20px; text-align: center;">
+                        <h2 style="color: #333;">Reset Your Password</h2>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 20px;">
+                        <p>Hello ${user.name},</p>
+                        <p>We received a request to reset your password. Click the button below to set a new password:</p>
+                        <p style="text-align: center; margin: 20px 0;">
+                          <a href="${resetLink}" style="background-color: #007BFF; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
+                        </p>
+                        <p>If you didn't request a password reset, please ignore this email. Your account is safe.</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 20px; text-align: center;">
+                        <hr style="border: 1px solid #ddd; width: 80%;">
+                        <p style="color: #777; font-size: 14px;">If you need help, contact us at support@aprisio.com.</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>
+      `;
+
+        await sendEmail({
+          subject: "Reset Your Password",
+          to: email,
+          html: content2,
+          from: "noreply@aprisio.com",
+        });
+
+        await user.save();
+
+        return {
+          ok: true,
+          message: "Reset password mail sented! Please check your email!",
+        };
+      } catch (error) {
+        return {
+          ok: false,
+        };
+      }
+    },
+    {
+      detail: {
+        summary: "Reset password",
+      },
+      body: t.Object({
+        email: t.String(),
+      }),
+    }
+  )
+  .post(
+    "/confirm-reset-password",
+    async ({ body, set }) => {
+      const { token, password } = body;
+      try {
+        const user = await UserModel.findOne({ passwordResetToken: token });
+
+        if (!user) {
+          return {
+            ok: false,
+            message: "Invalid or expired token.",
+          };
+        }
+
+        user.password = password;
+        user.passwordResetToken = null;
+        await user.save();
+
+        return {
+          ok: true,
+          message: "Password reset successfully",
+        };
+      } catch (error) {
+        return {
+          ok: false,
+        };
+      }
+    },
+    {
+      detail: {
+        summary: "Confirm password reset",
+      },
+      body: t.Object({
+        token: t.String(),
+        password: t.String(),
+      }),
+    }
   );
