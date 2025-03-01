@@ -87,129 +87,121 @@ export default function Feed() {
 
   return (
     <div>
-      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8">
-        <div className="flex w-full max-w-[1400px] mx-auto gap-4">
-          {isLoading ? (
-            <Skeleton className="lg:max-w-[300px] min-w-[250px]" />
-          ) : (
-            <div className="lg:max-w-[300px] min-w-[250px]">
-              <h1 className="font-[600] text-3xl text-textcol capitalize">
-                {data?.subTopic?.subTopicName}
-              </h1>
-              <p className="font-medium text-[#353535CC] opacity-80 mt-2">
-                {data?.subTopic?.description}
-              </p>
+      <div className='mt-2   container flex flex-wrap  mx-auto px-3'>
+        {isLoading ? (
+          <Skeleton className='lg:max-w-[300px] w-full' />
+        ) : (
+          <div className='lg:max-w-[300px] w-full'>
+            <h1 className='font-[600] text-3xl text-textcol capitalize'>
+              {data?.subTopic?.subTopicName}
+            </h1>
+            <p className='font-medium text-[#353535CC] opacity-80 mt-2'>
+              {data?.subTopic?.description}
+            </p>
 
-              <div className="mt-4 flex flex-col gap-3 items-center">
-                <Image
-                  src={BASE_URL + `/file?key=${data?.subTopic?.image}`}
-                  className="rounded-xl"
-                  alt=""
-                  width={200}
-                  height={200}
-                />
-                {!data?.isUserJoined && (
-                  <Button
-                    onClick={() => {
-                      if (!user) return toast.error("Login to join");
-                      mutate({
-                        subTopicId: data?.subTopic?._id ?? "",
-                      });
-                    }}
-                    disabled={isPending}
-                    className="rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol"
-                  >
-                    Join Community
-                  </Button>
-                )}
-              </div>
-
-              {!isSuggetionsLoading && user && (
-                <div>
-                  <h3 className="font-normal text-xl my-4">
-                    Other Sub - Communities
-                  </h3>
-
-                  <div className="gap-4 flex flex-col">
-                    {suggetions?.topics?.map((e: Suggetion, index: number) => {
-                      return (
-                        <div
-                          key={index}
-                          className="flex gap-2 items-center cursor-pointer"
-                          onClick={() => {
-                            router.push(`/feed/explore/${e?.slug}`);
-                          }}
-                        >
-                          <p>{e?.subTopicName}</p>
-                          <ChevronRight />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-180px)] hide-scrollbar overflow-hidden">
-            {activeLayout == "post" && <PostsSection />}
-            {activeLayout == "group" && <GroupsSection />}
-            {activeLayout == "event" && (
-              <EventsSection groupid={""} gropuslug={""} />
-            )}
-          </div>
-
-          <div className="hidden lg:block lg:max-w-[350px] shadow-xl rounded-lg h-fit">
-            <div className="bg-white px-4 rounded-xl w-[350px]">
-              <div className="relative h-[110px] bg-white flex justify-center items-center overflow-hidden">
-                <div
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{
-                    backgroundImage: "url(/assets/placeholder-hero.jpeg)",
-                    opacity: 0.3,
-                  }}
-                />
-
+            <div className='mt-4 flex flex-col gap-3 items-center'>
+              <Image
+                src={BASE_URL + `/file?key=${data?.subTopic?.image}`}
+                className='rounded-xl'
+                alt=''
+                width={200}
+                height={200}
+              />
+              {!data?.isUserJoined && (
                 <Button
                   onClick={() => {
-                    if (!user) return toast.error("Login to continue");
-                    router.push("/feed/create-event");
+                    if (!user) return toast.error("Login to join");
+                    mutate({
+                      subTopicId: data?.subTopic?._id ?? "",
+                    });
                   }}
-                  className="relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white"
-                >
-                  <Plus />
-                  Create Event
+                  disabled={isPending}
+                  className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
+                  Join Community
                 </Button>
-              </div>
+              )}
+            </div>
 
-              <h1 className="text-2xl text-textcol my-4 font-semibold">
-                Events
-              </h1>
+            {!isSuggetionsLoading && user && (
+              <div>
+                <h3 className='font-normal text-xl my-4'>
+                  Other Sub - Communities
+                </h3>
 
-              <div className="flex flex-col  items-start gap-2 my-2">
-                {joined?.data?.joinedEvents?.length ? (
-                  joined?.data?.joinedEvents?.map((item: any) => (
-                    <div
-                      onClick={() => router.push(`/events/${item?._id}`)}
-                      className="flex justify-between items-center cursor-pointer  w-full"
-                      key={item?._id}
-                    >
-                      <div className="text-textcol flex flex-col gap-2">
-                        <h4 className="text-[15px] font-medium">
-                          {item?.eventName}
-                        </h4>
+                <div className='gap-4 flex flex-col'>
+                  {suggetions?.topics?.map((e: Suggetion, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className='flex gap-2 items-center cursor-pointer'
+                        onClick={() => {
+                          router.push(`/feed/explore/${e?.slug}`);
+                        }}>
+                        <p>{e?.subTopicName}</p>
+                        <ChevronRight />
                       </div>
-
-                      <Button className="rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]">
-                        View
-                      </Button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-2 w-full text-fadedtext text-sm">
-                    No events joined
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
               </div>
+            )}
+          </div>
+        )}
+
+        <div className='lg:flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-120px)] hide-scrollbar overflow-hidden lg:min-w-[600px] w-full lg:pt-0 pt-5'>
+          {activeLayout == "post" && <PostsSection />}
+          {activeLayout == "group" && <GroupsSection />}
+          {activeLayout == "event" && (
+            <EventsSection groupid={""} gropuslug={""} />
+          )}
+        </div>
+        <div className='hidden bxl:block lg:max-w-[350px] rounded-lg h-fit mt-4 mr-2'>
+          <div className='bg-white px-4 rounded-xl w-[350px]'>
+            <div className='relative h-[110px] bg-white flex justify-center items-center overflow-hidden'>
+              <div
+                className='absolute inset-0 bg-cover bg-center'
+                style={{
+                  backgroundImage: "url(/assets/placeholder-hero.jpeg)",
+                  opacity: 0.3,
+                }}
+              />
+
+              <Button
+                onClick={() => {
+                  if (!user) return toast.error("Login to continue");
+                  router.push("/feed/create-event");
+                }}
+                className='relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white'>
+                <Plus />
+                Create Event
+              </Button>
+            </div>
+
+            <h1 className='text-2xl text-textcol my-4 font-semibold'>Events</h1>
+
+            <div className='flex flex-col  items-start gap-2 my-2'>
+              {joined?.data?.joinedEvents?.length ? (
+                joined?.data?.joinedEvents?.map((item: any) => (
+                  <div
+                    onClick={() => router.push(`/events/${item?._id}`)}
+                    className='flex justify-between items-center cursor-pointer  w-full'
+                    key={item?._id}>
+                    <div className='text-textcol flex flex-col gap-2'>
+                      <h4 className='text-[15px] font-medium'>
+                        {item?.eventName}
+                      </h4>
+                    </div>
+
+                    <Button className='rounded-full bg-[#fcf7ea] text-black text-sm font-normal hover:bg-[#f7f2e6]'>
+                      View
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <div className='text-center py-2 w-full text-fadedtext text-sm'>
+                  No events joined
+                </div>
+              )}
             </div>
           </div>
         </div>

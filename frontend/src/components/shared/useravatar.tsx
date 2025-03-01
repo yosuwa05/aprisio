@@ -1,18 +1,20 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
@@ -22,13 +24,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Button } from "../ui/button";
-
 export function UserAvatar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
   const user = useGlobalAuthStore((state) => state.user);
-
+  const [logoutOpen, setLogoutOpen] = useState(false);
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       let res = await _axios.post("/auth/logout");
@@ -40,8 +41,12 @@ export function UserAvatar() {
     },
   });
 
+  function logout() {
+    mutate();
+  }
+
   return (
-    <div>
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
@@ -70,7 +75,7 @@ export function UserAvatar() {
           {user ? (
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => setOpen(true)}
+              onClick={() => setLogoutOpen(true)}
             >
               Logout
             </DropdownMenuItem>
@@ -86,32 +91,24 @@ export function UserAvatar() {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <Dialog open={open} onOpenChange={(value) => setOpen(value)}>
-        <DialogContent>
+      <Dialog open={logoutOpen} onOpenChange={setLogoutOpen}>
+        <DialogContent className="max-w-sm w-full p-6">
           <DialogHeader>
-            <DialogTitle className="text-center p-3">
-              Do you really want to logout ?
-            </DialogTitle>
+            <DialogTitle>Confirm Logout</DialogTitle>
             <DialogDescription>
-              <div className="gap-2 justify-center flex">
-                <Button variant={"secondary"} className="border-2">
-                  Close
-                </Button>
-                <Button
-                  variant={"destructive"}
-                  onClick={() => {
-                    if (isPending) return;
-                    mutate();
-                  }}
-                >
-                  Yes
-                </Button>
-              </div>
+              Are you sure you want to log out?
             </DialogDescription>
           </DialogHeader>
+          <DialogFooter className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setLogoutOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={logout}>
+              Confirm
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
