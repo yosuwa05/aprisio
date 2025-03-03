@@ -132,7 +132,7 @@ export function SingleChat() {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center p-3">
+      <div className="flex justify-between items-center p-3 border-b">
         <div className="flex gap-2 items-center">
           <ChevronLeft className="cursor-pointer" onClick={goBack} />
           <div className="flex gap-2 items-center">
@@ -194,12 +194,12 @@ export function SingleChat() {
             }
           }}
           onChange={(e) => setMessage(e.target.value)}
-          className="border-none bg-contrastbg text-xs text-[#828485] placeholder:text-xs font-medium pr-10"
+          className="flex-1 border-none bg-contrastbg text-xs text-[#828485] placeholder:text-xs font-medium pr-10"
         />
 
         <Button
           variant={"outline"}
-          className="absolute right-6 top-1/2 -translate-y-1/2 p-1 rounded-full text-blue-400 bg-transparent cursor-pointer"
+          className="p-1 rounded-full text-blue-400 bg-transparent cursor-pointer"
           asChild
           onClick={() => {
             if (isPending) return;

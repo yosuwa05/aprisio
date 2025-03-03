@@ -9,11 +9,4 @@ if (!admin.apps.length) {
   });
 }
 
-// console.log("Firestore SDK Type:", admin.app().options.credential);
-
 export const db = admin.firestore();
-// const testDoc = await db
-//   .collection("test")
-//   .doc("EC2-Test")
-//   .set({ msg: "Hello from EC2" });
-// console.log("Write Success ✅", testDoc);
