@@ -111,35 +111,11 @@ export default function ViewEventPage() {
               >
                 {!data?.event?.attending ? "Attend Event" : "Joined"}
               </Button>
+              <div className="mt-4 text-gray-700 text-xs">
+                {data?.event?.attendees?.length} Members Attended
+              </div>
             </div>
           </div>
-
-          <section className="flex container md:max-w-6xl flex-wrap  gap-6  mx-auto  justify-center  md:justify-between px-2  md:px-5  md:gap-12 mt-8 md:mt-16 items-center">
-            <div className="flex flex-col  items-center gap-y-5">
-              <h1 className="text-contrasttext text-lg md:text-2xl  lg:text-5xl font-semibold">
-                {data?.event?.attendees?.length}+
-              </h1>
-              <p className="text-base md:text-2xl  lg:text-3xl font-normal text-textcol">
-                No.of Members
-              </p>
-            </div>
-            <div className="flex flex-col  items-center gap-y-5">
-              <h1 className="text-contrasttext text-lg md:text-2xl  lg:text-5xl font-semibold">
-                200+
-              </h1>
-              <p className="text-base md:text-2xl  lg:text-3xl font-normal text-textcol">
-                No.of Intersted
-              </p>
-            </div>
-            <div className="flex flex-col  items-center gap-y-5">
-              <h1 className="text-contrasttext textx-lg md:text-2xl  lg:text-5xl font-semibold">
-                200+
-              </h1>
-              <p className="text-base md:text-2xl  lg:text-3xl font-normal text-textcol">
-                No.of Views
-              </p>
-            </div>
-          </section>
 
           <article
             style={{ boxShadow: "0px 4px 60px 0px #02507C26" }}

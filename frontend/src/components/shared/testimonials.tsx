@@ -1,8 +1,10 @@
+import { makeUserAvatarSlug } from "@/lib/utils";
 import Image from "next/image";
 import quote from "../../../public/images/quote.png";
 import rect2 from "../../../public/images/Rectangle-2.png";
 import rect3 from "../../../public/images/Rectangle3.png";
 import rect1 from "../../../public/images/Rectangle_red.png";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 // import uncle from "../../../public/images/uncle.png";
 
 const testimonials = [
@@ -72,15 +74,18 @@ export default function Testimonial() {
                 <div className="">
                   <hr className="bg-[#E9E9E9]  h-0.5 w-full" />
                   <div className="xl:py-9 w-full xl:px-9 md:py-5 md:px-5 px-5 gap-5 py-4 flex items-center ">
-                    {/* Fixed size for the image */}
                     <div className="">
-                      <Image
-                        src={testimonial.clientImage}
-                        alt="client"
-                        width={64}
-                        height={64}
-                        className="md:h-20 md:w-20 h-16 w-16  rounded-full object-cover"
-                      />
+                      <Avatar className=" w-[90px] h-[90px]">
+                        <AvatarImage
+                          src={testimonial.clientImage}
+                          className="object-cover rounded-full"
+                          width={92}
+                          height={92}
+                        />
+                        <AvatarFallback>
+                          {makeUserAvatarSlug(testimonial.name)}
+                        </AvatarFallback>
+                      </Avatar>
                     </div>
 
                     {/* Remaining space for the name and location */}

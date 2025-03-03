@@ -26,7 +26,6 @@ import {
 import { Button } from "../ui/button";
 export function UserAvatar() {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
 
   const user = useGlobalAuthStore((state) => state.user);
   const [logoutOpen, setLogoutOpen] = useState(false);
@@ -37,11 +36,13 @@ export function UserAvatar() {
     },
     onSuccess: () => {
       useGlobalAuthStore.getState().setUser(null);
-      router.push("/login");
+      localStorage.removeItem("user-storage");
+      router.push("/");
     },
   });
 
   function logout() {
+    if (isPending) return;
     mutate();
   }
 

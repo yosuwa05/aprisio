@@ -62,7 +62,8 @@ export default function MyProfile({
     },
     onSuccess: () => {
       useGlobalAuthStore.getState().setUser(null);
-      router.push("/login");
+      localStorage.removeItem("user-storage");
+      router.push("/");
     },
   });
 

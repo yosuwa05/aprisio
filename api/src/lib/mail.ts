@@ -24,7 +24,7 @@ export async function sendEmail(option: EmailOptions) {
     let appPassword = process.env.APP_PASSWORD;
 
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
+      host: "smtp-relay.brevo.com",
       port: 587,
       secure: false,
       auth: {
@@ -43,6 +43,8 @@ export async function sendEmail(option: EmailOptions) {
       html: option.html,
       attachments: option.attachments,
     });
+
+    console.log(info);
 
     return {
       success: true,
