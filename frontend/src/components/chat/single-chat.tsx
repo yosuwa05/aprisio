@@ -131,8 +131,8 @@ export function SingleChat() {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center p-3 border-b">
+    <div className="flex flex-col h-screen">
+      <div className="flex justify-between items-center p-3 border-b bg-white sticky top-[-20px] z-10">
         <div className="flex gap-2 items-center">
           <ChevronLeft className="cursor-pointer" onClick={goBack} />
           <div className="flex gap-2 items-center">
@@ -157,14 +157,14 @@ export function SingleChat() {
         {messages.map((msg: any) => (
           <div key={msg.id} className="flex items-center">
             <div
-              className={`max-w-[70%] w-fit p-2 rounded-2xl text-sm ${
+              className={`max-w-[70%] w-fit p-2 rounded-2xl text-sm break-words ${
                 msg.senderId === user?.id.toString()
                   ? "bg-blue-500 text-white self-end ml-auto"
                   : "bg-gray-200 text-gray-800 self-start"
               }`}
             >
               {msg.deleted ? (
-                <span className="italic text-gray-200">
+                <span className="italic text-gray-400">
                   This message was deleted
                 </span>
               ) : (
@@ -183,7 +183,7 @@ export function SingleChat() {
         ))}
       </div>
 
-      <div className="relative mt-4 p-3 border-t flex items-center gap-2">
+      <div className="p-3 border-t flex items-center gap-2 bg-white sticky bottom-[-20px]">
         <Input
           placeholder="Type a message..."
           value={message}

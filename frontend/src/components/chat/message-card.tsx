@@ -29,7 +29,7 @@ export function MessageCard({ contact }: Props) {
 
   return (
     <div
-      className="flex items-center gap-4 p-2 justify-between cursor-pointer select-none hover:bg-gray-100 rounded-md"
+      className="flex items-center p-2 justify-between cursor-pointer select-none hover:bg-gray-100 rounded-md"
       onClick={() =>
         updateChat({
           name: contact?.profile?.name,
@@ -38,8 +38,8 @@ export function MessageCard({ contact }: Props) {
         })
       }
     >
-      <div className="flex gap-2 items-center">
-        <Avatar className="h-9 w-9 bg-gray-400">
+      <div className="flex gap-2 items-center flex-1 overflow-hidden">
+        <Avatar className="h-9 w-9 bg-gray-400 flex-shrink-0">
           <AvatarImage
             className="object-cover rounded-full"
             src={BASE_URL + `/file?key=${contact?.profile?.image}`}
@@ -49,20 +49,18 @@ export function MessageCard({ contact }: Props) {
           </AvatarFallback>
         </Avatar>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1 overflow-hidden">
           <h5 className="text-textcol text-sm font-normal m-0 p-0">
             {contact.profile?.name}
           </h5>
-          <p className="text-textcol/80 text-xs">
+          <p className="text-textcol/80 text-xs truncate overflow-hidden whitespace-nowrap">
             {contact?.lastMessage ?? "No Messages Yet"}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-2 items-center">
-        <h5 className="text-textcol text-xs m-0 p-0">
-          {formatTimestamp(contact?.lastUpdated)}
-        </h5>
+      <div className="text-textcol text-[10px] m-0 p-0 flex-shrink-0 min-w-[50px] text-right">
+        {formatTimestamp(contact?.lastUpdated)}
       </div>
     </div>
   );

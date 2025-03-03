@@ -25,9 +25,14 @@ export function ChatContact() {
       {selectedChat.selected ? (
         <SingleChat />
       ) : data?.contacts?.length > 0 ? (
-        data.contacts.map((contact: Contact, index: number) => (
-          <MessageCard key={index} contact={contact} />
-        ))
+        <div>
+          <div className="flex justify-between items-center border-b-[1px] py-2">
+            <h4 className="text-textcol font-semibold text-lg">Message</h4>
+          </div>
+          {data.contacts.map((contact: Contact, index: number) => (
+            <MessageCard key={index} contact={contact} />
+          ))}
+        </div>
       ) : (
         <div className="text-center p-4 text-gray-400 text-sm">No contacts</div>
       )}
