@@ -22,7 +22,7 @@ import { ChevronDown, PlusCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -48,22 +48,33 @@ export default function NewEvent() {
     slug: "",
   });
 
-  const [eventRules, setEventRules] = useState({
-    total: 1,
-    events: [
-      {
-        heading: "",
-        subHeading: "",
-      },
-    ],
-  });
-
   const [date, setDate] = useState<Date>();
 
   const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
 
-  const { register, reset, handleSubmit, setValue } = useForm({
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(postSchema),
+    defaultValues: {
+      location: "",
+      eventName: "",
+      eventRules: {
+        total: 1,
+        events: [
+          {
+            heading: "",
+            subHeading: "",
+          },
+        ],
+      },
+    },
   });
 
   const user = useGlobalAuthStore((state) => state.user);
@@ -116,14 +127,27 @@ export default function NewEvent() {
     },
   });
 
-  useEffect(() => {
-    setValue("location", "");
-    setValue("eventName", "");
-    setValue("eventRules", {
-      total: 0,
-      events: [],
-    });
-  }, []);
+  const handleDeleteRule = (index: number) => {
+    const currentEvents = watch("eventRules.events");
+    if (currentEvents.length === 1) return; // Prevent deleting the last field
+
+    // Create a new array without the deleted field
+    const newEvents = currentEvents.filter((_, i) => i !== index);
+
+    // Update the form state
+    setValue("eventRules.events", newEvents);
+    setValue("eventRules.total", newEvents.length);
+  };
+
+  const handleAddRule = () => {
+    const currentEvents = watch("eventRules.events");
+
+    setValue("eventRules.events", [
+      ...currentEvents,
+      { heading: "", subHeading: "" },
+    ]);
+    setValue("eventRules.total", currentEvents.length + 1);
+  };
 
   return (
     <div className='mx-2 xl:mx-8'>
@@ -224,7 +248,7 @@ export default function NewEvent() {
 
             <h3 className='mx-2 text-xl text-[#5D5A5A]'>Event Rules</h3>
 
-            {Array.from(Array(eventRules.total).keys()).map((index) => (
+            {watch("eventRules.events")?.map((event, index) => (
               <div key={index}>
                 <div className='grid grid-cols-3 gap-4'>
                   <div className='col-span-1'>
@@ -248,13 +272,7 @@ export default function NewEvent() {
                     <div>
                       <Trash2
                         className='text-gray-500 cursor-pointer'
-                        onClick={() => {
-                          if (eventRules.total == 1) return;
-                          setEventRules((prev) => ({
-                            events: prev.events.filter((_, i) => i !== index),
-                            total: prev.total - 1,
-                          }));
-                        }}
+                        onClick={() => handleDeleteRule(index)}
                       />
                     </div>
                   </div>
@@ -266,12 +284,7 @@ export default function NewEvent() {
               <Button
                 type='button'
                 className='rounded-full bg-[#FCF7EA] text-black text-sm font-normal hover:bg-[#f7f2e6] border-[1px] '
-                onClick={() => {
-                  setEventRules((prev) => ({
-                    ...prev,
-                    total: prev.total + 1,
-                  }));
-                }}>
+                onClick={handleAddRule}>
                 Add
                 <PlusCircle />
               </Button>

@@ -11,7 +11,7 @@ import { Bell, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Collapsible,
@@ -32,7 +32,20 @@ import { UserAvatar } from "./useravatar";
 export default function Topbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
+  useEffect(() => {
+    if(pathname!='/'){
+    const storedSection = sessionStorage.getItem("activeSection");
+    setActiveSection(storedSection || pathname);
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    sessionStorage.setItem("activeSection", activeSection||'home');
+  }, [activeSection]);
+
+  
   const user = useGlobalAuthStore((state) => state.user);
 
   const scrollToSection = (id: string) => {
@@ -291,15 +304,17 @@ export default function Topbar() {
 
         <ul className="hidden xl:flex gap-8 text-textcol font-semibold mx-4 text-xl">
           <Link
-            className={pathname === "/" ? "text-contrasttext font-bold" : ""}
+          onClick={()=>setActiveSection('home')}
+            className={pathname === "/"&&activeSection==='home' ? "text-contrasttext font-bold" : ""}
             href={"/"}
           >
             Home
           </Link>
 
           <Link
+          onClick={()=>setActiveSection('community')}
             className={
-              pathname === "/feed" ? "text-contrasttext font-bold" : ""
+              pathname === "/feed"||activeSection==='community' ? "text-contrasttext font-bold" : ""
             }
             href={"/feed"}
           >
@@ -307,11 +322,12 @@ export default function Topbar() {
           </Link>
           <Link
             className={
-              pathname === "/top-events" ? "text-contrasttext font-bold" : ""
+              pathname === "/top-events"||activeSection==='experience' ? "text-contrasttext font-bold" : ""
             }
             href={user ? "/top-events" : "#"}
             onClick={(e) => {
               if (!user) {
+                setActiveSection('experience')
                 e.preventDefault();
                 if (pathname !== "/") {
                   router.push("/");
@@ -328,11 +344,12 @@ export default function Topbar() {
           {!user && (
             <Link
               className={
-                pathname === "/about" ? "text-contrasttext font-bold" : ""
+                pathname === "/"&&activeSection==='about' ? "text-contrasttext font-bold" : ""
               }
               href={"#"}
               onClick={(e) => {
                 if (!user) {
+                  setActiveSection('about')
                   e.preventDefault();
                   if (pathname !== "/") {
                     router.push("/");
@@ -348,8 +365,9 @@ export default function Topbar() {
           )}
 
           <Link
+          onClick={()=>{setActiveSection('contact')}}
             className={
-              pathname === "/contact" ? "text-contrasttext font-bold" : ""
+              pathname === "/contact"|| activeSection==='contact' ? "text-contrasttext font-bold" : ""
             }
             href={"/contact"}
           >
