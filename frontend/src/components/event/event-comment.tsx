@@ -103,7 +103,7 @@ export default function EventComment({ comment, eventId }: Props) {
   }
 
   return (
-    <motion.div className="lg:w-[90%] lg:ml-auto w-[85%] ml-auto">
+    <motion.div className="lg:w-[100%] lg:ml-auto w-[85%] ml-auto">
       <div className="flex items-center gap-6 justify-between">
         <div className="flex gap-2">
           <Avatar className="h-5 w-5 object-cover">

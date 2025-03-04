@@ -201,6 +201,35 @@ export default function CreatePost() {
     setDraftsModelOpen(false);
   }
 
+  const handleSaveDraft = () => {
+    // Check if draft limit is reached
+    if (drafts && drafts.length >= 5) {
+      toast("Maximum draft limit reached (5 drafts).");
+      return;
+    }
+
+    // Check if any values have been altered
+    if (
+      !titleValue &&
+      !descriptionValue &&
+      !urlValue &&
+      !uploadedFile &&
+      !selectedSubTopic.slug
+    ) {
+      toast("No changes detected. Draft not saved.");
+      return;
+    }
+
+    // Save the draft
+    createDraft({
+      description: descriptionValue,
+      title: titleValue,
+      link: urlValue,
+      image: uploadedFile ? uploadedFile : "",
+      selectedTopic: selectedSubTopic.slug,
+    });
+  };
+
   return (
     <div>
       <div className="mx-2 xl:mx-12">
@@ -381,22 +410,7 @@ export default function CreatePost() {
             <div className="flex gap-6 justify-end mt-4">
               <Button
                 className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold"
-                onClick={() => {
-                  if (
-                    !titleValue ||
-                    !descriptionValue ||
-                    !selectedSubTopic.slug
-                  )
-                    return toast("Please fill in all the fields");
-
-                  createDraft({
-                    description: descriptionValue,
-                    title: titleValue,
-                    link: urlValue,
-                    image: uploadedFile ? uploadedFile : "",
-                    selectedTopic: selectedSubTopic.slug,
-                  });
-                }}
+                onClick={handleSaveDraft}
                 type="button"
               >
                 Save as Draft

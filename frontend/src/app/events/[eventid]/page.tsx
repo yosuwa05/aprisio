@@ -130,7 +130,8 @@ export default function ViewEventPage() {
                 <span className="text-contrasttext  font-sans font-semibold">
                   {index + 1}. {rule?.heading} -
                 </span>
-                {rule?.subHeading}
+                <span> </span>
+                <span className="font-normal"> {rule?.subHeading}</span>
               </p>
             ))}
           </article>
@@ -148,6 +149,7 @@ export default function ViewEventPage() {
                 {data?.event?.commentCount ?? 0}
               </p>
             </div> */}
+            <p className="font-semibold mb-4 font-roboto text-2xl text-[#1F1F1F] ">Comments</p>
             <EventCommentSection
               eventId={eventid}
               // viewAllReplies={viewAllReplies}

@@ -269,12 +269,15 @@ export default function NewEvent() {
                       {...register(`eventRules.events.${index}.subHeading`)}
                     />
 
-                    <div>
-                      <Trash2
-                        className='text-gray-500 cursor-pointer'
-                        onClick={() => handleDeleteRule(index)}
-                      />
-                    </div>
+                    {/* Conditionally render the trash button */}
+                    {(index !== 0 || watch("eventRules.events").length > 1) && (
+                      <div>
+                        <Trash2
+                          className='text-gray-500 cursor-pointer'
+                          onClick={() => handleDeleteRule(index)}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
