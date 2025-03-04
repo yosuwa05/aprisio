@@ -34,7 +34,7 @@ export async function sendEmail(option: EmailOptions) {
     });
 
     const info = await transporter.sendMail({
-      from: emailId,
+      from: "support@aprisio.com",
       to: option.to,
       cc: option.cc,
       bcc: option.bcc,
