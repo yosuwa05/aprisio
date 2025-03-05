@@ -89,9 +89,9 @@ export default function Feed() {
     <div>
       <div className="mt-2   container flex flex-wrap  mx-auto px-3">
         {isLoading ? (
-          <Skeleton className="lg:max-w-[300px] w-full" />
+          <Skeleton className="lg:max-w-[335px] w-full" />
         ) : (
-          <div className="lg:max-w-[300px] w-full">
+          <div className="lg:max-w-[335px] w-full">
             <h1 className="font-[600] text-3xl text-textcol capitalize">
               {data?.subTopic?.subTopicName}
             </h1>
@@ -102,10 +102,10 @@ export default function Feed() {
             <div className="mt-4 flex flex-col gap-3">
               <Image
                 src={BASE_URL + `/file?key=${data?.subTopic?.image}`}
-                className="rounded-xl object-cover"
+                className="rounded-xl object-cover !w-[335px]  !h-[250px]"
                 alt=""
-                width={300}
-                height={300}
+                width={335}
+                height={250}
               />
               {!data?.isUserJoined && (
                 <Button

@@ -26,6 +26,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import GroupFeedCommentSection from "./group-feed-commentsection";
+import { PostShareModalWeb } from "@/components/post/share-modal-web";
 
 interface IPostCard {
   title: string;
@@ -124,6 +125,13 @@ export default function GroupsFeedPostcard({
     },
   });
 
+  const CloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const CloseDrawer = () => {
+    setDrawerOpen(false);
+  };
   return (
     <div
       className="p-4 lg:px-8 w-full rounded-lg transition-all mt-4"
@@ -233,7 +241,7 @@ export default function GroupsFeedPostcard({
             <p className="text-xs lg:text-sm">{post.commentCount ?? 0}</p>
           </div>
 
-          {/* <div
+          <div
             onClick={() => {
               setPostId(post.id);
               setDialogOpen(true);
@@ -246,7 +254,7 @@ export default function GroupsFeedPostcard({
               className="h-4 w-4 lg:h-5 lg:w-5 cursor-pointer"
             />
             <p className="text-xs lg:text-xs font-bold">{"Share"}</p>
-          </div> */}
+          </div>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogContent className="min-w-[calc(60vw-100px)] h-[calc(70vh-4rem)]  flex flex-col ">
               <DialogHeader>
@@ -261,11 +269,11 @@ export default function GroupsFeedPostcard({
                   </div>
                 </DialogClose> */}
               </DialogHeader>
-              {/* <PostShareModalWeb
+              <PostShareModalWeb
                 postId={postId}
                 CloseDialog={CloseDialog}
                 CloseDrawer={CloseDrawer}
-              /> */}
+              />
             </DialogContent>
           </Dialog>
           {/* for Drawer mobile */}

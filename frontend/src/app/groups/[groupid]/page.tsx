@@ -20,7 +20,7 @@ export default function GroupPage() {
 
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const tabs = ["Feed", "About", "Events", "Members", "Photos", "Shared Post"];
+  const tabs = ["Feed", "Shared Post","About", "Events", "Members", "Photos"];
 
   const { data, isLoading } = useQuery({
     queryKey: ["group-info", groupid],
@@ -53,7 +53,7 @@ export default function GroupPage() {
             <h1 className="font-[600] text-2xl text-textcol capitalize mt-4">
               {data?.group?.name}
             </h1>
-            <div className="flex gap-2 items-center  mt-4">
+            <div  onClick={() => setActiveIndex(4)} className="flex gap-2 items-center  mt-4">
               <Icon
                 icon="mingcute:user-1-line"
                 fontSize={29}
@@ -98,7 +98,8 @@ export default function GroupPage() {
 
           <div className="mt-3">
             {activeIndex === 0 && <GroupsFeedSection />}
-            {activeIndex === 1 && (
+            {activeIndex === 1 && <GroupShareSection />}
+            {activeIndex === 2 && (
               <div className="px-4">
                 <h3 className="font-semibold text-2xl">What We Are</h3>
                 <p className="text-[#353535] leading-relaxed text-[16px] mt-5 font-normal">
@@ -106,15 +107,15 @@ export default function GroupPage() {
                 </p>
               </div>
             )}
-            {activeIndex === 2 && (
+            {activeIndex === 3 && (
               <EventsSection
                 groupid={data?.group._id}
                 gropuslug={data?.group?.slug}
               />
             )}
-            {activeIndex === 3 && <PersonsSection groupid={data?.group._id} />}
-            {activeIndex === 4 && <PhotosSection groupid={data?.group._id} />}
-            {activeIndex === 5 && <GroupShareSection />}
+            {activeIndex === 4 && <PersonsSection groupid={data?.group._id} />}
+            {activeIndex === 5 && <PhotosSection groupid={data?.group._id} />}
+           
           </div>
         </div>
       </div>

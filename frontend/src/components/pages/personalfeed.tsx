@@ -1,3 +1,4 @@
+"use client";
 import { _axios } from "@/lib/axios-instance";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import {

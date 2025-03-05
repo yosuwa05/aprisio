@@ -37,7 +37,6 @@ export default function Home() {
         {user && <TopCommunityBar />}
       </div>
       <ToastContainer />
-      {!user ? (
         <div>
           <section id="home">
             <Hero1 />
@@ -58,9 +57,7 @@ export default function Home() {
             <Footer />
           </div>
         </div>
-      ) : (
-        <PersonalFeed />
-      )}
+
     </>
   );
 }

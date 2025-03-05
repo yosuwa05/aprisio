@@ -8,7 +8,10 @@ import hero from "../../../public/images/hero.png";
 import hearts from "../../../public/images/hearts.png";
 import heroboy from "../../../public/images/hero-boy.png";
 import herogirl from "../../../public/images/hero-girl.png";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+
 function Hero1() {
+  const user = useGlobalAuthStore((state) => state.user);
   return (
     <main className='relative md:mb-10 mb-0'>
       <section className=' flex flex-col   md:gap-14'>
@@ -28,9 +31,10 @@ function Hero1() {
           </div>
         </div>
         <div className='flex justify-center items-center mt-5 md:mt-0'>
-          <Link href={"/join-community"}>
+          <Link href={user?"/feed":"/join-community"}>
             <button className='flex lg:py-3 xl:py-4 py-3 xl:text-2xl lg:text-xl text-xl xl:px-8 lg:px-6 px-5 font-mulish font-bold bg-[#C9A74E] rounded-full justify-center items-center gap-5'>
-              Join Aprisio
+              {user?'Explore Aprisio':'Join Aprisio'}
+              
               <span className='text-white bg-[#A48D4A] rounded-full mt-1 p-1'>
                 <RiArrowRightLine className='w-6 h-6' />
               </span>

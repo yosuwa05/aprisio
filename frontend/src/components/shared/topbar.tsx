@@ -35,14 +35,23 @@ export default function Topbar() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   useEffect(() => {
-    if(pathname!='/'){
-    const storedSection = sessionStorage.getItem("activeSection");
-    setActiveSection(storedSection || pathname);
+    if (pathname === "/") {
+      setActiveSection("home");
+    } else if (pathname === "/feeds") {
+      setActiveSection("feeds");
+    } else if (pathname === "/feed") {
+      setActiveSection("community");
+    } else if (pathname === "/top-events") {
+      setActiveSection("experience");
+    } else if (pathname === "/contact") {
+      setActiveSection("contact");
+    } else if (pathname === "/") {
+      setActiveSection("about");
     }
   }, [pathname]);
 
   useEffect(() => {
-    sessionStorage.setItem("activeSection", activeSection||'home');
+    sessionStorage.setItem("activeSection", activeSection || "");
   }, [activeSection]);
 
   
@@ -303,14 +312,22 @@ export default function Topbar() {
         />
 
         <ul className="hidden xl:flex gap-8 text-textcol font-semibold mx-4 text-xl">
-          <Link
-          onClick={()=>setActiveSection('home')}
-            className={pathname === "/"&&activeSection==='home' ? "text-contrasttext font-bold" : ""}
+           <Link
+            onClick={() => setActiveSection("home")}
+            className={activeSection === "home" ? "text-contrasttext font-bold" : ""}
             href={"/"}
           >
             Home
           </Link>
-
+          {user && (
+            <Link
+              onClick={() => setActiveSection("feeds")}
+              className={activeSection === "feeds" ? "text-contrasttext font-bold" : ""}
+              href={"/feeds"}
+            >
+              Feed
+            </Link>
+          )}
           <Link
           onClick={()=>setActiveSection('community')}
             className={
