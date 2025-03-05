@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,6 +51,8 @@ export default function CreatePost() {
   const [selectedSubTopic, setSelectedSubTopic] = useState({
     slug: "",
   });
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
 
   const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
 
@@ -90,7 +93,9 @@ export default function CreatePost() {
       if (data.data.ok) {
         toast("Post created successfully");
         reset();
+        setEditingDraftId(null)
         queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
+        queryClient.invalidateQueries({ queryKey: ["drafts"] });
         router.push("/feed/explore/" + selectedSubTopic.slug);
       } else {
         toast(data?.data?.message || "An error occurred while creating post");
@@ -102,34 +107,34 @@ export default function CreatePost() {
     title: string;
     description: string;
     link: string;
-    image?: any;
+    file?: any;
     selectedTopic: string;
   };
 
   const { mutate: createDraft } = useMutation({
     mutationKey: ["createDraft"],
-    mutationFn: async (data: Draft) => {
-      const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("description", data.description);
-      formData.append("link", data.link);
-      formData.append("selectedTopic", data.selectedTopic);
-
-      if (data.image) {
-        formData.append("image", data.image);
-      }
-
-      const res = await _axios.post("/drafts/create", data);
+    mutationFn: async (formData: FormData) => {
+      const res = await _axios.post("/drafts/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return res.data;
     },
     onSuccess: () => {
       toast("Draft Saved!");
       queryClient.invalidateQueries({ queryKey: ["drafts"] });
       reset();
+      setUploadedFile(null);
+      setSelectedSubTopic({ slug: "" });
+
     },
     onError: () => {
       toast("An error occurred while creating post");
+      setUploadedFile(null)
+      setSelectedSubTopic({ slug: "" });
     },
+
   });
 
   const { mutate: deleteDraft, isPending: deletingDraft } = useMutation({
@@ -154,14 +159,43 @@ export default function CreatePost() {
 
     if (uploadedFile) {
       formData.append("file", uploadedFile);
+    } else if (imageUrl) {
+      formData.append("imageUrl", imageUrl);
+      // console.log("imgurl : ",imageUrl)
+      
     }
 
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("url", data.url);
     formData.append("slug", selectedSubTopic.slug);
+    if (editingDraftId) {
+      formData.append("draftId", editingDraftId);
+    }
     mutate(formData);
   };
+  const { mutate: updateDraft } = useMutation({
+    mutationKey: ["updateDraft"],
+    mutationFn: async ({ id, formData }: { id: string; formData: FormData }) => {
+      const res = await _axios.put(`/drafts/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      toast("Draft Updated!");
+      queryClient.invalidateQueries({ queryKey: ["drafts"] });
+      reset();
+      setUploadedFile(null);
+      setImageUrl("");
+      setEditingDraftId(null); 
+    },
+    onError: () => {
+      toast("An error occurred while updating the draft");
+    },
+  });
 
   const tabs = ["Text", "Image & Video", "Link"];
 
@@ -192,18 +226,31 @@ export default function CreatePost() {
     _id: string;
     title: string;
     description: string;
+    image: string; 
     url: string;
+    selectedTopic: {
+      slug: string;
+    };
   }) {
     setValue("title", draft.title);
     setValue("description", draft.description);
     setValue("url", draft.url);
-
+    if (draft.image) {
+      setUploadedFile(null); 
+      setImageUrl(draft.image);
+      // console.log("draft : ",draft.image)
+    } else {
+      setImageUrl(""); 
+      setUploadedFile(null); 
+    }
+    setSelectedSubTopic({ slug: draft.selectedTopic.slug });
+    setEditingDraftId(draft._id);
     setDraftsModelOpen(false);
   }
 
   const handleSaveDraft = () => {
     // Check if draft limit is reached
-    if (drafts && drafts.length >= 5) {
+    if (!editingDraftId && drafts && drafts.length >= 5) {
       toast("Maximum draft limit reached (5 drafts).");
       return;
     }
@@ -219,15 +266,24 @@ export default function CreatePost() {
       toast("No changes detected. Draft not saved.");
       return;
     }
+    if (!selectedSubTopic.slug) return toast("Please select a topic");
 
-    // Save the draft
-    createDraft({
-      description: descriptionValue,
-      title: titleValue,
-      link: urlValue,
-      image: uploadedFile ? uploadedFile : "",
-      selectedTopic: selectedSubTopic.slug,
-    });
+
+    const formData = new FormData();
+    if (uploadedFile) {
+      formData.append("file", uploadedFile); 
+    }
+  
+    formData.append("title", titleValue);
+    formData.append("description", descriptionValue||" ");
+    formData.append("link", urlValue|| " ");
+    formData.append("selectedTopic", selectedSubTopic.slug);
+
+    if (editingDraftId) {
+      updateDraft({ id: editingDraftId, formData });
+    } else {
+      createDraft(formData);
+    }
   };
 
   return (
@@ -357,43 +413,45 @@ export default function CreatePost() {
               </div>
             )}
 
-            {activeIndex == 1 && uploadedFile && (
-              <div className="relative w-[300px] h-[200px]">
-                <Button
-                  className="absolute top-4 right-4 cursor-pointer text-red p-3 bg-white"
-                  onClick={() => {
-                    let elem: any = document.getElementById("file");
-                    if (elem) elem.value = "";
-                    setUploadedFile(null);
-                  }}
-                >
-                  <Trash2 color="red" />
-                </Button>
+{activeIndex == 1 && (imageUrl || uploadedFile) && (
+  <div className="relative w-[300px] h-[200px]">
+  <Button
+  className="absolute top-4 right-4 cursor-pointer text-red p-3 bg-white"
+  onClick={() => {
+    let elem: any = document.getElementById("file");
+    if (elem) elem.value = ""; // Clear the file input
+    setUploadedFile(null); // Clear the uploaded file
+    setImageUrl(""); // Clear the image URL
+  }}
+>
+  <Trash2 color="red" />
+</Button>
 
-                <Image
-                  src={imageRendered}
-                  alt=""
-                  width={100}
-                  height={100}
-                  className="w-[300px] h-[200px] object-cover rounded-2xl"
-                />
-              </div>
-            )}
+<Image
+      src={imageUrl ? `${BASE_URL}/file?key=${imageUrl}` : imageRendered} 
+      alt=""
+      width={100}
+      height={100}
+      className="w-[300px] h-[200px] object-cover rounded-2xl"
+    />
+  </div>
+)}
 
-            <input
-              type="file"
-              id="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(event) => {
-                const file = event.target.files?.[0];
+<input
+  type="file"
+  id="file"
+  accept="image/*"
+  className="hidden"
+  onChange={(event) => {
+    const file = event.target.files?.[0];
 
-                if (file) {
-                  setUploadedFile(file);
-                }
-              }}
-              ref={fileInputRef}
-            />
+    if (file) {
+      setUploadedFile(file); // Set the uploaded file
+      setImageUrl(""); // Clear the image URL
+    }
+  }}
+  ref={fileInputRef}
+/>
 
             {activeIndex == 2 && (
               <div key={activeIndex}>
@@ -448,6 +506,8 @@ export default function CreatePost() {
                       title: string;
                       description: string;
                       url: string;
+                      selectedTopic: { slug: string; }; 
+                      image:any;
                     }) => (
                       <div key={draft._id}>
                         <div
@@ -505,3 +565,5 @@ export default function CreatePost() {
     </div>
   );
 }
+
+

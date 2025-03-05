@@ -34,6 +34,11 @@ export default function EventCommentSection({ eventId }: Props) {
   const queryClient = useQueryClient();
 
   function handleSubmit() {
+    if(!user){
+      toast.error('Please login to comment on events');
+      setTypedComment("");
+      return;
+    }
     if (!typedComment.trim()) return toast.error("Comment cannot be empty");
     mutate({ content: typedComment, eventId, parentCommentId: undefined });
     setTypedComment("");

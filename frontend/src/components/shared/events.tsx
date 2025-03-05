@@ -19,6 +19,7 @@ import heart2 from "../../../public/images/yellow-heart.png";
 import yoga from "../../../public/images/yoga.png";
 import coffee from "../../../public/images/coffee.jpg";
 import mic from "../../../public/images/mic.jpeg";
+import Link from "next/link";
 export default function Events() {
   const data = [
     {
@@ -26,9 +27,10 @@ export default function Events() {
       src: coffee,
       date: "5 April 2025",
       loc: "Bangalore",
+      URL:"https://aprisio.com/events/67c7ff839ed44ccc6f95885c"
     },
-    { title: "karaoke evening", src: mic, date: "May 2025" },
-    { title: "Culinary Exploration", src: food, date: "June  2025" },
+    { title: "karaoke evening", src: mic, date: "May 2025",URL:'https://aprisio.com/events/67c7fe519ed44ccc6f958842' },
+    { title: "Culinary Exploration", src: food, date: "June  2025",URL:'https://aprisio.com/events/67c7fac09ed44ccc6f95876c' },
     // { title: "Yoga4", src: yoga, date: "24 Jan 2024" },
     // { title: "Yoga5", src: yoga, date: "25 Jan 2024" },
     // { title: "Yoga6", src: yoga, date: "26 Jan 2024" },
@@ -95,7 +97,8 @@ export default function Events() {
                     </p>
                   </div>
                   <div>
-                    <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
+                  <Link className="cursor-pointer" href={`${item?.URL}`}><Image src={arrow2} alt='Arrow' className='w-14 h-14' /></Link>
+
                   </div>
                 </div>
               </div>
@@ -126,7 +129,7 @@ export default function Events() {
                   </p>
                 </div>
                 <div>
-                  <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
+            <Link className="cursor-pointer" href={`${item?.URL}`}><Image src={arrow2} alt='Arrow' className='w-14 h-14' /></Link>
                 </div>
               </div>
             </div>

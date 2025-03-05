@@ -111,7 +111,7 @@ export default function ViewEventPage() {
               >
                 {!data?.event?.attending ? "Attend Event" : "Joined"}
               </Button>
-              <div className="mt-4 text-gray-700 text-xs">
+              <div className="mt-4 text-gray-700 text-xs text-center">
                 {data?.event?.attendees?.length} Members Attended
               </div>
             </div>
@@ -131,12 +131,13 @@ export default function ViewEventPage() {
                   {index + 1}. {rule?.heading} -
                 </span>
                 <span> </span>
-                <span className="font-normal"> {rule?.subHeading}</span>
+                <span className="font-normal leading-loose"> {rule?.subHeading}</span>
               </p>
             ))}
           </article>
 
-          <div className="mt-20 px-5 pb-10">
+
+        <div  style={{ boxShadow: "0px 4px 60px 0px #02507C26" }} className="mt-14 rounded-2xl  pb-10 container max-w-6xl mx-auto p-8 ">
             {/* <div
               className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200  cursor-pointer'
               onClick={() => setViewAllReplies(!viewAllReplies)}>
@@ -157,6 +158,7 @@ export default function ViewEventPage() {
               // topic={topic}
             />
           </div>
+
         </div>
       )}
     </main>

@@ -1,6 +1,7 @@
 import { deleteFile, saveFile } from "@/lib/file-s3";
 import { slugify } from "@/lib/utils";
 import { LikeModel, PostModel } from "@/models";
+import { DraftModel } from "@/models/draftmodel";
 import { GroupModel } from "@/models/group.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserSubTopicModel } from "@/models/usersubtopic.model";
@@ -17,7 +18,7 @@ export const authenticatedPostController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { title, description, url, file, slug } = body;
+      const { title, description, url, file, slug,draftId,imageUrl  } = body;
 
       try {
         const userId = (store as StoreType)["id"];
@@ -61,6 +62,8 @@ export const authenticatedPostController = new Elysia({
               ok: false,
             };
           }
+        } else if (imageUrl) {
+          fileUrl = imageUrl;
         }
 
         const subtopic = await SubTopicModel.findOne({ slug });
@@ -101,7 +104,9 @@ export const authenticatedPostController = new Elysia({
         });
 
         await newPost.save();
-
+        if (draftId) {
+          await DraftModel.findByIdAndDelete(draftId);
+        }
         set.status = 200;
         return { message: "Post created successfully", ok: true };
       } catch (error: any) {
@@ -127,6 +132,8 @@ export const authenticatedPostController = new Elysia({
         ),
         slug: t.String(),
         file: t.Optional(t.File()),
+        imageUrl: t.Optional(t.String()),
+        draftId: t.Optional(t.String()),
       }),
       detail: {
         description: "Create post",
