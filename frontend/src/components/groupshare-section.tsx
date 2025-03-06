@@ -25,6 +25,9 @@ export function GroupShareSection() {
         const nextPage = allPages?.length + 1;
         return lastPage?.sharedPosts?.length === limit ? nextPage : undefined;
       },
+      refetchOnWindowFocus: true,
+      refetchOnMount: true, 
+      refetchOnReconnect: true,
     });
 
   const containerRef = useRef<HTMLDivElement>(null);

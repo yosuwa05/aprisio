@@ -116,7 +116,7 @@ export default function About() {
         <div className="w-full h-full flex justify-center items-center">
           <div className="w-fit h-fit">
             <div
-              className="lg:w-full xl:h-[614px] flex justify-center lg:h-[414px] h-[280px] rounded-3xl relative"
+              className="lg:w-full xl:h-[550px] flex justify-center lg:h-[400px] h-[280px] rounded-3xl relative"
               onMouseEnter={() => handleControlsVisibility(true)}
               onMouseLeave={() => handleControlsVisibility(false)}
             >
