@@ -65,8 +65,7 @@ export function EventCard({ event }: Props) {
       }
     },
     onError(error: any) {
-      console.log(error);
-      toast.error(error.response.data.message || "Something went wrong");
+      toast.error(error.response.data.error || "Something went wrong");
     },
   });
 
@@ -93,7 +92,7 @@ export function EventCard({ event }: Props) {
           <h3 className='mt-3 font-normal text-contrasttext text-lg'>
             {event.location}
           </h3>
-          <p className='mt-4 text-fadedtext text-sm font-medium'>500 Members</p>
+          {/* <p className='mt-4 text-fadedtext text-sm font-medium'>500 Members</p> */}
         </div>
 
         <div className='flex flex-col gap-4 items-center'>

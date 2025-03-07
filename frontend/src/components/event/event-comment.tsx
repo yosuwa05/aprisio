@@ -103,30 +103,30 @@ export default function EventComment({ comment, eventId }: Props) {
   }
 
   return (
-    <motion.div className="lg:w-[100%] lg:ml-auto w-[85%] ml-auto">
-      <div className="flex items-center gap-6 justify-between">
-        <div className="flex gap-2">
-          <Avatar className="h-5 w-5 object-cover">
+    <motion.div className='lg:w-[100%] lg:ml-auto w-[85%] ml-auto'>
+      <div className='flex items-center gap-6 justify-between'>
+        <div className='flex gap-2'>
+          <Avatar className='h-5 w-5 object-cover'>
             <AvatarImage src={BASE_URL + `/file?key=${comment?.user?.image}`} />
-            <AvatarFallback className="text-xs">
+            <AvatarFallback className='text-xs'>
               {makeUserAvatarSlug(comment?.user?.name ?? "")}
             </AvatarFallback>
           </Avatar>
-          <div className="self-center">
-            <h3 className="text-textcol font-semibold text-sm">
+          <div className='self-center'>
+            <h3 className='text-textcol font-semibold text-sm'>
               {comment.user.name}
             </h3>
           </div>
         </div>
-        <p className="text-xs font-medium text-[#6B6D6D] self-center">
+        <p className='text-xs font-medium text-[#6B6D6D] self-center'>
           {formatDate(comment.createdAt)}
         </p>
       </div>
-      <div className="ml-6 py-2">
+      <div className='ml-6 py-2'>
         {comment.content && (
-          <p className="font-normal text-xs lg:text-sm">
+          <p className='font-normal text-xs lg:text-sm'>
             {comment?.parentComment && comment.parentComment.user ? (
-              <span className="text-sky-500">
+              <span className='text-sky-500'>
                 {comment.parentComment.user.name || "hii"}
               </span>
             ) : (
@@ -136,8 +136,8 @@ export default function EventComment({ comment, eventId }: Props) {
           </p>
         )}
       </div>
-      <div className="flex gap-2 lg:gap-3">
-        <div className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1  hover:border-[1px] border-[1px] border-gray-200">
+      <div className='flex gap-2 lg:gap-3'>
+        <div className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1  hover:border-[1px] border-[1px] border-gray-200'>
           <Icon
             icon={comment.likedByMe ? "mage:heart-fill" : "mage:heart"}
             className={`h-4 w-4 cursor-pointer ${
@@ -154,25 +154,24 @@ export default function EventComment({ comment, eventId }: Props) {
               likeMutation({ commentId: comment._id });
             }}
           />
-          <p className="text-xs text-gray-500">{comment.likesCount}</p>
+          <p className='text-xs text-gray-500'>{comment.likesCount}</p>
         </div>
 
         <div
-          className="flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer"
-          onClick={() => setIsReplyOpened(!isReplyOpened)}
-        >
+          className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer'
+          onClick={() => setIsReplyOpened(!isReplyOpened)}>
           <Icon
-            icon="uil:share"
-            className="h-4 w-4 cursor-pointer text-gray-500"
+            icon='uil:share'
+            className='h-4 w-4 cursor-pointer text-gray-500'
           />
-          <p className="text-xs text-gray-500">{"Reply"}</p>
+          <p className='text-xs text-gray-500'>{"Reply"}</p>
         </div>
       </div>
 
       <div>
         {isReplyOpened && (
-          <motion.div className="mt-4 flex gap-4 items-center">
-            <Avatar className="h-9 w-9 object-cover">
+          <motion.div className='mt-4 flex gap-4 items-center'>
+            <Avatar className='h-9 w-9 object-cover'>
               <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
               <AvatarFallback>
                 {makeUserAvatarSlug(user?.name ?? "")}
@@ -180,8 +179,8 @@ export default function EventComment({ comment, eventId }: Props) {
             </Avatar>
 
             <Input
-              placeholder="Write your reply"
-              className="border-none bg-contrastbg text-[#535455] placeholder:text-sm"
+              placeholder='Write your reply'
+              className='border-none bg-contrastbg text-[#535455] placeholder:text-sm'
               value={repliedContent}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {

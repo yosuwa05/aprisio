@@ -17,10 +17,19 @@ export const EventsController = new Elysia({
 
         const event = await EventModel.findOne({ _id: eventId });
 
+
         if (!event) {
           set.status = 400;
           return {
             error: "Event not found",
+            ok: false,
+          };
+        }
+
+        if (event.isEventEnded) {
+          set.status = 400;
+          return {
+            error: "Event is ended",
             ok: false,
           };
         }

@@ -11,6 +11,7 @@
     "@aws-sdk/lib-storage": "^3.744.0",
     "@aws-sdk/s3-request-presigner": "^3.744.0",
     "@elysiajs/cors": "^1.2.0",
+    "@elysiajs/cron": "^1.2.0",
     "@elysiajs/jwt": "^1.2.0",
     "@elysiajs/swagger": "^1.2.0",
     "@rasla/logify": "^4.0.0",

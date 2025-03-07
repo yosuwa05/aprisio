@@ -95,6 +95,9 @@ export function TopicsCard({
 
   return (
     <div
+      onClick={() => {
+        router.push(`/feed/explore/${slug}`);
+      }}
       className={` border-[1px] border-[#C0C0C0] ${
         joined ? "border-buttoncol border-[2px]" : ""
       }  rounded-xl p-4 cursor-pointer`}>

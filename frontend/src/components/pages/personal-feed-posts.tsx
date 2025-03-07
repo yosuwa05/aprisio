@@ -4,7 +4,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useIntersection } from "@mantine/hooks";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import GlobalLoader from "../globalloader";
 import { Skeleton } from "../ui/skeleton";
@@ -34,7 +34,7 @@ export const PersonalFeedPosts = () => {
   const isUserRoute = usePathname().includes("/user/");
 
   const { userslug } = useParams();
-
+  const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["personalfeed" + user?.id, userslug],
@@ -65,16 +65,16 @@ export const PersonalFeedPosts = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
 
   return (
-    <div className="flex flex-col gap-6 items-center p-1">
+    <div className='flex flex-col gap-6 items-center p-1'>
       {isLoading ? (
-        <div className="flex flex-col gap-4 w-full">
+        <div className='flex flex-col gap-4 w-full'>
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex gap-4 w-full">
-              <Skeleton className="w-[50px] h-[50px] rounded-full" />
-              <div className="flex flex-col gap-2 w-full">
-                <Skeleton className="w-full h-[200px]" />
-                <Skeleton className="w-full h-[15px]" />
-                <Skeleton className="w-3/4 h-[15px]" />
+            <div key={i} className='flex gap-4 w-full'>
+              <Skeleton className='w-[50px] h-[50px] rounded-full' />
+              <div className='flex flex-col gap-2 w-full'>
+                <Skeleton className='w-full h-[200px]' />
+                <Skeleton className='w-full h-[15px]' />
+                <Skeleton className='w-3/4 h-[15px]' />
               </div>
             </div>
           ))}
@@ -106,13 +106,21 @@ export const PersonalFeedPosts = () => {
             ))
           )
         ) : (
-          <p className="text-gray-500 text-xs font-semibold">No posts found</p>
+          <p
+            onClick={() => router.push("/feed")}
+            className='text-gray-500 text-xs font-semibold cursor-pointer'>
+            Join Community
+          </p>
         )
       ) : (
-        <p className="text-gray-500">No posts</p>
+        <p
+          onClick={() => router.push("/feed")}
+          className='text-gray-500 cursor-pointer'>
+          Join Community
+        </p>
       )}
 
-      <div ref={ref} className="h-1"></div>
+      <div ref={ref} className='h-1'></div>
 
       {isFetchingNextPage && <GlobalLoader />}
     </div>

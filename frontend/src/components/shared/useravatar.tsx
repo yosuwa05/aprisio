@@ -50,9 +50,9 @@ export function UserAvatar() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Avatar className="h-8 w-8 lg:h-10 lg:w-10">
+          <Avatar className='h-8 w-8 lg:h-10 lg:w-10'>
             <AvatarImage
-              className="object-cover rounded-full"
+              className='object-cover rounded-full'
               src={
                 user
                   ? BASE_URL + `/file?key=${user?.image}`
@@ -64,47 +64,44 @@ export function UserAvatar() {
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className='!mr-4'>
           {user ? (
             <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => router.push("/profile")}
-            >
+              className='cursor-pointer'
+              onClick={() => router.push("/profile")}>
               My Account
             </DropdownMenuItem>
           ) : null}
           {user ? (
             <DropdownMenuItem
-              className="cursor-pointer"
-              onClick={() => setLogoutOpen(true)}
-            >
+              className='cursor-pointer'
+              onClick={() => setLogoutOpen(true)}>
               Logout
             </DropdownMenuItem>
           ) : (
             <DropdownMenuItem
-              className="cursor-pointer"
+              className='cursor-pointer'
               onClick={() => {
                 router.push("/login");
-              }}
-            >
+              }}>
               Login
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
       <Dialog open={logoutOpen} onOpenChange={setLogoutOpen}>
-        <DialogContent className="max-w-sm w-full p-6">
+        <DialogContent className='max-w-sm w-full p-6'>
           <DialogHeader>
             <DialogTitle>Confirm Logout</DialogTitle>
             <DialogDescription>
               Are you sure you want to log out?
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setLogoutOpen(false)}>
+          <DialogFooter className='flex justify-end gap-2'>
+            <Button variant='outline' onClick={() => setLogoutOpen(false)}>
               Cancel
             </Button>
-            <Button variant="destructive" onClick={logout}>
+            <Button variant='destructive' onClick={logout}>
               Confirm
             </Button>
           </DialogFooter>
