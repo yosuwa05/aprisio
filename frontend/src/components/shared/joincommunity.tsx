@@ -454,6 +454,7 @@ const JoinCommunityForm = () => {
                   {...register("terms")}
                   type="checkbox"
                   className="appearance-none w-7 h-7 border border-[#043A538F] checked:bg-[#F2F5F6] rounded-full transition-all duration-200 cursor-pointer peer"
+                  onChange={(e) => setValue("terms", e.target.checked)}
                 />
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">
                   <svg
