@@ -46,32 +46,32 @@ export default function PersonalProfile({
 
   if (isLoading) {
     return (
-      <div className="bg-white h-screen w-screen flex justify-center items-center">
+      <div className='bg-white h-screen w-screen flex justify-center items-center'>
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="">
-      <div className="sticky top-[2px] z-50 bg-white py-2">
+    <div className=''>
+      <div className='sticky top-[2px] z-50 bg-white py-2'>
         <Topbar />
         <ProfileTopBar />
       </div>
 
-      <div className="mt-4 flex flex-col lg:flex-row gap-8  max-w-[1200px] mx-auto">
-        <div className="lg:max-w-[300px] min-w-[300px]">
-          <div className="flex flex-col gap-4">
-            <div className="h-[420px] shadow-xl rounded-xl p-4">
-              <div className="h-[150px] bg-[#F5F5F5] flex flex-col items-center justify-center relative">
-                <div className="absolute -bottom-10 flex flex-col items-center">
-                  <div className="p-2 bg-white rounded-2xl shadow border-none">
-                    <Avatar className="w-32 h-32 font-bold text-3xl text-white cursor-pointer  rounded-md">
+      <div className='mt-4 flex flex-col lg:flex-row gap-8  max-w-[1200px] mx-auto'>
+        <div className='lg:max-w-[300px] min-w-[300px]'>
+          <div className='flex flex-col gap-4'>
+            <div className='h-[420px] shadow-xl rounded-xl p-4'>
+              <div className='h-[150px] bg-[#F5F5F5] flex flex-col items-center justify-center relative'>
+                <div className='absolute -bottom-10 flex flex-col items-center'>
+                  <div className='p-2 bg-white rounded-2xl shadow border-none'>
+                    <Avatar className='w-32 h-32 font-bold text-3xl text-white cursor-pointer  rounded-md'>
                       <AvatarImage
-                        className="object-cover w-full h-full"
+                        className='object-cover w-full h-full'
                         src={BASE_URL + `/file?key=${data?.user?.image}`}
                       />
-                      <AvatarFallback className="">
+                      <AvatarFallback className=''>
                         {makeUserAvatarSlug(data?.user.name ?? "")}
                       </AvatarFallback>
                     </Avatar>
@@ -79,20 +79,20 @@ export default function PersonalProfile({
                 </div>
               </div>
 
-              <div className="mt-12 flex flex-col gap-3 items-center">
-                <h1 className="font-semibold text-3xl text-textcol capitalize">
-                  {data?.user.name}
+              <div className='mt-12 flex flex-col gap-3 items-center'>
+                <h1 className='font-semibold text-xl  md:text-2xl text-textcol capitalize text-center text-wrap whitespace-pre-wrap overflow-hidden overflow-ellipsis max-w-[250px]'>
+                  {data?.user?.name}
                 </h1>
-                <div className="flex gap-2 items-center text-sm text-fadedtext">
-                  <Icon icon="ic:outline-email" />
+                <div className='flex gap-2 items-center text-sm text-fadedtext'>
+                  <Icon icon='ic:outline-email' />
                   <p>{data?.user.email}</p>
                 </div>
 
-                <div className="flex gap-2 items-center text-sm text-fadedtext">
+                <div className='flex gap-2 items-center text-sm text-fadedtext'>
                   <Button
                     size={"sm"}
                     variant={"secondary"}
-                    className="text-sm bg-gray-300 hover:bg-gray-300"
+                    className='text-sm bg-gray-300 hover:bg-gray-300'
                     onClick={() => {
                       router.push("/profile");
                       updateChat({
@@ -100,24 +100,23 @@ export default function PersonalProfile({
                         userId: data?.user._id,
                         selected: true,
                       });
-                    }}
-                  >
+                    }}>
                     <MessageCircle size={32} />
                     Chat
                   </Button>
                 </div>
               </div>
 
-              <div className="mt-4 flex gap-10 items-center justify-center">
-                <div className="text-center">
-                  <h2 className="text-3xl text-contrasttext">
+              <div className='mt-4 flex gap-10 items-center justify-center'>
+                <div className='text-center'>
+                  <h2 className='text-3xl text-contrasttext'>
                     {data?.groupsCount}
                   </h2>
                   <p>Groups</p>
                 </div>
 
-                <div className="text-center">
-                  <h2 className="text-3xl text-contrasttext">
+                <div className='text-center'>
+                  <h2 className='text-3xl text-contrasttext'>
                     {data?.subtopicsFollowed}
                   </h2>
                   <p>Topics</p>
@@ -125,11 +124,11 @@ export default function PersonalProfile({
               </div>
             </div>
 
-            <h1 className="text-[#043A537D] text-2xl px-2 my-4">
+            <h1 className='text-[#043A537D] text-2xl px-2 my-4'>
               Topics {userName} Follow
             </h1>
 
-            <div className="flex flex-col gap-3">
+            <div className='flex flex-col gap-3'>
               {data?.followedByUser &&
                 data?.followedByUser.map((topic: any, index: number) => (
                   <div key={index}>
@@ -137,14 +136,13 @@ export default function PersonalProfile({
                       onClick={() => {
                         router.push(`/feed/explore/${topic?.subTopicId?.slug}`);
                       }}
-                      className="bg-[#F6F5F2] flex flex-start rounded-2xl text-contrasttext font-bold text-lg p-5 hover:bg-[#F6F5F2]"
-                    >
+                      className='bg-[#F6F5F2] flex flex-start rounded-2xl text-contrasttext font-bold text-lg p-5 hover:bg-[#F6F5F2]'>
                       {topic?.subTopicId?.subTopicName}
                       <Image
                         src={chevronleft}
                         height={20}
                         width={20}
-                        alt="arrow"
+                        alt='arrow'
                       />
                     </Button>
                   </div>

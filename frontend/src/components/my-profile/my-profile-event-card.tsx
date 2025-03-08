@@ -92,9 +92,9 @@ export function EventCard({ event }: Props) {
             <h3 className='mt-3 font-normal text-contrasttext text-lg'>
               {event.location}
             </h3>
-            <p className='mt-4 text-fadedtext text-sm font-medium'>
+            {/* <p className='mt-4 text-fadedtext text-sm font-medium'>
               500 Members
-            </p>
+            </p> */}
           </div>
 
           <div className='flex flex-col gap-4 items-center'>

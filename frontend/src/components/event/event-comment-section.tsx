@@ -34,8 +34,8 @@ export default function EventCommentSection({ eventId }: Props) {
   const queryClient = useQueryClient();
 
   function handleSubmit() {
-    if(!user){
-      toast.error('Please login to comment on events');
+    if (!user) {
+      toast.error("Please login to comment on events");
       setTypedComment("");
       return;
     }
@@ -78,35 +78,33 @@ export default function EventCommentSection({ eventId }: Props) {
 
   return (
     <>
-    <div className="border border-[#043A53] rounded-lg p-4 bg-white shadow-sm">
-      <div className="pb-3 flex items-center gap-2">
-      <Avatar className="h-10 w-10 border-2 border-gray-200">
-          <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
-          <AvatarFallback>
-            {makeUserAvatarSlug(user?.name ?? "")}
-          </AvatarFallback>
-        </Avatar>
-        <div>
-          <span className="text-black text-sm">{user?.name}</span>
+      <div className='border border-[#043A53] rounded-lg p-4 bg-white shadow-sm'>
+        <div className='pb-3 flex items-center gap-2'>
+          <Avatar className='h-10 w-10 border-2 border-gray-200'>
+            <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
+            <AvatarFallback>
+              {makeUserAvatarSlug(user?.name ?? "")}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <span className='text-black text-sm'>{user?.name}</span>
+          </div>
         </div>
-      </div>
-      <div className="flex gap-4 items-center">
-      
-
-        <div className="flex-1 flex flex-col gap-2">
-          <Input
-            placeholder="Write your comment..."
-            className="border border-[#043a5350] rounded-lg p-2 focus:outline-none "
-            value={typedComment}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-            onChange={(e) => setTypedComment(e.target.value)}
-          />
-          <div className="flex gap-2 items-center">
-            {/* <Button
+        <div className='flex gap-4 items-center'>
+          <div className='flex-1 flex flex-col gap-2'>
+            <Input
+              placeholder='Write your comment...'
+              className='border border-[#043a5350] rounded-lg p-2 focus:outline-none '
+              value={typedComment}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+              onChange={(e) => setTypedComment(e.target.value)}
+            />
+            <div className='flex gap-2 items-center'>
+              {/* <Button
               variant="ghost"
               className="text-sm font-bold text-gray-600 hover:bg-gray-100"
               onClick={() => setTypedComment((prev) => `**${prev}**`)}
@@ -121,43 +119,39 @@ export default function EventCommentSection({ eventId }: Props) {
               I
             </Button>
             */}
-            <Button
-              onClick={handleSubmit}
-              disabled={!typedComment.trim()}
-              className="ml-auto bg-buttoncol text-[#1F1F1F] hover:bg-buttoncol"
-            >
-              Comment
-            </Button>
+              <Button
+                onClick={handleSubmit}
+                disabled={!typedComment.trim()}
+                className='ml-auto bg-buttoncol text-[#1F1F1F] hover:bg-buttoncol'>
+                Comment
+              </Button>
+            </div>
           </div>
         </div>
       </div>
+      {!isLoading && (
+        <motion.div className='mt-10 flex flex-col  gap-6 '>
+          {data?.pages?.flatMap((page) =>
+            page?.comments?.map((comment: any, index: number) => (
+              <React.Fragment key={comment._id}>
+                <EventComment comment={comment} eventId={eventId} />
+              </React.Fragment>
+            ))
+          )}
 
-    </div>
-        {!isLoading && (
-          <motion.div className="mt-10 flex flex-col ">
-            {data?.pages?.flatMap((page) =>
-              page?.comments?.map((comment: any, index: number) => (
-                <React.Fragment key={comment._id}>
-                  <EventComment comment={comment} eventId={eventId} />
-                </React.Fragment>
-              ))
-            )}
-  
-            {hasNextPage && (
-              <div className="flex justify-start">
-                <Button
-                  className="text-blue-500 hover:bg-blue-50"
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetchingNextPage}
-                  variant="ghost"
-                >
-                  See More
-                </Button>
-              </div>
-            )}
-          </motion.div>
-        )}
+          {hasNextPage && (
+            <div className='flex justify-start'>
+              <Button
+                className='text-blue-500 hover:bg-blue-50'
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                variant='ghost'>
+                See More
+              </Button>
+            </div>
+          )}
+        </motion.div>
+      )}
     </>
-
   );
 }

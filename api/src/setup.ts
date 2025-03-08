@@ -4,6 +4,8 @@ import { logger } from "@rasla/logify";
 import { Elysia } from "elysia";
 import mongoose from "mongoose";
 import { baseRouter } from "./controllers";
+import { cron } from "@elysiajs/cron";
+import { EventModel } from "./models";
 
 const app = new Elysia();
 
@@ -25,6 +27,25 @@ try {
 app.use(
   logger({
     level: "info",
+  })
+);
+
+app.use(
+  cron({
+    name: "heartbeat",
+    pattern: "0 0 * * *",
+    async run() {
+      console.log("cron running")
+      const events = await EventModel.find({ isEventEnded: false });
+      for (let event of events) {
+        if (new Date() > new Date(event.date)) {
+          await EventModel.updateOne(
+            { _id: event._id },
+            { $set: { isEventEnded: true } }
+          );
+        }
+      }
+    },
   })
 );
 
