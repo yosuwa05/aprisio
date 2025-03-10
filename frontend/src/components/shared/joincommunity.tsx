@@ -445,6 +445,12 @@ const JoinCommunityForm = () => {
           *All fields are mandatory
         </p>
 
+        <p className="lg:col-span-1 text-[#043A53]">
+          * Our services are currently not available to the residents of the
+          European Union. By accessing our services, you confirm that you are
+          not a citizen of the European Union.
+        </p>
+
         {/* Terms & Conditions */}
         <div className="mt-10 lg:flex lg:col-span-2 md:justify-between ">
           <div className="flex flex-col gap-2">
