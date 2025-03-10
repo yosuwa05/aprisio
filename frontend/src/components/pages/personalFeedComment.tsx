@@ -7,6 +7,7 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "motion/react";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -32,7 +33,7 @@ export default function PersonalFeedComment({ comment, postId }: Props) {
   const queryClient = useQueryClient();
 
   const user = useGlobalAuthStore((state) => state.user);
-
+  const { userslug } = useParams();
   const { mutate: likeMutation, isPending: isLikePending } = useMutation({
     mutationFn: async (data: ICommentLike) => {
       return await _axios.post("/comment/like", data);
@@ -78,7 +79,7 @@ export default function PersonalFeedComment({ comment, postId }: Props) {
     },
   });
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (data: IComment) => {
       return await _axios.post("/comment", data);
     },
@@ -86,7 +87,25 @@ export default function PersonalFeedComment({ comment, postId }: Props) {
       if (!data.data.ok) return toast.error(data.data.message);
 
       toast.success("Comment added");
+      queryClient.invalidateQueries({
+        queryKey: ["personalfeed" + user?.id, userslug],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["comments", user?.id, postId],
+      });
+    },
+  });
 
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: async (id: string) => {
+      return await _axios.delete("/comment", {
+        data: {
+          commentId: id,
+        },
+      });
+    },
+    onSuccess(data) {
+      toast.success(data?.data?.message || "Comment deleted");
       queryClient.invalidateQueries({
         queryKey: ["comments", user?.id, postId],
       });
@@ -163,6 +182,18 @@ export default function PersonalFeedComment({ comment, postId }: Props) {
           />
           <p className='text-xs text-gray-500'>{"Reply"}</p>
         </div>
+        {user?.id === comment?.user?._id && (
+          <div
+            onClick={() => {
+              handleDelete(comment._id);
+            }}
+            className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer'>
+            <Icon
+              icon='material-symbols:delete-outline-rounded'
+              className='h-4 w-4 cursor-pointer text-gray-500'
+            />
+          </div>
+        )}
       </div>
 
       <div>

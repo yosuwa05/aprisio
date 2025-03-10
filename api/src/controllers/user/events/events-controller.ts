@@ -71,7 +71,7 @@ export const EventsController = new Elysia({
       try {
         const userId = (store as any)["id"];
 
-        const { eventDate, location, eventName, eventRules, groupSelected } =
+        const { eventDate, location, eventName, eventRules, groupSelected, eventType, eventTime } =
           body;
 
         const group = await GroupModel.findById(groupSelected);
@@ -100,6 +100,8 @@ export const EventsController = new Elysia({
           attendees: [],
           isEventEnded: false,
           managedBy: userId,
+          eventType: eventType,
+          eventTime: eventTime,
         });
 
         await newEvent.save();
@@ -122,6 +124,8 @@ export const EventsController = new Elysia({
         eventRules: t.Optional(t.String()),
         eventDate: t.Optional(t.String()),
         groupSelected: t.String(),
+        eventType: t.String(),
+        eventTime: t.String(),
       }),
       detail: {
         description: "Create an event",

@@ -5,8 +5,15 @@ type Rules = {
   subHeading: string;
 };
 
+enum EventType {
+  ONLINE = "online",
+  OFFLINE = "offline",
+}
+
 type IEvent = {
   eventName: string;
+  eventType: EventType;
+  eventTime: string;
   location: string;
   date: Date;
   managedBy: Types.ObjectId;
@@ -24,6 +31,13 @@ const EventSchema = new Schema<IEvent>(
   {
     eventName: { type: String, required: true },
     location: { type: String, required: true },
+    eventType: {
+      type: String,
+      enum: EventType,
+    },
+    eventTime: {
+      type: String,
+    },
     date: { type: Date, required: true },
     rules: [
       {
