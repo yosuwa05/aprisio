@@ -25,7 +25,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
       queryKey: ["group-events", user?.id, groupid, topic],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/subtopics/events?userId=${user?.id}&page=${pageParam}&limit=${limit}&topicId=${topic}`
+          `/subtopics/events?userId=${user?.id}&page=${pageParam}&limit=${limit}&topicId=${topic}`,
         );
         return res?.data;
       },
@@ -51,21 +51,21 @@ export function EventsSection({ groupid, gropuslug }: Props) {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className=''>
-      <div className='flex-col flex gap-4 px-2'>
+    <div className="">
+      <div className="flex-col flex gap-4 px-2">
         {isLoading ? (
-          <div className='flex flex-col gap-4'>
-            <div className='grid grid-cols-3 gap-4'>
-              <Skeleton className='w-full h-[100px]  min-w-[250px]'> </Skeleton>
-              <Skeleton className='w-full h-[100px]  min-w-[250px]'> </Skeleton>
-              <Skeleton className='w-full h-[100px]  min-w-[250px]'> </Skeleton>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-3 gap-4">
+              <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
+              <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
+              <Skeleton className="w-full h-[100px]  min-w-[250px]"> </Skeleton>
             </div>
 
-            <div className='grid grid-cols-4 gap-4 w-full'>
-              <Skeleton className='col-span-1 h-[100px]  min-w-[250px]'>
+            <div className="grid grid-cols-4 gap-4 w-full">
+              <Skeleton className="col-span-1 h-[100px]  min-w-[250px]">
                 {" "}
               </Skeleton>
-              <Skeleton className='col-span-3 h-[100px]  min-w-[250px]'>
+              <Skeleton className="col-span-3 h-[100px]  min-w-[250px]">
                 {" "}
               </Skeleton>
             </div>
@@ -76,19 +76,19 @@ export function EventsSection({ groupid, gropuslug }: Props) {
               return (
                 <EventCard key={index} event={event} gropuslug={gropuslug} />
               );
-            })
+            }),
           )
         ) : (
-          <div className='flex flex-col justify-center items-center gap-4'>
-            <p className='text-gray-500 text-xs font-semibold'>
+          <div className="flex flex-col justify-center items-center gap-4">
+            <p className="text-gray-500 text-xs font-semibold">
               No Events found
             </p>
           </div>
         )}
-        <div ref={ref} className='h-10'></div>
+        <div ref={ref} className="h-10"></div>
       </div>
       {isLoading || isFetchingNextPage ? (
-        <div className='flex justify-center items-center my-4'>
+        <div className="flex justify-center items-center my-4">
           <GlobalLoader />
         </div>
       ) : (

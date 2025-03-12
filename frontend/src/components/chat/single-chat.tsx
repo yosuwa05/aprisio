@@ -1,15 +1,12 @@
 import { Input } from "@/components/ui/input";
 import { _axios } from "@/lib/axios-instance";
-import { db } from "@/lib/firebase";
 import { useChatStore } from "@/stores/ChatStore";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import person from "@img/assets/person.png";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { ChevronLeft, Send, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
@@ -22,6 +19,11 @@ interface IMessage {
   timestamp: number;
 }
 
+const fetchFirestore = async () => {
+  const { db } = await import("@/lib/firebase");
+  return db;
+};
+
 export function SingleChat() {
   const updateChat = useChatStore((state) => state.setSelectedChat);
   const selectedChat = useChatStore((state) => state.selectedChat);
@@ -30,25 +32,32 @@ export function SingleChat() {
 
   const user = useGlobalAuthStore((state) => state.user);
 
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!selectedChat.userId || !user?.id) return;
 
-    const chatId = [selectedChat.userId, user.id].sort().join("_");
-    const messagesRef = collection(db, "chats", chatId, "messages");
-    const q = query(messagesRef, orderBy("timestamp", "asc"));
+    import("firebase/firestore").then(
+      ({ collection, onSnapshot, orderBy, query }) => {
+        import("@/lib/firebase").then(({ db }) => {
+          if (!db) return;
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const newMessages = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as IMessage[];
-      setMessages(newMessages);
-    });
+          const chatId = [selectedChat.userId, user.id].sort().join("_");
+          const messagesRef = collection(db, "chats", chatId, "messages");
+          const q = query(messagesRef, orderBy("timestamp", "asc"));
 
-    return () => unsubscribe();
+          const unsubscribe = onSnapshot(q, (snapshot) => {
+            const newMessages = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            })) as IMessage[];
+            setMessages(newMessages);
+          });
+
+          return () => unsubscribe();
+        });
+      }
+    );
   }, [selectedChat.userId, user?.id]);
 
   const { isPending, mutate } = useMutation({

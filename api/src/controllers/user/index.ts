@@ -22,6 +22,8 @@ import { EventsNoAuthController } from "./events/events-noauth-controller";
 import { formController } from "./form-controller";
 import { groupController } from "./group/group-controller";
 import { noAuthGroupController } from "./group/noauth-group-controller";
+import { notificationController } from "./notification/notification-controller";
+import { paymentController } from "./payment-controller";
 import { MyProfileController } from "./users/myprofile-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
@@ -45,6 +47,7 @@ export const userrouter = new Elysia({
   .use(personalController)
   .use(SearchController)
   .use(EventsNoAuthController)
+  .use(paymentController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 
@@ -80,6 +83,7 @@ export const userrouter = new Elysia({
       return { message: "Unauthorized" };
     }
   })
+  .use(notificationController)
   .use(chatController)
   .use(personalAuthController)
   .use(validatorController)

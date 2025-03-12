@@ -1,7 +1,6 @@
 "use client";
 
 import { TopCommunityBar } from "@/components/community/top-community-bar";
-import PersonalFeed from "@/components/pages/personalfeed";
 import Hero1 from "@/components/shared/hero1";
 import Topbar from "@/components/shared/topbar";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
@@ -37,27 +36,26 @@ export default function Home() {
         {user && <TopCommunityBar />}
       </div>
       <ToastContainer />
-        <div>
-          <section id="home">
-            <Hero1 />
-          </section>
-          <FAQ1 />
-          <FAQ2 />
-          <div id="about">
-            <About />
-          </div>
-          <div id="events">
-            <Events />
-          </div>
-          <Testimonial />
-          {/* <div id="join">
+      <div>
+        <section id="home">
+          <Hero1 />
+        </section>
+        <FAQ1 />
+        <FAQ2 />
+        <div id="about">
+          <About />
+        </div>
+        <div id="events">
+          <Events />
+        </div>
+        <Testimonial />
+        {/* <div id="join">
             <Join />
           </div> */}
-          <div id="footer">
-            <Footer />
-          </div>
+        <div id="footer">
+          <Footer />
         </div>
-
+      </div>
     </>
   );
 }

@@ -40,6 +40,24 @@ export default function LoginForm({}) {
 
   const router = useRouter();
 
+  const { mutate: updateFCMToken } = useMutation({
+    mutationFn: async (fcmToken: string) => {
+      const res = await _axios.post("/myprofile/updateFcm", { fcmToken });
+      return res;
+    },
+    onSuccess(data) {
+      if (
+        data &&
+        data.data.ok &&
+        data?.data?.message == "FCM token updated successfully"
+      ) {
+        toast("FCM token updated successfully");
+      } else {
+        toast.error("Failed to update FCM token");
+      }
+    },
+  });
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       const res = await _axios.post("/auth/login", values);
@@ -55,6 +73,16 @@ export default function LoginForm({}) {
 
         const globalState = useGlobalAuthStore.getState();
         globalState.setUser(data.data.user);
+
+        if (typeof window !== "undefined") {
+          import("@/lib/firebase").then(({ requestForToken }) => {
+            requestForToken().then((token) => {
+              if (token) {
+                updateFCMToken(token);
+              }
+            });
+          });
+        }
 
         router.push("/feed/");
       } else {

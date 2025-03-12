@@ -439,15 +439,15 @@ const JoinCommunityForm = () => {
           )}
         </div>
 
-        <p className='lg:col-span-2 text-[#043A53]'>
-          *All fields are mandatory
-        </p>
+        <div className='lg:col-span-2 text-[#043A53] flex gap-2 flex-col'>
+          <div>*All fields are mandatory</div>
 
-        <p className='lg:col-span-1 text-[#043A53]'>
-          * Our services are currently not available to the residents of the
-          European Union. By accessing our services, you confirm that you are
-          not a citizen of the European Union.
-        </p>
+          <div className='lg:col-span-2 text-[#043A53] md:w-[80%]'>
+            * Our services are currently not available to the residents of the
+            European Union. By accessing our services, you confirm that you are
+            not a citizen of the European Union.
+          </div>
+        </div>
 
         {/* Terms & Conditions */}
         <div className='mt-10 lg:flex lg:col-span-2 md:justify-between '>

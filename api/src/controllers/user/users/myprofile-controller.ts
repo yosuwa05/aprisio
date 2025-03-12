@@ -8,6 +8,7 @@ import {
 } from "@/models";
 import { GroupModel } from "@/models/group.model";
 import { UserGroupsModel } from "@/models/usergroup.model";
+import { StoreType } from "@/types";
 import { Elysia, t } from "elysia";
 import { Types } from "mongoose";
 
@@ -17,6 +18,44 @@ export const MyProfileController = new Elysia({
     tags: ["Client - Users - My Profile"],
   },
 })
+  .post(
+    "/updateFcm",
+    async ({ body, store }) => {
+      const { fcmToken } = body;
+
+      const userId = (store as StoreType)?.id;
+
+      try {
+        const user = await UserModel.findById(userId);
+
+        if (!user) {
+          return {
+            message: "User not found",
+            ok: false,
+          };
+        }
+
+        user.fcmToken = fcmToken;
+        await user.save();
+
+        return {
+          message: "FCM token updated successfully",
+          ok: true,
+        };
+      } catch (error) {
+        console.error(error);
+        return {
+          message: "Failed to update FCM token",
+          ok: false,
+        };
+      }
+    },
+    {
+      body: t.Object({
+        fcmToken: t.String(),
+      }),
+    },
+  )
   .get(
     "/commented-posts",
     async ({ query, set }) => {
@@ -216,7 +255,7 @@ export const MyProfileController = new Elysia({
       } catch (error: any) {
         console.error(
           "Error fetching commented posts:",
-          error.message || error
+          error.message || error,
         );
 
         set.status = 500;
@@ -236,7 +275,7 @@ export const MyProfileController = new Elysia({
         description: "Get posts the user has commented on",
         summary: "Fetch user commented posts",
       },
-    }
+    },
   )
   .get(
     "/favourite-posts",
@@ -446,7 +485,7 @@ export const MyProfileController = new Elysia({
       } catch (error: any) {
         console.error(
           "Error fetching commented posts:",
-          error.message || error
+          error.message || error,
         );
 
         set.status = 500;
@@ -466,7 +505,7 @@ export const MyProfileController = new Elysia({
         description: "Get posts the user has Likes on",
         summary: "Fetch user Liked posts",
       },
-    }
+    },
   )
   .get(
     "/created-posts",
@@ -662,7 +701,7 @@ export const MyProfileController = new Elysia({
         description: "Get posts created by the user",
         summary: "Fetch user created posts",
       },
-    }
+    },
   )
   .get(
     "/organised-events",
@@ -705,7 +744,7 @@ export const MyProfileController = new Elysia({
         limit: t.Optional(t.String()),
         userId: t.String(),
       }),
-    }
+    },
   )
   .get(
     "/participated-events",
@@ -752,7 +791,7 @@ export const MyProfileController = new Elysia({
         limit: t.Optional(t.String()),
         userId: t.String(),
       }),
-    }
+    },
   )
   .get(
     "/created-groups",
@@ -795,7 +834,7 @@ export const MyProfileController = new Elysia({
         limit: t.Optional(t.String()),
         userId: t.String(),
       }),
-    }
+    },
   )
   .get(
     "/joined-groups",
@@ -843,7 +882,7 @@ export const MyProfileController = new Elysia({
         limit: t.Optional(t.String()),
         userId: t.String(),
       }),
-    }
+    },
   )
   .put(
     "/edit-profile",
@@ -912,5 +951,5 @@ export const MyProfileController = new Elysia({
         email: t.String(),
         image: t.Optional(t.File()),
       }),
-    }
+    },
   );

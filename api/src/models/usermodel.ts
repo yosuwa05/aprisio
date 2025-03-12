@@ -11,6 +11,7 @@ interface User {
   emailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
+  fcmToken: string;
   emailVerificationToken: string | null;
   emailVerificationTokenExpiry: Date | null;
   passwordResetToken: string | null;
@@ -30,6 +31,10 @@ const UserSchema = new Schema<User>(
     emailVerified: {
       type: Boolean,
       default: false,
+    },
+    fcmToken: {
+      type: String,
+      default: "",
     },
     address: {
       type: String,
@@ -61,7 +66,7 @@ const UserSchema = new Schema<User>(
       match: [/\S+@\S+\.\S+/, "Please enter a valid email address"],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 UserSchema.pre("save", async function (next) {
