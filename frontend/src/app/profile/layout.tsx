@@ -26,7 +26,7 @@ import { BASE_URL } from "@/lib/config";
 import { makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -42,7 +42,7 @@ export default function MyProfile({
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const setActiveTab = useGlobalLayoutStore(
-    (state) => state.setActiveMyProfileTab,
+    (state) => state.setActiveMyProfileTab
   );
   const { data, isLoading } = useQuery({
     queryKey: ["user personal"],
@@ -86,7 +86,6 @@ export default function MyProfile({
         <Topbar />
         <MyProfileTopBar />
       </div>
-      {children}
 
       <div className="mt-2   container flex flex-wrap  mx-auto">
         <div className="lg:max-w-[350px] w-full">
@@ -226,9 +225,6 @@ export default function MyProfile({
         onClick={() => isChatOpen(true)}
         className="fixed bottom-10 right-10 z-[60] block  bxl:hidden"
       >
-        {/* <Button className='bg-white   duration-500 border-2 border-blue-600 fixed  w-12 transform hover:-translate-y-3   h-12 text-2xl rounded-full hover:bg-blue-600 hover:text-white text-blue-600 '>
-          <Icon icon={"hugeicons:bubble-chat"} />
-        </Button> */}
         <Button className="bg-white border-2 border-blue-600 w-12 h-12 text-2xl rounded-full hover:-translate-y-3  hover:bg-blue-600 hover:text-white text-blue-600 transition-all duration-500">
           <Icon icon={"hugeicons:bubble-chat"} />
         </Button>

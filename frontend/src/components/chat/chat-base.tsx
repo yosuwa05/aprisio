@@ -1,5 +1,3 @@
-"use client";
-
 import { ChatContact } from "./chat-contacts";
 
 export function ChatBase() {

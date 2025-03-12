@@ -27,7 +27,7 @@ try {
 app.use(
   logger({
     level: "info",
-  }),
+  })
 );
 
 app.use(
@@ -41,13 +41,21 @@ app.use(
         if (new Date() > new Date(event.date)) {
           await EventModel.updateOne(
             { _id: event._id },
-            { $set: { isEventEnded: true } },
+            { $set: { isEventEnded: true } }
           );
         }
       }
     },
-  }),
+  })
 );
+
+// let res = await sendNotification(
+//   "dzImjSr_jftAg4qEWaLDrN:APA91bEUvHZpNmxLVOIMtxhY52eJ7iXsvGwu_l2djMTUy4jWwuzIOeawdnU8S5Q1KBABnI7EtfxEKkNBqfS42ERVF-B7K_CdJaUFHyLUOjkVp4DGoOSeKLQ",
+//   "brooo",
+//   "brooo"
+// );
+
+// console.log(res);
 
 app.use(
   swagger({
@@ -74,7 +82,7 @@ app.use(
         },
       },
     },
-  }),
+  })
 );
 
 app.onError(({ code, error }) => {
