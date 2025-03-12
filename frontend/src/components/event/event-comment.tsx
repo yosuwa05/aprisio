@@ -96,6 +96,22 @@ export default function EventComment({ comment, eventId }: Props) {
     },
   });
 
+  const { mutate: handleDelete } = useMutation({
+    mutationFn: async (id: string) => {
+      return await _axios.delete("/event-comment", {
+        data: {
+          commentId: id,
+        },
+      });
+    },
+    onSuccess(data) {
+      toast.success(data?.data?.message || "Comment deleted");
+      queryClient.invalidateQueries({
+        queryKey: ["event-comments", user?.id, eventId],
+      });
+    },
+  });
+
   function handleReplySubmit(commentID: string) {
     mutate({ content: repliedContent, eventId, parentCommentId: commentID });
     setRepliedContent("");
@@ -166,6 +182,18 @@ export default function EventComment({ comment, eventId }: Props) {
           />
           <p className='text-xs text-gray-500'>{"Reply"}</p>
         </div>
+        {user?.id === comment?.user?._id && (
+          <div
+            onClick={() => {
+              handleDelete(comment._id);
+            }}
+            className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 hover:border-[1px] border-[1px] border-transparent hover:border-gray-200 cursor-pointer'>
+            <Icon
+              icon='material-symbols:delete-outline-rounded'
+              className='h-4 w-4 cursor-pointer text-gray-500'
+            />
+          </div>
+        )}
       </div>
 
       <div>

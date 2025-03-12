@@ -58,11 +58,11 @@ export const EventsCommentNoAuthController = new Elysia({
         {
           $project: {
             _id: 1,
-            user: { name: 1, image: 1 },
+            user: { name: 1, image: 1, _id: 1 },
             content: 1,
             parentComment: {
               _id: 1,
-              user: { name: 1, image: 1 },
+              user: { name: 1, image: 1, _id: 1 },
               content: 1,
               likesCount: 1,
               likedBy: 1,

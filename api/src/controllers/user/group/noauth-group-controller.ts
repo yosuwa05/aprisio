@@ -283,6 +283,19 @@ export const noAuthGroupController = new Elysia({
 
         const { userId, groupid } = query;
 
+        const group = await GroupModel.findOne({ _id: groupid });
+
+        if (!group) {
+          return {
+            ok: false,
+            message: "Group not found",
+          };
+        }
+        const isMember = await UserGroupsModel.findOne({
+          group: group._id,
+          userId,
+        });
+
         const events = await EventModel.find({ group: groupid })
           .sort({ createdAt: -1, _id: -1 })
           .skip((page - 1) * limit)
@@ -294,13 +307,14 @@ export const noAuthGroupController = new Elysia({
           ...event,
           attending: userId
             ? event.attendees?.some(
-                (attendee) => attendee.toString() === userId
-              )
+              (attendee) => attendee.toString() === userId
+            )
             : false,
         }));
 
         return {
           events: tempEvents,
+          canJoin: !isMember,
           ok: true,
         };
       } catch (error) {

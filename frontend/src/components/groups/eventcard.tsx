@@ -103,7 +103,7 @@ export function EventCard({ event }: Props) {
           </p>
 
           <Button
-            disabled={isPending || event.attending}
+            disabled={isPending || event.isEventEnded || event.attending}
             className={`
            bg-[#FCF7EA] hover:bg-[#FCF7EA] border-[#AF965447] rounded-3xl border-[0.2px]  text-black`}
             onClick={() => {
@@ -132,7 +132,9 @@ export function EventCard({ event }: Props) {
                 eventId: event._id,
               });
             }}>
-            {event.managedBy === user?.id
+            {event.isEventEnded
+              ? "Event Ended"
+              : event.managedBy === user?.id
               ? "Edit Event"
               : !event.attending
               ? "Attend Event"

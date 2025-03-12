@@ -2,12 +2,19 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import { useIntersection } from "@mantine/hooks";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import GlobalLoader from "../globalloader";
 import { Skeleton } from "../ui/skeleton";
 import { EventCard } from "./eventcard";
+import { toast } from "sonner";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
+import { Button } from "../ui/button";
 
 type Props = {
   groupid: string;
@@ -18,22 +25,55 @@ export function EventsSection({ groupid, gropuslug }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
   const limit = 10;
+  const updateActiveGroup = useGlobalFeedStore((state) => state.setActiveGroup);
+  const updateActiveGroupId = useGlobalFeedStore(
+    (state) => state.setActiveGroupId
+  );
+  const queryClient = useQueryClient();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch,
+  } = useInfiniteQuery({
+    queryKey: ["group-events", user?.id, groupid],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await _axios.get(
+        `/noauth/group/events?groupid=${groupid}&userId=${user?.id}&page=${pageParam}&limit=${limit}`
+      );
+      return res?.data;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = allPages?.length + 1;
+      return lastPage?.events?.length === limit ? nextPage : undefined;
+    },
+  });
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["group-events", user?.id, groupid],
-      queryFn: async ({ pageParam = 1 }) => {
-        const res = await _axios.get(
-          `/noauth/group/events?groupid=${groupid}&userId=${user?.id}&page=${pageParam}&limit=${limit}`
-        );
-        return res?.data;
-      },
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = allPages?.length + 1;
-        return lastPage?.events?.length === limit ? nextPage : undefined;
-      },
-    });
+  console.log(data);
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (groupid: any) => {
+      return await _axios.post("/group/join", {
+        groupId: groupid,
+      });
+    },
+
+    onSuccess: (data) => {
+      if (data.data.ok) {
+        toast(data.data.message || "Joined group successfully");
+        // queryClient.invalidateQueries({
+        //   queryKey: ["groups" + user?.id, topic],
+        // });
+        refetch();
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response.data.message);
+    },
+  });
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref, entry } = useIntersection({
@@ -51,14 +91,31 @@ export function EventsSection({ groupid, gropuslug }: Props) {
 
   return (
     <div className='my-4'>
-      <div
-        className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2'
-        onClick={() => {
-          router.push(`/feed/create-event/`);
-        }}>
-        <Icon icon='tabler:plus' fontSize={22} />
-        <h3 className='font-semibold text-sm'>Create Event</h3>
-      </div>
+      {data?.pages?.[0]?.canJoin ? (
+        <Button
+          disabled={isPending}
+          variant={"ghost"}
+          className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
+          onClick={() => {
+            if (!user) return toast.error("Login to continue");
+            mutate(groupid);
+          }}>
+          <Icon icon='tabler:plus' fontSize={22} />
+          <h3 className='font-semibold text-sm'>Join Group</h3>
+        </Button>
+      ) : (
+        <div
+          className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2'
+          onClick={() => {
+            if (!user) return toast.error("Login to continue");
+            updateActiveGroup(typeof gropuslug === "string" ? gropuslug : "");
+            updateActiveGroupId(typeof groupid === "string" ? groupid : "");
+            router.push(`/feed/create-event/`);
+          }}>
+          <Icon icon='tabler:plus' fontSize={22} />
+          <h3 className='font-semibold text-sm'>Create Event</h3>
+        </div>
+      )}
 
       <div className='mt-6 flex-col flex gap-4'>
         {isLoading ? (

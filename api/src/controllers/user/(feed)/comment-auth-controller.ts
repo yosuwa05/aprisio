@@ -133,7 +133,7 @@ export const commentsController = new Elysia({
       }
 
       const childComments = await CommentModel.find({ parentComment: commentId });
-      console.log(childComments)
+
       if (childComments.length > 0) {
         await CommentModel.deleteMany({ parentComment: commentId });
       }
@@ -141,7 +141,7 @@ export const commentsController = new Elysia({
       await CommentModel.findByIdAndDelete(commentId);
 
       set.status = 200;
-      return { message: "Comment and its replies deleted successfully" };
+      return { message: "Comment deleted" };
     } catch (error: any) {
       console.error(error);
       set.status = 500;

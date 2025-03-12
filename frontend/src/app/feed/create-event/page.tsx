@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Icon } from "@iconify/react";
 import chevronleft from "@img/icons/chevron-left.svg";
@@ -25,10 +26,19 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const postSchema = z.object({
   location: z.string(),
   eventName: z.string(),
+  eventType: z.enum(["online", "offline"]),
+  eventTime: z.string(),
   eventRules: z.object({
     total: z.number(),
     events: z.array(
@@ -43,13 +53,14 @@ const postSchema = z.object({
 export default function NewEvent() {
   const [subTopicSearch, setSubTopicSearch] = useState("");
   const [subTopicOpen, setSubTopicOpen] = useState(false);
-  const [selectedGroupId, setSelectedSubTopic] = useState({
+  const [selectedGroupId, setSelectedSubTopic] = useState<any>({
     _id: "",
     slug: "",
   });
 
   const [date, setDate] = useState<Date>();
-
+  const activeGroup = useGlobalFeedStore((state) => state.activeGroup);
+  const activeGroupId = useGlobalFeedStore((state) => state.activeGroupId);
   const [debouncedSubTopicSearch] = useDebouncedValue(subTopicSearch, 400);
 
   const {
@@ -59,12 +70,15 @@ export default function NewEvent() {
     setValue,
     control,
     watch,
+    trigger,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(postSchema),
     defaultValues: {
       location: "",
       eventName: "",
+      eventType: "online",
+      eventTime: "",
       eventRules: {
         total: 1,
         events: [
@@ -81,7 +95,9 @@ export default function NewEvent() {
 
   const router = useRouter();
   const queryClient = useQueryClient();
-
+  useEffect(() => {
+    setSelectedSubTopic({ _id: activeGroupId, slug: activeGroup });
+  }, [activeGroup, activeGroupId]);
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
       return await _axios.post("/events/create", data);
@@ -111,6 +127,8 @@ export default function NewEvent() {
     formData.append("eventName", data.eventName);
     formData.append("location", data.location);
     formData.append("eventRules", JSON.stringify(data.eventRules));
+    formData.append("eventType", data.eventType);
+    formData.append("eventTime", data.eventTime);
     if (date) formData.append("eventDate", date.toISOString());
     formData.append("groupSelected", selectedGroupId._id);
 
@@ -118,10 +136,10 @@ export default function NewEvent() {
   };
 
   const { data, isLoading: isSubTopicsLoading } = useQuery({
-    queryKey: ["groups for dropdown", debouncedSubTopicSearch],
+    queryKey: ["groups for dropdown", debouncedSubTopicSearch, user?.id],
     queryFn: async () => {
       const res = await _axios.get(
-        `/noauth/group/dropdown?limit=7&q=${debouncedSubTopicSearch}`
+        `/noauth/group/dropdown?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
       );
       return res.data;
     },
@@ -233,6 +251,35 @@ export default function NewEvent() {
                   className='h-16 rounded-2xl text-fadedtext text-lg'
                   {...register("location")}
                 />
+              </div>
+            </div>
+            <div className='grid grid-cols-2 gap-4'>
+              <div>
+                <Label htmlFor='Time'></Label>
+                <Input
+                  placeholder='Location'
+                  id='location'
+                  type='time'
+                  className='h-16 rounded-2xl text-fadedtext text-lg'
+                  {...register("eventTime")}
+                />
+              </div>
+              <div>
+                <Label htmlFor='location'></Label>
+                <Select
+                  value={watch("eventType")}
+                  onValueChange={(value) => {
+                    setValue("eventType", value);
+                    trigger("eventType");
+                  }}>
+                  <SelectTrigger className='h-16 rounded-2xl text-fadedtext text-lg'>
+                    <SelectValue placeholder='Event Type' />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value='online'>Online</SelectItem>
+                    <SelectItem value='offline'>Offline</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

@@ -8,6 +8,7 @@ import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { makeUserAvatarSlug } from "@/lib/utils";
 import { useChatStore } from "@/stores/ChatStore";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import chevronleft from "@img/icons/chevron-left.svg";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +23,7 @@ export default function PersonalProfile({
   children: React.ReactNode;
 }>) {
   const { userslug } = useParams();
-
+  const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
 
   const updateChat = useChatStore((state) => state.setSelectedChat);
@@ -83,28 +84,31 @@ export default function PersonalProfile({
                 <h1 className='font-semibold text-xl  md:text-2xl text-textcol capitalize text-center text-wrap whitespace-pre-wrap overflow-hidden overflow-ellipsis max-w-[250px]'>
                   {data?.user?.name}
                 </h1>
-                <div className='flex gap-2 items-center text-sm text-fadedtext'>
-                  <Icon icon='ic:outline-email' />
-                  <p>{data?.user.email}</p>
-                </div>
-
-                <div className='flex gap-2 items-center text-sm text-fadedtext'>
-                  <Button
-                    size={"sm"}
-                    variant={"secondary"}
-                    className='text-sm bg-gray-300 hover:bg-gray-300'
-                    onClick={() => {
-                      router.push("/profile");
-                      updateChat({
-                        name: data?.user?.name,
-                        userId: data?.user._id,
-                        selected: true,
-                      });
-                    }}>
-                    <MessageCircle size={32} />
-                    Chat
-                  </Button>
-                </div>
+                {user && (
+                  <>
+                    <div className='flex gap-2 items-center text-sm text-fadedtext'>
+                      <Icon icon='ic:outline-email' />
+                      <p>{data?.user.email}</p>
+                    </div>
+                    <div className='flex gap-2 items-center text-sm text-fadedtext'>
+                      <Button
+                        size={"sm"}
+                        variant={"secondary"}
+                        className='text-sm bg-gray-300 hover:bg-gray-300'
+                        onClick={() => {
+                          router.push("/profile");
+                          updateChat({
+                            name: data?.user?.name,
+                            userId: data?.user._id,
+                            selected: true,
+                          });
+                        }}>
+                        <MessageCircle size={32} />
+                        Chat
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
 
               <div className='mt-4 flex gap-10 items-center justify-center'>

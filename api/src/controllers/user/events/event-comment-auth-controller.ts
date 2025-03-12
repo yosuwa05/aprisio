@@ -118,4 +118,44 @@ export const EventscommentsController = new Elysia({
         summary: "Like or unlike Event  comment",
       },
     }
-  );
+  )
+  .delete("/", async ({ body, set, store }) => {
+    try {
+      const { commentId } = body;
+
+      const comment = await EventCommentModel.findById(commentId);
+
+      if (!comment) {
+        set.status = 400;
+        return { message: "Comment not found" };
+      }
+
+      if (comment.user.toString() !== (store as StoreType)["id"]) {
+        set.status = 403;
+        return { message: "You are not authorized to delete this comment" };
+      }
+
+      const childComments = await EventCommentModel.find({ parentComment: commentId });
+
+      if (childComments.length > 0) {
+        await EventCommentModel.deleteMany({ parentComment: commentId });
+      }
+
+      await EventCommentModel.findByIdAndDelete(commentId);
+
+      set.status = 200;
+      return { message: "Comment deleted" };
+    } catch (error: any) {
+      console.error(error);
+      set.status = 500;
+      return { message: "Internal server error" };
+    }
+  }, {
+    body: t.Object({
+      commentId: t.String(),
+    }),
+    detail: {
+      description: "Delete a comment",
+      summary: "Delete a comment",
+    },
+  });

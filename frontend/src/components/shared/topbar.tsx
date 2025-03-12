@@ -28,6 +28,7 @@ import {
 } from "../ui/sheet";
 import { SearchBar } from "./searchbar";
 import { UserAvatar } from "./useravatar";
+import { toast } from "sonner";
 
 export default function Topbar() {
   const router = useRouter();
@@ -82,6 +83,8 @@ export default function Topbar() {
     joinedEvents: true,
     topicsFollowed: true,
   });
+
+  console.log(data);
 
   const toggleSection = (section: string) => {
     setOpenSections((prev: any) => ({
@@ -425,6 +428,16 @@ export default function Topbar() {
             <Button
               className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
               onClick={() => {
+                if (activeLayout != "group") {
+                  if (
+                    !data?.data?.TopicsFollowed ||
+                    data.data.TopicsFollowed.length === 0
+                  ) {
+                    return toast.error(
+                      "You must join the community to create a post"
+                    );
+                  }
+                }
                 router.push(
                   activeLayout == "group"
                     ? "/feed/create-group/new"
