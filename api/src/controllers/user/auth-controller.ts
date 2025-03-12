@@ -43,7 +43,7 @@ export const authController = new Elysia({
 
         if (!user.emailVerified) {
           const resendThreshold = new Date(
-            expiryDate.getTime() - 12 * 60 * 60 * 1000
+            expiryDate.getTime() - 12 * 60 * 60 * 1000,
           );
 
           if (
@@ -166,7 +166,7 @@ export const authController = new Elysia({
       detail: {
         summary: "Login as a user",
       },
-    }
+    },
   )
   .post(
     "/logout",
@@ -199,7 +199,7 @@ export const authController = new Elysia({
       detail: {
         summary: "Logout a user",
       },
-    }
+    },
   )
   .post(
     "/reset-password",
@@ -285,7 +285,7 @@ export const authController = new Elysia({
       body: t.Object({
         email: t.String(),
       }),
-    }
+    },
   )
   .post(
     "/confirm-reset-password",
@@ -323,5 +323,5 @@ export const authController = new Elysia({
         token: t.String(),
         password: t.String(),
       }),
-    }
+    },
   );

@@ -3,24 +3,49 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { getQueryClient } from "./get-query-client";
+import { _axios } from "./lib/axios-instance";
 import { useGlobalAuthStore } from "./stores/GlobalAuthStore";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
+  const user = useGlobalAuthStore((state) => state.user);
+
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const userData = JSON.parse(user);
-      useGlobalAuthStore.getState().setUser(userData);
-      queryClient.setQueryData(["user"], userData);
+    if (typeof window !== "undefined") {
+      import("@/lib/firebase").then(
+        ({ onMessageListener, requestForToken }) => {
+          if (user) {
+            requestForToken().then(async (token) => {
+              if (token) {
+                await _axios.post("/myprofile/updateFcm", { fcmToken: token });
+              }
+            });
+          }
+
+          onMessageListener().then((payload: any) => {
+            console.log("Message received:", payload);
+
+            if (Navigator) {
+              navigator.serviceWorker.ready.then((registration) => {
+                registration.showNotification(payload.data.title, {
+                  body: payload.data.message,
+                  icon: "/logo.png",
+                });
+              });
+            } else {
+              console.log("Notification not supported");
+            }
+          });
+        },
+      );
     }
-  }, [queryClient]);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <Toaster position='top-center' />
+      <Toaster position="top-center" />
     </QueryClientProvider>
   );
 }

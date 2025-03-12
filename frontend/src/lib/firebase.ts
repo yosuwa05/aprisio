@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA32YAG8c3mIlhUcLUtIYJ6dvNTAZ1l9mE",
@@ -13,5 +14,37 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const messaging = getMessaging(app);
 
-export { db };
+export const requestForToken = async () => {
+  try {
+    const registration = await navigator.serviceWorker.register(
+      "/firebase-messaging-sw.js",
+    );
+    console.log("Service Worker Registered:", registration);
+
+    const currentToken = await getToken(messaging, {
+      vapidKey:
+        "BL4b-mn9seLIs3_5jUdDbB5uvu101KGJUZ1I_Wr73dLXv_JVKUZjPZABtVWd4lOZg8F5yIulFMsm7JhX_mIKKyY",
+      serviceWorkerRegistration: registration,
+    });
+
+    if (currentToken) {
+      return currentToken;
+    } else {
+      console.warn("No registration token available.");
+    }
+    return "";
+  } catch (error) {
+    console.error("Error getting token", error);
+  }
+};
+
+export const onMessageListener = () =>
+  new Promise((resolve) => {
+    onMessage(messaging, (payload) => {
+      resolve(payload);
+    });
+  });
+
+export { db, messaging };
