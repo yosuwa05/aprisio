@@ -84,8 +84,6 @@ export default function Topbar() {
     topicsFollowed: true,
   });
 
-  console.log(data);
-
   const toggleSection = (section: string) => {
     setOpenSections((prev: any) => ({
       ...prev,

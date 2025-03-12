@@ -137,8 +137,7 @@ export default function NewEvent() {
     if (date) formData.append("eventDate", date.toISOString());
     formData.append("groupSelected", selectedGroupId._id);
     formData.append("eventId", currentEvent.eventId);
-    console.log(data);
-    console.log(selectedGroupId._id);
+
     mutate(formData);
   };
 

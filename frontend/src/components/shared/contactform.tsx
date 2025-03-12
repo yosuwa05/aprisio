@@ -41,7 +41,6 @@ export default function ContactForm() {
         email: "test",
       }),
     onSuccess: (data) => {
-      console.log("success", data);
       toast.success("Message sent successfully!");
       reset();
     },
@@ -64,65 +63,64 @@ export default function ContactForm() {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-5"
-      >
-        <div className="relative">
+        className='grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-5'>
+        <div className='relative'>
           <Image
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
             src={user}
-            alt=""
+            alt=''
           />
           <input
             {...register("name")}
-            type="text"
-            placeholder="Name"
+            type='text'
+            placeholder='Name'
             className={`w-full lg:text-xl text-sm lg:pl-20 pl-10 pr-3 py-2 lg:h-20 h-[60px] border ${
               errors.name ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 `}
           />
           {errors?.name && (
-            <p className="text-red-500 absolute mt-1">
+            <p className='text-red-500 absolute mt-1'>
               {errors.name.message?.toString()}
             </p>
           )}
         </div>
-        <div className="relative">
+        <div className='relative'>
           <Image
             src={mail}
-            alt="Email"
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            alt='Email'
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
           />
           <input
             {...register("email")}
-            type="email"
-            placeholder="Email"
+            type='email'
+            placeholder='Email'
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.email ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
           />
           {errors?.email && (
-            <p className="absolute text-red-500">
+            <p className='absolute text-red-500'>
               {errors.email.message?.toString()}
             </p>
           )}
         </div>
 
-        <div className="relative col-span-2">
+        <div className='relative col-span-2'>
           <Image
             src={desc}
-            alt="Description"
-            className="absolute lg:left-[3%] left-2  top-[40px] transform -translate-y-1/2 w-7 h-7"
+            alt='Description'
+            className='absolute lg:left-[3%] left-2  top-[40px] transform -translate-y-1/2 w-7 h-7'
           />
           <textarea
             {...register("message")}
             rows={5}
-            placeholder="Type your message here"
+            placeholder='Type your message here'
             className={`w-full lg:text-xl text-base py-6 lg:pl-20 pl-10  pr-3 lg:h-20  border max-h-[250px] min-h-[250px] ${
               errors.message ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
           />
           {errors?.message && (
-            <p className="absolute text-red-500">
+            <p className='absolute text-red-500'>
               {errors.message.message?.toString()}
             </p>
           )}
@@ -130,26 +128,25 @@ export default function ContactForm() {
 
         <div></div>
 
-        <div className="flex group lg:justify-end  justify-center py-10 lg:py-0">
+        <div className='flex group lg:justify-end  justify-center py-10 lg:py-0'>
           <button
-            type="submit"
+            type='submit'
             className={`bg-[#043A53] text-xl ${
               isPending
                 ? "cursor-not-allowed"
                 : "group-hover:bg-[#e0a93a] hover:scale-110 transition-all duration-300"
-            } text-white font-mulish font-bold py-4 px-7 rounded-full  transition duration-300`}
-          >
+            } text-white font-mulish font-bold py-4 px-7 rounded-full  transition duration-300`}>
             {isPending ? (
               <>
-                <span className="flex gap-5 items-center ">
-                  Submiting <ImSpinner2 className="animate-spin " size={20} />
+                <span className='flex gap-5 items-center '>
+                  Submiting <ImSpinner2 className='animate-spin ' size={20} />
                 </span>
               </>
             ) : (
               <>
-                <span className="flex gap-5 items-center ">
+                <span className='flex gap-5 items-center '>
                   Submit{" "}
-                  <span className="text-white bg-[#1249628C] group-hover:bg-black/10 p-2 rounded-full">
+                  <span className='text-white bg-[#1249628C] group-hover:bg-black/10 p-2 rounded-full'>
                     <RiArrowRightLine />
                   </span>
                 </span>

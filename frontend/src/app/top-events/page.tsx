@@ -54,8 +54,6 @@ export default function Events() {
     });
   }
 
-  console.log(data);
-
   return (
     <section className='bg-white relative'>
       <div className='absolute top-[0.9%] left-[1.3%] lg:top-[6%] lg:left-[2.5%] -z-2'>

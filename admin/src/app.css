@@ -63,3 +63,15 @@
 body {
 	font-family: 'Ubuntu', sans-serif !important;
 }
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
+}
+input[type="datetime-local"] {
+	color-scheme: light;
+  }
+  

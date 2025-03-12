@@ -41,7 +41,6 @@ export const MyProfileCreatedGroups = () => {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
-  console.log(data);
 
   return (
     <div className='flex flex-col gap-6 items-center p-1 lg:p-4'>

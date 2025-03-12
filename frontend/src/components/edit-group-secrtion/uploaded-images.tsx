@@ -55,7 +55,6 @@ export function UploadedImages({ groupid }: Props) {
       return await _axios.delete(`/group/group-image?imageId=${imageId}`);
     },
     onSuccess(data) {
-      console.log(data);
       toast(data.data.message || "Image Deleted successfully");
       refetch();
       setOpen(false);

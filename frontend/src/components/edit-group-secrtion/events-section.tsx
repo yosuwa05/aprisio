@@ -9,8 +9,6 @@ type Props = {
 };
 
 export function GroupEventSection({ groupId }: Props) {
-  console.log(groupId, "sdd");
-
   return (
     <div className='px-4 pb-5'>
       <h1 className='text-xl font-semibold  text-textcol   px-4 pb-3 xl:text-2xl'>

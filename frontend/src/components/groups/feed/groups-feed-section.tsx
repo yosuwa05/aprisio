@@ -88,8 +88,6 @@ export const GroupsFeedSection = () => {
     },
   });
 
-  console.log(data);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref, entry } = useIntersection({
     root: containerRef.current,
@@ -111,7 +109,6 @@ export const GroupsFeedSection = () => {
           className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
-            console.log(groupid);
             mutate(data?.pages?.[0]?.data?.groupId);
           }}>
           <Icon icon='tabler:plus' fontSize={22} />

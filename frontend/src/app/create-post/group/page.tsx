@@ -95,7 +95,6 @@ export default function CreatePostGroup() {
         });
         router.push("/groups/" + selectedGroupId.slug);
       } else {
-        console.log(data);
         toast(data.data.message || "An error occurred while creating post");
       }
     },
@@ -206,22 +205,21 @@ export default function CreatePostGroup() {
 
   return (
     <div>
-      <div className="mx-2 xl:mx-12">
-        <div className="flex justify-between items-center xl:items-end mx-2">
-          <h1 className="text-3xl font-semibold py-4 xl:text-5xl">
+      <div className='mx-2 xl:mx-12'>
+        <div className='flex justify-between items-center xl:items-end mx-2'>
+          <h1 className='text-3xl font-semibold py-4 xl:text-5xl'>
             Create Post
           </h1>
 
           <Button
-            className="rounded-full p-[20px] bg-[#FCF7EA] border-[#AF965447] font-bold border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol"
+            className='rounded-full p-[20px] bg-[#FCF7EA] border-[#AF965447] font-bold border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol'
             onClick={() => {
               setDraftsModelOpen(true);
             }}
-            type="button"
-          >
+            type='button'>
             Drafts{" "}
             {!isLoading && drafts && drafts.length > 0 && (
-              <span className="bg-[#534B04] text-[#FCF7EA] rounded-full px-2 py-1">
+              <span className='bg-[#534B04] text-[#FCF7EA] rounded-full px-2 py-1'>
                 {drafts.length}
               </span>
             )}
@@ -229,25 +227,24 @@ export default function CreatePostGroup() {
         </div>
 
         <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
-          <PopoverTrigger asChild className="p-6">
+          <PopoverTrigger asChild className='p-6'>
             <Button
-              type="button"
-              className="bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1"
-            >
+              type='button'
+              className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
               {selectedGroupId.slug ? selectedGroupId.slug : "Select a Group"}
-              <ChevronDown className="mt-1 ml-2 text-black text-xl" size={60} />
+              <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg">
+          <PopoverContent className='w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg'>
             <Input
-              placeholder="Search..."
-              className="w-full my-2"
+              placeholder='Search...'
+              className='w-full my-2'
               value={subTopicSearch}
               onChange={(e) => setSubTopicSearch(e.target.value)}
             />
-            <div className="flex flex-col gap-2">
+            <div className='flex flex-col gap-2'>
               {isSubTopicsLoading && (
-                <div className="flex justify-center items-center my-4">
+                <div className='flex justify-center items-center my-4'>
                   <div>
                     <GlobalLoader />
                   </div>
@@ -257,22 +254,21 @@ export default function CreatePostGroup() {
                 data?.groups?.map((subTopic: any) => (
                   <div
                     key={subTopic._id}
-                    className="flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]"
+                    className='flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]'
                     onClick={() => {
                       setSubTopicSearch("");
                       setSubTopicOpen(false);
                       setSelectedGroupId(subTopic);
-                    }}
-                  >
-                    <p className="text-black">{subTopic.slug}</p>
+                    }}>
+                    <p className='text-black'>{subTopic.slug}</p>
                   </div>
                 ))}
             </div>
           </PopoverContent>
         </Popover>
 
-        <div className="flex flex-col md:gap-4">
-          <div className="flex">
+        <div className='flex flex-col md:gap-4'>
+          <div className='flex'>
             {tabs.map((tab, index: number) => (
               <div
                 key={index}
@@ -283,8 +279,7 @@ export default function CreatePostGroup() {
                   index != activeIndex
                     ? "text-fadedtext"
                     : "text-contrasttext font-bold"
-                }`}
-              >
+                }`}>
                 <h3>{tab}</h3>
               </div>
             ))}
@@ -292,28 +287,27 @@ export default function CreatePostGroup() {
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 mt-6 mx-4"
-          >
-            <div className="">
-              <Label htmlFor="title"></Label>
+            className='flex flex-col gap-4 mt-6 mx-4'>
+            <div className=''>
+              <Label htmlFor='title'></Label>
               <Input
-                placeholder="Title"
-                id="title"
-                className="h-16 rounded-2xl text-fadedtext text-lg"
+                placeholder='Title'
+                id='title'
+                className='h-16 rounded-2xl text-fadedtext text-lg'
                 {...register("title")}
               />
-              <div className="text-fadedtext text-sm w-full text-right p-2">
+              <div className='text-fadedtext text-sm w-full text-right p-2'>
                 {titleValue.length}/100
               </div>
             </div>
 
             {activeIndex == 0 && (
               <div key={activeIndex}>
-                <Label htmlFor="content"></Label>
+                <Label htmlFor='content'></Label>
                 <Textarea
-                  id="content"
-                  placeholder="Description..."
-                  className="rounded-2xl !text-lg text-fadedtext p-4"
+                  id='content'
+                  placeholder='Description...'
+                  className='rounded-2xl !text-lg text-fadedtext p-4'
                   rows={4}
                   {...register("description")}
                 />
@@ -323,38 +317,37 @@ export default function CreatePostGroup() {
             {activeIndex == 1 && (
               <div
                 key={activeIndex}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Label htmlFor="file"></Label>
-                <div className="h-[80px] text-fadedtext cursor-pointer border rounded-xl text-lg flex justify-start p-4 items-center">
+                onClick={() => fileInputRef.current?.click()}>
+                <Label htmlFor='file'></Label>
+                <div className='h-[80px] text-fadedtext cursor-pointer border rounded-xl text-lg flex justify-start p-4 items-center'>
                   <h4>Upload a image</h4>
                 </div>
               </div>
             )}
 
             {activeIndex == 1 && uploadedFile && (
-              <div className="relative">
+              <div className='relative'>
                 <Trash2
-                  className="absolute top-4 right-4 cursor-pointer text-red"
-                  color="red"
+                  className='absolute top-4 right-4 cursor-pointer text-red'
+                  color='red'
                   onClick={() => {
                     setUploadedFile(null);
                   }}
                 />
                 <Image
                   src={imageRendered}
-                  alt=""
+                  alt=''
                   width={100}
                   height={100}
-                  className="w-full h-[300px] object-cover rounded-2xl"
+                  className='w-full h-[300px] object-cover rounded-2xl'
                 />
               </div>
             )}
 
             <input
-              type="file"
-              accept="image/*"
-              className="hidden"
+              type='file'
+              accept='image/*'
+              className='hidden'
               onChange={(event) => {
                 const file = event.target.files?.[0];
                 if (file) {
@@ -366,19 +359,19 @@ export default function CreatePostGroup() {
 
             {activeIndex == 2 && (
               <div key={activeIndex}>
-                <Label htmlFor="url"></Label>
+                <Label htmlFor='url'></Label>
                 <Input
-                  placeholder="Link / URL"
-                  id="url"
-                  className="h-16 rounded-2xl text-fadedtext text-lg"
+                  placeholder='Link / URL'
+                  id='url'
+                  className='h-16 rounded-2xl text-fadedtext text-lg'
                   {...register("url")}
                 />
               </div>
             )}
 
-            <div className="flex gap-6 justify-end mt-4">
+            <div className='flex gap-6 justify-end mt-4'>
               <Button
-                className="rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold"
+                className='rounded-full p-[25px] bg-[#FFFAF3] border-[#AF965447] border-[1px] text-[#534B04] shadow-none text-sm hover:bg-buttoncol font-semibold'
                 onClick={() => {
                   if (!titleValue || !descriptionValue || !selectedGroupId.slug)
                     return toast("Please fill in all the fields");
@@ -391,30 +384,28 @@ export default function CreatePostGroup() {
                     selectedTopic: selectedGroupId.slug,
                   });
                 }}
-                type="button"
-              >
+                type='button'>
                 Save as Draft
               </Button>
 
               <Button
-                className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol"
-                type="submit"
-                disabled={isPending}
-              >
+                className='rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol'
+                type='submit'
+                disabled={isPending}>
                 Submit
-                <Image src={chevronleft} alt="chevron-left" />
+                <Image src={chevronleft} alt='chevron-left' />
               </Button>
             </div>
           </form>
         </div>
       </div>
       <Dialog open={draftsModelOpen} onOpenChange={setDraftsModelOpen}>
-        <DialogContent className="w-full px-0">
+        <DialogContent className='w-full px-0'>
           <DialogHeader>
-            <DialogTitle className="text-3xl w-[95%] mx-auto">
+            <DialogTitle className='text-3xl w-[95%] mx-auto'>
               Drafts
               {!isLoading && ok && drafts && (
-                <span className="text-xl ml-4 text-[#5D5A5A]">
+                <span className='text-xl ml-4 text-[#5D5A5A]'>
                   {drafts.length} / 5
                 </span>
               )}
@@ -431,36 +422,34 @@ export default function CreatePostGroup() {
                     }) => (
                       <div key={draft._id}>
                         <div
-                          className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center"
-                          key={draft._id}
-                        >
+                          className='text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center'
+                          key={draft._id}>
                           <div
-                            className="flex flex-col items-start gap-2 mt-4 py-2"
+                            className='flex flex-col items-start gap-2 mt-4 py-2'
                             onClick={() => {
                               handleDraftClick(draft);
-                            }}
-                          >
-                            <div className="text-[#534B04] text-xl">
+                            }}>
+                            <div className='text-[#534B04] text-xl'>
                               {draft.title}
                             </div>
-                            <div className="text-contrasttext text-sm">
+                            <div className='text-contrasttext text-sm'>
                               {draft.description}
                             </div>
                           </div>
 
-                          <div className="flex gap-3">
+                          <div className='flex gap-3'>
                             <Image
                               src={pencil}
-                              alt="pencil"
-                              className="cursor-pointer"
+                              alt='pencil'
+                              className='cursor-pointer'
                               onClick={() => {
                                 handleDraftClick(draft);
                               }}
                             />
                             <Image
                               src={trash}
-                              alt="trash"
-                              className="cursor-pointer"
+                              alt='trash'
+                              className='cursor-pointer'
                               onClick={() => {
                                 if (deletingDraft) return;
                                 deleteDraft(draft._id);
@@ -468,12 +457,12 @@ export default function CreatePostGroup() {
                             />
                           </div>
                         </div>
-                        <div className="h-[0.5px] bg-[#888383]"></div>
+                        <div className='h-[0.5px] bg-[#888383]'></div>
                       </div>
                     )
                   )
                 ) : (
-                  <div className="text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center">
+                  <div className='text-xl cursor-pointer w-[90%] mx-auto flex justify-between items-center'>
                     <p>No drafts</p>
                   </div>
                 )}

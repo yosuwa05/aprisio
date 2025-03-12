@@ -162,7 +162,6 @@ const JoinCommunityForm = () => {
 
           return () => clearTimeout(timeoutId);
         } else {
-          console.log(emailParam, "apri", storedEmail);
           console.error(
             "Local storage email does not match the verified email."
           );
@@ -231,41 +230,40 @@ const JoinCommunityForm = () => {
       <ToastContainer />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-5"
-      >
+        className='grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-5'>
         {/* Name Input */}
-        <div className="relative">
+        <div className='relative'>
           <Image
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
             src={user}
-            alt=""
+            alt=''
           />
           <input
             {...register("name")}
-            type="text"
+            type='text'
             // onChange={(e) => handleInputChange("name", e.target.value)}
-            placeholder="Name"
+            placeholder='Name'
             className={`w-full lg:text-xl text-sm lg:pl-20 pl-10 pr-3 py-2 lg:h-20 h-[60px] border ${
               errors.name ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 `}
           />
           {errors?.name && (
-            <p className="text-red-500 absolute mt-1">
+            <p className='text-red-500 absolute mt-1'>
               {errors.name.message?.toString()}
             </p>
           )}
         </div>
         {/* Email Input */}
-        <div className="relative">
+        <div className='relative'>
           <Image
             src={mail}
-            alt="Email"
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            alt='Email'
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
           />
           <input
             {...register("email")}
-            type="email"
-            placeholder="Email"
+            type='email'
+            placeholder='Email'
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.email ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -303,25 +301,25 @@ const JoinCommunityForm = () => {
         )} */}
           {/* {emailVerified && <p className="text-green-500">Verified</p>} */}
           {errors?.email && (
-            <p className="absolute text-red-500">
+            <p className='absolute text-red-500'>
               {errors.email.message?.toString()}
             </p>
           )}
         </div>
 
         {/* mobile Input */}
-        <div className="relative">
+        <div className='relative'>
           <Image
             src={mobile}
-            alt="mobile"
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-6 h-6"
+            alt='mobile'
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-6 h-6'
           />
           <input
             {...register("mobile")}
             // onChange={(e) => handleInputChange("mobile", e.target.value)}
-            type="text"
-            placeholder="Mobile"
-            inputMode="numeric"
+            type='text'
+            placeholder='Mobile'
+            inputMode='numeric'
             onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
               e.target.value = e.target.value.replace(/\D/g, "").slice(0, 10);
             }}
@@ -346,7 +344,7 @@ const JoinCommunityForm = () => {
         )} */}
           {/* {mobileVerified && <p className="text-green-500">Verified</p>} */}
           {errors?.mobile && (
-            <p className="text-red-500 absolute">
+            <p className='text-red-500 absolute'>
               {errors.mobile.message?.toString()}
             </p>
           )}
@@ -375,16 +373,16 @@ const JoinCommunityForm = () => {
           )}
         </div> */}
 
-        <div className="relative">
+        <div className='relative'>
           <Image
             src={key}
-            alt="Key"
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            alt='Key'
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
           />
           <input
             {...register("password")}
             type={passwordsVisible.password ? "password" : "text"}
-            placeholder="Create Password"
+            placeholder='Create Password'
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.password ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -392,32 +390,32 @@ const JoinCommunityForm = () => {
 
           <Image
             src={passwordsVisible.password ? eyeclose : eye}
-            alt="Key"
+            alt='Key'
             onClick={() =>
               setPasswordsVisible((prev) => ({
                 ...prev,
                 password: !prev.password,
               }))
             }
-            className="absolute cursor-pointer lg:right-[5%] right-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            className='absolute cursor-pointer lg:right-[5%] right-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
           />
           {errors.password && (
-            <p className="text-red-500 absolute">
+            <p className='text-red-500 absolute'>
               {errors.password.message?.toString()}
             </p>
           )}
         </div>
 
-        <div className="relative">
+        <div className='relative'>
           <Image
             src={key}
-            alt="Key"
-            className="absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            alt='Key'
+            className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
           />
           <input
             {...register("confirmPassword")}
             type={passwordsVisible.confirmPassword ? "password" : "text"}
-            placeholder="Confirm Password"
+            placeholder='Confirm Password'
             className={`w-full lg:text-xl text-base lg:pl-20 pl-10 py-2  pr-3 lg:h-20 h-[60px] border ${
               errors.confirmPassword ? "border-red-500" : "border-gray-300"
             } rounded-2xl focus:ring-2 focus:outline-none focus:ring-blue-500`}
@@ -425,98 +423,96 @@ const JoinCommunityForm = () => {
 
           <Image
             src={passwordsVisible.confirmPassword ? eyeclose : eye}
-            alt="Key"
+            alt='Key'
             onClick={() =>
               setPasswordsVisible((prev) => ({
                 ...prev,
                 confirmPassword: !prev.confirmPassword,
               }))
             }
-            className="absolute cursor-pointer lg:right-[5%] right-2  top-[50%] transform -translate-y-1/2 w-7 h-7"
+            className='absolute cursor-pointer lg:right-[5%] right-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
           />
           {errors.confirmPassword && (
-            <p className="text-red-500 absolute">
+            <p className='text-red-500 absolute'>
               {errors.confirmPassword.message?.toString()}
             </p>
           )}
         </div>
 
-        <p className="lg:col-span-2 text-[#043A53]">
+        <p className='lg:col-span-2 text-[#043A53]'>
           *All fields are mandatory
         </p>
 
-        <p className="lg:col-span-1 text-[#043A53]">
+        <p className='lg:col-span-1 text-[#043A53]'>
           * Our services are currently not available to the residents of the
           European Union. By accessing our services, you confirm that you are
           not a citizen of the European Union.
         </p>
 
         {/* Terms & Conditions */}
-        <div className="mt-10 lg:flex lg:col-span-2 md:justify-between ">
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3">
-              <div className="relative">
+        <div className='mt-10 lg:flex lg:col-span-2 md:justify-between '>
+          <div className='flex flex-col gap-2'>
+            <div className='flex items-center gap-3'>
+              <div className='relative'>
                 <input
                   {...register("terms")}
-                  type="checkbox"
-                  className="appearance-none w-7 h-7 border border-[#043A538F] checked:bg-[#F2F5F6] rounded-full transition-all duration-200 cursor-pointer peer"
+                  type='checkbox'
+                  className='appearance-none w-7 h-7 border border-[#043A538F] checked:bg-[#F2F5F6] rounded-full transition-all duration-200 cursor-pointer peer'
                   onChange={(e) => setValue("terms", e.target.checked)}
                 />
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none">
+                <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none'>
                   <svg
-                    className="w-5 h-5 -mt-1 text-[#043A53]"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M20 6L9 17L4 12" />
+                    className='w-5 h-5 -mt-1 text-[#043A53]'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'>
+                    <path d='M20 6L9 17L4 12' />
                   </svg>
                 </div>
               </div>
-              <p className="text-[#353535] -mt-1 text-xl">
+              <p className='text-[#353535] -mt-1 text-xl'>
                 I agree to the
-                <span className="text-[#043A53] font-semibold cursor-pointer mx-2">
-                  <Link href={"/terms-of-use"} target="_blank">
+                <span className='text-[#043A53] font-semibold cursor-pointer mx-2'>
+                  <Link href={"/terms-of-use"} target='_blank'>
                     Terms of Use
                   </Link>
                 </span>
                 and
-                <span className="text-[#043A53] font-semibold cursor-pointer ml-2">
-                  <Link href={"/privacy-policy"} target="_blank">
+                <span className='text-[#043A53] font-semibold cursor-pointer ml-2'>
+                  <Link href={"/privacy-policy"} target='_blank'>
                     Privacy Policy
                   </Link>
                 </span>
               </p>
             </div>
             {errors.terms && (
-              <p className="text-red-500 text-sm">
+              <p className='text-red-500 text-sm'>
                 {errors.terms.message?.toString()}
               </p>
             )}
           </div>
-          <div className="flex group lg:justify-end  justify-center py-10 lg:py-0">
+          <div className='flex group lg:justify-end  justify-center py-10 lg:py-0'>
             <button
-              type="submit"
+              type='submit'
               className={`bg-[#043A53] text-xl ${
                 isLoading
                   ? "cursor-not-allowed"
                   : "group-hover:bg-[#e0a93a] hover:scale-110 transition-all duration-300"
-              } text-white font-mulish font-bold py-4 px-7 rounded-full  transition duration-300`}
-            >
+              } text-white font-mulish font-bold py-4 px-7 rounded-full  transition duration-300`}>
               {isLoading ? (
                 <>
-                  <span className="flex gap-5 items-center ">
-                    Submiting <ImSpinner2 className="animate-spin " size={20} />
+                  <span className='flex gap-5 items-center '>
+                    Submiting <ImSpinner2 className='animate-spin ' size={20} />
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="flex gap-5 items-center ">
+                  <span className='flex gap-5 items-center '>
                     Submit{" "}
-                    <span className="text-white bg-[#1249628C] group-hover:bg-black/10 p-2 rounded-full">
+                    <span className='text-white bg-[#1249628C] group-hover:bg-black/10 p-2 rounded-full'>
                       <RiArrowRightLine />
                     </span>
                   </span>

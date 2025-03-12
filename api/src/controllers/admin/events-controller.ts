@@ -1,5 +1,5 @@
 import { saveFile } from "@/lib/file-s3";
-import { EventModel } from "@/models";
+import { AdminEventModel } from "@/models/admin-events.model";
 import Elysia, { t } from "elysia";
 
 export const eventsController = new Elysia({
@@ -13,7 +13,7 @@ export const eventsController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { date, eventImage, eventName, location, eventRules } = body;
+      const { datetime, eventImage, eventName, location, eventType, price, availableTickets, mapLink, expirydatetime, organiserName, biography, description } = body;
 
       try {
         let file = "";
@@ -31,27 +31,32 @@ export const eventsController = new Elysia({
           file = filename;
         }
 
-        let formatedDate = JSON.parse(date);
+        let finalDate = new Date(JSON.parse(datetime));
+        let _finalDate = new Date(JSON.parse(expirydatetime));
 
-        let finalDate = new Date(
-          formatedDate.year,
-          formatedDate.month - 1,
-          formatedDate.day
-        );
+        // Check if conversion is successful
+        if (isNaN(finalDate.getTime()) || isNaN(_finalDate.getTime())) {
+          throw new Error("Invalid date format received");
+        }
 
-        const newTopic = new EventModel({
+        const newTopic = new AdminEventModel({
           eventName,
-          date: finalDate,
+          datetime: finalDate,
+          expirydatetime: _finalDate,
           attendees: [],
-          commentsCount: 0,
+          mapLink: mapLink || "",
+          organiserName: organiserName || "",
+          biography: biography || "",
           eventImage: file,
           location,
-          group: null,
           isEventEnded: false,
-          isManagedByAdmin: true,
           managedBy: null,
-          rules: JSON.parse(eventRules),
-          eventsDateString: date,
+          // rules: JSON.parse(eventRules),
+          eventsDateString: datetime,
+          eventType,
+          price,
+          availableTickets,
+          description
         });
 
         await newTopic.save();
@@ -70,14 +75,22 @@ export const eventsController = new Elysia({
     {
       body: t.Object({
         eventName: t.String(),
-        date: t.String(),
+        datetime: t.String(),
+        expirydatetime: t.String(),
         location: t.String(),
-        eventRules: t.String(),
+        // eventRules: t.String(),
         eventImage: t.File(),
+        eventType: t.String(),
+        price: t.String(),
+        availableTickets: t.String(),
+        mapLink: t.String(),
+        organiserName: t.String(),
+        biography: t.String(),
+        description: t.String()
       }),
       detail: {
-        description: "Create topic",
-        summary: "Create topic",
+        description: "Create Event",
+        summary: "Create Event",
       },
     }
   )
@@ -87,8 +100,7 @@ export const eventsController = new Elysia({
       const { page = 1, limit = 10, q } = query;
 
       try {
-        const events = await EventModel.find({
-          isManagedByAdmin: true,
+        const events = await AdminEventModel.find({
           eventName: {
             $regex: q,
             $options: "i",
@@ -98,8 +110,7 @@ export const eventsController = new Elysia({
           .skip((page - 1) * limit)
           .limit(limit);
 
-        const totalEvents = await EventModel.countDocuments({
-          isManagedByAdmin: true,
+        const totalEvents = await AdminEventModel.countDocuments({
           eventName: {
             $regex: q,
             $options: "i",
@@ -127,8 +138,8 @@ export const eventsController = new Elysia({
         q: t.Optional(t.String()),
       }),
       detail: {
-        description: "Get topics",
-        summary: "Get topics",
+        description: "Get Events",
+        summary: "Get Events",
       },
     }
   )
@@ -139,7 +150,7 @@ export const eventsController = new Elysia({
       const { id } = params;
 
       try {
-        const event = await EventModel.findById(id);
+        const event = await AdminEventModel.findById(id);
 
         if (!event) {
           return {
@@ -147,7 +158,7 @@ export const eventsController = new Elysia({
           };
         }
 
-        await EventModel.findOneAndDelete({ _id: id });
+        await AdminEventModel.findOneAndDelete({ _id: id });
 
         set.status = 200;
         return {

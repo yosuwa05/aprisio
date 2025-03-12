@@ -97,7 +97,6 @@ export function EditProfile() {
         name: data.data.name,
         id: user?.id ?? "",
       });
-      console.log(data.data.image);
     },
     onError(data) {
       toast.error("Some thing went wrong");
@@ -113,29 +112,27 @@ export function EditProfile() {
   };
 
   return (
-    <div className="px-4">
-      <h1 className="text-xl font-semibold py-4 xl:text-3xl">Edit Profile</h1>
+    <div className='px-4'>
+      <h1 className='text-xl font-semibold py-4 xl:text-3xl'>Edit Profile</h1>
       <form
-        className="flex flex-col gap-6 w-full"
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className="flex justify-center mb-8">
-          <div className="relative">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-primary/20">
-              <div className="flex items-center justify-center w-full h-full">
+        className='flex flex-col gap-6 w-full'
+        onSubmit={handleSubmit(onSubmit)}>
+        <div className='flex justify-center mb-8'>
+          <div className='relative'>
+            <div className='relative w-32 h-32 rounded-full overflow-hidden border-2 border-primary/20'>
+              <div className='flex items-center justify-center w-full h-full'>
                 <Avatar
-                  className="w-32 h-32 font-bold text-3xl text-white cursor-pointer rounded-none"
-                  onClick={() => fileInputRef?.current?.click()}
-                >
+                  className='w-32 h-32 font-bold text-3xl text-white cursor-pointer rounded-none'
+                  onClick={() => fileInputRef?.current?.click()}>
                   <AvatarImage
-                    className="object-cover w-full h-full rounded-none"
+                    className='object-cover w-full h-full rounded-none'
                     src={
                       file
                         ? renderedImage
                         : BASE_URL + `/file?key=${user?.image}`
                     }
                   />
-                  <AvatarFallback className="">
+                  <AvatarFallback className=''>
                     {makeUserAvatarSlug(userData?.user.name ?? "")}
                   </AvatarFallback>
                 </Avatar>
@@ -145,11 +142,11 @@ export function EditProfile() {
         </div>
 
         <input
-          type="file"
-          id="profile-image"
-          className="hidden"
+          type='file'
+          id='profile-image'
+          className='hidden'
           ref={fileInputRef}
-          accept="image/*"
+          accept='image/*'
           onChange={(e) =>
             handleFileChange(e as React.ChangeEvent<HTMLInputElement>)
           }
@@ -157,27 +154,26 @@ export function EditProfile() {
 
         <div>
           <Label>User Name</Label>
-          <Input className="w-full" {...register("name")} />
+          <Input className='w-full' {...register("name")} />
           {errors.name && (
-            <p className="text-red-500 text-xs">{errors.name.message}</p>
+            <p className='text-red-500 text-xs'>{errors.name.message}</p>
           )}
         </div>
 
         <div>
           <Label>Email</Label>
-          <Input disabled className="w-full" {...register("email")} />
+          <Input disabled className='w-full' {...register("email")} />
           {errors.email && (
-            <p className="text-red-500 text-xs">{errors.email.message}</p>
+            <p className='text-red-500 text-xs'>{errors.email.message}</p>
           )}
         </div>
 
-        <div className="flex justify-end">
+        <div className='flex justify-end'>
           <Button
-            className="rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol disabled:opacity-50 disabled:cursor-not-allowed"
-            type="submit"
-          >
+            className='rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol disabled:opacity-50 disabled:cursor-not-allowed'
+            type='submit'>
             Save
-            <Image src={chevronleft} alt="chevron-left" />
+            <Image src={chevronleft} alt='chevron-left' />
           </Button>
         </div>
       </form>

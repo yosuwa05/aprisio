@@ -56,7 +56,6 @@ export function EventCard({ event }: Props) {
     },
     onSuccess(data) {
       if (data.data.ok) {
-        console.log(data);
         toast(data.data.message || "Event declined successfully");
         queryClient.invalidateQueries({
           queryKey: ["my-profile-participated-events", user?.id, activeTab],

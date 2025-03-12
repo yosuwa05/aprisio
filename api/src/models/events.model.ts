@@ -12,8 +12,6 @@ enum EventType {
 
 type IEvent = {
   eventName: string;
-  eventType: EventType;
-  eventTime: string;
   location: string;
   date: Date;
   managedBy: Types.ObjectId;
@@ -25,6 +23,10 @@ type IEvent = {
   isManagedByAdmin: boolean;
   eventImage: string;
   eventsDateString: string;
+  eventType: EventType;
+  eventTime: string;
+  amount: number;
+  totalTickets: number;
 };
 
 const EventSchema = new Schema<IEvent>(
@@ -34,6 +36,14 @@ const EventSchema = new Schema<IEvent>(
     eventType: {
       type: String,
       enum: EventType,
+    },
+    amount: {
+      type: Number,
+      default: 0
+    },
+    totalTickets: {
+      type: Number,
+      default: 0
     },
     eventTime: {
       type: String,

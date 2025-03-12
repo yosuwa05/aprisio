@@ -22,9 +22,17 @@
 			mode: value,
 			id: '',
 			eventName: '',
-			date: '',
+			datetime: '',
 			location: '',
-			eventRules: []
+			eventRules: [],
+			price: '',
+			eventType: '',
+			availableTickets: '',
+			mapLink: '',
+			expirydatetime: '',
+			organiserName: '',
+			biography: '',
+			description: ''
 		};
 	}}
 >

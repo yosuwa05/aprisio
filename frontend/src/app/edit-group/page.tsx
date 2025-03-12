@@ -51,7 +51,6 @@ export default function CreateGroup() {
   const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
   useEffect(() => {
     if (currentGroup && currentGroup.name) {
-      console.log(currentGroup);
       setValue("groupName", currentGroup.name || "");
       setValue("description", currentGroup.description || "");
       setSelectedSubTopic({ slug: currentGroup.subTopic.slug });
@@ -74,11 +73,8 @@ export default function CreateGroup() {
       }
     },
   });
-  console.log(currentGroup.groupId);
   const onSubmit = (data: any) => {
     if (!selectedSubTopic.slug) return toast("Please select a topic");
-    console.log(data);
-    console.log(selectedSubTopic.slug);
     const formData = new FormData();
 
     formData.append("name", data.groupName);
