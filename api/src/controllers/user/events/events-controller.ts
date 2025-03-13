@@ -5,6 +5,9 @@ import Elysia, { t } from "elysia";
 import puppeteer from "puppeteer";
 import { unlink } from "fs/promises";
 import path from "path";
+import { TicketModel } from "@/models/ticket-tracking";
+import mongoose from "mongoose";
+import { StoreType } from "@/types";
 export const EventsController = new Elysia({
   prefix: "/events",
   detail: {
@@ -362,3 +365,27 @@ export const EventsController = new Elysia({
       eventId: t.String()
     }),
   })
+  .get("/paidtickets", async ({ set, store, query }) => {
+    try {
+      const { page, limit, userId } = query;
+      const _page = Number(page) || 1;
+      const _limit = Number(limit) || 10;
+      const tickets = await TicketModel.find({})
+        .populate("eventId", "eventName")
+        .sort({ createdAt: -1, _id: -1 })
+        .skip((_page - 1) * _limit)
+        .limit(_limit)
+        .lean();
+
+      set.status = 200;
+      return { tickets, ok: true };
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500
+      return {
+        message: error
+      }
+    }
+  })
+
