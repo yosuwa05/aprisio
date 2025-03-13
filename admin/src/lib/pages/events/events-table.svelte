@@ -36,7 +36,7 @@
 	}
 
 	const query = createQuery({
-		queryKey: ['topics fetch'],
+		queryKey: ['events fetch'],
 		queryFn: () => fetchTopics(limit, page, search)
 	});
 
@@ -45,7 +45,7 @@
 			_axios.delete(`/events/${id}?permanent=${permanent}`),
 		onSuccess({ data }) {
 			queryClient.refetchQueries({
-				queryKey: ['topics fetch']
+				queryKey: ['events fetch']
 			});
 			toast(data?.message ?? 'Topic Edited');
 			modelOpen = false;
@@ -68,7 +68,7 @@
 </script>
 
 <div>
-	<div class="text-maintext mx-auto mt-6 font-karla">
+	<div class="text-maintext font-karla mx-auto mt-6">
 		<div class="ml-auto w-[40%]">
 			<div class="relative grid gap-2">
 				<Input
