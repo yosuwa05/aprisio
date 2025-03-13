@@ -17,6 +17,7 @@ type IEvent = {
   eventName: string;
   availableTickets: number;
   soldTickets: number;
+  reminingTickets: number;
   price: number;
   expirydatetime: Date;
   organiserName: string;
@@ -48,6 +49,10 @@ const AdminEventSchema = new Schema<IEvent>(
       default: 0,
     },
     soldTickets: {
+      type: Number,
+      default: 0,
+    },
+    reminingTickets: {
       type: Number,
       default: 0,
     },
@@ -84,7 +89,7 @@ const AdminEventSchema = new Schema<IEvent>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export const AdminEventModel = model<IEvent>("AdminEvents", AdminEventSchema);

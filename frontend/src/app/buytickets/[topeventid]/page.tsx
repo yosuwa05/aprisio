@@ -1,29 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import chevronleft from "@img/icons/blue-chevron-left.svg";
 import chevronright from "@img/icons/blue-chevron-right.svg";
 import logosmall from "@img/images/final-logo.png";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import coffee from "../../../../public/images/coffee.jpg";
-import { useEffect, useState } from "react";
-import { format } from "date-fns/format";
-import { useQuery } from "@tanstack/react-query";
-import { _axios } from "@/lib/axios-instance";
 import { useParams } from "next/navigation";
-import { BASE_URL } from "@/lib/config";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-// const formatEventDate = (date: string) => {
-//   return format(new Date(date), "EEE, MMM d yyyy, h:mm a");
-// };
 export default function BuyTickets() {
   const { topeventid } = useParams();
   const user = useGlobalAuthStore((state) => state.user);
 
-  console.log(user);
   const [ticketCount, setTicketCount] = useState(1);
   const [isTicketSelect, SetIsTicketSelect] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -33,6 +27,8 @@ export default function BuyTickets() {
     emailId: user?.email || "",
     mobileNumber: "",
   });
+
+  const [isPaymentStarted, setPaymentStarted] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["view-Admin-Event", topeventid],
@@ -69,34 +65,70 @@ export default function BuyTickets() {
     }));
   };
 
+  const { mutate: payuData, isPending } = useMutation({
+    mutationKey: ["payuData"],
+    mutationFn: async (data: any) => {
+      const res = await _axios.post("/payment/generateHash", data);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      if (typeof window !== "undefined") {
+        let formHtml = data.formHtml;
+        const payuFormContainer: any = document.getElementById("payuContainer");
+
+        if (payuFormContainer) {
+          payuFormContainer.innerHTML = formHtml;
+
+          let form: any = document.getElementById("payuForm");
+          setPaymentStarted(true);
+          form.submit();
+        }
+      }
+    },
+  });
+
+  function handlePayNow() {
+    if (!isTermsClicked) {
+      return toast.success("Please agree to the terms before proceeding.");
+    }
+
+    if (isPending) return;
+    payuData({
+      productInfo: "For Purchase of Ticket for " + data?.event?.eventName,
+      amount: totalAmount,
+    });
+  }
+
   return (
-    <main className='px-4 md:px-8 py-4 md:py-6'>
-      <div className='flex flex-col lg:flex-row gap-10 pt-6'>
-        <div className='w-full lg:w-1/4 flex-shrink-0'>
+    <main className="px-4 md:px-8 py-4 md:py-6">
+      <div id="payuContainer" className="hidden"></div>
+      <div className="flex flex-col lg:flex-row gap-10 pt-6">
+        <div className="w-full lg:w-1/4 flex-shrink-0">
           <Image
-            loading='eager'
+            loading="eager"
             height={100}
             width={100}
             src={BASE_URL + `/file?key=${data?.event?.eventImage}`}
-            alt='Event Image'
-            className='w-full h-auto object-cover'
+            alt="Event Image"
+            className="w-full h-auto object-cover"
           />
 
           <div
             style={{ boxShadow: "15px 4px 60px 0px #02507C26" }}
-            className='mt-4 w-fullrounded-lg bg-[#FFFFFF] p-6 rounded-lg'>
-            <div className='flex gap-4 items-center'>
+            className="mt-4 w-fullrounded-lg bg-[#FFFFFF] p-6 rounded-lg"
+          >
+            <div className="flex gap-4 items-center">
               <Image
                 src={logosmall}
-                className='w-[50px] cursor-pointer   '
-                alt='logo'
+                className="w-[50px] cursor-pointer   "
+                alt="logo"
               />
-              <div className='flex flex-col gap-1'>
-                <span className='text-textcol font-bold text-lg '>About</span>
-                <span className='text-fadedtext text-sm'>Aprisio</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-textcol font-bold text-lg ">About</span>
+                <span className="text-fadedtext text-sm">Aprisio</span>
               </div>
             </div>
-            <p className='font-normal text-lg pt-3 leading-8 break-words text-[#353535CC]/80  font-sans text-pretty whitespace-normal '>
+            <p className="font-normal text-lg pt-3 leading-8 break-words text-[#353535CC]/80  font-sans text-pretty whitespace-normal ">
               Aprisio is launching India’s first Community platform for older
               adults with an exclusive Coffee Masterclass curated for older
               adults age 40
@@ -104,40 +136,44 @@ export default function BuyTickets() {
           </div>
         </div>
 
-        <div className='lg:w-2/3'>
-          <div className='flex flex-col gap-4'>
-            <div className='flex flex-col gap-5'>
-              <h1 className='text-3xl md:text-4xl font-medium text-textcol font-roboto'>
+        <div className="lg:w-2/3">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
+              <h1 className="text-3xl md:text-4xl font-medium text-textcol font-roboto">
                 {data?.event?.eventName || "Event Name"}
               </h1>
-              <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-medium'>
+              <h2 className="text-lg md:text-xl text-[#64737A]  font-roboto font-medium">
                 {/* {formatEventDate(data?.event?.datetime)} */}
               </h2>
             </div>
-            <div className='text-[#353535CC]/60 font-extrabold font-roboto text-lg pb-4'>
+            <div className="text-[#353535CC]/60 font-extrabold font-roboto text-lg pb-4">
               Starts at INR {data?.event?.price || ""}
             </div>
           </div>
 
           <div
             style={{ boxShadow: "0px 2px 4px 0px #85858540" }}
-            className='pt-3 bg-[#FFFFFF] p-6 rounded-lg'>
-            <div className='flex items-center gap-4 font-roboto'>
+            className="pt-3 bg-[#FFFFFF] p-6 rounded-lg"
+          >
+            <div className="flex items-center gap-4 font-roboto">
               <button
                 onClick={() => setActiveStep(1)}
                 className={`group flex items-center gap-3 rounded-lg border border-contrasttext/30 ${
                   activeStep === 2 && "border-none bg-transparent "
-                } px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none`}>
+                } px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none`}
+              >
                 <span
                   className={`flex items-center justify-center w-8 h-8 rounded-full border border-current bg-contrasttext ${
                     activeStep === 2 && "text-white bg-[#ADADAD] "
-                  } text-lg font-medium text-white`}>
+                  } text-lg font-medium text-white`}
+                >
                   1
                 </span>
                 <span
                   className={`font-medium  ${
                     activeStep === 2 ? "text-[#ADADAD]" : "text-contrasttext"
-                  } text-xl`}>
+                  } text-xl`}
+                >
                   Details
                 </span>
               </button>
@@ -145,19 +181,22 @@ export default function BuyTickets() {
               <button
                 className={`group flex items-center gap-3 rounded-lg px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none  ${
                   activeStep === 2 && "border-contrasttext/30 border "
-                }`}>
+                }`}
+              >
                 <span
                   className={`flex items-center justify-center w-8 h-8 rounded-full border  text-lg font-medium text-[#ADADAD]  ${
                     activeStep === 2
                       ? "bg-contrasttext text-white "
                       : "border-[#ADADAD] bg-white"
-                  }`}>
+                  }`}
+                >
                   2
                 </span>
                 <span
                   className={`font-medium text-xl ${
                     activeStep === 2 ? "text-contrasttext" : "text-[#ADADAD]"
-                  } `}>
+                  } `}
+                >
                   Payment
                 </span>
               </button>
@@ -167,20 +206,21 @@ export default function BuyTickets() {
               <div>
                 {!isTicketSelect && (
                   <div>
-                    <div className='flex font-roboto items-center gap-16 pt-5'>
-                      <h1 className='text-2xl font-medium'>Add Ticket</h1>
-                      <div className='flex items-center'>
-                        <div className='flex items-center rounded-lg border-[2px] border-gray-400 bg-gray-100'>
+                    <div className="flex font-roboto items-center gap-16 pt-5">
+                      <h1 className="text-2xl font-medium">Add Ticket</h1>
+                      <div className="flex items-center">
+                        <div className="flex items-center rounded-lg border-[2px] border-gray-400 bg-gray-100">
                           <button
                             onClick={() => {
                               if (ticketCount <= 1) return;
                               setTicketCount((prev) => prev - 1);
                             }}
-                            className='w-12 h-12 flex items-center justify-center text-xl text-textcol'>
+                            className="w-12 h-12 flex items-center justify-center text-xl text-textcol"
+                          >
                             −
                           </button>
 
-                          <span className='w-12 h-12 flex items-center justify-center text-xl font-semibold text-textcol bg-gray-200'>
+                          <span className="w-12 h-12 flex items-center justify-center text-xl font-semibold text-textcol bg-gray-200">
                             {ticketCount}
                           </span>
 
@@ -188,75 +228,78 @@ export default function BuyTickets() {
                             onClick={() => {
                               setTicketCount((prev) => prev + 1);
                             }}
-                            className='w-12 h-12 flex items-center justify-center text-xl text-textcol'>
+                            className="w-12 h-12 flex items-center justify-center text-xl text-textcol"
+                          >
                             +
                           </button>
                         </div>
                       </div>
                     </div>
-                    <div className='flex font-roboto items-center gap-16 pt-5'>
-                      <h1 className='text-2xl font-medium'>You Pay</h1>
-                      <div className='flex items-center'>
-                        <h1 className='text-2xl font-medium'>
+                    <div className="flex font-roboto items-center gap-16 pt-5">
+                      <h1 className="text-2xl font-medium">You Pay</h1>
+                      <div className="flex items-center">
+                        <h1 className="text-2xl font-medium">
                           INR {totalAmount}
                         </h1>
                       </div>
                     </div>
 
-                    <div className='pt-3'>
-                      <p className='text-xs text-textcol/70'>
+                    <div className="pt-3">
+                      <p className="text-xs text-textcol/70">
                         Your final amount will reflect on the payment page
                       </p>
                     </div>
-                    <div className='mt-10'>
+                    <div className="mt-10">
                       <Button
                         onClick={() => SetIsTicketSelect(true)}
-                        className='rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
+                        className="rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90"
+                      >
                         Submit
-                        <Image src={chevronleft} alt='chevron-left' />
+                        <Image src={chevronleft} alt="chevron-left" />
                       </Button>
                     </div>
                   </div>
                 )}
 
                 {isTicketSelect && (
-                  <aside className='mt-4'>
-                    <div className='grid grid-cols-2 gap-6 font-roboto'>
+                  <aside className="mt-4">
+                    <div className="grid grid-cols-2 gap-6 font-roboto">
                       <div>
-                        <Label className='text-base'>Name</Label>
+                        <Label className="text-base">Name</Label>
                         <Input
-                          name='name'
+                          name="name"
                           value={userDetails?.name}
                           onChange={handleInputChange}
-                          className='pt-2'
+                          className="pt-2"
                         />
                       </div>
                       <div>
-                        <Label className='text-base'>Phone Number</Label>
+                        <Label className="text-base">Phone Number</Label>
                         <Input
-                          type='number'
-                          name='mobileNumber'
+                          type="number"
+                          name="mobileNumber"
                           value={userDetails.mobileNumber}
                           onChange={handleInputChange}
-                          className='pt-2'
+                          className="pt-2"
                         />
                       </div>
                       <div>
-                        <Label className='text-base'>Email ID</Label>
+                        <Label className="text-base">Email ID</Label>
                         <Input
-                          name='emailId'
+                          name="emailId"
                           value={userDetails?.emailId}
                           onChange={handleInputChange}
-                          className='pt-2'
+                          className="pt-2"
                         />
                       </div>
                     </div>
                     <div>
-                      <div className='mt-10 flex justify-between items-center'>
+                      <div className="mt-10 flex justify-between items-center">
                         <Button
                           onClick={() => SetIsTicketSelect(false)}
-                          className='rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
-                          <Image src={chevronright} alt='chevron-right' />
+                          className="rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90"
+                        >
+                          <Image src={chevronright} alt="chevron-right" />
                           Back
                         </Button>
                         <Button
@@ -278,9 +321,10 @@ export default function BuyTickets() {
                             }
                             setActiveStep(2);
                           }}
-                          className='rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
+                          className="rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90"
+                        >
                           Next
-                          <Image src={chevronleft} alt='chevron-left' />
+                          <Image src={chevronleft} alt="chevron-left" />
                         </Button>
                       </div>
                     </div>
@@ -292,80 +336,75 @@ export default function BuyTickets() {
             {/* step 2 */}
 
             {activeStep === 2 && (
-              <article className='mt-8 px-10'>
-                <div className='grid grid-cols-2'>
+              <article className="mt-8 px-10">
+                <div className="grid grid-cols-2">
                   <div>
-                    <h1 className='text-2xl md:text-4xl font-medium text-[#000000] font-roboto'>
+                    <h1 className="text-2xl md:text-4xl font-medium text-[#000000] font-roboto">
                       Order Summary
                     </h1>
-                    <div className='mt-8 flex flex-col gap-4'>
-                      <h1 className='text-xl md:text-2xl font-medium text-textcol font-roboto'>
+                    <div className="mt-8 flex flex-col gap-4">
+                      <h1 className="text-xl md:text-2xl font-medium text-textcol font-roboto">
                         {data?.event?.eventName || "Event Name"}
                       </h1>
-                      <h2 className='text-base md:text-lg text-[#64737A]  font-roboto font-medium'>
+                      <h2 className="text-base md:text-lg text-[#64737A]  font-roboto font-medium">
                         {/* {formatEventDate(data?.event?.datetime)} */}
                       </h2>
-                      <p className='text-textcol font-semibold'>
+                      <p className="text-textcol font-semibold">
                         Quantity: &nbsp; {ticketCount} x {data?.event?.price}
                       </p>
                     </div>
                   </div>
                   <div>
-                    <h1 className='text-2xl md:text-4xl font-medium text-[#000000] font-roboto'>
+                    <h1 className="text-2xl md:text-4xl font-medium text-[#000000] font-roboto">
                       Subtotal
                     </h1>
-                    <div className='mt-8 font-roboto'>
-                      <div className='flex justify-between items-center pb-2'>
-                        <div className='text-[#64737A] text-xl font-medium '>
+                    <div className="mt-8 font-roboto">
+                      <div className="flex justify-between items-center pb-2">
+                        <div className="text-[#64737A] text-xl font-medium ">
                           Quantity {ticketCount}
                         </div>
-                        <div className='text-[#22292F] font-semibold  text-lg'>
+                        <div className="text-[#22292F] font-semibold  text-lg">
                           {totalAmount}
                         </div>
                       </div>
-                      <div className='flex justify-between items-center pb-6 border-b border-dashed'>
-                        <div className='text-[#64737A] text-xl font-medium '>
+                      <div className="flex justify-between items-center pb-6 border-b border-dashed">
+                        <div className="text-[#64737A] text-xl font-medium ">
                           GST 18%
                         </div>
-                        <div className='text-[#22292F] font-semibold  text-lg'>
+                        <div className="text-[#22292F] font-semibold  text-lg">
                           0
                         </div>
                       </div>
-                      <div className='flex justify-between items-center py-2'>
-                        <div className='text-[#22292F] text-xl font-medium  '>
+                      <div className="flex justify-between items-center py-2">
+                        <div className="text-[#22292F] text-xl font-medium  ">
                           Total
                         </div>
-                        <div className='text-[#22292F] font-semibold  text-lg'>
+                        <div className="text-[#22292F] font-semibold  text-lg">
                           {totalAmount}
                         </div>
                       </div>
-                      <div className='text-pretty whitespace-pre-wrap break-words font-roboto text-base font-medium pt-3'>
+                      <div className="text-pretty whitespace-pre-wrap break-words font-roboto text-base font-medium pt-3">
                         <input
                           checked={isTermsClicked}
-                          id='terms'
+                          id="terms"
                           onChange={() => setIsTermsClicked(!isTermsClicked)}
-                          type='checkbox'
-                          className='cursor-pointer'
+                          type="checkbox"
+                          className="cursor-pointer"
                         />
                         &nbsp;{" "}
-                        <label htmlFor='terms'>
+                        <label htmlFor="terms">
                           By booking this experience, you agree to our terms &
                           conditions.
                         </label>
                       </div>
-                      <div className='mt-10 flex justify-end'>
+                      <div className="mt-10 flex justify-end">
                         <Button
-                          onClick={() => {
-                            if (!isTermsClicked) {
-                              return toast.success(
-                                "Please agree to the terms before proceeding."
-                              );
-                            }
-                            console.log(userDetails, totalAmount, ticketCount);
-                          }}
-                          className='rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
+                          onClick={handlePayNow}
+                          className="rounded-full py-6 px-5  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90"
+                          disabled={isPending || isPaymentStarted}
+                        >
                           Pay Now
-                          <Image src={chevronleft} alt='chevron-left' />
+                          <Image src={chevronleft} alt="chevron-left" />
                         </Button>
                       </div>
                     </div>

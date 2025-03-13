@@ -47,7 +47,6 @@ export const userrouter = new Elysia({
   .use(personalController)
   .use(SearchController)
   .use(EventsNoAuthController)
-  .use(paymentController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 
@@ -83,6 +82,7 @@ export const userrouter = new Elysia({
       return { message: "Unauthorized" };
     }
   })
+  .use(paymentController)
   .use(notificationController)
   .use(chatController)
   .use(personalAuthController)

@@ -125,12 +125,12 @@ export const authenticatedPostController = new Elysia({
         description: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         url: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         slug: t.String(),
         file: t.Optional(t.File()),
@@ -141,7 +141,7 @@ export const authenticatedPostController = new Elysia({
         description: "Create post",
         summary: "Create post",
       },
-    },
+    }
   )
   .post(
     "/edit",
@@ -251,12 +251,12 @@ export const authenticatedPostController = new Elysia({
         description: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         url: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         slug: t.String(),
         file: t.Optional(t.Any()),
@@ -266,7 +266,7 @@ export const authenticatedPostController = new Elysia({
         description: "Create post",
         summary: "Create post",
       },
-    },
+    }
   )
   .post(
     "/like",
@@ -307,7 +307,7 @@ export const authenticatedPostController = new Elysia({
               await sendNotification(
                 author.fcmToken,
                 "Someone Liked Your Post",
-                "Your post has been liked.",
+                "Your post has been liked."
               );
 
               const newNotification = new NotificationModel({
@@ -346,7 +346,7 @@ export const authenticatedPostController = new Elysia({
         description: "Like or unlike post",
         summary: "Like or unlike post",
       },
-    },
+    }
   )
   .post(
     "/create-group-post",
@@ -443,12 +443,12 @@ export const authenticatedPostController = new Elysia({
         description: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         url: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         file: t.Optional(t.File()),
         selectedgroup: t.String(),
@@ -457,7 +457,7 @@ export const authenticatedPostController = new Elysia({
         description: "Create post inside group!",
         summary: "Create post inside group!",
       },
-    },
+    }
   )
   .post(
     "/edit-group-post",
@@ -558,12 +558,12 @@ export const authenticatedPostController = new Elysia({
         description: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         url: t.Optional(
           t.String({
             default: "",
-          }),
+          })
         ),
         file: t.Optional(t.File()),
         selectedgroup: t.String(),
@@ -573,7 +573,7 @@ export const authenticatedPostController = new Elysia({
         description: "Create post inside group!",
         summary: "Create post inside group!",
       },
-    },
+    }
   )
   .get(
     "/getsingle",
@@ -615,5 +615,5 @@ export const authenticatedPostController = new Elysia({
         description: "Get single post",
         summary: "Get single post",
       },
-    },
+    }
   );
