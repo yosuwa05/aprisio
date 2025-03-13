@@ -1,10 +1,27 @@
 import { AdminEventModel } from "@/models/admin-events.model";
 import { TicketModel } from "@/models/ticket-tracking";
+import axios from "axios";
 import { Elysia, t } from "elysia";
 import path from "node:path";
 import puppeteer from "puppeteer";
 import { deleteFile, saveFile } from "../../lib/file";
 import { AdminAuthModel } from "../../models/adminmodel";
+
+const getBase64Image = async (imageUrl: string) => {
+  try {
+    const response = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+    });
+
+    const base64 = Buffer.from(response.data, "binary").toString("base64");
+    const mimeType = response.headers["content-type"];
+
+    return `data:${mimeType};base64,${base64}`;
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    return "";
+  }
+};
 
 export const adminController = new Elysia({
   prefix: "/admin",
@@ -32,6 +49,12 @@ export const adminController = new Elysia({
       }
 
       let content = await Bun.file("html/template.html").text();
+
+      const imageUrl =
+        "https://aprisio.com/api/user/file?key=" + event.eventImage;
+
+      const base64Image = await getBase64Image(imageUrl);
+
       content = content
         .replace("{{ticket_ID}}", ticket.tickets.ticketId)
         .replace("{{EventName}}", event.eventName)
@@ -42,6 +65,7 @@ export const adminController = new Elysia({
         .replace("{{totalTickets}}", "5")
         .replace("{{Amount}}", "500")
         .replace("{{GST}}", "0")
+        .replace("{{imageUrl}}", base64Image)
         .replace("{{TotalAmount}}", "2500");
 
       browser = await puppeteer.launch({
@@ -73,7 +97,7 @@ export const adminController = new Elysia({
       const blob = new Blob([buffer], { type: "application/pdf" });
 
       set.headers["Content-Type"] = "application/pdf";
-      set.headers["Content-Disposition"] = `attachment; filename=invoice.pdf`;
+      set.headers["Content-Disposition"] = `inline; filename=invoice.pdf`;
 
       if (browser) {
         browser.close();
