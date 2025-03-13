@@ -2,7 +2,9 @@ import { EventModel } from "@/models";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { GroupModel } from "@/models/group.model";
 import Elysia, { t } from "elysia";
-
+import puppeteer from "puppeteer";
+import { unlink } from "fs/promises";
+import path from "path";
 export const EventsController = new Elysia({
   prefix: "/events",
   detail: {
@@ -359,5 +361,4 @@ export const EventsController = new Elysia({
     query: t.Object({
       eventId: t.String()
     }),
-  });
-
+  })
