@@ -13,22 +13,23 @@ export const MyProfilePayments = () => {
 
   const limit = 10;
   const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["my-profile-joined-groups", user?.id, activeTab],
+      queryKey: ["my-profile-paid-tickets", user?.id, activeTab],
       queryFn: async ({ pageParam = 1 }) => {
         const res = await _axios.get(
-          `/myprofile/joined-groups/?userId=${user?.id}&page=${pageParam}&limit=${limit}`
+          `/events/paidtickets/?page=${pageParam}&limit=${limit}&userId=${user?.id}`
         );
         return res?.data;
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
         const nextPage = allPages?.length + 1;
-        return lastPage?.groups?.length === limit ? nextPage : undefined;
+        return lastPage?.tickets?.length === limit ? nextPage : undefined;
       },
     });
+
+  console.log(data);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref, entry } = useIntersection({
@@ -65,8 +66,8 @@ export const MyProfilePayments = () => {
         </div>
       ) : data && data.pages && data?.pages.length > 0 ? (
         data.pages.map((page, pageIndex) =>
-          page.groups.length > 0 ? (
-            page.groups.map((group: any, postIndex: number) => (
+          page.tickets.length > 0 ? (
+            page.tickets.map((group: any, postIndex: number) => (
               <React.Fragment key={group?._id}>
                 <MyProfilePaymentCard group={group?.group} />
               </React.Fragment>
