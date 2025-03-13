@@ -24,6 +24,7 @@ import { groupController } from "./group/group-controller";
 import { noAuthGroupController } from "./group/noauth-group-controller";
 import { notificationController } from "./notification/notification-controller";
 import { paymentController } from "./payment-controller";
+import { paymentNoAuthController } from "./payment-noauth-controller";
 import { MyProfileController } from "./users/myprofile-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
@@ -47,6 +48,7 @@ export const userrouter = new Elysia({
   .use(personalController)
   .use(SearchController)
   .use(EventsNoAuthController)
+  .use(paymentNoAuthController)
   .onBeforeHandle(async ({ set, headers, cookie, store }) => {
     let cookieString = cookie.you?.cookie ?? "";
 

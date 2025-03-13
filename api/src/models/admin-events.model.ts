@@ -32,6 +32,8 @@ type IEvent = {
   eventType: EventType;
   description: string;
   delta: string;
+  ticketPrefix: string;
+  lastSoldTicketNumber: number;
 };
 
 const AdminEventSchema = new Schema<IEvent>(
@@ -52,7 +54,15 @@ const AdminEventSchema = new Schema<IEvent>(
       type: Number,
       default: 0,
     },
+    ticketPrefix: {
+      type: String,
+      default: "",
+    },
     reminingTickets: {
+      type: Number,
+      default: 0,
+    },
+    lastSoldTicketNumber: {
       type: Number,
       default: 0,
     },

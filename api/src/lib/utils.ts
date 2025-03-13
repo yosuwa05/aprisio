@@ -25,7 +25,15 @@ export const validateToken = async (token: string) => {
 export const generateEventId = () => {
   const nanoid = customAlphabet(
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-    10,
+    10
   );
   return `EVT-${nanoid()}`;
+};
+
+export const generateTicketPrefix = () => {
+  const nanoid = customAlphabet(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    6
+  );
+  return `TK-${nanoid()}`;
 };
