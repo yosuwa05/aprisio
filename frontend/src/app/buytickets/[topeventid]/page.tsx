@@ -25,7 +25,7 @@ export default function BuyTickets() {
   const [userDetails, setUserDetails] = useState({
     name: user?.name || "",
     emailId: user?.email || "",
-    mobileNumber: "",
+    mobileNumber: "9994627465",
   });
 
   const [isPaymentStarted, setPaymentStarted] = useState(false);
@@ -81,6 +81,7 @@ export default function BuyTickets() {
 
           let form: any = document.getElementById("payuForm");
           setPaymentStarted(true);
+
           form.submit();
         }
       }
@@ -96,6 +97,8 @@ export default function BuyTickets() {
     payuData({
       productInfo: "For Purchase of Ticket for " + data?.event?.eventName,
       amount: totalAmount,
+      eventId: topeventid,
+      tickets: ticketCount,
     });
   }
 

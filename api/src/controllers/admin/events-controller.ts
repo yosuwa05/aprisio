@@ -1,5 +1,5 @@
 import { deleteFile, saveFile } from "@/lib/file-s3";
-import { generateEventId } from "@/lib/utils";
+import { generateEventId, generateTicketPrefix } from "@/lib/utils";
 import { AdminEventModel } from "@/models/admin-events.model";
 import Elysia, { t } from "elysia";
 
@@ -54,6 +54,7 @@ export const eventsController = new Elysia({
         }
 
         let eventId = generateEventId();
+        let ticketPrefix = generateTicketPrefix();
 
         const newTopic = new AdminEventModel({
           eventName,
@@ -69,6 +70,7 @@ export const eventsController = new Elysia({
           isEventEnded: false,
           managedBy: null,
           delta,
+          ticketPrefix,
           eventsDateString: datetime,
           eventType,
           price,
@@ -107,14 +109,14 @@ export const eventsController = new Elysia({
         delta: t.Optional(
           t.String({
             default: "{}",
-          }),
+          })
         ),
       }),
       detail: {
         description: "Create Event",
         summary: "Create Event",
       },
-    },
+    }
   )
   .get(
     "/all",
@@ -163,7 +165,7 @@ export const eventsController = new Elysia({
         description: "Get Events",
         summary: "Get Events",
       },
-    },
+    }
   )
   .delete(
     "/:id",
@@ -206,7 +208,7 @@ export const eventsController = new Elysia({
         description: "Delete event",
         summary: "Delete event",
       },
-    },
+    }
   )
   .put(
     "/:id",
@@ -314,7 +316,7 @@ export const eventsController = new Elysia({
         description: "Update event",
         summary: "Update event",
       },
-    },
+    }
   )
   .get(
     "/:id",
@@ -350,5 +352,5 @@ export const eventsController = new Elysia({
         description: "Get event",
         summary: "Get event",
       },
-    },
+    }
   );

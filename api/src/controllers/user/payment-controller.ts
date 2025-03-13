@@ -1,4 +1,5 @@
 import { UserModel } from "@/models";
+import { PaymentModel } from "@/models/payment-model";
 import { StoreType } from "@/types";
 import crypto from "crypto";
 import Elysia, { t } from "elysia";
@@ -21,7 +22,7 @@ export const paymentController = new Elysia({
         return { error: "User not found" };
       }
 
-      const { productInfo, amount } = body;
+      const { productInfo, amount, eventId, tickets } = body;
 
       const key = process.env.PAYU_KEY || "";
       const salt = process.env.PAYU_SALT || "";
@@ -46,6 +47,19 @@ export const paymentController = new Elysia({
 
       const hash = crypto.createHash("sha512").update(hashString).digest("hex");
 
+      const paymentEntry = new PaymentModel({
+        txnId: uniqueId,
+        hash,
+        status: "Started",
+        userId: user._id,
+        eventId: eventId,
+        amount: amount,
+        formString: "",
+        message: "Payment started",
+        pgResponse: "",
+        ticketCount: tickets,
+      });
+
       let formHtml = `
       <form
         id="payuForm"
@@ -61,19 +75,21 @@ export const paymentController = new Elysia({
         <input type="hidden" name="phone" value="${user.mobile}" />
         <input
           type="hidden"
-          name="surl"
-          value="https://wenoxo.com/"
+          name="surl" value="https://aprisio.com/api/user/paymentz?status=failed&hash=${hash}&txnId=${paymentEntry._id}"
         />
         <input
           type="hidden"
           name="furl"
-          value="http://localhost:3001/failed"
+          value="https://aprisio.com/api/user/paymentz?status=failed&hash=${hash}&txnId=${paymentEntry._id}"
         />
         <input type="hidden" name="hash" value="${hash}" />
-
-        <Button type="submit">Pay Now</Button>
+ 
       </form>
       `;
+
+      paymentEntry.formString = formHtml;
+
+      await paymentEntry.save();
 
       return { formHtml };
     } catch (error) {
@@ -85,6 +101,8 @@ export const paymentController = new Elysia({
     body: t.Object({
       productInfo: t.String(),
       amount: t.Number(),
+      eventId: t.String(),
+      tickets: t.Number(),
     }),
   }
 );
