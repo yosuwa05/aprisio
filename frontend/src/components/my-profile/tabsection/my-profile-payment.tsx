@@ -66,17 +66,17 @@ export const MyProfilePayments = () => {
         </div>
       ) : data && data.pages && data?.pages.length > 0 ? (
         data.pages.map((page, pageIndex) =>
-          page.tickets.length > 0 ? (
-            page.tickets.map((group: any, postIndex: number) => (
-              <React.Fragment key={group?._id}>
-                <MyProfilePaymentCard group={group?.group} />
+          page?.tickets?.length > 0 ? (
+            page?.tickets?.map((ticket: any, postIndex: number) => (
+              <React.Fragment key={ticket?._id}>
+                <MyProfilePaymentCard ticket={ticket} />
               </React.Fragment>
             ))
           ) : (
             <p
               key={`${pageIndex}-no-groups`}
               className='text-gray-500 text-xs font-semibold'>
-              No Groups found
+              No Payments found
             </p>
           )
         )

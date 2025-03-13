@@ -367,11 +367,15 @@ export const EventsController = new Elysia({
   })
   .get("/paidtickets", async ({ set, store, query }) => {
     try {
-      const { page, limit, userId } = query;
+      const userId = (store as StoreType)["id"];
+      console.log(userId)
+      const { page, limit } = query;
       const _page = Number(page) || 1;
       const _limit = Number(limit) || 10;
-      const tickets = await TicketModel.find({})
-        .populate("eventId", "eventName")
+      const tickets = await TicketModel.find({
+        userId
+      })
+        .populate("eventId")
         .sort({ createdAt: -1, _id: -1 })
         .skip((_page - 1) * _limit)
         .limit(_limit)

@@ -25,7 +25,7 @@ const TicketEntrySchema = new Schema<ITicketEntry>({
 const TicketSchema = new Schema<ITicket>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User" },
-    eventId: { type: Schema.Types.ObjectId, default: "" },
+    eventId: { type: Schema.Types.ObjectId, ref: "AdminEvents" },
     ticketPrice: { type: Number, default: 0 },
     amount: { type: Number, default: 0 },
     gst: { type: Number, default: 0 },
