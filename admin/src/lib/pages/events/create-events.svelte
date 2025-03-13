@@ -5,7 +5,6 @@
 	import { Label } from '$lib/components/ui/label';
 	import * as Select from '$lib/components/ui/select/index';
 	import { queryClient } from '$lib/query-client';
-	import type { DateValue } from '@internationalized/date';
 	import { createMutation } from '@tanstack/svelte-query';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
@@ -39,14 +38,13 @@
 		}
 	]);
 
-	let selectedDate: any = $state<DateValue | any>();
 	let contentRef = $state<HTMLElement | null>(null);
 	let file = $state<any>(null);
 
 	const createManagerMutation = createMutation({
 		mutationFn: (data: any) =>
 			edit ? _axios.put(`/events/${$eventsStore.id}`, data) : _axios.post('/events/create', data),
-		onSuccess({}) {
+		onSuccess() {
 			queryClient.refetchQueries({
 				queryKey: ['events fetch']
 			});
@@ -61,7 +59,6 @@
 					subHeading: ''
 				}
 			];
-			selectedDate = undefined;
 
 			if (elem) elem.value = '';
 			if (quill) {
@@ -105,33 +102,35 @@
 				});
 
 				if (!valid) return;
-				// if (!selectedDate) return toast.error('Please select a date');
-				if (!file) return toast.error('Please select an image');
-
-				// for (let i = 0; i < rules.length; i++) {
-				// 	if (rules[i].heading == '' || rules[i].subHeading == '') {
-				// 		return toast.error('Please fill all the fields in the rule section');
-				// 	}
-				// }
+				if (!file && !edit) return toast.error('Please select an image');
 
 				const content = quill.root.innerHTML;
 
 				let formData = new FormData();
 
 				formData.append('eventName', _data.eventName);
-				formData.append('datetime', JSON.stringify(_data.datetime));
-				formData.append('expirydatetime', JSON.stringify(_data.expirydatetime));
+
+				formData.append('datetime', _data.datetime);
+				formData.append('expirydatetime', _data.expirydatetime);
+
 				formData.append('organiserName', _data.organiserName);
 				formData.append('biography', _data.biography);
 				formData.append('mapLink', _data.mapLink);
 				formData.append('location', _data.location);
-				formData.append('eventImage', file);
+				if (file) {
+					formData.append('eventImage', file);
+				}
+
+				if (quill) {
+					const delta = JSON.stringify(quill.getContents());
+					formData.append('delta', delta);
+				}
 				formData.append('eventType', _data.eventType);
 				formData.append('price', _data.price);
 				formData.append('availableTickets', _data.availableTickets);
-				// formData.append('eventRules', JSON.stringify(rules));
+
 				formData.append('description', content);
-				console.log(_data);
+
 				$createManagerMutation.mutate(formData);
 			}
 		}
@@ -140,20 +139,36 @@
 	$effect(() => {
 		if (edit) {
 			$form.eventName = $eventsStore.eventName;
+			$form.datetime = new Date($eventsStore.datetime).toISOString().slice(0, 16);
+			$form.location = $eventsStore.location;
+			$form.price = $eventsStore.price;
+			$form.availableTickets = $eventsStore.availableTickets;
+			$form.mapLink = $eventsStore.mapLink;
+			$form.expirydatetime = new Date($eventsStore.expirydatetime).toISOString().slice(0, 16);
+			$form.organiserName = $eventsStore.organiserName;
+			$form.biography = $eventsStore.biography;
+			$form.description = $eventsStore.description;
+
+			if (quill && $eventsStore.delta) {
+				quill.setContents(JSON.parse($eventsStore.delta));
+			}
 		} else {
 			$form.eventName = '';
+			$form.datetime = '';
+			$form.location = '';
+			$form.price = '';
+			$form.availableTickets = '';
+			$form.mapLink = '';
+			$form.expirydatetime = '';
+			$form.organiserName = '';
+			$form.biography = '';
+			$form.description = '';
+
+			if (quill) {
+				quill.setContents([]);
+			}
 		}
 	});
-
-	function addRule() {
-		rules = [...rules, { heading: '', subHeading: '' }];
-	}
-
-	function deleteRule(index: number) {
-		if (rules.length > 1) {
-			rules = rules.filter((_, i) => i !== index);
-		}
-	}
 </script>
 
 <svelte:head>
@@ -191,28 +206,6 @@
 			</div>
 		</div>
 
-		<!-- <div class="mt-1">
-			<Label>Event Date</Label>
-
-			<div>
-				<Popover.Root>
-					<Popover.Trigger
-						class={cn(
-							buttonVariants({
-								variant: 'outline',
-								class: 'w-full justify-start text-left font-normal'
-							}),
-							!selectedDate && 'text-muted-foreground'
-						)}
-					>
-						{selectedDate || 'Select Date'}
-					</Popover.Trigger>
-					<Popover.Content bind:ref={contentRef} class="w-auto p-0">
-						<Calendar type="single" bind:value={selectedDate} />
-					</Popover.Content>
-				</Popover.Root>
-			</div>
-		</div> -->
 		<div class="grid grid-cols-2 gap-4 py-2">
 			<div>
 				<Label>Event Name</Label>
@@ -355,35 +348,7 @@
 		<div class="col-span-2 flex items-center justify-between">
 			<div class="h-[30px] p-2">Event Notes</div>
 		</div>
-		<!-- <div class="no-scrollbar h-[150px] overflow-y-scroll">
-			{#each rules as rule, index}
-				<div class="col-span-2 mb-2 flex items-center gap-4">
-					<Input class="mt-1 flex-1 pr-10" placeholder="Rule Heading" bind:value={rule.heading} />
-					<Input
-						class="mt-1 flex-1 pr-10"
-						placeholder="Rule Subheading"
-						bind:value={rule.subHeading}
-					/>
 
-					{#if index == 0}
-						<Button type="button" variant="outline" onclick={addRule} class="w-[40px]">
-							<Plus />
-						</Button>
-					{/if}
-
-					{#if index > 0}
-						<Button
-							type="button"
-							variant="outline"
-							onclick={() => deleteRule(index)}
-							class="w-[40px]"
-						>
-							<Delete />
-						</Button>
-					{/if}
-				</div>
-			{/each}
-		</div> -->
 		<div id="editor" class="overflow-y-auto"></div>
 		<div class="my-7 flex w-full justify-end gap-2">
 			<Button

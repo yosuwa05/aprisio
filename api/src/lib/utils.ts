@@ -1,3 +1,4 @@
+import { customAlphabet } from "nanoid";
 import { PasetoUtil } from "./paseto";
 
 export const slugify = (text: string) => {
@@ -19,4 +20,12 @@ export const validateToken = async (token: string) => {
   }
 
   return payload.payload;
+};
+
+export const generateEventId = () => {
+  const nanoid = customAlphabet(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    10,
+  );
+  return `EVT-${nanoid()}`;
 };

@@ -15,7 +15,14 @@ export const eventsStore = writable({
 	expirydatetime: '',
 	organiserName: '',
 	biography: '',
-	description: ''
+	description: '',
+	eventImage: '',
+	delta: ''
+});
+
+export const manageLayoutStore = writable({
+	singleEventSelected: false,
+	selectedId: ''
 });
 
 type StoreProps = {
@@ -27,37 +34,34 @@ type StoreProps = {
 	eventRules: any[];
 	eventType: string;
 	price: string;
-	availableTickets: string
+	availableTickets: string;
 	mapLink: string;
 	expirydatetime: string;
 	organiserName: string;
 	biography: string;
-	description: string
+	description: string;
+	eventImage: string;
+	delta: string;
 };
 
 export type eventStore = Writable<StoreProps>;
 
 export const _topicsSchema = z.object({
-	datetime: z
-		.string({
-			required_error: 'Date Time  is required'
-		}),
-	expirydatetime: z
-		.string({
-			required_error: 'Date Time  is required'
-		}),
-	mapLink: z
-		.string({
-			required_error: 'Map Link is required'
-		}),
-	organiserName: z
-		.string({
-			required_error: 'Organiser Name  is required'
-		}),
-	biography: z
-		.string({
-			required_error: 'Biography is required'
-		}),
+	datetime: z.string({
+		required_error: 'Date Time  is required'
+	}),
+	expirydatetime: z.string({
+		required_error: 'Date Time  is required'
+	}),
+	mapLink: z.string({
+		required_error: 'Map Link is required'
+	}),
+	organiserName: z.string({
+		required_error: 'Organiser Name  is required'
+	}),
+	biography: z.string({
+		required_error: 'Biography is required'
+	}),
 	eventName: z
 		.string({
 			message: 'Event name is required'
@@ -70,17 +74,12 @@ export const _topicsSchema = z.object({
 		})
 		.max(100),
 	eventType: z.enum(['online', 'offline']),
-	price: z
-		.union([z.string(), z.number()])
-		.transform((val) => val.toString()),
+	price: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 
-	availableTickets: z
-		.union([z.string(), z.number()])
-		.transform((val) => val.toString()),
-	description: z
-		.string({
-			required_error: 'Biography is required'
-		}),
+	availableTickets: z.union([z.string(), z.number()]).transform((val) => val.toString()),
+	description: z.string({
+		required_error: 'Biography is required'
+	})
 });
 
 export type EventsStoreProps = {

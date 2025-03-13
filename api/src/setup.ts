@@ -5,11 +5,14 @@ import { logger } from "@rasla/logify";
 import { Elysia } from "elysia";
 import mongoose from "mongoose";
 import { baseRouter } from "./controllers";
+import { generateEventId } from "./lib/utils";
 import { EventModel } from "./models";
 
 const app = new Elysia();
 
 app.use(cors());
+
+console.log(generateEventId());
 
 const URL = process.env.DB_URL;
 
@@ -27,7 +30,7 @@ try {
 app.use(
   logger({
     level: "info",
-  })
+  }),
 );
 
 app.use(
@@ -41,12 +44,12 @@ app.use(
         if (new Date() > new Date(event.date)) {
           await EventModel.updateOne(
             { _id: event._id },
-            { $set: { isEventEnded: true } }
+            { $set: { isEventEnded: true } },
           );
         }
       }
     },
-  })
+  }),
 );
 
 // let res = await sendNotification(
@@ -82,7 +85,7 @@ app.use(
         },
       },
     },
-  })
+  }),
 );
 
 app.onError(({ code, error }) => {

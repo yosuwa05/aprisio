@@ -1,4 +1,5 @@
-import { saveFile } from "@/lib/file-s3";
+import { deleteFile, saveFile } from "@/lib/file-s3";
+import { generateEventId } from "@/lib/utils";
 import { AdminEventModel } from "@/models/admin-events.model";
 import Elysia, { t } from "elysia";
 
@@ -13,7 +14,21 @@ export const eventsController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { datetime, eventImage, eventName, location, eventType, price, availableTickets, mapLink, expirydatetime, organiserName, biography, description } = body;
+      const {
+        datetime,
+        eventImage,
+        eventName,
+        location,
+        eventType,
+        price,
+        availableTickets,
+        mapLink,
+        expirydatetime,
+        organiserName,
+        biography,
+        description,
+        delta,
+      } = body;
 
       try {
         let file = "";
@@ -34,16 +49,18 @@ export const eventsController = new Elysia({
         let finalDate = new Date(JSON.parse(datetime));
         let _finalDate = new Date(JSON.parse(expirydatetime));
 
-        // Check if conversion is successful
         if (isNaN(finalDate.getTime()) || isNaN(_finalDate.getTime())) {
           throw new Error("Invalid date format received");
         }
+
+        let eventId = generateEventId();
 
         const newTopic = new AdminEventModel({
           eventName,
           datetime: finalDate,
           expirydatetime: _finalDate,
           attendees: [],
+          eventId,
           mapLink: mapLink || "",
           organiserName: organiserName || "",
           biography: biography || "",
@@ -51,12 +68,12 @@ export const eventsController = new Elysia({
           location,
           isEventEnded: false,
           managedBy: null,
-          // rules: JSON.parse(eventRules),
+          delta,
           eventsDateString: datetime,
           eventType,
           price,
           availableTickets,
-          description
+          description,
         });
 
         await newTopic.save();
@@ -86,13 +103,18 @@ export const eventsController = new Elysia({
         mapLink: t.String(),
         organiserName: t.String(),
         biography: t.String(),
-        description: t.String()
+        description: t.String(),
+        delta: t.Optional(
+          t.String({
+            default: "{}",
+          }),
+        ),
       }),
       detail: {
         description: "Create Event",
         summary: "Create Event",
       },
-    }
+    },
   )
   .get(
     "/all",
@@ -141,7 +163,7 @@ export const eventsController = new Elysia({
         description: "Get Events",
         summary: "Get Events",
       },
-    }
+    },
   )
   .delete(
     "/:id",
@@ -184,5 +206,149 @@ export const eventsController = new Elysia({
         description: "Delete event",
         summary: "Delete event",
       },
-    }
+    },
+  )
+  .put(
+    "/:id",
+    async ({ set, params, body }) => {
+      const { id } = params;
+
+      try {
+        const {
+          eventImage,
+          eventName,
+          location,
+          eventType,
+          organiserName,
+          price,
+          availableTickets,
+          mapLink,
+          expirydatetime,
+          datetime,
+          biography,
+          description,
+          delta,
+        } = body;
+
+        const event = await AdminEventModel.findById(id);
+
+        if (!event) {
+          return {
+            message: "Event not found",
+          };
+        }
+
+        let fileName = "";
+
+        if (eventImage) {
+          const { filename, ok } = await saveFile(eventImage, "admin-events");
+
+          if (!ok) {
+            return {
+              message: "An error occurred while uploading the image.",
+              ok: false,
+            };
+          }
+
+          deleteFile(event.eventImage);
+
+          fileName = filename;
+        }
+
+        event.eventName = eventName || event.eventName;
+        // @ts-ignore
+        event.datetime = new Date(datetime) || event.datetime;
+        // @ts-ignore
+        event.expirydatetime = new Date(expirydatetime) || event.expirydatetime;
+        event.location = location || event.location;
+        event.price = Number(price ?? 0) || event.price;
+        event.availableTickets =
+          Number(availableTickets ?? 0) || event.availableTickets;
+        event.mapLink = mapLink || event.mapLink;
+        event.organiserName = organiserName || event.organiserName;
+        event.biography = biography || event.biography;
+        event.description = description || event.description;
+        event.delta = delta || event.delta;
+
+        if (fileName) {
+          event.eventImage = fileName;
+        }
+
+        await event.save();
+
+        set.status = 200;
+        return {
+          message: "Event Updated Successfully",
+          ok: true,
+        };
+      } catch (error: any) {
+        set.status = 500;
+        console.log(error);
+        return {
+          message: "An internal error occurred while updating event.",
+          ok: false,
+        };
+      }
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+      body: t.Object({
+        eventName: t.Optional(t.String()),
+        datetime: t.Optional(t.String()),
+        expirydatetime: t.Optional(t.String()),
+        location: t.Optional(t.String()),
+        eventImage: t.Optional(t.File()),
+        eventType: t.Optional(t.String()),
+        price: t.Optional(t.String()),
+        availableTickets: t.Optional(t.String()),
+        organiserName: t.Optional(t.String()),
+
+        mapLink: t.Optional(t.String()),
+        biography: t.Optional(t.String()),
+        description: t.Optional(t.String()),
+        delta: t.Optional(t.String()),
+      }),
+      detail: {
+        description: "Update event",
+        summary: "Update event",
+      },
+    },
+  )
+  .get(
+    "/:id",
+    async ({ params, set, store }) => {
+      const { id } = params;
+
+      try {
+        const event = await AdminEventModel.findById(id);
+
+        if (!event) {
+          return {
+            message: "Event not found",
+          };
+        }
+
+        return {
+          event,
+          ok: true,
+        };
+      } catch (error: any) {
+        set.status = 500;
+        return {
+          message: "An internal error occurred while fetching event.",
+          ok: false,
+        };
+      }
+    },
+    {
+      params: t.Object({
+        id: t.String(),
+      }),
+      detail: {
+        description: "Get event",
+        summary: "Get event",
+      },
+    },
   );

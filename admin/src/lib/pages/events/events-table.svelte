@@ -12,7 +12,7 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
-	import { eventsStore } from './events-store';
+	import { eventsStore, manageLayoutStore } from './events-store';
 
 	async function fetchTopics(limit = 10, page = 1, search = '') {
 		const res = await _axios.get(`/events/all?limit=${limit}&page=${page}&q=${search}`);
@@ -36,7 +36,7 @@
 	}
 
 	const query = createQuery({
-		queryKey: ['topics fetch'],
+		queryKey: ['events fetch'],
 		queryFn: () => fetchTopics(limit, page, search)
 	});
 
@@ -45,7 +45,7 @@
 			_axios.delete(`/events/${id}?permanent=${permanent}`),
 		onSuccess({ data }) {
 			queryClient.refetchQueries({
-				queryKey: ['topics fetch']
+				queryKey: ['events fetch']
 			});
 			toast(data?.message ?? 'Topic Edited');
 			modelOpen = false;
@@ -55,21 +55,31 @@
 		}
 	});
 
-	function formatDate(date: Date) {
-		return new Intl.DateTimeFormat('en-US', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric'
-		}).format(date);
+	function toggleEditMode(event: any) {
+		$eventsStore = {
+			mode: 'create',
+			id: event._id,
+			eventName: event.eventName,
+			datetime: event.datetime,
+			location: event.location,
+			eventRules: event.eventRules,
+			price: event.price,
+			eventType: event.eventType,
+			availableTickets: event.availableTickets,
+			mapLink: event.mapLink,
+			expirydatetime: event.expirydatetime,
+			organiserName: event.organiserName,
+			biography: event.biography,
+			description: event.description,
+			delta: event.delta,
+			eventImage: event.eventImage
+		};
 	}
 </script>
 
 <div>
-	<div class="text-maintext mx-auto mt-6 font-karla">
-		<div class="ml-auto w-[40%]">
+	<div class="text-maintext font-karla mx-auto mt-6">
+		<div class="ml-auto w-[30%]">
 			<div class="relative grid gap-2">
 				<Input
 					type={'text'}
@@ -118,7 +128,15 @@
 				{#each $query.data?.events || [] as event, i}
 					<Table.Row>
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
-						<Table.Cell>{event.eventName}</Table.Cell>
+						<Table.Cell
+							class="cursor-pointer capitalize hover:underline"
+							onclick={() => {
+								$manageLayoutStore.singleEventSelected = true;
+								$manageLayoutStore.selectedId = event._id;
+							}}
+						>
+							{event.eventName}
+						</Table.Cell>
 						<Table.Cell class="flex items-center capitalize"
 							>{formatDistanceToNow(new Date(event.createdAt))}</Table.Cell
 						>
@@ -137,7 +155,11 @@
 									(modelOpen = true), ($eventsStore = { ...$eventsStore, id: event._id })
 								)}
 							>
-								<Icon icon={'mingcute:delete-2-fill'} class="text-xl hover:text-red-500" />
+								<Icon icon={'iconoir:trash'} class="text-xl hover:text-red-500" />
+							</button>
+
+							<button onclick={() => toggleEditMode(event)}>
+								<Icon icon={'lucide:pencil'} class="text-xl hover:text-red-500" />
 							</button>
 						</Table.Cell>
 					</Table.Row>
@@ -146,21 +168,20 @@
 		</Table.Root>
 
 		<Dialog.Root open={modelOpen} onOpenChange={(e) => (modelOpen = e)}>
-			<Dialog.Content class="p-6">
+			<Dialog.Content class="w-[300px] p-6">
 				<Dialog.Header class="text-center">
-					<Dialog.Title class="text-center"
+					<Dialog.Title class="text-center leading-6"
 						>Do you want to delete this Event Permanently ?</Dialog.Title
 					>
 				</Dialog.Header>
 
-				<div class="flex justify-around gap-4">
+				<div class="flex flex-col justify-center gap-4">
 					<Button
-						class="w-full bg-red-500 font-bold text-white hover:bg-red-400"
+						class="bg-red-500 font-bold text-white hover:bg-red-400"
 						onclick={() => $deleteMutation.mutate({ id: $eventsStore.id, permanent: true })}
 						>Yes</Button
 					>
-					<Button class="w-full font-bold text-white" onclick={() => (modelOpen = false)}>No</Button
-					>
+					<Button class=" font-bold text-white" onclick={() => (modelOpen = false)}>No</Button>
 				</div>
 			</Dialog.Content>
 		</Dialog.Root>
