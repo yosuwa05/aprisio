@@ -3,14 +3,15 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import TableCaption from '$lib/components/ui/table/table-caption.svelte';
+	import { baseUrl } from '$lib/config';
 	import Icon from '@iconify/svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { format, formatDistanceToNow } from 'date-fns';
+	import { format } from 'date-fns';
 	import { Loader } from 'lucide-svelte';
 	import { manageLayoutStore } from './events-store';
 
 	async function fetchTopics(limit = 10, page = 1, search = '') {
-		const res = await _axios.get(`/events/all?limit=${limit}&page=${page}&q=${search}`);
+		const res = await _axios.get(`/events/ticketusers?limit=${limit}&page=${page}&q=${search}`);
 		const data = await res.data;
 		return data;
 	}
@@ -44,7 +45,7 @@
 	{#if $detailsQuery.isLoading && $detailsQuery.isRefetching}
 		<Loader class="mx-auto h-10 w-10" />
 	{:else if $detailsQuery.data}
-		<div class="text-maintext mx-auto mt-6 flex gap-5 font-karla">
+		<div class="text-maintext font-karla mx-auto mt-6 flex gap-5">
 			<Button
 				size="icon"
 				onclick={() => {
@@ -96,32 +97,30 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#each $query.data?.events || [] as event, i}
+			{#each $query.data?.ticketusers || [] as event, i}
 				<Table.Row>
 					<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
-					<Table.Cell
-						class="cursor-pointer capitalize hover:underline"
-						onclick={() => {
-							$manageLayoutStore.singleEventSelected = true;
-							$manageLayoutStore.selectedId = event._id;
-						}}
-					>
-						{event.eventName}
+					<Table.Cell class="cursor-pointer capitalize hover:underline">
+						{event.userId?.name}
 					</Table.Cell>
-					<Table.Cell class="flex items-center capitalize"
-						>{formatDistanceToNow(new Date(event.createdAt))}</Table.Cell
+					<Table.Cell class="flex items-center capitalize">
+						{event.userId?.mobile}</Table.Cell
 					>
 					<Table.Cell>
-						{event?.availableTickets}
+						{event.userId?.email}
 					</Table.Cell>
 					<Table.Cell>
-						{event?.attendees?.length}
+						{event?.ticketCount}
 					</Table.Cell>
 					<Table.Cell>
-						{event?.availableTickets - event?.attendees?.length}
+						{event?.amount}
 					</Table.Cell>
 					<Table.Cell class="flex gap-2">
-						<button>
+						<button
+							onclick={() => {
+								window.open(baseUrl + '/admin?id=' + event._id);
+							}}
+						>
 							<Icon icon={'bytesize:download'} class="text-xl hover:text-red-500" />
 						</button>
 					</Table.Cell>

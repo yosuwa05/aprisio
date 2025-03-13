@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
 import chevronleft from "@img/icons/blue-chevron-left.svg";
+import paymentfailed from "@img/images/paymentfailed.png";
 import paymentsuccess from "@img/images/paymentsuccess.png";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -56,12 +57,12 @@ export default function PaymentSuccess() {
         </div>
       )}
 
-      {!isLoading && !data?.ok && (
+      {!isLoading && !data?.ok && data?.message != "Ticket already sold" && (
         <div className="flex flex-col items-center text-center max-w-sm">
           <Image
             loading="eager"
-            src={paymentsuccess}
-            alt="Payment Successful"
+            src={paymentfailed}
+            alt="Payment Failed"
             className="object-contain h-60 w-60 max-w-full"
           />
 
@@ -70,6 +71,24 @@ export default function PaymentSuccess() {
               Payment Failed!
             </h1>
             <p className="text-lg text-[#7A7A7A]">Kindly try again.</p>
+          </div>
+        </div>
+      )}
+
+      {!isLoading && !data?.ok && data?.message == "Ticket already sold" && (
+        <div className="flex flex-col items-center text-center max-w-sm">
+          <Image
+            loading="eager"
+            src={paymentsuccess}
+            alt="Tickets Sold"
+            className="object-contain h-60 w-60 max-w-full"
+          />
+
+          <div className="pt-10 flex flex-col gap-4 font-roboto">
+            <h1 className="text-3xl sm:text-4xl text-[#191818] font-semibold">
+              Ticket Sold!
+            </h1>
+            <p className="text-lg text-[#7A7A7A]">Thanks for your purchase!</p>
           </div>
         </div>
       )}
@@ -97,8 +116,8 @@ export default function PaymentSuccess() {
             </div>
             <div className="flex items-center justify-between text-sm sm:text-lg">
               <span className="text-[#7A7A7A]">Tickets</span>
-              <span className="text-[#362629] font-medium">
-                {data?.tickets?.length}
+              <span className="text-[#362629] font-medium uppercase">
+                {data?.tickets?.ticketId}
               </span>
             </div>
             <div className="flex items-center justify-between text-sm sm:text-lg">

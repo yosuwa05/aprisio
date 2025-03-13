@@ -5,19 +5,6 @@ import axios from "axios";
 import crypto from "crypto";
 import Elysia, { t } from "elysia";
 
-const generateTicketNumbers = (
-  prefix: string,
-  count: number,
-  lastSoldTicketNumber: number
-) => {
-  let tickets = [];
-  for (let i = 1; i <= count; i++) {
-    let ticketNumber = String(lastSoldTicketNumber + i).padStart(5, "0");
-    tickets.push(`${prefix}${ticketNumber}`);
-  }
-  return tickets;
-};
-
 export const paymentNoAuthController = new Elysia({
   prefix: "/paymentz",
   detail: {
@@ -157,16 +144,13 @@ export const paymentNoAuthController = new Elysia({
           let prefix = event.ticketPrefix;
           let lastSoldTicketNumber = event.lastSoldTicketNumber;
 
-          const tickets = generateTicketNumbers(
-            prefix,
-            count,
-            lastSoldTicketNumber
-          );
-
-          paymentEntry.tickets = tickets.map((ticket) => ({
-            ticketId: ticket,
+          let ticket = {
+            ticketId:
+              prefix + String(lastSoldTicketNumber + 1).padStart(5, "0"),
             ticketPdf: "",
-          }));
+          };
+
+          paymentEntry.tickets = ticket;
 
           const tickettrack = new TicketModel({
             userId: paymentEntry.userId,
@@ -176,10 +160,8 @@ export const paymentNoAuthController = new Elysia({
             txnId: paymentEntry.txnId,
             paymentTrack: paymentEntry._id,
             ticketPrice: paymentEntry.amount,
-            tickets: tickets.map((ticket) => ({
-              ticketId: ticket,
-              ticketPdf: "",
-            })),
+            tickets: ticket,
+            ticketCount: count,
           });
 
           await tickettrack.save();
@@ -197,7 +179,7 @@ export const paymentNoAuthController = new Elysia({
             message: "Payment Successful",
             event,
             count,
-            tickets,
+            tickets: ticket,
             amount: paymentEntry.amount,
             tax: 0,
             transactionDate: paymentEntry.createdAt,

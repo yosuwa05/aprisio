@@ -16,7 +16,7 @@ interface IPayment {
   pgResponse: string;
   amount: number;
   ticketCount: number;
-  tickets: ITicketEntry[];
+  tickets: ITicketEntry;
   createdAt: Date;
 }
 
@@ -37,7 +37,7 @@ const PaymentSchema = new Schema<IPayment>(
     pgResponse: { type: String, default: "" },
     amount: { type: Number, default: 0 },
     ticketCount: { type: Number, default: 0 },
-    tickets: [TicketEntrySchema],
+    tickets: TicketEntrySchema,
   },
   {
     timestamps: true,
