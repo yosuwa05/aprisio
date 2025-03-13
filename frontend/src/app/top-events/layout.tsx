@@ -10,8 +10,10 @@ export default function CommunityLayout({
 }>) {
   return (
     <div>
-      <Topbar />
-      <TopCommunityBar />
+      <div className="sticky top-[0px] z-50 bg-white py-2">
+        <Topbar />
+        <TopCommunityBar />
+      </div>
 
       {children}
     </div>
