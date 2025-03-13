@@ -9,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard | Events</title>
+	<title>Dashboard | Admin Events</title>
 	<meta name="description" content="dashboard for aprisio." />
 </svelte:head>
 
@@ -17,7 +17,7 @@
 	value={$topicsStore.mode}
 	class="w-full p-4"
 	onValueChange={(value) => {
-		goto(`/admin/dashboard/events?mode=${value}`);
+		goto(`/admin/dashboard/adminevents?mode=${value}`);
 		$eventsStore = {
 			mode: value,
 			id: '',
@@ -39,10 +39,10 @@
 	<Tabs.List>
 		<Tabs.Trigger value="list" class="flex items-center">
 			<Icon class="h-4 w-4" icon="tabler:table" />
-			<span class="ml-2">Events List</span>
+			<span class="ml-2">Admin Events</span>
 		</Tabs.Trigger>
 		<Tabs.Trigger value="create">
-			<Icon class="h-4 w-4" icon="mi:user-add" />
+			<Icon class="h-4 w-4" icon="gridicons:create" />
 			<span class="ml-2"> Create Events</span>
 		</Tabs.Trigger>
 	</Tabs.List>

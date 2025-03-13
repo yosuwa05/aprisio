@@ -1,21 +1,17 @@
 <script lang="ts">
 	import { _axios } from '$lib/_axios';
-	import { Button, buttonVariants } from '$lib/components/ui/button';
-	import { Calendar } from '$lib/components/ui/calendar';
+	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Label } from '$lib/components/ui/label';
-	import * as Popover from '$lib/components/ui/popover';
+	import * as Select from '$lib/components/ui/select/index';
 	import { queryClient } from '$lib/query-client';
-	import { cn } from '$lib/utils';
 	import type { DateValue } from '@internationalized/date';
 	import { createMutation } from '@tanstack/svelte-query';
-	import { Delete, Plus } from 'lucide-svelte';
+	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { _topicsSchema, eventsStore } from './events-store';
-	import * as Select from '$lib/components/ui/select/index';
-	import { onMount } from 'svelte';
 	let edit = $state(false);
 	$effect(() => {
 		edit = $eventsStore.mode == 'create' && $eventsStore.id ? true : false;
@@ -340,7 +336,7 @@
 						$form.eventType = value;
 					}}
 				>
-					<Select.Trigger class="mt-1 pr-10">
+					<Select.Trigger class="mt-1 pr-10 capitalize">
 						{$form.eventType ? $form.eventType : 'Select Event Type'}
 					</Select.Trigger>
 					<Select.Content>
@@ -389,8 +385,12 @@
 			{/each}
 		</div> -->
 		<div id="editor" class="overflow-y-auto"></div>
-		<div class="my-7 flex w-full justify-center">
-			<Button class="w-[40%] text-white" type="submit" disabled={$createManagerMutation.isPending}>
+		<div class="my-7 flex w-full justify-end gap-2">
+			<Button
+				class="w-[120px] text-white"
+				type="submit"
+				disabled={$createManagerMutation.isPending}
+			>
 				{edit ? 'Update' : $createManagerMutation.isPending ? 'Creating...' : 'Create'}
 			</Button>
 		</div>

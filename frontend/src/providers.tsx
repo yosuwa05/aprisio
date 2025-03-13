@@ -24,8 +24,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           }
 
           onMessageListener().then((payload: any) => {
-            console.log("Message received:", payload);
-
             if (Navigator) {
               navigator.serviceWorker.ready.then((registration) => {
                 registration.showNotification(payload.data.title, {

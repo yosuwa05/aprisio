@@ -1,5 +1,7 @@
-import { CommentModel, PostModel } from "@/models";
+import { sendNotification } from "@/lib/firebase";
+import { CommentModel, PostModel, UserModel } from "@/models";
 import { CommentLikeModel } from "@/models/commentlikes";
+import { NotificationModel } from "@/models/notificationmodel";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
@@ -31,6 +33,30 @@ export const commentsController = new Elysia({
           $inc: { commentsCount: 1 },
         });
 
+        const post = await PostModel.findById(postId).lean();
+
+        if (post) {
+          const author = await UserModel.findById(post.author).lean();
+
+          if (author && author.fcmToken) {
+            await sendNotification(
+              author.fcmToken,
+              "Someone commented on your post",
+              "Your post has been commented on.",
+            );
+
+            const newNotification = new NotificationModel({
+              user: author._id,
+              type: "comment",
+              content: "Your post has been commented on.",
+              from: userId,
+              post: postId,
+              title: "New Comment",
+            });
+            await newNotification.save();
+          }
+        }
+
         set.status = 201;
         return {
           message: "Comment added successfully",
@@ -53,7 +79,7 @@ export const commentsController = new Elysia({
         parentCommentId: t.Optional(t.String()),
       }),
       detail: { description: "Add a comment", summary: "Add a comment" },
-    }
+    },
   )
   .post(
     "/like",
@@ -114,46 +140,51 @@ export const commentsController = new Elysia({
         description: "Like or unlike comment",
         summary: "Like or unlike comment",
       },
-    }
-  )
-  .delete("/", async ({ body, set, store }) => {
-    try {
-      const { commentId } = body;
-
-      const comment = await CommentModel.findById(commentId);
-
-      if (!comment) {
-        set.status = 400;
-        return { message: "Comment not found" };
-      }
-
-      if (comment.user.toString() !== (store as StoreType)["id"]) {
-        set.status = 403;
-        return { message: "You are not authorized to delete this comment" };
-      }
-
-      const childComments = await CommentModel.find({ parentComment: commentId });
-
-      if (childComments.length > 0) {
-        await CommentModel.deleteMany({ parentComment: commentId });
-      }
-
-      await CommentModel.findByIdAndDelete(commentId);
-
-      set.status = 200;
-      return { message: "Comment deleted" };
-    } catch (error: any) {
-      console.error(error);
-      set.status = 500;
-      return { message: "Internal server error" };
-    }
-  }, {
-    body: t.Object({
-      commentId: t.String(),
-    }),
-    detail: {
-      description: "Delete a comment",
-      summary: "Delete a comment",
     },
-  });
+  )
+  .delete(
+    "/",
+    async ({ body, set, store }) => {
+      try {
+        const { commentId } = body;
 
+        const comment = await CommentModel.findById(commentId);
+
+        if (!comment) {
+          set.status = 400;
+          return { message: "Comment not found" };
+        }
+
+        if (comment.user.toString() !== (store as StoreType)["id"]) {
+          set.status = 403;
+          return { message: "You are not authorized to delete this comment" };
+        }
+
+        const childComments = await CommentModel.find({
+          parentComment: commentId,
+        });
+
+        if (childComments.length > 0) {
+          await CommentModel.deleteMany({ parentComment: commentId });
+        }
+
+        await CommentModel.findByIdAndDelete(commentId);
+
+        set.status = 200;
+        return { message: "Comment deleted" };
+      } catch (error: any) {
+        console.error(error);
+        set.status = 500;
+        return { message: "Internal server error" };
+      }
+    },
+    {
+      body: t.Object({
+        commentId: t.String(),
+      }),
+      detail: {
+        description: "Delete a comment",
+        summary: "Delete a comment",
+      },
+    },
+  );

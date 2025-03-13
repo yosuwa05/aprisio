@@ -5,6 +5,7 @@
 	import Icon from '@iconify/svelte';
 	import { createMutation } from '@tanstack/svelte-query';
 	import { toast } from 'svelte-sonner';
+	import logo from '../../public/logo.png';
 
 	const routes = $state([
 		// {
@@ -44,8 +45,8 @@
 			subRoutes: '-'
 		},
 		{
-			name: 'Events',
-			href: '/admin/dashboard/events/',
+			name: 'Admin Events',
+			href: '/admin/dashboard/adminevents/',
 			icon: 'material-symbols:event-rounded',
 			subRoutes: '-'
 		}
@@ -73,7 +74,7 @@
 </script>
 
 <div
-	class="font-karla hidescrollbarthumb hidden h-screen min-w-[300px] max-w-[300px] border-r border-r-[#6F7E5F] bg-[#6F7E5F] text-white md:block"
+	class="hidescrollbarthumb hidden h-screen min-w-[300px] max-w-[300px] border-r border-r-[#6F7E5F] bg-[#6F7E5F] font-karla text-white md:block"
 >
 	<div
 		class="hidescrollbarthumb flex h-[calc(100vh)] flex-col justify-between gap-2 overflow-y-auto"
@@ -82,7 +83,7 @@
 			<div
 				class="flex min-h-[50px] cursor-pointer items-center justify-center gap-2 border-b-[1px] border-b-[#9faf8e]"
 			>
-				<h1 class="font-lato p-4 text-center text-2xl font-bold">APRISIO</h1>
+				<img src={logo} alt="logo" />
 			</div>
 		</button>
 

@@ -9,6 +9,7 @@
 	import { queryClient } from '$lib/query-client';
 	import Icon from '@iconify/svelte';
 	import { createMutation, createQuery } from '@tanstack/svelte-query';
+	import { formatDistanceToNow } from 'date-fns';
 	import { tick } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { eventsStore } from './events-store';
@@ -67,7 +68,7 @@
 </script>
 
 <div>
-	<div class="text-maintext font-karla mx-auto mt-6">
+	<div class="text-maintext mx-auto mt-6 font-karla">
 		<div class="ml-auto w-[40%]">
 			<div class="relative grid gap-2">
 				<Input
@@ -106,9 +107,10 @@
 				<Table.Row class="">
 					<Table.Head class="w-[100px]">Sl.No</Table.Head>
 					<Table.Head>Topic Name</Table.Head>
-
 					<Table.Head class="">Created At</Table.Head>
-					<Table.Head>Members</Table.Head>
+					<Table.Head>Total Tickets</Table.Head>
+					<Table.Head>Sold Tickets</Table.Head>
+					<Table.Head>Balance Tickets</Table.Head>
 					<Table.Head>Actions</Table.Head>
 				</Table.Row>
 			</Table.Header>
@@ -117,28 +119,19 @@
 					<Table.Row>
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
 						<Table.Cell>{event.eventName}</Table.Cell>
-						<Table.Cell class="flex items-center"
-							>{formatDate(new Date(event.createdAt))}</Table.Cell
+						<Table.Cell class="flex items-center capitalize"
+							>{formatDistanceToNow(new Date(event.createdAt))}</Table.Cell
 						>
+						<Table.Cell>
+							{event?.availableTickets}
+						</Table.Cell>
 						<Table.Cell>
 							{event?.attendees?.length}
 						</Table.Cell>
+						<Table.Cell>
+							{event?.availableTickets - event?.attendees?.length}
+						</Table.Cell>
 						<Table.Cell class="flex gap-2">
-							<!-- <button
-								onclick={() => {
-									$eventsStore = {
-										id: event._id,
-										mode: 'create',
-										eventName: event.topicName,
-										date: event.createdAt,
-										eventRules: [],
-										location: ''
-									};
-								}}
-							>
-								<Icon icon={'basil:edit-outline'} class="text-xl hover:text-red-500" />
-							</button> -->
-
 							<button
 								onclick={() => (
 									(modelOpen = true), ($eventsStore = { ...$eventsStore, id: event._id })

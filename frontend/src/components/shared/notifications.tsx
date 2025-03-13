@@ -20,28 +20,37 @@ import { Skeleton } from "../ui/skeleton";
 export const Notifications = () => {
   const user = useGlobalAuthStore((state) => state.user);
 
-  const limit = 5;
+  const limit = 10;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
-      queryKey: ["notifications"],
-      queryFn: async ({ pageParam = 1 }) => {
-        const res = await _axios.get(
-          `/notification/all?page=${pageParam}&limit=${limit}&userId=${user?.id}`,
-        );
-        return res?.data;
-      },
-      initialPageParam: 1,
-      getNextPageParam: (lastPage, allPages) => {
-        const nextPage = allPages?.length + 1;
-        return lastPage?.notifications?.length === limit ? nextPage : undefined;
-      },
-    });
+  const {
+    data,
+    fetchNextPage,
+    refetch,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: ["notifications"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const res = await _axios.get(
+        `/notification/all?page=${pageParam}&limit=${limit}&userId=${user?.id}`,
+      );
+      return res?.data;
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) => {
+      const nextPage = allPages?.length + 1;
+      return lastPage?.notifications?.length === limit ? nextPage : undefined;
+    },
+  });
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]">
+        <Button
+          onClick={() => refetch()}
+          className="border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]"
+        >
           <Bell />
         </Button>
       </SheetTrigger>
