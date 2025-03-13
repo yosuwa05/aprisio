@@ -1,4 +1,5 @@
 import { EventModel } from "@/models";
+import { AdminEventModel } from "@/models/admin-events.model";
 import { GroupModel } from "@/models/group.model";
 import Elysia, { t } from "elysia";
 
@@ -297,6 +298,66 @@ export const EventsController = new Elysia({
       page: t.Optional(t.String()),
       limit: t.Optional(t.String()),
       groupId: t.String(),
+    }),
+  })
+  .get("/admin-events", async ({ set, query }) => {
+    try {
+      const { page, limit } = query;
+      const _page = Number(page) || 1;
+      const _limit = Number(limit) || 10;
+
+      const events = await AdminEventModel.find({
+      })
+        .sort({ createdAt: -1, _id: -1 })
+        .skip((_page - 1) * _limit)
+        .limit(_limit)
+        .select("-unnecessaryField")
+        .lean();
+
+      set.status = 200;
+      return { events, ok: true };
+
+    } catch (error: any) {
+      console.log(error);
+      set.status = 500;
+      return { ok: false, message: "Internal Server Error" };
+    }
+  }, {
+    detail: {
+      summary: "Admin Events ",
+      description: "Admin events",
+    },
+    query: t.Object({
+      page: t.Optional(t.String()),
+      limit: t.Optional(t.String()),
+    }),
+  })
+  .get("/viewadmin-event", async ({ set, query }) => {
+    try {
+      const { eventId } = query;
+      const event = await AdminEventModel.findById(eventId)
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not fonund"
+        }
+      }
+      set.status = 200;
+      return { event, ok: true };
+
+    } catch (error: any) {
+      console.log(error);
+      set.status = 500;
+      return { ok: false, message: "Internal Server Error" };
+    }
+  }, {
+    detail: {
+      summary: "Admin Events ",
+      description: "Admin events",
+    },
+    query: t.Object({
+      eventId: t.String()
     }),
   });
 
