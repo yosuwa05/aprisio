@@ -2,6 +2,7 @@ import { AdminEventModel } from "@/models/admin-events.model";
 import { PaymentModel } from "@/models/payment-model";
 import { TicketModel } from "@/models/ticket-tracking";
 import axios from "axios";
+import crypto from "crypto";
 import Elysia, { t } from "elysia";
 
 const generateTicketNumbers = (
@@ -68,10 +69,9 @@ export const paymentNoAuthController = new Elysia({
   )
   .get(
     "/",
-    async ({ query, set, redirect }) => {
+    async ({ query, set }) => {
+      const { status, txnId } = query;
       try {
-        const { hash, status, txnId } = query;
-
         const paymentEntry = await PaymentModel.findOne({
           _id: txnId,
         });
@@ -81,7 +81,16 @@ export const paymentNoAuthController = new Elysia({
           return { ok: false, message: "Unprocessable Entity" };
         }
 
+        const existingTicket = await TicketModel.findOne({
+          txnId: paymentEntry.txnId,
+        });
+
+        if (existingTicket) {
+          return { ok: false, message: "Ticket already sold" };
+        }
+
         const key = process.env.PAYU_KEY || "";
+        const salt = process.env.PAYU_SALT || "";
 
         const event = await AdminEventModel.findById(paymentEntry.eventId);
 
@@ -90,19 +99,35 @@ export const paymentNoAuthController = new Elysia({
           return { ok: false, message: "Event not found" };
         }
 
-        if (status === "failed") {
+        if (status == "failed") {
           paymentEntry.status = "Failed";
           paymentEntry.pgResponse = "{}";
           paymentEntry.message = "Payment Failed!";
 
           await paymentEntry.save();
 
-          return redirect("https://aprisio.com/feed", 307);
-        } else if (status === "success") {
+          return { ok: false, message: "Payment Failed!" };
+        }
+
+        if (status == "success") {
+          let hashString =
+            key +
+            "|" +
+            "verify_payment" +
+            "|" +
+            paymentEntry.txnId +
+            "|" +
+            salt;
+
+          const hash = crypto
+            .createHash("sha512")
+            .update(hashString)
+            .digest("hex");
+
           const encodedParams = new URLSearchParams();
           encodedParams.set("key", key);
           encodedParams.set("command", "verify_payment");
-          encodedParams.set("var1", paymentEntry.txnId);
+          encodedParams.set("var1", paymentEntry.txnId || "");
           encodedParams.set("hash", hash);
 
           const options = {
@@ -112,56 +137,76 @@ export const paymentNoAuthController = new Elysia({
             data: encodedParams,
           };
 
-          axios
-            .request(options)
-            .then(async (res) => {
-              if (res.data.status == 0) {
-                paymentEntry.status = "Failed";
-                paymentEntry.pgResponse = "{}";
-                paymentEntry.message = "Payment Failed! Suspect fraud";
+          const res = await axios.request(options);
 
-                await paymentEntry.save();
+          if (res.data.status == 0) {
+            paymentEntry.status = "Failed";
+            paymentEntry.pgResponse = "{}";
+            paymentEntry.message = "Payment Failed! Suspect fraud";
 
-                return { ok: false, message: "Not a valid payment! Go Away!" };
-              } else {
-                paymentEntry.status = "Success";
-                paymentEntry.pgResponse = JSON.stringify(res.data);
-                paymentEntry.message = "Payment Successful";
+            await paymentEntry.save();
 
-                let count = paymentEntry.ticketCount;
-                let prefix = event.ticketPrefix;
-                let lastSoldTicketNumber = event.lastSoldTicketNumber;
+            return { ok: false, message: "Not a valid payment! Go Away!" };
+          }
 
-                const tickets = generateTicketNumbers(
-                  prefix,
-                  count,
-                  lastSoldTicketNumber
-                );
+          paymentEntry.status = "Success";
+          paymentEntry.pgResponse = JSON.stringify(res.data);
+          paymentEntry.message = "Payment Successful";
 
-                paymentEntry.tickets = tickets;
+          let count = paymentEntry.ticketCount;
+          let prefix = event.ticketPrefix;
+          let lastSoldTicketNumber = event.lastSoldTicketNumber;
 
-                const tickettrack = new TicketModel({
-                  userId: paymentEntry.userId,
-                  amount: paymentEntry.amount,
-                  eventId: paymentEntry.eventId,
-                  gst: 0,
-                  paymentTrack: paymentEntry._id,
-                  ticketPrice: paymentEntry.amount,
-                  tickets: tickets,
-                });
+          const tickets = generateTicketNumbers(
+            prefix,
+            count,
+            lastSoldTicketNumber
+          );
 
-                await tickettrack.save();
-                await paymentEntry.save();
+          paymentEntry.tickets = tickets.map((ticket) => ({
+            ticketId: ticket,
+            ticketPdf: "",
+          }));
 
-                return { ok: true, message: "Payment Successful" };
-              }
-            })
-            .catch((err) => console.error(err));
+          const tickettrack = new TicketModel({
+            userId: paymentEntry.userId,
+            amount: paymentEntry.amount,
+            eventId: paymentEntry.eventId,
+            gst: 0,
+            txnId: paymentEntry.txnId,
+            paymentTrack: paymentEntry._id,
+            ticketPrice: paymentEntry.amount,
+            tickets: tickets.map((ticket) => ({
+              ticketId: ticket,
+              ticketPdf: "",
+            })),
+          });
+
+          await tickettrack.save();
+
+          event.soldTickets = event.soldTickets + count;
+          event.reminingTickets = event.reminingTickets - count;
+          event.lastSoldTicketNumber = lastSoldTicketNumber + count;
+
+          await paymentEntry.save();
+
+          await event.save();
+
+          return {
+            ok: true,
+            message: "Payment Successful",
+            event,
+            count,
+            tickets,
+            amount: paymentEntry.amount,
+            tax: 0,
+            transactionDate: paymentEntry.createdAt,
+          };
         }
 
-        await paymentEntry.save();
-
-        return redirect("http://localhost:3001/feed");
+        return {
+          ok: false,
+        };
       } catch (error) {
         console.error(error);
         return { error: error };
@@ -170,7 +215,7 @@ export const paymentNoAuthController = new Elysia({
     {
       query: t.Object({
         status: t.String(),
-        hash: t.String(),
+
         txnId: t.Any(),
       }),
     }

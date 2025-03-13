@@ -281,7 +281,7 @@ export default function BuyTickets() {
                         <Input
                           type="number"
                           name="mobileNumber"
-                          value={userDetails.mobileNumber}
+                          value={userDetails?.mobileNumber}
                           onChange={handleInputChange}
                           className="pt-2"
                         />
