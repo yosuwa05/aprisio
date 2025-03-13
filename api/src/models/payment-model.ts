@@ -1,5 +1,10 @@
 import { model, Schema, Types } from "mongoose";
 
+interface ITicketEntry {
+  ticketId: string;
+  ticketPdf: string;
+}
+
 interface IPayment {
   txnId: string;
   hash: string;
@@ -11,8 +16,14 @@ interface IPayment {
   pgResponse: string;
   amount: number;
   ticketCount: number;
-  tickets: string[];
+  tickets: ITicketEntry;
+  createdAt: Date;
 }
+
+const TicketEntrySchema = new Schema<ITicketEntry>({
+  ticketId: { type: String },
+  ticketPdf: { type: String },
+});
 
 const PaymentSchema = new Schema<IPayment>(
   {
@@ -26,7 +37,7 @@ const PaymentSchema = new Schema<IPayment>(
     pgResponse: { type: String, default: "" },
     amount: { type: Number, default: 0 },
     ticketCount: { type: Number, default: 0 },
-    tickets: [{ type: String, default: "" }],
+    tickets: TicketEntrySchema,
   },
   {
     timestamps: true,

@@ -1,6 +1,7 @@
 import { deleteFile, saveFile } from "@/lib/file-s3";
 import { generateEventId, generateTicketPrefix } from "@/lib/utils";
 import { AdminEventModel } from "@/models/admin-events.model";
+import { TicketModel } from "@/models/ticket-tracking";
 import Elysia, { t } from "elysia";
 
 export const eventsController = new Elysia({
@@ -71,10 +72,13 @@ export const eventsController = new Elysia({
           managedBy: null,
           delta,
           ticketPrefix,
+          reminingTickets: availableTickets,
           eventsDateString: datetime,
           eventType,
           price,
           availableTickets,
+          soldTickets: 0,
+          lastSoldTicketNumber: 1,
           description,
         });
 
@@ -352,6 +356,36 @@ export const eventsController = new Elysia({
         description: "Get event",
         summary: "Get event",
       },
-    },
+    }
   )
+  .get(
+    "/ticketusers",
+    async ({ query }) => {
+      try {
+        const { page = 1, limit = 10, q } = query;
 
+        const ticketusers = await TicketModel.find({})
+          .populate("userId", "name email mobile")
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit);
+
+        return {
+          ticketusers,
+          ok: true,
+        };
+      } catch (error: any) {
+        console.error(error);
+        return {
+          error,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        page: t.Optional(t.Number()),
+        limit: t.Optional(t.Number()),
+        q: t.Optional(t.String()),
+      }),
+    }
+  );

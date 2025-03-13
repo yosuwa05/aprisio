@@ -1,10 +1,93 @@
+import { AdminEventModel } from "@/models/admin-events.model";
+import { TicketModel } from "@/models/ticket-tracking";
 import { Elysia, t } from "elysia";
+import path from "node:path";
+import puppeteer from "puppeteer";
 import { deleteFile, saveFile } from "../../lib/file";
 import { AdminAuthModel } from "../../models/adminmodel";
 
 export const adminController = new Elysia({
   prefix: "/admin",
 })
+  .get("/", async ({ query, set }) => {
+    try {
+      const { id } = query;
+
+      const ticket = await TicketModel.findById(id);
+
+      if (!ticket) {
+        return { message: "Ticket not found" };
+      }
+
+      let browser;
+
+      const event: any = await AdminEventModel.findById(ticket.eventId);
+
+      if (!event) {
+        set.status = 40;
+        return {
+          message: "Event not Found",
+          ok: false,
+        };
+      }
+
+      let content = await Bun.file("html/template.html").text();
+      content = content
+        .replace("{{ticket_ID}}", ticket.tickets.ticketId)
+        .replace("{{EventName}}", event.eventName)
+        .replace("{{Date}}", event.createdAt)
+        .replace("{{Location}}", event.location)
+        .replace("{{UserName}}", "Sudhan")
+        .replace("{{BookingDate}}", "21 Oct 2025 ")
+        .replace("{{totalTickets}}", "5")
+        .replace("{{Amount}}", "500")
+        .replace("{{GST}}", "0")
+        .replace("{{TotalAmount}}", "2500");
+
+      browser = await puppeteer.launch({
+        headless: true,
+        browser: "chrome",
+        // executablePath:
+        //   ".cache/puppeteer/chrome/linux-131.0.6778.204/chrome-linux64/chrome",
+        // args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      });
+      const page = await browser.newPage();
+      await page.setViewport({
+        width: 1920,
+        height: 1080,
+        deviceScaleFactor: 1,
+      });
+      await page.setContent(content);
+
+      const pdfPath = path.join(process.cwd(), "ticket.pdf");
+
+      await page.pdf({
+        path: pdfPath,
+        format: "A4",
+        scale: 1,
+        waitForFonts: true,
+      });
+
+      const file = Bun.file(pdfPath);
+      const buffer = await file.arrayBuffer();
+      const blob = new Blob([buffer], { type: "application/pdf" });
+
+      set.headers["Content-Type"] = "application/pdf";
+      set.headers["Content-Disposition"] = `attachment; filename=invoice.pdf`;
+
+      if (browser) {
+        browser.close();
+      }
+
+      return blob;
+    } catch (error) {
+      console.log(error);
+      return {
+        error,
+        status: "error",
+      };
+    }
+  })
   .get(
     "/:id",
     async ({ params }) => {

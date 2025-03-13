@@ -75,15 +75,16 @@ export const paymentController = new Elysia({
         <input type="hidden" name="phone" value="${user.mobile}" />
         <input
           type="hidden"
-          name="surl" value="https://aprisio.com/api/user/paymentz?status=failed&hash=${hash}&txnId=${paymentEntry._id}"
+          name="surl" value="https://aprisio.com/paymentz?status=success&txnId=${paymentEntry._id}"
         />
         <input
           type="hidden"
           name="furl"
-          value="https://aprisio.com/api/user/paymentz?status=failed&hash=${hash}&txnId=${paymentEntry._id}"
+          value="https://aprisio.com/paymentz?status=failed&txnId=${paymentEntry._id}"
         />
         <input type="hidden" name="hash" value="${hash}" />
- 
+
+        <button type="submit">Pay Now</button>
       </form>
       `;
 
