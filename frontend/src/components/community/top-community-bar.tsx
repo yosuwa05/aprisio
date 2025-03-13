@@ -63,26 +63,25 @@ export function TopCommunityBar() {
   });
 
   return (
-    <div className="bg-[#F2F5F6] h-[50px] flex items-center overflow-hidden">
-      <div className="flex gap-4 items-center ml-4 md:ml-12 w-full">
-        <div className="flex items-center gap-2">
+    <div className='bg-[#F2F5F6] h-[50px] flex items-center overflow-hidden'>
+      <div className='flex gap-4 items-center ml-4 md:ml-12 w-full'>
+        <div className='flex items-center gap-2'>
           <h2
-            className="font-bold text-sm md:text-lg text-contrasttext text-nowrap flex gap-2 items-center cursor-pointer"
-            onClick={() => router.push("/feed")}
-          >
+            className='font-bold text-sm md:text-lg text-contrasttext text-nowrap flex gap-2 items-center cursor-pointer'
+            onClick={() => router.push("/feed")}>
             Explore Community
           </h2>
-          <Icon icon="octicon:chevron-right-12" />
+          <Icon icon='octicon:chevron-right-12' />
 
           <Icon
             onClick={() => setSheetOpen(true)}
-            icon="mage:filter"
-            className="text-lg md:text-xl cursor-pointer"
+            icon='mage:filter'
+            className='text-lg md:text-xl cursor-pointer'
           />
 
           <Sheet onOpenChange={setSheetOpen} open={sheetOpen}>
             <SheetTrigger></SheetTrigger>
-            <SheetContent className="p-0" side={"left"}>
+            <SheetContent className='p-0' side={"left"}>
               <SheetHeader>
                 <SheetTitle></SheetTitle>
                 <SheetDescription></SheetDescription>
@@ -99,31 +98,28 @@ export function TopCommunityBar() {
             direction: "ltr",
             containScroll: "keepSnaps",
           }}
-          className="w-full overflow-hidden"
-        >
-          <CarouselContent className="mr-16">
+          className='w-full overflow-hidden'>
+          <CarouselContent className='mr-16'>
             {!isLoading &&
               data &&
               data.topics?.map((topic: Topic) => (
                 <CarouselItem
                   key={topic._id}
-                  className="basis-1/1 flex justify-center"
-                >
-                  <Menubar className="bg-transparent border-none">
+                  className='basis-1/1 flex justify-center'>
+                  <Menubar className='bg-transparent border-none'>
                     <MenubarMenu>
                       <MenubarTrigger
-                        className="text-lg text-fadedtext flex gap-2 items-center bg-transparent cursor-pointer font-normal w-fit data-[state=open]:text-contrasttext"
+                        className='text-lg text-fadedtext flex gap-2 items-center bg-transparent cursor-pointer font-normal w-fit data-[state=open]:text-contrasttext'
                         onClick={(e) => {
                           e.stopPropagation();
                           setSelectedTopic(topic);
-                        }}
-                      >
-                        <div className="text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none ">
+                        }}>
+                        <div className='text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none '>
                           {topic.topicName}
                         </div>
                         <Icon
-                          icon="icon-park-outline:down"
-                          className="text-xl my-auto h-full  mt-[5px] text-[#5D5A5A]"
+                          icon='icon-park-outline:down'
+                          className='text-xl my-auto h-full  mt-[5px] text-[#5D5A5A]'
                         />
                       </MenubarTrigger>
 
@@ -132,19 +128,18 @@ export function TopCommunityBar() {
                           [...Array(3)].map((_, index) => (
                             <Skeleton
                               key={index}
-                              className="w-32 h-6 my-2 rounded-md"
+                              className='w-32 h-6 my-2 rounded-md'
                             />
                           ))
                         ) : !isFetching && subTopics?.subTopics?.length > 0 ? (
                           subTopics?.subTopics.map(
                             (subTopic: any, subTopicIndex: number) => (
                               <MenubarItem
-                                className="cursor-pointer"
+                                className='cursor-pointer'
                                 onClick={() =>
                                   router.push(`/feed/explore/${subTopic?.slug}`)
                                 }
-                                key={subTopicIndex}
-                              >
+                                key={subTopicIndex}>
                                 {subTopic?.subTopicName}
                               </MenubarItem>
                             )
