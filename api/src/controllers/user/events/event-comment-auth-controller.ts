@@ -158,4 +158,6 @@ export const EventscommentsController = new Elysia({
       description: "Delete a comment",
       summary: "Delete a comment",
     },
-  });
+  })
+
+

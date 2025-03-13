@@ -54,6 +54,10 @@ export function MyProfileTopBar() {
       slug: "joined-groups",
       name: "Joined Groups",
     },
+    {
+      slug: "payment",
+      name: "Payments",
+    },
     // {
     //   slug: "settings",
     //   name: "Settings",
@@ -65,26 +69,25 @@ export function MyProfileTopBar() {
     (state) => state.setActiveMyProfileTab
   );
   return (
-    <div className="bg-[#F2F5F6] h-[50px] flex items-center overflow-hidden">
-      <div className="flex gap-2  md:gap-4 items-center ml-4 md:ml-6 w-full">
-        <div className="flex items-center gap-2">
+    <div className='bg-[#F2F5F6] h-[50px] flex items-center overflow-hidden'>
+      <div className='flex gap-2  md:gap-4 items-center ml-4 md:ml-6 w-full'>
+        <div className='flex items-center gap-2'>
           <h2
-            className="font-bold text-sm md:text-lg text-contrasttext text-nowrap flex gap-2 items-center cursor-pointer"
-            onClick={() => router.push("/feed")}
-          >
+            className='font-bold text-sm md:text-lg text-contrasttext text-nowrap flex gap-2 items-center cursor-pointer'
+            onClick={() => router.push("/feed")}>
             Explore Community
           </h2>
           {/* <Icon icon='octicon:chevron-right-12' /> */}
 
           <Icon
             onClick={() => setSheetOpen(true)}
-            icon="mage:filter"
-            className="text-lg md:text-xl cursor-pointer"
+            icon='mage:filter'
+            className='text-lg md:text-xl cursor-pointer'
           />
 
           <Sheet onOpenChange={setSheetOpen} open={sheetOpen}>
             <SheetTrigger></SheetTrigger>
-            <SheetContent className="p-0" side={"left"}>
+            <SheetContent className='p-0' side={"left"}>
               <SheetHeader>
                 <SheetTitle></SheetTitle>
                 <SheetDescription></SheetDescription>
@@ -101,15 +104,13 @@ export function MyProfileTopBar() {
             direction: "ltr",
             containScroll: "keepSnaps",
           }}
-          className="w-full overflow-hidden"
-        >
-          <CarouselContent className="mr-16">
+          className='w-full overflow-hidden'>
+          <CarouselContent className='mr-16'>
             {activeTabs?.map(
               (topic: { slug: string; name: string }, index: number) => (
                 <CarouselItem
                   key={index}
-                  className="basis-1/1 flex gap-5  justify-center"
-                >
+                  className='basis-1/1 flex gap-5  justify-center'>
                   <div
                     key={index}
                     onClick={() => {
@@ -119,8 +120,7 @@ export function MyProfileTopBar() {
                       topic.slug == activeTab
                         ? "text-contrasttext font-bold"
                         : "text-fadedtext"
-                    }`}
-                  >
+                    }`}>
                     {topic.name}
                   </div>
                 </CarouselItem>

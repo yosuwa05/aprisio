@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Document</title>
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      width: 500px;
+    }
+
+    .section1,
+    .section1-no-image {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .section1 div img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .eventdetails {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .ticketId {
+      color: #716e6e;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .eventName {
+      color: #353535;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .date {
+      color: #716e6e;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .section2 {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 15px;
+    }
+
+    .user-info {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      font-size: 14px;
+    }
+
+    .dashed {
+      margin: 20px 0;
+      border-bottom: 1px dashed #716e6e;
+    }
+
+    .section3 {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      padding: 5px 0;
+    }
+
+    .total {
+      font-weight: bold;
+      font-size: 16px;
+    }
+  </style>
+  <body>
+    <main class="container">
+      <div class="section1-no-image">
+        <div class="eventdetails">
+          <div class="ticketId">Ticket ID : {{ticket_ID}}</div>
+          <div class="eventName">{{EventName}}</div>
+          <div class="date">{{Date}}</div>
+          <div class="date">{{Location}}</div>
+        </div>
+      </div>
+
+      <div class="section2">
+        <div class="user-info">
+          <div><strong>User Name</strong></div>
+          <div>{{UserName}}</div>
+        </div>
+        <div class="user-info">
+          <div><strong>Date of Booking</strong></div>
+          <div>{{BookingDate}}</div>
+        </div>
+      </div>
+
+      <div class="dashed"></div>
+
+      <h3>Payment Details</h3>
+      <div class="section3">
+        <div>Total Tickets</div>
+        <div>{{totalTickets}}</div>
+      </div>
+      <div class="section3">
+        <div>Amount</div>
+        <div>₹{{Amount}}</div>
+      </div>
+      <div class="section3">
+        <div>GST</div>
+        <div>{{GST}}</div>
+      </div>
+      <div class="section3 total">
+        <div>Total Amount</div>
+        <div>₹{{TotalAmount}}</div>
+      </div>
+    </main>
+  </body>
+</html>

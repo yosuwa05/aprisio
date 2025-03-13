@@ -12,6 +12,7 @@ type myProfileTab =
   | "created-groups"
   | "joined-groups"
   | "settings"
+  | "payment"
   | "edit-profile";
 
 interface LayoutState {

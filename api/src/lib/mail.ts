@@ -44,7 +44,6 @@ export async function sendEmail(option: EmailOptions) {
       attachments: option.attachments,
     });
 
-    console.log(info);
 
     return {
       success: true,

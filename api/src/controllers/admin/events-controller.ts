@@ -351,4 +351,5 @@ export const eventsController = new Elysia({
         summary: "Get event",
       },
     },
-  );
+  )
+
