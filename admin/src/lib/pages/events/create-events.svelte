@@ -86,6 +86,7 @@
 					organiserName: $form.organiserName,
 					biography: $form.biography,
 					mapLink: $form.mapLink,
+					gst: $form.gst,
 					expirydatetime: $form.expirydatetime,
 					location: $form.location,
 					eventType: $form.eventType,
@@ -116,6 +117,7 @@
 				formData.append('organiserName', _data.organiserName);
 				formData.append('biography', _data.biography);
 				formData.append('mapLink', _data.mapLink);
+				formData.append('gst', _data.gst);
 				formData.append('location', _data.location);
 				if (file) {
 					formData.append('eventImage', file);
@@ -144,6 +146,8 @@
 			$form.price = $eventsStore.price;
 			$form.availableTickets = $eventsStore.availableTickets;
 			$form.mapLink = $eventsStore.mapLink;
+			$form.gst = $eventsStore.gst;
+
 			$form.expirydatetime = new Date($eventsStore.expirydatetime).toISOString().slice(0, 16);
 			$form.organiserName = $eventsStore.organiserName;
 			$form.biography = $eventsStore.biography;
@@ -159,6 +163,7 @@
 			$form.price = '';
 			$form.availableTickets = '';
 			$form.mapLink = '';
+			$form.gst = '';
 			$form.expirydatetime = '';
 			$form.organiserName = '';
 			$form.biography = '';
@@ -250,7 +255,7 @@
 				{#if $errors.price}<span class="invalid text-xs text-red-500">{$errors.price}</span>{/if}
 			</div>
 			<div>
-				<Label>Expiry Date</Label>
+				<Label>Booking Expiry Time and Date</Label>
 				<Input
 					class="mt-1 pr-10"
 					type="datetime-local"
@@ -275,6 +280,20 @@
 
 				{#if $errors.mapLink}<span class="invalid text-xs text-red-500">{$errors.mapLink}</span
 					>{/if}
+			</div>
+			<div>
+				<Label>Gst</Label>
+				<Input
+					class="mt-1 pr-10"
+					type="number"
+					min="0"
+					max="100"
+					aria-invalid={$errors.gst ? 'true' : undefined}
+					bind:value={$form.gst}
+					{...$constraints.gst}
+				/>
+
+				{#if $errors.gst}<span class="invalid text-xs text-red-500">{$errors.gst}</span>{/if}
 			</div>
 		</div>
 

@@ -29,6 +29,7 @@ export const eventsController = new Elysia({
         biography,
         description,
         delta,
+        gst
       } = body;
 
       try {
@@ -80,6 +81,7 @@ export const eventsController = new Elysia({
           soldTickets: 0,
           lastSoldTicketNumber: 1,
           description,
+          gst
         });
 
         await newTopic.save();
@@ -105,6 +107,7 @@ export const eventsController = new Elysia({
         eventImage: t.File(),
         eventType: t.String(),
         price: t.String(),
+        gst: t.String(),
         availableTickets: t.String(),
         mapLink: t.String(),
         organiserName: t.String(),
@@ -363,7 +366,6 @@ export const eventsController = new Elysia({
     async ({ query }) => {
       try {
         const { page = 1, limit = 10, q } = query;
-
         const searchQuery: any = {};
 
         if (q) {
@@ -373,9 +375,7 @@ export const eventsController = new Elysia({
             { "userId.name": { $regex: q, $options: "i" } },
           ];
         }
-
         const total = await TicketModel.countDocuments(searchQuery);
-
         const ticketusers = await TicketModel.find(searchQuery)
           .populate("userId", "name email mobile")
           .sort({ createdAt: -1 })
@@ -402,5 +402,6 @@ export const eventsController = new Elysia({
       }),
     }
   );
+
 
 

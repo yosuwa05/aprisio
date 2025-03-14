@@ -48,7 +48,7 @@ export default function MyProfileCard({ ticket }: any) {
           </Link>
         </div>
 
-        <div className='flex justify-between text-gray-600  font-medium mt-2 font-roboto'>
+        <div className='flex justify-between text-gray-600 gap-2 flex-wrap font-medium mt-2 font-roboto'>
           <p>Created: {formattedDate}</p>
           <p>Booked Tickets: {ticket?.ticketCount}</p>
         </div>

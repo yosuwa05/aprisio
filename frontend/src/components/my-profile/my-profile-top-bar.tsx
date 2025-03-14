@@ -47,6 +47,10 @@ export function MyProfileTopBar() {
       name: "Events Participated",
     },
     {
+      slug: "payment",
+      name: "Experiences",
+    },
+    {
       slug: "created-groups",
       name: "Created Groups",
     },
@@ -54,10 +58,7 @@ export function MyProfileTopBar() {
       slug: "joined-groups",
       name: "Joined Groups",
     },
-    {
-      slug: "payment",
-      name: "Payments",
-    },
+
     // {
     //   slug: "settings",
     //   name: "Settings",

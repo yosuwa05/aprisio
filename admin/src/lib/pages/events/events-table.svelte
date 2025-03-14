@@ -72,7 +72,8 @@
 			biography: event.biography,
 			description: event.description,
 			delta: event.delta,
-			eventImage: event.eventImage
+			eventImage: event.eventImage,
+			gst: event.gst
 		};
 	}
 </script>
