@@ -73,7 +73,7 @@ export const adminController = new Elysia({
         browser: "chrome",
         // executablePath:
         //   ".cache/puppeteer/chrome/linux-131.0.6778.204/chrome-linux64/chrome",
-        // args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
       });
       const page = await browser.newPage();
       await page.setViewport({
