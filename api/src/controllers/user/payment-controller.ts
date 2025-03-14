@@ -23,7 +23,7 @@ export const paymentController = new Elysia({
         return { error: "User not found" };
       }
 
-      const { productInfo, amount, eventId, tickets, name, emailId, mobileNumber } = body;
+      const { productInfo, amount, eventId, tickets, name, emailId, mobileNumber, subTotal, tax } = body;
 
       const event = await AdminEventModel.findById(eventId);
 
@@ -71,6 +71,8 @@ export const paymentController = new Elysia({
         userId: user._id,
         eventId: eventId,
         amount: amount,
+        subTotal: subTotal,
+        tax: tax,
         formString: "",
         message: "Payment started",
         pgResponse: "",
@@ -122,6 +124,8 @@ export const paymentController = new Elysia({
     body: t.Object({
       productInfo: t.String(),
       amount: t.Number(),
+      subTotal: t.Number(),
+      tax: t.Number(),
       eventId: t.String(),
       tickets: t.Number(),
       name: t.Optional(t.String()),

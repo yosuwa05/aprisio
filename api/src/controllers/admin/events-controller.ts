@@ -237,6 +237,7 @@ export const eventsController = new Elysia({
           biography,
           description,
           delta,
+          gst
         } = body;
 
         const event = await AdminEventModel.findById(id);
@@ -278,6 +279,8 @@ export const eventsController = new Elysia({
         event.biography = biography || event.biography;
         event.description = description || event.description;
         event.delta = delta || event.delta;
+        event.gst = Number(gst ?? 0) || event.gst;
+
 
         if (fileName) {
           event.eventImage = fileName;
@@ -313,8 +316,8 @@ export const eventsController = new Elysia({
         price: t.Optional(t.String()),
         availableTickets: t.Optional(t.String()),
         organiserName: t.Optional(t.String()),
-
         mapLink: t.Optional(t.String()),
+        gst: t.Optional(t.String()),
         biography: t.Optional(t.String()),
         description: t.Optional(t.String()),
         delta: t.Optional(t.String()),

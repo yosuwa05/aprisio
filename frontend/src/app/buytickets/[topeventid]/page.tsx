@@ -124,11 +124,13 @@ export default function BuyTickets() {
     if (!isTermsClicked) {
       return toast.success("Please agree to the terms before proceeding.");
     }
-
+    console.log(totalAmount, ticketCount, subtotalAmount, gstAmount);
     if (isPending) return;
     payuData({
       productInfo: "For Purchase of Ticket for " + data?.event?.eventName,
       amount: totalAmount,
+      subTotal: subtotalAmount,
+      tax: gstAmount,
       eventId: topeventid,
       tickets: ticketCount,
       name: userDetails.name,
@@ -140,7 +142,7 @@ export default function BuyTickets() {
   return (
     <main className='px-4 md:px-8 py-4 md:py-6 container mx-auto'>
       <div id='payuContainer' className='hidden'></div>
-      <div className='flex flex-col lg:flex-row gap-10 pt-6'>
+      <div className='flex  flex-col-reverse  lg:flex-row gap-10 pt-6'>
         <div className='w-full lg:w-1/4 flex-shrink-0'>
           <Image
             loading='eager'

@@ -184,7 +184,8 @@ export const paymentNoAuthController = new Elysia({
             count,
             tickets: ticket,
             amount: paymentEntry.amount,
-            tax: 0,
+            tax: paymentEntry.tax,
+            subTotal: paymentEntry.subTotal,
             transactionDate: paymentEntry.createdAt,
           };
         }

@@ -15,6 +15,8 @@ interface IPayment {
   message: string;
   pgResponse: string;
   amount: number;
+  subTotal: number;
+  tax: number;
   ticketCount: number;
   tickets: ITicketEntry;
   createdAt: Date;
@@ -39,6 +41,8 @@ const PaymentSchema = new Schema<IPayment>(
     message: { type: String, default: "" },
     pgResponse: { type: String, default: "" },
     amount: { type: Number, default: 0 },
+    subTotal: { type: Number, default: 0 },
+    tax: { type: Number, default: 0 },
     ticketCount: { type: Number, default: 0 },
     tickets: TicketEntrySchema,
     name: { type: String, default: "" },
