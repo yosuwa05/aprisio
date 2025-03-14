@@ -1,4 +1,5 @@
-import { UserModel } from "@/models";
+import { EventModel, UserModel } from "@/models";
+import { AdminEventModel } from "@/models/admin-events.model";
 import { PaymentModel } from "@/models/payment-model";
 import { StoreType } from "@/types";
 import crypto from "crypto";
@@ -12,7 +13,7 @@ export const paymentController = new Elysia({
   },
 }).post(
   "/generateHash",
-  async ({ body, store }) => {
+  async ({ body, store, set }) => {
     try {
       const userId = (store as StoreType)["id"];
 
@@ -23,6 +24,22 @@ export const paymentController = new Elysia({
       }
 
       const { productInfo, amount, eventId, tickets, name, emailId, mobileNumber } = body;
+
+      const event = await AdminEventModel.findById(eventId);
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not found"
+        }
+      }
+
+      if (tickets > event.reminingTickets) {
+        set.status = 400;
+        return {
+          message: `Only ${event.reminingTickets} ${event.reminingTickets === 1 ? "ticket" : "tickets"} are available`,
+        };
+      }
 
       const key = process.env.PAYU_KEY || "";
       const salt = process.env.PAYU_SALT || "";
@@ -98,7 +115,7 @@ export const paymentController = new Elysia({
       return { formHtml };
     } catch (error) {
       console.error(error);
-      return { error: "An error occurred" };
+      return { error: error };
     }
   },
   {

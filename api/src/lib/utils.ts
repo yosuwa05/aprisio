@@ -32,7 +32,7 @@ export const generateEventId = () => {
 
 export const generateTicketPrefix = () => {
   const nanoid = customAlphabet(
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     6
   );
   return `TK-${nanoid()}`;

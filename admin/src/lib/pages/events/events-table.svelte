@@ -144,10 +144,10 @@
 							{event?.availableTickets}
 						</Table.Cell>
 						<Table.Cell>
-							{event?.attendees?.length}
+							{event?.soldTickets}
 						</Table.Cell>
 						<Table.Cell>
-							{event?.availableTickets - event?.attendees?.length}
+							{event?.reminingTickets}
 						</Table.Cell>
 						<Table.Cell class="flex gap-2">
 							<button

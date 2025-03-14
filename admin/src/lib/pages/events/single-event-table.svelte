@@ -9,10 +9,14 @@
 	import { format } from 'date-fns';
 	import { Loader } from 'lucide-svelte';
 	import { manageLayoutStore } from './events-store';
+	import Paginator from '$lib/components/paginator.svelte';
+	import { tick } from 'svelte';
+	import { Input } from '$lib/components/ui/input';
 
 	async function fetchTopics(limit = 10, page = 1, search = '') {
 		const res = await _axios.get(`/events/ticketusers?limit=${limit}&page=${page}&q=${search}`);
 		const data = await res.data;
+		console.log(data);
 		return data;
 	}
 
@@ -29,7 +33,15 @@
 	let page = $state(1);
 	let limit = $state(7);
 	let search = $state('');
-
+	let debounceTimeout: any;
+	function debounceSearch() {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(async () => {
+			await tick();
+			page = 1;
+			$query.refetch();
+		}, 500);
+	}
 	const query = createQuery({
 		queryKey: ['events fetch 2'],
 		queryFn: () => fetchTopics(limit, page, search)
@@ -78,7 +90,33 @@
 			</div>
 		</div>
 	{/if}
-
+	<div class="ml-auto w-[30%]">
+		<div class="relative grid gap-2">
+			<Input
+				type={'text'}
+				required
+				class="pr-10"
+				placeholder={'Search Topics'}
+				bind:value={search}
+				oninput={debounceSearch}
+			/>
+			{#if !search}
+				<Icon
+					icon={'iconamoon:search'}
+					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+				/>
+			{:else}
+				<Icon
+					icon={'mdi:clear-outline'}
+					onclick={() => {
+						search = '';
+						debounceSearch();
+					}}
+					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+				/>
+			{/if}
+		</div>
+	</div>
 	<Table.Root class="mt-6">
 		{#if $query.isLoading}
 			<Table.Caption>Loading....</Table.Caption>
@@ -91,6 +129,7 @@
 				<Table.Head>User Name</Table.Head>
 				<Table.Head>Mobile</Table.Head>
 				<Table.Head class="">Email</Table.Head>
+				<Table.Head class="">Ticket Id</Table.Head>
 				<Table.Head>Tickets</Table.Head>
 				<Table.Head>Price</Table.Head>
 				<Table.Head>Download</Table.Head>
@@ -108,6 +147,9 @@
 					>
 					<Table.Cell>
 						{ticket.userId?.email}
+					</Table.Cell>
+					<Table.Cell>
+						{ticket?.tickets?.ticketId}
 					</Table.Cell>
 					<Table.Cell>
 						{ticket?.ticketCount}
@@ -128,4 +170,18 @@
 			{/each}
 		</Table.Body>
 	</Table.Root>
+	{#if !$query.isLoading && $query?.data?.total > 0}
+		<Paginator
+			total={$query?.data?.total || 0}
+			{limit}
+			{page}
+			callback={(_page: any) => {
+				if (_page === page) return;
+				page = _page;
+				$query.refetch();
+			}}
+		/>
+		<!-- {:else}
+			<p class="text-center text-xs">No Managers Found!</p> -->
+	{/if}
 </div>

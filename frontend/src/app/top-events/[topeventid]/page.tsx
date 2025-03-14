@@ -32,7 +32,7 @@ export default function ViewTopEventPage() {
   const router = useRouter();
 
   return (
-    <main className='px-4 md:px-8 py-4 md:py-6'>
+    <main className='px-4 md:px-8 py-4 md:py-6 container mx-auto'>
       {isLoading ? (
         <div className='flex h-[60vh] items-center justify-center'>
           <GlobalLoader />
@@ -50,8 +50,10 @@ export default function ViewTopEventPage() {
                 </h2>
               </div>
               <div className='text-contrasttext text-base font-sans'>
-                <h1 className='capitalize'>{data?.event?.location || ""}</h1>
-                <div className='capitalize'>
+                <h1 className='capitalize text-base  md:text-xl'>
+                  {data?.event?.location || ""}
+                </h1>
+                <div className='capitalize text-base  md:text-xl'>
                   Hosted by : {data?.event?.organiserName || ""}
                 </div>
               </div>
@@ -60,9 +62,12 @@ export default function ViewTopEventPage() {
               <Button
                 onClick={() => {
                   if (!user) return toast.error("Login to continue");
+                  if (data?.event?.reminingTickets === 0) {
+                    return toast.error("No tickets available");
+                  }
                   router.push("/buytickets/" + topeventid);
                 }}
-                className='bg-[#FCF7EA] hover:bg-[#FCF7EA] border border-gray-300 rounded-3xl text-black'>
+                className='bg-[#FCF7EA] hover:bg-[#FCF7EA] border border-gray-300 rounded-3xl text-black font-bold'>
                 Buy Tickets
               </Button>
             </div>
@@ -111,7 +116,7 @@ export default function ViewTopEventPage() {
                 dangerouslySetInnerHTML={{
                   __html: data?.event?.description,
                 }}
-                className='lg:w-2/3 !text-lg'></div>
+                className='lg:w-2/3 '></div>
 
               <Link href={data?.event?.mapLink} target='_blank'>
                 <h1 className='text-lg text-blue-800 font-medium font-roboto'>

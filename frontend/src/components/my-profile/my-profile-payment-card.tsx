@@ -13,6 +13,9 @@ export default function MyProfileCard({ ticket }: any) {
   const formattedDate = ticket?.eventId?.datetime
     ? format(parseISO(ticket.eventId.datetime), "MMM dd, yyyy HH:mm")
     : "Date not available";
+
+  const router = useRouter();
+
   return (
     <div
       className='p-4 w-full rounded-lg flex items-center gap-4 transition-all bg-white shadow-md'
@@ -29,7 +32,11 @@ export default function MyProfileCard({ ticket }: any) {
 
       <div className='flex flex-col w-full'>
         <div className='flex justify-between items-center'>
-          <h2 className='font-semibold text-lg'>
+          <h2
+            onClick={() => {
+              router.push(`/top-events/${ticket?.eventId?._id}`);
+            }}
+            className='font-semibold text-lg cursor-pointer'>
             {ticket?.eventId?.eventName}
           </h2>
           <Link

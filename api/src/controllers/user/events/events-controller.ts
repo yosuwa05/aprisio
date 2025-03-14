@@ -8,19 +8,30 @@ import path from "path";
 import { TicketModel } from "@/models/ticket-tracking";
 import { StoreType } from "@/types";
 import axios from "axios";
-import { parseISO, format } from 'date-fns';
+import { parseISO, format, isValid } from 'date-fns';
+
 
 function formatDateForPDF(dateString: any) {
   if (!dateString) {
-    return 'Date not available';
+    return "Date not available";
   }
-  try {
-    return format(parseISO(dateString), 'MMM dd, yyyy HH:mm');
-  } catch (error) {
-    console.error("Error formatting date:", error);
-    return 'Invalid Date';
+
+  let date;
+
+  if (typeof dateString === "string") {
+    date = parseISO(dateString);
+  } else {
+    date = new Date(dateString);
   }
+
+  if (!isValid(date)) {
+    console.error("Invalid date format:", dateString);
+    return "Invalid Date";
+  }
+
+  return format(date, "MMM dd, yyyy HH:mm");
 }
+
 
 const getBase64Image = async (imageUrl: string) => {
   try {

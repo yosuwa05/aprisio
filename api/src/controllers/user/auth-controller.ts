@@ -145,6 +145,7 @@ export const authController = new Elysia({
               name: user.name,
               id: user._id.toString(),
               image: user?.image,
+              mobileNumber: user?.mobile
             },
           };
         }

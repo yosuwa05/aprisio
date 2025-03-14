@@ -364,7 +364,19 @@ export const eventsController = new Elysia({
       try {
         const { page = 1, limit = 10, q } = query;
 
-        const ticketusers = await TicketModel.find({})
+        const searchQuery: any = {};
+
+        if (q) {
+          searchQuery.$or = [
+            { txnId: { $regex: q, $options: "i" } },
+            { "tickets.ticketId": { $regex: q, $options: "i" } },
+            { "userId.name": { $regex: q, $options: "i" } },
+          ];
+        }
+
+        const total = await TicketModel.countDocuments(searchQuery);
+
+        const ticketusers = await TicketModel.find(searchQuery)
           .populate("userId", "name email mobile")
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
@@ -372,6 +384,7 @@ export const eventsController = new Elysia({
 
         return {
           ticketusers,
+          total,
           ok: true,
         };
       } catch (error: any) {
@@ -389,3 +402,5 @@ export const eventsController = new Elysia({
       }),
     }
   );
+
+

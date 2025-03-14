@@ -13,6 +13,28 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { parseISO, format, isValid } from "date-fns";
+
+function formatDate(dateString: any) {
+  if (!dateString) {
+    return "Date not available";
+  }
+
+  let date;
+
+  if (typeof dateString === "string") {
+    date = parseISO(dateString);
+  } else {
+    date = new Date(dateString);
+  }
+
+  if (!isValid(date)) {
+    console.error("Invalid date format:", dateString);
+    return "Invalid Date";
+  }
+
+  return format(date, "MMM dd, yyyy HH:mm");
+}
 
 export default function BuyTickets() {
   const { topeventid } = useParams();
@@ -25,7 +47,7 @@ export default function BuyTickets() {
   const [userDetails, setUserDetails] = useState({
     name: user?.name || "",
     emailId: user?.email || "",
-    mobileNumber: "9994627465",
+    mobileNumber: user?.mobileNumber || "",
   });
 
   const [isPaymentStarted, setPaymentStarted] = useState(false);
@@ -47,6 +69,7 @@ export default function BuyTickets() {
         ...prev,
         name: user.name || "",
         emailId: user.email || "",
+        mobileNumber: user.mobileNumber,
       }));
     }
   }, [user]);
@@ -85,6 +108,9 @@ export default function BuyTickets() {
         }
       }
     },
+    onError(error: any) {
+      toast.error(error?.response?.data?.message);
+    },
   });
 
   function handlePayNow() {
@@ -105,7 +131,7 @@ export default function BuyTickets() {
   }
 
   return (
-    <main className='px-4 md:px-8 py-4 md:py-6'>
+    <main className='px-4 md:px-8 py-4 md:py-6 container mx-auto'>
       <div id='payuContainer' className='hidden'></div>
       <div className='flex flex-col lg:flex-row gap-10 pt-6'>
         <div className='w-full lg:w-1/4 flex-shrink-0'>
@@ -143,11 +169,11 @@ export default function BuyTickets() {
         <div className='lg:w-2/3'>
           <div className='flex flex-col gap-4'>
             <div className='flex flex-col gap-5'>
-              <h1 className='text-3xl md:text-4xl font-medium text-textcol font-roboto'>
+              <h1 className='text-3xl md:text-4xl font-normal text-textcol font-roboto'>
                 {data?.event?.eventName || "Event Name"}
               </h1>
-              <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-medium'>
-                {/* {formatEventDate(data?.event?.datetime)} */}
+              <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-normal'>
+                {formatDate(data?.event?.datetime)}
               </h2>
             </div>
             <div className='text-[#353535CC]/60 font-extrabold font-roboto text-lg pb-4'>
@@ -158,53 +184,55 @@ export default function BuyTickets() {
           <div
             style={{ boxShadow: "0px 2px 4px 0px #85858540" }}
             className='pt-3 bg-[#FFFFFF] p-6 rounded-lg'>
-            <div className='flex items-center gap-4 font-roboto'>
+            <div className='flex flex-nowrap items-center gap-4 sm:gap-6 font-roboto overflow-x-auto'>
               <button
                 onClick={() => setActiveStep(1)}
-                className={`group flex items-center gap-3 rounded-lg border border-contrasttext/30 ${
-                  activeStep === 2 && "border-none bg-transparent "
-                } px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none`}>
+                className={`group flex items-center gap-2 sm:gap-3 rounded-lg border border-contrasttext/30 ${
+                  activeStep === 2 && "border-none bg-transparent"
+                } px-4 sm:px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none`}>
                 <span
-                  className={`flex items-center justify-center w-8 h-8 rounded-full border border-current bg-contrasttext ${
-                    activeStep === 2 && "text-white bg-[#ADADAD] "
-                  } text-lg font-medium text-white`}>
+                  className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-current bg-contrasttext ${
+                    activeStep === 2 && "text-white bg-[#ADADAD]"
+                  } text-base sm:text-lg font-normal text-white`}>
                   1
                 </span>
                 <span
-                  className={`font-medium  ${
+                  className={`font-normal ${
                     activeStep === 2 ? "text-[#ADADAD]" : "text-contrasttext"
-                  } text-xl`}>
+                  } text-lg sm:text-xl`}>
                   Details
                 </span>
               </button>
 
               <button
-                className={`group flex items-center gap-3 rounded-lg px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none  ${
-                  activeStep === 2 && "border-contrasttext/30 border "
+                className={`group flex items-center gap-2 sm:gap-3 rounded-lg px-4 sm:px-5 py-2 transition-colors hover:bg-transparent focus:ring-3 focus:outline-none ${
+                  activeStep === 2 && "border-contrasttext/30 border"
                 }`}>
                 <span
-                  className={`flex items-center justify-center w-8 h-8 rounded-full border  text-lg font-medium text-[#ADADAD]  ${
+                  className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full border text-base sm:text-lg font-normal text-[#ADADAD] ${
                     activeStep === 2
-                      ? "bg-contrasttext text-white "
+                      ? "bg-contrasttext text-white"
                       : "border-[#ADADAD] bg-white"
                   }`}>
                   2
                 </span>
                 <span
-                  className={`font-medium text-xl ${
+                  className={`font-normal text-lg sm:text-xl ${
                     activeStep === 2 ? "text-contrasttext" : "text-[#ADADAD]"
-                  } `}>
+                  }`}>
                   Payment
                 </span>
               </button>
             </div>
-            {/* step 1 */}
+
             {activeStep === 1 && (
               <div>
                 {!isTicketSelect && (
                   <div>
-                    <div className='flex font-roboto items-center gap-16 pt-5'>
-                      <h1 className='text-2xl font-medium'>Add Ticket</h1>
+                    <div className='flex font-roboto flex-wrap justify-between md:justify-normal items-center gap-4  md:gap-16 pt-5'>
+                      <h1 className='text-xl  md:text-2xl font-normal'>
+                        Add Ticket
+                      </h1>
                       <div className='flex items-center'>
                         <div className='flex items-center rounded-lg border-[2px] border-gray-400 bg-gray-100'>
                           <button
@@ -230,10 +258,10 @@ export default function BuyTickets() {
                         </div>
                       </div>
                     </div>
-                    <div className='flex font-roboto items-center gap-16 pt-5'>
-                      <h1 className='text-2xl font-medium'>You Pay</h1>
+                    <div className='flex flex-wrap font-roboto items-center gap-4 md:gap-24 pt-5 justify-between md:justify-normal'>
+                      <h1 className=' md:text-2xl font-normal'>You Pay</h1>
                       <div className='flex items-center'>
-                        <h1 className='text-2xl font-medium'>
+                        <h1 className=' text-xl md:text-2xl font-normal'>
                           INR {totalAmount}
                         </h1>
                       </div>
@@ -257,7 +285,7 @@ export default function BuyTickets() {
 
                 {isTicketSelect && (
                   <aside className='mt-4'>
-                    <div className='grid grid-cols-2 gap-6 font-roboto'>
+                    <div className='grid md:grid-cols-2 gap-6 font-roboto'>
                       <div>
                         <Label className='text-base'>Name</Label>
                         <Input
@@ -325,20 +353,18 @@ export default function BuyTickets() {
               </div>
             )}
 
-            {/* step 2 */}
-
             {activeStep === 2 && (
-              <article className='mt-8 px-10'>
-                <div className='grid grid-cols-2'>
+              <article className='mt-6  md:mt-8   md:px-10'>
+                <div className='grid gap-6  md:grid-cols-2'>
                   <div>
-                    <h1 className='text-2xl md:text-4xl font-medium text-[#000000] font-roboto'>
+                    <h1 className='text-xl md:text-4xl font-normal text-[#000000] font-roboto'>
                       Order Summary
                     </h1>
-                    <div className='mt-8 flex flex-col gap-4'>
-                      <h1 className='text-xl md:text-2xl font-medium text-textcol font-roboto'>
+                    <div className='mt-3  md:mt-8 flex flex-col gap-2  md:gap-4'>
+                      <h1 className='text-lg md:text-2xl font-normal text-textcol font-roboto'>
                         {data?.event?.eventName || "Event Name"}
                       </h1>
-                      <h2 className='text-base md:text-lg text-[#64737A]  font-roboto font-medium'>
+                      <h2 className='text-base md:text-lg text-[#64737A]  font-roboto font-normal'>
                         {/* {formatEventDate(data?.event?.datetime)} */}
                       </h2>
                       <p className='text-textcol font-semibold'>
@@ -347,20 +373,20 @@ export default function BuyTickets() {
                     </div>
                   </div>
                   <div>
-                    <h1 className='text-2xl md:text-4xl font-medium text-[#000000] font-roboto'>
+                    <h1 className='text-xl md:text-4xl font-normal text-[#000000] font-roboto'>
                       Subtotal
                     </h1>
-                    <div className='mt-8 font-roboto'>
+                    <div className='mt-3  md:mt-8  font-roboto'>
                       <div className='flex justify-between items-center pb-2'>
-                        <div className='text-[#64737A] text-xl font-medium '>
-                          Quantity {ticketCount}
+                        <div className='text-[#64737A] text-lg  md:text-xl font-normal '>
+                          Quantity x {ticketCount}
                         </div>
                         <div className='text-[#22292F] font-semibold  text-lg'>
                           {totalAmount}
                         </div>
                       </div>
                       <div className='flex justify-between items-center pb-6 border-b border-dashed'>
-                        <div className='text-[#64737A] text-xl font-medium '>
+                        <div className='text-[#64737A] text-lg  md:text-xl font-normal '>
                           GST 18%
                         </div>
                         <div className='text-[#22292F] font-semibold  text-lg'>
@@ -368,14 +394,14 @@ export default function BuyTickets() {
                         </div>
                       </div>
                       <div className='flex justify-between items-center py-2'>
-                        <div className='text-[#22292F] text-xl font-medium  '>
+                        <div className='text-[#22292F] text-xl font-normal  '>
                           Total
                         </div>
                         <div className='text-[#22292F] font-semibold  text-lg'>
                           {totalAmount}
                         </div>
                       </div>
-                      <div className='text-pretty whitespace-pre-wrap break-words font-roboto text-base font-medium pt-3'>
+                      <div className='text-pretty whitespace-pre-wrap break-words font-roboto text-base font-normal pt-3'>
                         <input
                           checked={isTermsClicked}
                           id='terms'

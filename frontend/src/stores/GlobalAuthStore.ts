@@ -6,6 +6,7 @@ interface IUser {
   email: string;
   id: string;
   image: string;
+  mobileNumber: string
 }
 
 interface UserState {
