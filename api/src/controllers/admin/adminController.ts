@@ -96,7 +96,7 @@ export const adminController = new Elysia({
         .replace("{{UserName}}", ticket?.name || user?.name)
         .replace("{{BookingDate}}", formatDateForPDF(ticket?.createdAt))
         .replace("{{totalTickets}}", ticket?.ticketCount)
-        .replace("{{Amount}}", ticket?.amount)
+        .replace("{{subTotal}}", ticket?.subTotal)
         .replace("{{GST}}", ticket?.gst)
         .replace("{{imageUrl}}", base64Image)
         .replace("{{TotalAmount}}", ticket?.amount);

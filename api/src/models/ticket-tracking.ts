@@ -10,6 +10,7 @@ interface ITicket {
   eventId: Types.ObjectId;
   ticketPrice: number;
   amount: number;
+  subTotal: number;
   gst: number;
   tickets: ITicketEntry;
   paymentTrack: Types.ObjectId;
@@ -31,6 +32,7 @@ const TicketSchema = new Schema<ITicket>(
     eventId: { type: Schema.Types.ObjectId, ref: "AdminEvents" },
     ticketPrice: { type: Number, default: 0 },
     amount: { type: Number, default: 0 },
+    subTotal: { type: Number, default: 0 },
     gst: { type: Number, default: 0 },
     tickets: TicketEntrySchema,
     ticketCount: { type: Number, default: 0 },
