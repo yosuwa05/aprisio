@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { _axios } from '$lib/_axios';
+	import Paginator from '$lib/components/paginator.svelte';
 	import { Button } from '$lib/components/ui/button';
+	import { Input } from '$lib/components/ui/input';
 	import * as Table from '$lib/components/ui/table';
 	import TableCaption from '$lib/components/ui/table/table-caption.svelte';
 	import { baseUrl } from '$lib/config';
@@ -8,15 +10,13 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { format } from 'date-fns';
 	import { Loader } from 'lucide-svelte';
-	import { manageLayoutStore } from './events-store';
-	import Paginator from '$lib/components/paginator.svelte';
 	import { tick } from 'svelte';
-	import { Input } from '$lib/components/ui/input';
+	import { manageLayoutStore } from './events-store';
 
 	async function fetchTopics(limit = 10, page = 1, search = '') {
 		const res = await _axios.get(`/events/ticketusers?limit=${limit}&page=${page}&q=${search}`);
 		const data = await res.data;
-		console.log(data);
+
 		return data;
 	}
 
@@ -160,7 +160,7 @@
 					<Table.Cell class="flex gap-2">
 						<button
 							onclick={() => {
-								window.open(baseUrl + '/admin?id=' + ticket._id);
+								window.open(baseUrl + '/admin/generatepdf?id=' + ticket._id);
 							}}
 						>
 							<Icon icon={'bytesize:download'} class="text-xl hover:text-red-500" />

@@ -35,7 +35,8 @@
 				biography: '',
 				description: '',
 				delta: '',
-				eventImage: ''
+				eventImage: '',
+				gst: ''
 			};
 		}}
 	>
