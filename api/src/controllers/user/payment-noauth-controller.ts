@@ -153,6 +153,7 @@ export const paymentNoAuthController = new Elysia({
           paymentEntry.tickets = ticket;
 
           const tickettrack = new TicketModel({
+
             userId: paymentEntry.userId,
             amount: paymentEntry.amount,
             eventId: paymentEntry.eventId,
@@ -162,6 +163,9 @@ export const paymentNoAuthController = new Elysia({
             ticketPrice: paymentEntry.amount,
             tickets: ticket,
             ticketCount: count,
+            name: paymentEntry.name,
+            emailId: paymentEntry.emailId,
+            mobileNumber: paymentEntry.mobileNumber
           });
 
           await tickettrack.save();

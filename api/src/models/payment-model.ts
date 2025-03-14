@@ -18,6 +18,9 @@ interface IPayment {
   ticketCount: number;
   tickets: ITicketEntry;
   createdAt: Date;
+  name: string;
+  emailId: string;
+  mobileNumber: string;
 }
 
 const TicketEntrySchema = new Schema<ITicketEntry>({
@@ -38,6 +41,9 @@ const PaymentSchema = new Schema<IPayment>(
     amount: { type: Number, default: 0 },
     ticketCount: { type: Number, default: 0 },
     tickets: TicketEntrySchema,
+    name: { type: String, default: "" },
+    emailId: { type: String, default: "" },
+    mobileNumber: { type: String, default: "" },
   },
   {
     timestamps: true,

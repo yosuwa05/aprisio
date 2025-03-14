@@ -97,28 +97,28 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#each $query.data?.ticketusers || [] as event, i}
+			{#each $query.data?.ticketusers || [] as ticket, i}
 				<Table.Row>
 					<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
 					<Table.Cell class="cursor-pointer capitalize hover:underline">
-						{event.userId?.name}
+						{ticket.userId?.name}
 					</Table.Cell>
 					<Table.Cell class="flex items-center capitalize">
-						{event.userId?.mobile}</Table.Cell
+						{ticket.userId?.mobile}</Table.Cell
 					>
 					<Table.Cell>
-						{event.userId?.email}
+						{ticket.userId?.email}
 					</Table.Cell>
 					<Table.Cell>
-						{event?.ticketCount}
+						{ticket?.ticketCount}
 					</Table.Cell>
 					<Table.Cell>
-						{event?.amount}
+						{ticket?.amount}
 					</Table.Cell>
 					<Table.Cell class="flex gap-2">
 						<button
 							onclick={() => {
-								window.open(baseUrl + '/admin?id=' + event._id);
+								window.open(baseUrl + '/admin?id=' + ticket._id);
 							}}
 						>
 							<Icon icon={'bytesize:download'} class="text-xl hover:text-red-500" />

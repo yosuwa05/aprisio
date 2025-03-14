@@ -6,7 +6,7 @@ import path from "node:path";
 import puppeteer from "puppeteer";
 import { deleteFile, saveFile } from "../../lib/file";
 import { AdminAuthModel } from "../../models/adminmodel";
-
+import { unlink } from "fs/promises";
 const getBase64Image = async (imageUrl: string) => {
   try {
     const response = await axios.get(imageUrl, {
@@ -78,7 +78,7 @@ export const adminController = new Elysia({
       const page = await browser.newPage();
       await page.setViewport({
         width: 1920,
-        height: 1080,
+        height: 1000,
         deviceScaleFactor: 1,
       });
       await page.setContent(content);
@@ -102,7 +102,7 @@ export const adminController = new Elysia({
       if (browser) {
         browser.close();
       }
-
+      await unlink(pdfPath)
       return blob;
     } catch (error) {
       console.log(error);

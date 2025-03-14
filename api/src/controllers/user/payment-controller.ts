@@ -22,7 +22,7 @@ export const paymentController = new Elysia({
         return { error: "User not found" };
       }
 
-      const { productInfo, amount, eventId, tickets } = body;
+      const { productInfo, amount, eventId, tickets, name, emailId, mobileNumber } = body;
 
       const key = process.env.PAYU_KEY || "";
       const salt = process.env.PAYU_SALT || "";
@@ -58,6 +58,9 @@ export const paymentController = new Elysia({
         message: "Payment started",
         pgResponse: "",
         ticketCount: tickets,
+        name: name,
+        emailId: emailId,
+        mobileNumber: mobileNumber,
       });
 
       let formHtml = `
@@ -104,6 +107,9 @@ export const paymentController = new Elysia({
       amount: t.Number(),
       eventId: t.String(),
       tickets: t.Number(),
+      name: t.Optional(t.String()),
+      emailId: t.Optional(t.String()),
+      mobileNumber: t.Optional(t.String())
     }),
   }
 );

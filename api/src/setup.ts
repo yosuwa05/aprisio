@@ -9,10 +9,12 @@ import { generateEventId } from "./lib/utils";
 import { EventModel } from "./models";
 
 const app = new Elysia();
+app.listen({
+  idleTimeout: 200,
+});
 
 app.use(cors());
 
-console.log(generateEventId());
 
 const URL = process.env.DB_URL;
 

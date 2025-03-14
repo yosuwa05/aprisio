@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Document</title>
+    <title>{{title}}</title>
   </head>
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
@@ -16,6 +16,8 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .container {
@@ -62,7 +64,7 @@
       font-weight: 300;
     }
     .section2 {
-      background-color: #f9f9f9;
+      background-color: #f9f9f9 !important;
       border-radius: 8px;
       padding-left: 30px;
       padding-right: 30px;
@@ -95,12 +97,17 @@
       font-weight: bold;
       font-size: 19px;
     }
+    .img {
+      height: 200px;
+      width: 200px;
+      object-fit: contain;
+    }
   </style>
   <body>
     <main class="container">
       <div class="section1">
         <div>
-          <img src="{{imageUrl}}" alt="Event Image" />
+          <img class="img" src="{{imageUrl}}" alt="Event Image" />
         </div>
         <div class="eventdetails">
           <div class="ticketId">Ticket ID : {{ticket_ID}}</div>

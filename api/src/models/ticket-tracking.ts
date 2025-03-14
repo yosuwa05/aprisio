@@ -15,6 +15,9 @@ interface ITicket {
   paymentTrack: Types.ObjectId;
   txnId: string;
   ticketCount: number;
+  name: string;
+  emailId: string;
+  mobileNumber: string;
 }
 
 const TicketEntrySchema = new Schema<ITicketEntry>({
@@ -33,6 +36,9 @@ const TicketSchema = new Schema<ITicket>(
     ticketCount: { type: Number, default: 0 },
     paymentTrack: { type: Schema.Types.ObjectId, default: "" },
     txnId: { type: String, default: "" },
+    name: { type: String, default: "" },
+    emailId: { type: String, default: "" },
+    mobileNumber: { type: String, default: "" },
   },
   {
     timestamps: true,
