@@ -1,0 +1,150 @@
+<script lang="ts">
+	import { goto } from '$app/navigation';
+	import { _axios } from '$lib/_axios';
+	import Paginator from '$lib/components/paginator.svelte';
+	import { Badge } from '$lib/components/ui/badge';
+	import Input from '$lib/components/ui/input/input.svelte';
+	import * as Table from '$lib/components/ui/table';
+	import Icon from '@iconify/svelte';
+	import { createMutation, createQuery } from '@tanstack/svelte-query';
+	import { tick } from 'svelte';
+
+	async function fetchEvents(limit = 10, page = 1, search = '') {
+		const res = await _axios.get(`/user-event/all?limit=${limit}&page=${page}&q=${search}`);
+		const data = await res.data;
+		return data;
+	}
+
+	let page = $state(1);
+	let limit = $state(8);
+	let search = $state('');
+
+	let debounceTimeout: any;
+	function debounceSearch() {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(async () => {
+			await tick();
+			page = 1;
+			$query.refetch();
+		}, 500);
+	}
+
+	const query = createQuery({
+		queryKey: ['user events fetch', debounceSearch],
+		queryFn: () => fetchEvents(limit, page, search)
+	});
+
+	// const banMutation = createMutation({
+	// 	mutationFn: async ({ id }: { id: string }) => {
+	// 		let res = await _axios.post('/user/banuser/' + id);
+	// 		return res.data;
+	// 	},
+	// 	onSuccess: (data) => {
+	// 		$query.refetch();
+	// 	},
+	// 	onError: (error) => {
+	// 		console.log(error);
+	// 	}
+	// });
+	function formatDate(date: Date) {
+		return new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric'
+		}).format(date);
+	}
+	console.log($query?.data?.events);
+</script>
+
+<div class="text-maintext font-karla mx-auto mt-6 w-[calc(100vw-420px)] overflow-auto">
+	<div class="mb-4 ml-auto w-[40%]">
+		<div class="relative grid gap-2">
+			<Input
+				type={'text'}
+				required
+				class="pr-10  focus:!ring-0 focus:!ring-transparent"
+				placeholder={'Search Users Name'}
+				bind:value={search}
+				oninput={debounceSearch}
+			/>
+			{#if !search}
+				<Icon
+					icon={'iconamoon:search'}
+					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+				/>
+			{:else}
+				<Icon
+					icon={'mdi:clear-outline'}
+					onclick={() => {
+						search = '';
+						debounceSearch();
+					}}
+					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+				/>
+			{/if}
+		</div>
+	</div>
+
+	<div class="overflow-x-auto">
+		<Table.Root>
+			{#if $query.isLoading}
+				<Table.Caption>Loading....</Table.Caption>
+			{:else if $query?.data?.total === 0}
+				<Table.Caption class="w-full text-center text-xs">No Users Found!</Table.Caption>
+			{/if}
+			<Table.Header>
+				<Table.Row>
+					<Table.Head class="w-[100px]">Sl.No</Table.Head>
+					<Table.Head>Event Name</Table.Head>
+					<Table.Head>Date</Table.Head>
+				</Table.Row>
+			</Table.Header>
+			<Table.Body>
+				{#each $query.data?.events || [] as event, i}
+					<Table.Row>
+						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
+						<Table.Cell class="capitalize ">
+							<button
+								class="text-primary cursor-pointer capitalize underline underline-offset-4"
+								onclick={() => {
+									goto(`/admin/dashboard/users/${event._id}`);
+								}}
+							>
+								{event?.eventName}
+							</button>
+						</Table.Cell>
+						<!-- <Table.Cell>{event.groupId.groupName}</Table.Cell> -->
+						<!-- <Table.Cell>{user.email || '-'}</Table.Cell> -->
+						<Table.Cell>{formatDate(new Date(event.date))}</Table.Cell>
+						<!-- <Table.Cell>
+							<button onclick={() => $banMutation.mutate({ id: user._id })}>
+								<Badge
+									class={`ml-2 ${!user.active ? 'bg-green-500 text-white hover:bg-green-700' : 'bg-red-500 text-white hover:bg-red-700'}`}
+									variant="secondary"
+								>
+									{user.active ? 'Deactivate' : 'Activate'}
+								</Badge>
+							</button>
+						</Table.Cell> -->
+					</Table.Row>
+				{/each}
+			</Table.Body>
+		</Table.Root>
+	</div>
+
+	{#if !$query.isLoading && $query?.data?.total > 0}
+		<Paginator
+			total={$query?.data?.total || 0}
+			{limit}
+			{page}
+			callback={(_page: any) => {
+				if (_page === page) return;
+				page = _page;
+				$query.refetch();
+			}}
+		/>
+	{/if}
+</div>

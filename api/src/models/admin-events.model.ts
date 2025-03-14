@@ -34,6 +34,7 @@ type IEvent = {
   delta: string;
   ticketPrefix: string;
   lastSoldTicketNumber: number;
+  gst: number
 };
 
 const AdminEventSchema = new Schema<IEvent>(
@@ -50,6 +51,7 @@ const AdminEventSchema = new Schema<IEvent>(
       type: Number,
       default: 0,
     },
+    gst: { type: Number, default: 0 },
     soldTickets: {
       type: Number,
       default: 0,

@@ -62,7 +62,8 @@ export default function BuyTickets() {
     },
   });
   const [totalAmount, setTotalAmount] = useState(0);
-
+  const [subtotalAmount, setSubtotalAmount] = useState(0);
+  const [gstAmount, setGstAmount] = useState(0);
   useEffect(() => {
     if (user) {
       setUserDetails((prev) => ({
@@ -76,7 +77,13 @@ export default function BuyTickets() {
 
   useEffect(() => {
     if (data?.event?.price) {
-      setTotalAmount(data.event.price * ticketCount);
+      const subtotal = data.event.price * ticketCount;
+      const gstPercentage = data?.event?.gst || 0;
+      const gst = (subtotal * gstPercentage) / 100;
+      const total = subtotal + gst;
+      setSubtotalAmount(subtotal);
+      setGstAmount(gst);
+      setTotalAmount(total);
     }
   }, [data, ticketCount]);
 
@@ -262,7 +269,7 @@ export default function BuyTickets() {
                       <h1 className=' md:text-2xl font-normal'>You Pay</h1>
                       <div className='flex items-center'>
                         <h1 className=' text-xl md:text-2xl font-normal'>
-                          INR {totalAmount}
+                          INR {totalAmount.toFixed(2)}
                         </h1>
                       </div>
                     </div>
@@ -382,15 +389,15 @@ export default function BuyTickets() {
                           Quantity x {ticketCount}
                         </div>
                         <div className='text-[#22292F] font-semibold  text-lg'>
-                          {totalAmount}
+                          {subtotalAmount.toFixed(2)}
                         </div>
                       </div>
                       <div className='flex justify-between items-center pb-6 border-b border-dashed'>
                         <div className='text-[#64737A] text-lg  md:text-xl font-normal '>
-                          GST 18%
+                          GST {data?.event?.gst}%
                         </div>
                         <div className='text-[#22292F] font-semibold  text-lg'>
-                          0
+                          {gstAmount.toFixed(2)}
                         </div>
                       </div>
                       <div className='flex justify-between items-center py-2'>
@@ -398,7 +405,7 @@ export default function BuyTickets() {
                           Total
                         </div>
                         <div className='text-[#22292F] font-semibold  text-lg'>
-                          {totalAmount}
+                          {totalAmount.toFixed(2)}
                         </div>
                       </div>
                       <div className='text-pretty whitespace-pre-wrap break-words font-roboto text-base font-normal pt-3'>

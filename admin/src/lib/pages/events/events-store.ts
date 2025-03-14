@@ -17,7 +17,8 @@ export const eventsStore = writable({
 	biography: '',
 	description: '',
 	eventImage: '',
-	delta: ''
+	delta: '',
+	gst: ''
 });
 
 export const manageLayoutStore = writable({
@@ -34,6 +35,7 @@ type StoreProps = {
 	eventRules: any[];
 	eventType: string;
 	price: string;
+	gst: string;
 	availableTickets: string;
 	mapLink: string;
 	expirydatetime: string;
@@ -75,7 +77,7 @@ export const _topicsSchema = z.object({
 		.max(100),
 	eventType: z.enum(['online', 'offline']),
 	price: z.union([z.string(), z.number()]).transform((val) => val.toString()),
-
+	gst: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 	availableTickets: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 	description: z.string({
 		required_error: 'Biography is required'

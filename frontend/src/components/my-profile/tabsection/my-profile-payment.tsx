@@ -76,7 +76,7 @@ export const MyProfilePayments = () => {
             <p
               key={`${pageIndex}-no-groups`}
               className='text-gray-500 text-xs font-semibold'>
-              No Payments found
+              No Experiences found
             </p>
           )
         )

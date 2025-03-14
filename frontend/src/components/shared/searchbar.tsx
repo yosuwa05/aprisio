@@ -134,13 +134,13 @@ export function SearchBar() {
         </Button>
       )}
       <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
-        <DialogContent className=''>
+        <DialogContent className='h-screen flex flex-col items-start pt-10'>
           <DialogHeader>
             <DialogTitle></DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <Input
-            className='w-full border-[#E2E2E2] bg-contrastbg'
+            className='w-full border-[#E2E2E2] bg-contrastbg '
             placeholder='Search Posts'
             name='search'
             id='search'
@@ -157,7 +157,7 @@ export function SearchBar() {
                 className='w-full bg-white border border-gray-200 shadow-lg rounded-lg p-2 z-10'>
                 {posts?.posts?.length > 0 ||
                 (posts?.topics && posts.topics.length > 0) ? (
-                  <div className='max-h-[300px] overflow-y-auto'>
+                  <div className='max-h-[600px] overflow-y-auto'>
                     {posts?.posts?.length > 0 && (
                       <div className='mb-2'>
                         <h3 className='text-sm font-semibold text-gray-600 px-3'>
