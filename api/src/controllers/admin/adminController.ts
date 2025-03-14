@@ -7,6 +7,9 @@ import puppeteer from "puppeteer";
 import { deleteFile, saveFile } from "../../lib/file";
 import { AdminAuthModel } from "../../models/adminmodel";
 import { unlink } from "fs/promises";
+import { UserModel } from "@/models";
+import { parseISO, format, isValid } from 'date-fns';
+
 const getBase64Image = async (imageUrl: string) => {
   try {
     const response = await axios.get(imageUrl, {
@@ -23,14 +26,36 @@ const getBase64Image = async (imageUrl: string) => {
   }
 };
 
+
+function formatDateForPDF(dateString: any) {
+  if (!dateString) {
+    return "Date not available";
+  }
+
+  let date;
+
+  if (typeof dateString === "string") {
+    date = parseISO(dateString);
+  } else {
+    date = new Date(dateString);
+  }
+
+  if (!isValid(date)) {
+    console.error("Invalid date format:", dateString);
+    return "Invalid Date";
+  }
+
+  return format(date, "MMM dd, yyyy HH:mm");
+}
+
 export const adminController = new Elysia({
   prefix: "/admin",
 })
-  .get("/", async ({ query, set }) => {
+  .get("/generatepdf", async ({ query, set }) => {
     try {
       const { id } = query;
 
-      const ticket = await TicketModel.findById(id);
+      const ticket: any = await TicketModel.findById(id);
 
       if (!ticket) {
         return { message: "Ticket not found" };
@@ -39,7 +64,15 @@ export const adminController = new Elysia({
       let browser;
 
       const event: any = await AdminEventModel.findById(ticket.eventId);
+      const user: any = await UserModel.findById(ticket.userId)
 
+      if (!user) {
+        set.status = 40;
+        return {
+          message: "User not Found",
+          ok: false,
+        };
+      }
       if (!event) {
         set.status = 40;
         return {
@@ -56,24 +89,25 @@ export const adminController = new Elysia({
       const base64Image = await getBase64Image(imageUrl);
 
       content = content
-        .replace("{{ticket_ID}}", ticket.tickets.ticketId)
-        .replace("{{EventName}}", event.eventName)
-        .replace("{{Date}}", event.createdAt)
-        .replace("{{Location}}", event.location)
-        .replace("{{UserName}}", "Sudhan")
-        .replace("{{BookingDate}}", "21 Oct 2025 ")
-        .replace("{{totalTickets}}", "5")
-        .replace("{{Amount}}", "500")
-        .replace("{{GST}}", "0")
+        .replace("{{title}}", ticket?.tickets?.ticketId)
+        .replace("{{ticket_ID}}", ticket?.tickets?.ticketId)
+        .replace("{{EventName}}", event?.eventName)
+        .replace("{{Date}}", formatDateForPDF(event?.datetime))
+        .replace("{{Location}}", event?.location)
+        .replace("{{UserName}}", ticket?.name || user?.name)
+        .replace("{{BookingDate}}", formatDateForPDF(ticket?.createdAt))
+        .replace("{{totalTickets}}", ticket?.ticketCount)
+        .replace("{{Amount}}", ticket?.amount)
+        .replace("{{GST}}", ticket?.gst)
         .replace("{{imageUrl}}", base64Image)
-        .replace("{{TotalAmount}}", "2500");
+        .replace("{{TotalAmount}}", ticket?.amount);
 
       browser = await puppeteer.launch({
         headless: true,
         browser: "chrome",
         // executablePath:
         //   ".cache/puppeteer/chrome/linux-131.0.6778.204/chrome-linux64/chrome",
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        // args: ["--no-sandbox", "--disable-setuid-sandbox"],
       });
       const page = await browser.newPage();
       await page.setViewport({
@@ -102,7 +136,9 @@ export const adminController = new Elysia({
       if (browser) {
         browser.close();
       }
+
       await unlink(pdfPath)
+
       return blob;
     } catch (error) {
       console.log(error);
