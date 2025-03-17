@@ -10,8 +10,8 @@ import { BASE_URL } from "@/lib/config";
 import { parseISO, format } from "date-fns";
 
 export default function MyProfileCard({ ticket }: any) {
-  const formattedDate = ticket?.eventId?.datetime
-    ? format(parseISO(ticket.eventId.datetime), "MMM dd, yyyy HH:mm")
+  const formattedDate = ticket?.createdAt
+    ? format(parseISO(ticket?.createdAt), "MMM dd, yyyy HH:mm")
     : "Date not available";
 
   const router = useRouter();

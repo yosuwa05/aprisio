@@ -27,7 +27,9 @@ export const UserEventController = new Elysia({
                 const total = await EventModel.countDocuments(searchQuery);
 
                 const events = await EventModel.find(searchQuery)
-                    .populate("group")
+                    .populate("group", "name  ")
+                    .populate("managedBy", "name")
+                    .select("group managedBy eventName createdAt isApprovedByAdmin isEventEnded ")
                     .sort({ createdAt: -1 })
                     .skip((page - 1) * limit)
                     .limit(limit);
@@ -57,6 +59,39 @@ export const UserEventController = new Elysia({
             detail: {
                 summary: "Get all user events",
                 description: "Get all user events",
+            },
+        }
+    )
+    .post(
+        "/approve/:id",
+        async ({ params }) => {
+            try {
+                const { id } = params;
+
+                const event = await EventModel.findById(id);
+                if (!event) {
+                    return { message: "Event not found" };
+                }
+
+                event.isApprovedByAdmin = !event.isApprovedByAdmin;
+                await event.save();
+
+                return {
+                    message: "Status updated successfully",
+                };
+            } catch (error) {
+                console.log(error);
+                return {
+                    message: error
+                };
+            }
+        },
+        {
+            params: t.Object({
+                id: t.String(),
+            }),
+            detail: {
+                summary: "Approve or disapprove an event",
             },
         }
     );

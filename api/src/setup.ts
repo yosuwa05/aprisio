@@ -54,6 +54,11 @@ app.use(
   })
 );
 
+const result = await EventModel.updateMany(
+  { isApprovedByAdmin: { $exists: false } }, // Only update records where the field is missing
+  { $set: { isApprovedByAdmin: true } } // Add the field
+);
+
 // let res = await sendNotification(
 //   "dzImjSr_jftAg4qEWaLDrN:APA91bEUvHZpNmxLVOIMtxhY52eJ7iXsvGwu_l2djMTUy4jWwuzIOeawdnU8S5Q1KBABnI7EtfxEKkNBqfS42ERVF-B7K_CdJaUFHyLUOjkVp4DGoOSeKLQ",
 //   "brooo",

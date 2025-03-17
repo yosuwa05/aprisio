@@ -110,10 +110,8 @@
 				let formData = new FormData();
 
 				formData.append('eventName', _data.eventName);
-
 				formData.append('datetime', _data.datetime);
 				formData.append('expirydatetime', _data.expirydatetime);
-
 				formData.append('organiserName', _data.organiserName);
 				formData.append('biography', _data.biography);
 				formData.append('mapLink', _data.mapLink);

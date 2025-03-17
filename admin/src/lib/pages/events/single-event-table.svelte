@@ -13,10 +13,11 @@
 	import { tick } from 'svelte';
 	import { manageLayoutStore } from './events-store';
 
-	async function fetchTopics(limit = 10, page = 1, search = '') {
-		const res = await _axios.get(`/events/ticketusers?limit=${limit}&page=${page}&q=${search}`);
+	async function fetchTopics(limit = 10, page = 1, search = '', eventId = '') {
+		const res = await _axios.get(
+			`/events/ticketusers?limit=${limit}&page=${page}&q=${search}&eventId=${$manageLayoutStore.selectedId}`
+		);
 		const data = await res.data;
-
 		return data;
 	}
 
@@ -43,14 +44,26 @@
 		}, 500);
 	}
 	const query = createQuery({
-		queryKey: ['events fetch 2'],
-		queryFn: () => fetchTopics(limit, page, search)
+		// svelte-ignore state_referenced_locally
+		queryKey: ['events fetch 2', $manageLayoutStore.selectedId, page, limit, search], // Include selectedId
+		queryFn: () => fetchTopics(limit, page, search, $manageLayoutStore.selectedId)
 	});
 
 	const detailsQuery = createQuery({
 		queryKey: ['single event fetch', $manageLayoutStore.selectedId],
 		queryFn: () => fetchDetails($manageLayoutStore.selectedId)
 	});
+	console.log($query.data);
+	function formatDate(date: Date) {
+		return new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: 'numeric',
+			second: 'numeric'
+		}).format(date);
+	}
 </script>
 
 <div class="px-12">
@@ -132,6 +145,7 @@
 				<Table.Head class="">Ticket Id</Table.Head>
 				<Table.Head>Tickets</Table.Head>
 				<Table.Head>Price</Table.Head>
+				<!-- <Table.Head class="">Date</Table.Head> -->
 				<Table.Head>Download</Table.Head>
 			</Table.Row>
 		</Table.Header>
@@ -157,6 +171,9 @@
 					<Table.Cell>
 						{ticket?.amount}
 					</Table.Cell>
+					<!-- <Table.Cell>
+						{formatDate(new Date(ticket?.createdAt))}
+					</Table.Cell> -->
 					<Table.Cell class="flex gap-2">
 						<button
 							onclick={() => {

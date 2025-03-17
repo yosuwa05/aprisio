@@ -187,6 +187,31 @@ export default function Community() {
   return (
     <>
       <div className='mx-2 md:mx-12 mt-6'>
+        <div className='bg-white shadow-lg rounded-lg p-6 text-center flex flex-col gap-4'>
+          <p className='text-xl capitalize text-gray-700 leading-relaxed'>
+            <span className='text-green-700 font-semibold'>
+              Create your own Group
+            </span>{" "}
+            in the Community and Sub-Community of your choice. Invite your
+            friends and other Aprisio members with shared interests.
+          </p>
+          <p className='text-lg text-gray-600'>
+            <span className='text-red-600 font-semibold'>
+              Media (Community)
+            </span>{" "}
+            {"→"}
+            <span className='text-purple-600 font-semibold'>
+              {" "}
+              New Media (Sub-Community)
+            </span>{" "}
+            {"→"}
+            <span className='text-orange-600 font-semibold'> Your Group</span>.
+            <br />
+            <span className='text-green-700 font-bold'>It’s free!</span> Go
+            ahead and create your own group today.
+          </p>
+        </div>
+
         {isLoading ? (
           <div className='flex flex-col gap-4 w-full'>
             {[...Array(2)].map((_, i) => (

@@ -39,7 +39,6 @@ function formatDate(dateString: any) {
 export default function BuyTickets() {
   const { topeventid } = useParams();
   const user = useGlobalAuthStore((state) => state.user);
-
   const [ticketCount, setTicketCount] = useState(1);
   const [isTicketSelect, SetIsTicketSelect] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
@@ -168,9 +167,7 @@ export default function BuyTickets() {
               </div>
             </div>
             <p className='font-normal text-lg pt-3 leading-8 break-words text-[#353535CC]/80  font-sans text-pretty whitespace-normal '>
-              Aprisio is launching India’s first Community platform for older
-              adults with an exclusive Coffee Masterclass curated for older
-              adults age 40
+              {data?.event?.biography}
             </p>
           </div>
         </div>
@@ -271,7 +268,7 @@ export default function BuyTickets() {
                       <h1 className=' md:text-2xl font-normal'>You Pay</h1>
                       <div className='flex items-center'>
                         <h1 className=' text-xl md:text-2xl font-normal'>
-                          INR {totalAmount.toFixed(2)}
+                          INR {subtotalAmount.toFixed(2)}
                         </h1>
                       </div>
                     </div>

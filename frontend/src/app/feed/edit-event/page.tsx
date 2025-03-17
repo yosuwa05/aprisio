@@ -145,7 +145,7 @@ export default function NewEvent() {
     queryKey: ["groups for dropdown", debouncedSubTopicSearch],
     queryFn: async () => {
       const res = await _axios.get(
-        `/noauth/group/dropdown?limit=7&q=${debouncedSubTopicSearch}`
+        `/noauth/group/dropdown?limit=10&q=${debouncedSubTopicSearch}&userId=${user?.id}`
       );
       return res.data;
     },
@@ -161,6 +161,7 @@ export default function NewEvent() {
         <PopoverTrigger asChild className='p-6'>
           <Button
             type='button'
+            disabled={currentEvent.isApprovedByAdmin}
             className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
             {selectedGroupId.slug ? selectedGroupId.slug : "Select a Group"}
             <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />

@@ -33,6 +33,7 @@ type Event = {
   };
   attendees: Array<string>;
   isEventEnded: boolean;
+  isApprovedByAdmin: boolean;
 };
 
 function formatDateString(date: Date) {
@@ -120,6 +121,7 @@ export function EventCard({ event }: Props) {
                     name: event.group.name,
                     slug: event.group.slug,
                   },
+                  isApprovedByAdmin: event.isApprovedByAdmin,
                   createdAt: event.createdAt,
                   managedBy: event.managedBy,
                   isEventEnded: event.isEventEnded,

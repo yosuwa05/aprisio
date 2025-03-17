@@ -139,7 +139,7 @@ export default function NewEvent() {
     queryKey: ["groups for dropdown", debouncedSubTopicSearch, user?.id],
     queryFn: async () => {
       const res = await _axios.get(
-        `/noauth/group/dropdown?limit=7&q=${debouncedSubTopicSearch}&userId=${user?.id}`
+        `/noauth/group/dropdown?limit=10&q=${debouncedSubTopicSearch}&userId=${user?.id}`
       );
       return res.data;
     },

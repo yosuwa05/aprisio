@@ -1,4 +1,5 @@
 import { deleteFile, saveFile } from "@/lib/file-s3";
+import { slugify } from "@/lib/utils";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import Elysia, { t } from "elysia";
 import { Types } from "mongoose";
@@ -53,6 +54,7 @@ export const subtopicController = new Elysia({
           active: true,
           isDeleted: false,
           image: fileUrl,
+          slug: slugify(subTopicName),
         });
 
         await newSubTopic.save();
@@ -136,6 +138,74 @@ export const subtopicController = new Elysia({
       },
     }
   )
+  // .put(
+  //   "/:id",
+  //   async ({ body, set, params }) => {
+  //     let { subTopicName, topic, description, file } = body;
+  //     const { id } = params;
+
+  //     topic = topic.split(" -&- ")[0];
+
+  //     try {
+  //       const subtopic = await SubTopicModel.findById(id);
+
+  //       if (!subtopic) {
+  //         return {
+  //           message: "SubTopic not found",
+  //         };
+  //       }
+
+  //       let fileUrl = "";
+
+  //       if (file) {
+  //         const { filename, ok } = await saveFile(file, "subtopicimage");
+
+  //         if (ok) {
+  //           fileUrl = filename;
+
+  //           deleteFile(subtopic.image);
+  //         } else {
+  //           return {
+  //             message: "Failed to save file",
+  //             ok: false,
+  //           };
+  //         }
+  //       }
+
+  //       subtopic.image = fileUrl;
+  //       subtopic.subTopicName = subTopicName;
+  //       subtopic.topic = new Types.ObjectId(topic);
+  //       subtopic.description = description;
+
+  //       await subtopic.save();
+
+  //       set.status = 200;
+  //       return { message: "SubTopic updated successfully", ok: true };
+  //     } catch (error: any) {
+  //       console.error(error);
+  //       set.status = 500;
+  //       return {
+  //         message: "An internal error occurred while updating subtopic.",
+  //         ok: false,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     params: t.Object({
+  //       id: t.String(),
+  //     }),
+  //     body: t.Object({
+  //       subTopicName: t.String(),
+  //       topic: t.String(),
+  //       description: t.String(),
+  //       file: t.Optional(t.File()),
+  //     }),
+  //     detail: {
+  //       description: "Update subtopic",
+  //       summary: "Update subtopic",
+  //     },
+  //   }
+  // )
   .put(
     "/:id",
     async ({ body, set, params }) => {
@@ -150,18 +220,21 @@ export const subtopicController = new Elysia({
         if (!subtopic) {
           return {
             message: "SubTopic not found",
+            ok: false,
           };
         }
 
-        let fileUrl = "";
+        let fileUrl = subtopic.image; // Keep existing image if no new file is provided
 
         if (file) {
           const { filename, ok } = await saveFile(file, "subtopicimage");
 
           if (ok) {
+            // Only delete old file after confirming the new file is saved successfully
+            if (subtopic.image) {
+              await deleteFile(subtopic.image);
+            }
             fileUrl = filename;
-
-            deleteFile(subtopic.image);
           } else {
             return {
               message: "Failed to save file",
@@ -170,6 +243,7 @@ export const subtopicController = new Elysia({
           }
         }
 
+        // Update fields
         subtopic.image = fileUrl;
         subtopic.subTopicName = subTopicName;
         subtopic.topic = new Types.ObjectId(topic);
@@ -196,7 +270,7 @@ export const subtopicController = new Elysia({
         subTopicName: t.String(),
         topic: t.String(),
         description: t.String(),
-        file: t.Optional(t.File()),
+        file: t.Optional(t.File()), // Optional file
       }),
       detail: {
         description: "Update subtopic",
@@ -204,6 +278,7 @@ export const subtopicController = new Elysia({
       },
     }
   )
+
   .delete(
     "/:id",
     async ({ query, set, store, params }) => {

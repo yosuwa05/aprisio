@@ -104,9 +104,7 @@ export default function ViewTopEventPage() {
                   </div>
                 </div>
                 <p className='font-normal text-lg pt-3 leading-8 break-words text-[#353535CC]/80  font-sans text-pretty whitespace-normal '>
-                  Aprisio is launching India’s first Community platform for
-                  older adults with an exclusive Coffee Masterclass curated for
-                  older adults age 40
+                  {data?.event?.biography}
                 </p>
               </div>
             </div>

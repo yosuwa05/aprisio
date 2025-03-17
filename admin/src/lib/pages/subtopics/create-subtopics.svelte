@@ -65,11 +65,6 @@
 			invalidateAll: false,
 			resetForm: false,
 			async onSubmit() {
-				if (!image) {
-					toast('Please upload image');
-					return;
-				}
-
 				const { valid } = await validateForm({
 					focusOnError: true
 				});
@@ -78,11 +73,12 @@
 
 				let formData = new FormData();
 
-				formData.append('file', image);
+				if (image) {
+					formData.append('file', image);
+				}
 				formData.append('subTopicName', $form.subTopicName);
 				formData.append('topic', $form.topic);
 				formData.append('description', $form.description);
-
 				$createSubtopicMutation.mutate(formData);
 			}
 		}

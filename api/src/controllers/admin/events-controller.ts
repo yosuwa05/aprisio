@@ -48,9 +48,9 @@ export const eventsController = new Elysia({
           file = filename;
         }
 
-        let finalDate = new Date(JSON.parse(datetime));
-        let _finalDate = new Date(JSON.parse(expirydatetime));
 
+        let finalDate = new Date(datetime);
+        let _finalDate = new Date(expirydatetime);
         if (isNaN(finalDate.getTime()) || isNaN(_finalDate.getTime())) {
           throw new Error("Invalid date format received");
         }
@@ -364,12 +364,21 @@ export const eventsController = new Elysia({
       },
     }
   )
+
   .get(
     "/ticketusers",
     async ({ query }) => {
       try {
-        const { page = 1, limit = 10, q } = query;
-        const searchQuery: any = {};
+        const { page = 1, limit = 10, q, eventId } = query;
+
+        if (!eventId) {
+          return {
+            ok: false,
+            error: "eventId is required",
+          };
+        }
+
+        const searchQuery: any = { eventId };
 
         if (q) {
           searchQuery.$or = [
@@ -378,6 +387,7 @@ export const eventsController = new Elysia({
             { "userId.name": { $regex: q, $options: "i" } },
           ];
         }
+
         const total = await TicketModel.countDocuments(searchQuery);
         const ticketusers = await TicketModel.find(searchQuery)
           .populate("userId", "name email mobile")
@@ -393,7 +403,8 @@ export const eventsController = new Elysia({
       } catch (error: any) {
         console.error(error);
         return {
-          error,
+          ok: false,
+          error: error.message,
         };
       }
     },
@@ -402,9 +413,7 @@ export const eventsController = new Elysia({
         page: t.Optional(t.Number()),
         limit: t.Optional(t.Number()),
         q: t.Optional(t.String()),
+        eventId: t.String(),
       }),
     }
   );
-
-
-
