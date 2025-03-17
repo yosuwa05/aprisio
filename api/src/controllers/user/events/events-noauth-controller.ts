@@ -96,6 +96,34 @@ export const EventsNoAuthController = new Elysia({
       }),
     },
   )
+  .get("/viewadmin-event", async ({ set, query }) => {
+    try {
+      const { eventId } = query;
+      const event = await AdminEventModel.findById(eventId)
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not fonund"
+        }
+      }
+      set.status = 200;
+      return { event, ok: true };
+
+    } catch (error: any) {
+      console.log(error);
+      set.status = 500;
+      return { ok: false, message: "Internal Server Error" };
+    }
+  }, {
+    detail: {
+      summary: "Admin Events ",
+      description: "Admin events",
+    },
+    query: t.Object({
+      eventId: t.String()
+    }),
+  })
   .post(
     "/generatepdf",
     async ({ set, query, }) => {

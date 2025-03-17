@@ -137,3 +137,16 @@ body {
     @apply bg-background text-foreground;
   }
 }
+ol {
+  list-style-type: decimal;
+  margin-left: 20px; 
+}
+
+ul {
+  list-style-type: disc; 
+  margin-left: 20px;
+}
+
+li {
+  margin-bottom: 5px; 
+}

@@ -55,7 +55,7 @@ export default function BuyTickets() {
     queryKey: ["view-Admin-Event", topeventid],
     queryFn: async () => {
       const res = await _axios.get(
-        `/events/viewadmin-event?eventId=${topeventid}`
+        `/events/noauth/viewadmin-event?eventId=${topeventid}`
       );
       return res.data;
     },

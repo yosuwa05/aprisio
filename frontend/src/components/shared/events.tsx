@@ -12,44 +12,45 @@ import {
 } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import arrow2 from "../../../public/images/arrow-2.png";
-import food from "../../../public/images/food-1.jpg";
 import heart1 from "../../../public/images/green-heart.png";
-import hiking from "../../../public/images/hiking-2.jpg";
 import heart2 from "../../../public/images/yellow-heart.png";
-import yoga from "../../../public/images/yoga.png";
-import coffee from "../../../public/images/coffee.jpg";
-import mic from "../../../public/images/mic.jpeg";
 import Link from "next/link";
+import { parseISO, format, isValid } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { _axios } from "@/lib/axios-instance";
+import { BASE_URL } from "@/lib/config";
+function formatDate(dateString: any) {
+  if (!dateString) {
+    return "Date not available";
+  }
+
+  let date;
+
+  if (typeof dateString === "string") {
+    date = parseISO(dateString);
+  } else {
+    date = new Date(dateString);
+  }
+
+  if (!isValid(date)) {
+    console.error("Invalid date format:", dateString);
+    return "Invalid Date";
+  }
+
+  return format(date, "MMM dd, yyyy");
+}
+
 export default function Events() {
-  const data = [
-    {
-      title: "Immersive Coffee  Experience",
-      src: coffee,
-      date: "5 April 2025",
-      loc: "Bangalore",
-      URL: "https://aprisio.com/events/67c7ff839ed44ccc6f95885c",
+  const { data: bata } = useQuery({
+    queryKey: ["data"],
+    queryFn: async () => {
+      const res = await _axios.get("/events/noauth/admin-events?limit=3");
+      return res.data;
     },
-    {
-      title: "karaoke evening",
-      src: mic,
-      date: "May 2025",
-      URL: "https://aprisio.com/events/67c7fe519ed44ccc6f958842",
-    },
-    {
-      title: "Culinary Exploration",
-      src: food,
-      date: "June  2025",
-      URL: "https://aprisio.com/events/67c7fac09ed44ccc6f95876c",
-    },
-    // { title: "Yoga4", src: yoga, date: "24 Jan 2024" },
-    // { title: "Yoga5", src: yoga, date: "25 Jan 2024" },
-    // { title: "Yoga6", src: yoga, date: "26 Jan 2024" },
-    // { title: "Yoga7", src: yoga, date: "27 Jan 2024" },
-  ];
+  });
 
   return (
     <section className='bg-white relative'>
-      {/* Header section */}
       <div className='absolute top-[0.9%] left-[1.3%] lg:top-[6%] lg:left-[2.5%] -z-2'>
         <Image src={heart1} alt='heart' className='lg:w-12  lg:h-12 h-6 w-6 ' />
       </div>
@@ -67,7 +68,6 @@ export default function Events() {
         </p>
       </div>
 
-      {/* Swiper Carousel Section */}
       <div className='px-14 lg:py-20  lg:block hidden'>
         <Swiper
           modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
@@ -83,31 +83,34 @@ export default function Events() {
           }}
           //   pagination={{ clickable: true }}
           // loop={true}
-          loopAdditionalSlides={2} // Ensures the first two slides are appended for smooth scrolling
+          loopAdditionalSlides={2}
           autoplay={{ delay: 3000 }}
           className='mySwiper'>
-          {data.map((item, index) => (
+          {bata?.events?.map((item: any, index: any) => (
             <SwiperSlide key={index}>
               <div className='relative rounded-2xl overflow-hidden'>
                 <Image
                   loading='eager'
-                  src={item.src}
-                  alt={item.title}
+                  src={BASE_URL + `/file?key=${item.eventImage}`}
+                  height={100}
+                  width={100}
+                  alt={"image"}
                   className='h-[450px] w-full object-cover rounded-2xl'
                 />
 
-                {/* Event Info */}
-                <div className='absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#ffffffc4]'>
-                  <div>
-                    <p className='font-mulish flex items-center text-xl text-[#353535]'>
-                      {item.title}
+                <div className='absolute px-4 py-4 flex justify-between bottom-0  w-full z-10 bg-[#ffffffc4]'>
+                  <div className='w-full max-w-[80%]'>
+                    <p className='font-mulish capitalize text-xl text-[#353535] truncate'>
+                      {item?.eventName}
                     </p>
-                    <p className='font-mulish flex items-center text-xl text-[#353535]'>
-                      {item.date} - {item?.loc}
+                    <p className='font-mulish text-lg text-[#353535] truncate'>
+                      {formatDate(item?.datetime)} - {item?.location}
                     </p>
                   </div>
                   <div>
-                    <Link className='cursor-pointer' href={`${item?.URL}`}>
+                    <Link
+                      className='cursor-pointer'
+                      href={`/top-events/${item?._id}`}>
                       <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
                     </Link>
                   </div>
@@ -119,28 +122,30 @@ export default function Events() {
       </div>
 
       <div className='block py-8 pb-16 lg:hidden'>
-        {data.map((item, index) => (
+        {bata?.events?.map((item: any, index: any) => (
           <div key={index} className='flex pt-8 justify-center'>
             <div className='relative w-[90%] max-w-sm sm:max-w-md md:max-w-lg rounded-2xl overflow-hidden'>
               <Image
-                src={item.src}
-                alt={item.title}
-                unoptimized
+                src={BASE_URL + `/file?key=${item.eventImage}`}
+                height={100}
+                width={100}
+                alt={"image"}
                 className='w-full h-auto aspect-[4/5] object-cover rounded-2xl'
               />
 
-              {/* Event Info */}
               <div className='absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]'>
                 <div>
                   <p className='font-mulish flex items-center text-left text-[1.25rem] text-[#353535]'>
-                    {item.title}
+                    {item?.eventName}
                   </p>
                   <p className='font-mulish flex items-center text-left text-[1.25rem] text-[#353535]'>
-                    {item.date} - {item?.loc}
+                    {formatDate(item?.datetime)} - {item?.location}
                   </p>
                 </div>
                 <div>
-                  <Link className='cursor-pointer' href={`${item?.URL}`}>
+                  <Link
+                    className='cursor-pointer'
+                    href={`/top-events/${item?._id}`}>
                     <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
                   </Link>
                 </div>
