@@ -35,7 +35,7 @@ export const verifyController = new Elysia({
 
         // Send email
         await transporter.sendMail({
-          from: "support@aprisio.com", // Sender email
+          from: "hello@aprisio.com", // Sender email
           to: email,
           subject: "Email Verification",
           text: `Click the link to verify your email: ${verificationLink}`,
