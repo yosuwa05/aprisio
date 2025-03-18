@@ -368,8 +368,7 @@
 				<Input
 					class="mt-1 pr-10"
 					type="number"
-					min="0"
-					max="100"
+					step="0.01"
 					aria-invalid={$errors.duration ? 'true' : undefined}
 					bind:value={$form.duration}
 					{...$constraints.duration}
