@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import { FaPause, FaPlay, FaVolumeMute, FaVolumeUp } from "react-icons/fa";
 
@@ -103,12 +104,11 @@ export default function About() {
 
           <div className="lg:w-1/2 w-full">
             <p className="text-white !leading-relaxed xl:text-3xl lg:text-xl text-lg font-sans">
-              Aprisio is a community of, for and by post-career individuals
-              whose careers may be behind them but their best days are ahead of
-              them. This community seeks to explore new opportunities to stay
-              connected, foster new, meaningful connections to stay connected,
-              and pursue new interests to retain their zest for life. Watch our
-              founder talk about Aprisio.
+              Aprisio is a space for people in their 40s and beyond to find
+              community — not through algorithms, but through shared moments.​
+              From masterclasses to immersive experiences, we create ways to
+              connect that feel natural, meaningful, and real.​ This is the next
+              chapter.​ Let’s live it well.
             </p>
           </div>
         </div>
