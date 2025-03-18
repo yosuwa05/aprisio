@@ -187,7 +187,7 @@ export default function Community() {
   return (
     <>
       <div className='mx-2 md:mx-12 mt-6'>
-        <div className='bg-white shadow-lg rounded-lg p-6 text-center flex flex-col gap-4'>
+        <div className='bg-white shadow-lg rounded-lg p-6 text-center flex  font-roboto flex-col gap-4'>
           <p className='text-xl capitalize text-gray-700 leading-relaxed'>
             <span className='text-green-700 font-semibold'>
               Create your own Group
