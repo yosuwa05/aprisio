@@ -437,7 +437,7 @@ export default function BuyTickets() {
                             href={"/terms-of-use"}
                             target="_blank"
                           >
-                            Terms & Conditions
+                            Terms of Use
                           </Link>{" "}
                           {/* and{" "}
                           <Link

@@ -10,7 +10,11 @@
 	import { toast } from 'svelte-sonner';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
+	import DatePicker from 'svelty-picker';
 	import { _topicsSchema, eventsStore } from './events-store';
+
+	let selectedDateTime = new Date();
+
 	let edit = $state(false);
 	$effect(() => {
 		edit = $eventsStore.mode == 'create' && $eventsStore.id ? true : false;
@@ -185,19 +189,6 @@
 	<form method="POST" use:enhance class="">
 		<div class="grid grid-cols-2 gap-4 py-2">
 			<div>
-				<Label>Date and Time</Label>
-				<Input
-					class="mt-1 pr-10"
-					type="datetime-local"
-					aria-invalid={$errors.datetime ? 'true' : undefined}
-					bind:value={$form.datetime}
-					{...$constraints.datetime}
-				/>
-
-				{#if $errors.datetime}<span class="invalid text-xs text-red-500">{$errors.datetime}</span
-					>{/if}
-			</div>
-			<div>
 				<Label>Location</Label>
 				<Input
 					class="mt-1 pr-10"
@@ -210,9 +201,7 @@
 				{#if $errors.location}<span class="invalid text-xs text-red-500">{$errors.location}</span
 					>{/if}
 			</div>
-		</div>
 
-		<div class="grid grid-cols-2 gap-4 py-2">
 			<div>
 				<Label>Event Name</Label>
 				<Input
@@ -226,6 +215,7 @@
 				{#if $errors.eventName}<span class="invalid text-xs text-red-500">{$errors.eventName}</span
 					>{/if}
 			</div>
+
 			<div>
 				<Label>Available Tickets</Label>
 				<Input
@@ -240,9 +230,7 @@
 						>{$errors.availableTickets}</span
 					>{/if}
 			</div>
-		</div>
 
-		<div class="grid grid-cols-2 gap-3 py-2">
 			<div>
 				<Label>Price</Label>
 				<Input
@@ -255,6 +243,9 @@
 
 				{#if $errors.price}<span class="invalid text-xs text-red-500">{$errors.price}</span>{/if}
 			</div>
+		</div>
+
+		<div class="grid grid-cols-2 gap-3 py-2">
 			<div>
 				<Label>Booking Expiry Time and Date</Label>
 				<Input
@@ -269,19 +260,7 @@
 						>{$errors.expirydatetime}</span
 					>{/if}
 			</div>
-			<div>
-				<Label>Map Link</Label>
-				<Input
-					class="mt-1 pr-10"
-					type="text"
-					aria-invalid={$errors.mapLink ? 'true' : undefined}
-					bind:value={$form.mapLink}
-					{...$constraints.mapLink}
-				/>
 
-				{#if $errors.mapLink}<span class="invalid text-xs text-red-500">{$errors.mapLink}</span
-					>{/if}
-			</div>
 			<div>
 				<Label>Gst</Label>
 				<Input
@@ -299,6 +278,20 @@
 		</div>
 
 		<div class="grid grid-cols-2 gap-4 py-2">
+			<div>
+				<Label>Map Link</Label>
+				<Input
+					class="mt-1 pr-10"
+					type="text"
+					aria-invalid={$errors.mapLink ? 'true' : undefined}
+					bind:value={$form.mapLink}
+					{...$constraints.mapLink}
+				/>
+
+				{#if $errors.mapLink}<span class="invalid text-xs text-red-500">{$errors.mapLink}</span
+					>{/if}
+			</div>
+
 			<div>
 				<Label>Organiser Name</Label>
 				<Input
@@ -326,9 +319,7 @@
 				{#if $errors.biography}<span class="invalid text-xs text-red-500">{$errors.biography}</span
 					>{/if}
 			</div>
-		</div>
 
-		<div class="grid grid-cols-2 gap-4 py-2">
 			<div>
 				<Label>Event Image</Label>
 				<Input
@@ -339,6 +330,9 @@
 					accept="image/*"
 				/>
 			</div>
+		</div>
+
+		<div class="grid grid-cols-2 gap-4 py-2">
 			<div>
 				<Label>Event Type</Label>
 				<Select.Root
@@ -376,6 +370,22 @@
 
 				{#if $errors.duration}<span class="invalid text-xs text-red-500">{$errors.duration}</span
 					>{/if}
+			</div>
+
+			<div>
+				<Label for="datetime">Date and Time</Label>
+				<div class="w-full">
+					<DatePicker
+						bind:value={$form.datetime}
+						format="yyyy-MM-dd hh:mm A"
+						placeholder="Select date and time"
+						displayFormat="dd/MM/yyyy hh:mm A"
+						inputClasses="bg-[#fefae4] text-black!  w-full text-xs p-4 border bg-transparent border-none outline-none border-input bg-background ring-offset-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base"
+					/>
+				</div>
+				{#if $errors.datetime}
+					<span class="error">{$errors.datetime}</span>
+				{/if}
 			</div>
 		</div>
 
