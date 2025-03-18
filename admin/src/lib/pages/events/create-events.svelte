@@ -87,6 +87,7 @@
 					biography: $form.biography,
 					mapLink: $form.mapLink,
 					gst: $form.gst,
+					duration: $form.duration,
 					expirydatetime: $form.expirydatetime,
 					location: $form.location,
 					eventType: $form.eventType,
@@ -116,6 +117,7 @@
 				formData.append('biography', _data.biography);
 				formData.append('mapLink', _data.mapLink);
 				formData.append('gst', _data.gst);
+				formData.append('duration', _data.duration);
 				formData.append('location', _data.location);
 				if (file) {
 					formData.append('eventImage', file);
@@ -145,7 +147,7 @@
 			$form.availableTickets = $eventsStore.availableTickets;
 			$form.mapLink = $eventsStore.mapLink;
 			$form.gst = $eventsStore.gst;
-
+			$form.duration = $eventsStore.duration;
 			$form.expirydatetime = new Date($eventsStore.expirydatetime).toISOString().slice(0, 16);
 			$form.organiserName = $eventsStore.organiserName;
 			$form.biography = $eventsStore.biography;
@@ -162,6 +164,7 @@
 			$form.availableTickets = '';
 			$form.mapLink = '';
 			$form.gst = '';
+			$form.duration = '';
 			$form.expirydatetime = '';
 			$form.organiserName = '';
 			$form.biography = '';
@@ -358,6 +361,21 @@
 				</Select.Root>
 
 				{#if $errors.eventType}<span class="invalid text-xs text-red-500">{$errors.eventType}</span
+					>{/if}
+			</div>
+			<div>
+				<Label>Duration of the Event (Hours)</Label>
+				<Input
+					class="mt-1 pr-10"
+					type="number"
+					min="0"
+					max="100"
+					aria-invalid={$errors.duration ? 'true' : undefined}
+					bind:value={$form.duration}
+					{...$constraints.duration}
+				/>
+
+				{#if $errors.duration}<span class="invalid text-xs text-red-500">{$errors.duration}</span
 					>{/if}
 			</div>
 		</div>

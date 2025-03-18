@@ -195,7 +195,7 @@ export const formController = new Elysia({
           subject: "New Contact Message",
           to: "support@aprisio.com",
           html: content,
-          from: "noreply@aprisio.com",
+          from: "hello@aprisio.com",
         });
 
         return {

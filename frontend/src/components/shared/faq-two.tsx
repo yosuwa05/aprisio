@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import job from "../../../public/images/Briefcase.png";
-// import circle from "../../../public/images/Ellipse.png";
+import circle from "../../../public/images/People.png";
 import heart2 from "../../../public/images/heart-2.png";
 import monitor from "../../../public/images/monitor.png";
 // import rect from "../../../public/images/Rectangle.png";
@@ -19,17 +19,17 @@ export default function FAQ2() {
       </div>
       {/* cards */}
 
-      <div className='grid lg:grid-cols-3  xl:gap-20 lg:gap-16 gap-10 relative'>
+      <div className='grid lg:grid-cols-4  xl:gap-20 lg:gap-16 gap-10 relative'>
         <div className='flex lg:flex-col lg:gap-10 gap-5 items-start'>
           <div className='xl:h-28 rounded-full xl:w-28 lg:h-20 lg:w-20 bg-[#FFE4E0]  h-14 w-14 flex items-center justify-center'>
             <Image src={share} className='xl:p-10 lg:p-5 p-4' alt='sharing' />
           </div>
           <div className='flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4'>
             <h1 className='font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]'>
-              Interest based groups
+              Curated for 40+
             </h1>
             <p className='font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]'>
-              Connect with like-minded individuals.
+              {/* Connect with like-minded individuals. */}
             </p>
           </div>
         </div>
@@ -42,10 +42,10 @@ export default function FAQ2() {
           </div>
           <div className='flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4'>
             <h1 className='font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]'>
-              Virtual and In-person Events
+              Designed for connection
             </h1>
             <p className='font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]'>
-              Network virtually and in-person with your groups.
+              {/* Network virtually and in-person with your groups. */}
             </p>
           </div>
         </div>
@@ -87,11 +87,24 @@ export default function FAQ2() {
 
           <div className='flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4'>
             <h1 className='font-roboto  font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]'>
-              Discover & Access curated Experiences
+              Cantered around experiences
             </h1>
 
             <p className='font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]'>
-              Join exclusive, tailor made experiences designed for you.
+              {/* Join exclusive, tailor made experiences designed for you. */}
+            </p>
+          </div>
+        </div>
+        <div className='flex lg:flex-col lg:gap-10 gap-5 items-start'>
+          <div className='xl:h-28 rounded-full xl:w-28 lg:h-20 lg:w-20 bg-[#bba39f]  h-14 w-14 flex items-center justify-center'>
+            <Image src={circle} className='xl:p-10 lg:p-5 p-4' alt='sharing' />
+          </div>
+          <div className='flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4'>
+            <h1 className='font-roboto font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]'>
+              Simple. Honest. Human.
+            </h1>
+            <p className='font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]'>
+              {/* Connect with like-minded individuals. */}
             </p>
           </div>
         </div>

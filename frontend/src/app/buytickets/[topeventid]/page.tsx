@@ -14,6 +14,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parseISO, format, isValid } from "date-fns";
+import Link from "next/link";
 
 function formatDate(dateString: any) {
   if (!dateString) {
@@ -417,8 +418,14 @@ export default function BuyTickets() {
                         />
                         &nbsp;{" "}
                         <label htmlFor='terms'>
-                          By booking this experience, you agree to our terms &
-                          conditions.
+                          By booking this experience, you agree to our 
+                          <Link
+                            className='hover:underline cursor-pointer'
+                            href={"/terms-of-use"}
+                            target='_blank'>
+                            Terms & Conditions
+                          </Link>
+                          .
                         </label>
                       </div>
                       <div className='mt-10 flex justify-end'>

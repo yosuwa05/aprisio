@@ -143,7 +143,7 @@
 								class="text-primary cursor-pointer capitalize underline underline-offset-4"
 								onclick={() => {
 									$manageUserEventStore.userEventSelected = true;
-									$manageUserEventStore.userEventSelected = event._id;
+									$manageUserEventStore.userEventId = event._id;
 								}}
 							>
 								{event?.eventName}

@@ -29,7 +29,8 @@ export const eventsController = new Elysia({
         biography,
         description,
         delta,
-        gst
+        gst,
+        duration
       } = body;
 
       try {
@@ -81,7 +82,8 @@ export const eventsController = new Elysia({
           soldTickets: 0,
           lastSoldTicketNumber: 1,
           description,
-          gst
+          gst,
+          duration
         });
 
         await newTopic.save();
@@ -103,7 +105,7 @@ export const eventsController = new Elysia({
         datetime: t.String(),
         expirydatetime: t.String(),
         location: t.String(),
-        // eventRules: t.String(),
+        duration: t.String(),
         eventImage: t.File(),
         eventType: t.String(),
         price: t.String(),
@@ -237,7 +239,8 @@ export const eventsController = new Elysia({
           biography,
           description,
           delta,
-          gst
+          gst,
+          duration
         } = body;
 
         const event = await AdminEventModel.findById(id);
@@ -280,7 +283,7 @@ export const eventsController = new Elysia({
         event.description = description || event.description;
         event.delta = delta || event.delta;
         event.gst = Number(gst ?? 0) || event.gst;
-
+        event.duration = Number(duration ?? 0) || event.duration;
 
         if (fileName) {
           event.eventImage = fileName;
@@ -318,6 +321,7 @@ export const eventsController = new Elysia({
         organiserName: t.Optional(t.String()),
         mapLink: t.Optional(t.String()),
         gst: t.Optional(t.String()),
+        duration: t.Optional(t.String()),
         biography: t.Optional(t.String()),
         description: t.Optional(t.String()),
         delta: t.Optional(t.String()),
@@ -364,7 +368,6 @@ export const eventsController = new Elysia({
       },
     }
   )
-
   .get(
     "/ticketusers",
     async ({ query }) => {
@@ -397,6 +400,65 @@ export const eventsController = new Elysia({
 
         return {
           ticketusers,
+          total,
+          ok: true,
+        };
+      } catch (error: any) {
+        console.error(error);
+        return {
+          ok: false,
+          error: error.message,
+        };
+      }
+    },
+    {
+      query: t.Object({
+        page: t.Optional(t.Number()),
+        limit: t.Optional(t.Number()),
+        q: t.Optional(t.String()),
+        eventId: t.String(),
+      }),
+    }
+  )
+  .get(
+    "/All-tickets",
+    async ({ query }) => {
+      try {
+        const { eventId } = query;
+
+        if (!eventId) {
+          return {
+            ok: false,
+            error: "eventId is required",
+          };
+        }
+
+        const searchQuery: any = { eventId };
+        const total = await TicketModel.countDocuments(searchQuery);
+        const ticketusers = await TicketModel.find(searchQuery)
+          .populate("userId", "name email mobile")
+          .sort({ createdAt: -1 })
+
+        if (!ticketusers) {
+          return {
+            ok: false,
+            error: "No tickets found",
+          };
+        }
+
+        const alltickets = ticketusers.map((ticket) => {
+          return {
+            name: ticket?.name,
+            mobile: ticket?.mobileNumber,
+            emailId: ticket?.emailId,
+            ticketId: ticket?.tickets?.ticketId,
+            ticketCount: ticket?.ticketCount,
+            amount: ticket?.amount,
+          };
+        })
+
+        return {
+          alltickets: alltickets || [],
           total,
           ok: true,
         };

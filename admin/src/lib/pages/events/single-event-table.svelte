@@ -12,6 +12,10 @@
 	import { Loader } from 'lucide-svelte';
 	import { tick } from 'svelte';
 	import { manageLayoutStore } from './events-store';
+	import ExcelJS from 'exceljs';
+	//@ts-ignore
+	import { saveAs } from 'file-saver';
+	import { toast } from 'svelte-sonner';
 
 	async function fetchTopics(limit = 10, page = 1, search = '', eventId = '') {
 		const res = await _axios.get(
@@ -23,6 +27,12 @@
 
 	async function fetchDetails(id: string) {
 		const res = await _axios.get('/events/' + id);
+		const data = await res.data;
+		return data;
+	}
+
+	async function FetchAlltickets(eventId = '') {
+		const res = await _axios.get(`/events/All-tickets?eventId=${eventId}`);
 		const data = await res.data;
 		return data;
 	}
@@ -53,7 +63,60 @@
 		queryKey: ['single event fetch', $manageLayoutStore.selectedId],
 		queryFn: () => fetchDetails($manageLayoutStore.selectedId)
 	});
-	console.log($query.data);
+
+	const AllTickets = createQuery({
+		queryKey: ['Fetch All tickets', $manageLayoutStore.selectedId],
+		queryFn: () => FetchAlltickets($manageLayoutStore.selectedId)
+	});
+	console.log($AllTickets.data);
+
+	async function exportToExcel() {
+		if ($AllTickets?.data?.alltickets?.length === 0) {
+			return toast.error('No tickets found');
+		}
+
+		const workbook = new ExcelJS.Workbook();
+		const worksheet = workbook.addWorksheet('Event Tickets');
+
+		// Define columns with headers
+		worksheet.columns = [
+			{ header: 'Ticket Id', key: 'ticketId', width: 50 },
+			{ header: 'Name', key: 'name', width: 50 },
+			{ header: 'Mobile', key: 'mobile', width: 20 },
+			{ header: 'Email', key: 'emailId', width: 50 },
+			{ header: 'Tickets', key: 'ticketCount', width: 10 },
+			{ header: 'Price', key: 'amount', width: 20 }
+		];
+
+		worksheet.getRow(1).font = { bold: true, size: 12 };
+		worksheet.getRow(1).alignment = { horizontal: 'center' };
+
+		$AllTickets?.data?.alltickets?.forEach((ticket: any) => {
+			worksheet.addRow({
+				ticketId: ticket.ticketId,
+				name: ticket.name,
+				mobile: ticket.mobile,
+				emailId: ticket.emailId,
+				ticketCount: ticket.ticketCount,
+				amount: ticket.amount
+			});
+		});
+
+		worksheet.getColumn('amount').numFmt = '"₹"#,##0.00';
+
+		worksheet.columns.forEach((column) => {
+			column.alignment = { vertical: 'middle', horizontal: 'left' };
+		});
+
+		const buffer = await workbook.xlsx.writeBuffer();
+		const blob = new Blob([buffer], {
+			type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+		});
+		const date = new Date();
+		const fileName = `${$detailsQuery.data?.event.eventName}_${date.toLocaleDateString('en-GB')}.xlsx`;
+		saveAs(blob, fileName);
+	}
+
 	function formatDate(date: Date) {
 		return new Intl.DateTimeFormat('en-US', {
 			year: 'numeric',
@@ -105,6 +168,17 @@
 	{/if}
 	<div class="ml-auto w-[30%]">
 		<div class="relative grid gap-2">
+			<div class="my-7 flex w-full justify-end gap-2">
+				<Button
+					class="w-[120px] text-white"
+					type="submit"
+					onclick={() => {
+						exportToExcel();
+					}}
+				>
+					Export
+				</Button>
+			</div>
 			<Input
 				type={'text'}
 				required

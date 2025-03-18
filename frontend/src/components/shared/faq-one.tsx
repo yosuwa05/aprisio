@@ -28,10 +28,10 @@ export default function FAQ1() {
           </div>
           <div className=' lg:mt-0 '>
             <h1 className='text-[#353535] xl:pt-10 lg:pt-3 xl:text-[2.25rem] lg:text-[1.5rem] text-[1.25rem] font-bold font-mulish'>
-              Create Your Account
+              Join
             </h1>
             <p className='font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1'>
-              Signup with your email & password
+              Become a member of a thoughtfully curated community.
             </p>
           </div>
         </div>
@@ -56,10 +56,11 @@ export default function FAQ1() {
           </div>
           <div className=' lg:mt-0'>
             <h1 className='text-[#353535] xl:pt-10 lg:pt-3 xl:text-[2.25rem] lg:text-[1.5rem] text-[1.25rem] font-bold font-mulish'>
-              Join Community
+              Discover
             </h1>
             <p className='font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1'>
-              Join like minded people who share your interests and passion.
+              Access curated events and experiences around food, travel, arts,
+              wellness, and more.
             </p>
           </div>
           <div></div>
@@ -85,11 +86,10 @@ export default function FAQ1() {
           </div>
           <div className=' lg:mt-0'>
             <h1 className='text-[#353535] xl:pt-10 lg:pt-3 xl:text-[2.25rem] lg:text-[1.5rem] text-[1.25rem] font-bold font-mulish'>
-              Explore Experiences
+              Connect
             </h1>
             <p className='font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1'>
-              Join curated experiences designed around your interests and
-              passion.
+              Meet like-minded people. Grow your circle naturally and with ease.
             </p>
           </div>
           <div></div>

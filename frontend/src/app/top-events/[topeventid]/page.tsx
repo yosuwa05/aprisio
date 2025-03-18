@@ -39,7 +39,7 @@ export default function ViewTopEventPage() {
         </div>
       ) : (
         <>
-          <div className='flex justify-between items-center flex-wrap gap-4'>
+          <div className='flex  items-center flex-wrap gap-4'>
             <div className='flex flex-col gap-4'>
               <div className='flex flex-col gap-5'>
                 <h1 className='text-3xl md:text-5xl font-medium text-textcol font-roboto'>
@@ -49,16 +49,23 @@ export default function ViewTopEventPage() {
                   {formatEventDate(data?.event?.datetime)}
                 </h2>
               </div>
-              <div className='text-contrasttext text-base font-sans'>
-                <h1 className='capitalize text-base  md:text-xl'>
-                  {data?.event?.location || ""}
-                </h1>
-                <div className='capitalize text-base  md:text-xl'>
-                  Hosted by : {data?.event?.organiserName || ""}
+              <div className='text-contrasttext text-base flex-wrap gap-4  font-sans'>
+                <div>
+                  <div className='capitalize text-base  md:text-xl'>
+                    Duration : {data?.event?.duration || ""} Hrs
+                  </div>
+                  <h1 className='capitalize text-base  md:text-xl'>
+                    {data?.event?.location || ""}
+                  </h1>
+                  <div className='capitalize text-base  md:text-xl'>
+                    Hosted by : {data?.event?.organiserName || ""}
+                  </div>
                 </div>
               </div>
             </div>
-            <div className=''>
+          </div>
+          <div className='flex gap-2    flex-wrap flex-col mt-5'>
+            <div>
               <Button
                 onClick={() => {
                   if (!user) return toast.error("Login to continue");
@@ -71,9 +78,9 @@ export default function ViewTopEventPage() {
                 Buy Tickets
               </Button>
             </div>
-          </div>
-          <div className='text-[#353535CC]/80 font-extrabold font-roboto text-lg py-4'>
-            Starts at INR {data?.event?.price || ""}
+            <div className='text-[#353535CC]/80 font-extrabold font-roboto text-lg '>
+              Starts at INR {data?.event?.price || ""}
+            </div>
           </div>
           <div className='flex flex-col lg:flex-row gap-10 pt-6'>
             <div className='w-full lg:w-1/4 flex-shrink-0'>
@@ -114,7 +121,7 @@ export default function ViewTopEventPage() {
                 dangerouslySetInnerHTML={{
                   __html: data?.event?.description,
                 }}
-                className='lg:w-2/3 '></div>
+                className='lg:w-3/4 '></div>
 
               <Link href={data?.event?.mapLink} target='_blank'>
                 <h1 className='text-lg text-blue-800 font-medium font-roboto'>

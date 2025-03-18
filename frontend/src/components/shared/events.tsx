@@ -19,6 +19,7 @@ import { parseISO, format, isValid } from "date-fns";
 import { useQuery } from "@tanstack/react-query";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
+import { useRouter } from "next/navigation";
 function formatDate(dateString: any) {
   if (!dateString) {
     return "Date not available";
@@ -48,7 +49,7 @@ export default function Events() {
       return res.data;
     },
   });
-
+  const router = useRouter();
   return (
     <section className='bg-white relative'>
       <div className='absolute top-[0.9%] left-[1.3%] lg:top-[6%] lg:left-[2.5%] -z-2'>
@@ -88,7 +89,9 @@ export default function Events() {
           className='mySwiper'>
           {bata?.events?.map((item: any, index: any) => (
             <SwiperSlide key={index}>
-              <div className='relative rounded-2xl overflow-hidden'>
+              <div
+                onClick={() => router.push(`/top-events/${item._id}`)}
+                className='relative rounded-2xl overflow-hidden cursor-pointer'>
                 <Image
                   loading='eager'
                   src={BASE_URL + `/file?key=${item.eventImage}`}
@@ -108,11 +111,9 @@ export default function Events() {
                     </p>
                   </div>
                   <div>
-                    <Link
-                      className='cursor-pointer'
-                      href={`/top-events/${item?._id}`}>
+                    <div className='cursor-pointer flex-shrink-0'>
                       <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
-                    </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -123,7 +124,10 @@ export default function Events() {
 
       <div className='block py-8 pb-16 lg:hidden'>
         {bata?.events?.map((item: any, index: any) => (
-          <div key={index} className='flex pt-8 justify-center'>
+          <div
+            onClick={() => router.push(`/top-events/${item._id}`)}
+            key={index}
+            className='flex pt-8 justify-center cursor-pointer'>
             <div className='relative w-[90%] max-w-sm sm:max-w-md md:max-w-lg rounded-2xl overflow-hidden'>
               <Image
                 src={BASE_URL + `/file?key=${item.eventImage}`}
@@ -133,21 +137,19 @@ export default function Events() {
                 className='w-full h-auto aspect-[4/5] object-cover rounded-2xl'
               />
 
-              <div className='absolute px-4 py-4 flex justify-between bottom-0 text-center w-full z-10 bg-[#FFFFFFA1]'>
-                <div>
-                  <p className='font-mulish flex items-center text-left text-[1.25rem] text-[#353535]'>
+              <div className='absolute px-4 py-4 flex justify-between bottom-0  w-full z-10 bg-[#FFFFFFA1]'>
+                <div className='w-full max-w-[80%]'>
+                  <p className='font-mulish capitalize text-xl text-[#353535] truncate'>
                     {item?.eventName}
                   </p>
-                  <p className='font-mulish flex items-center text-left text-[1.25rem] text-[#353535]'>
+                  <p className='font-mulish text-lg text-[#353535] truncate'>
                     {formatDate(item?.datetime)} - {item?.location}
                   </p>
                 </div>
                 <div>
-                  <Link
-                    className='cursor-pointer'
-                    href={`/top-events/${item?._id}`}>
+                  <div className='cursor-pointer flex-shrink-0'>
                     <Image src={arrow2} alt='Arrow' className='w-14 h-14' />
-                  </Link>
+                  </div>
                 </div>
               </div>
             </div>

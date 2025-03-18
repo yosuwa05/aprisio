@@ -28,6 +28,7 @@ import { paymentNoAuthController } from "./payment-noauth-controller";
 import { MyProfileController } from "./users/myprofile-controller";
 import { userController } from "./users/userController";
 import { verifyController } from "./verify-controller";
+import { DeleteManagementController } from "./users/delete-management-controller";
 
 export const userrouter = new Elysia({
   prefix: "/user",
@@ -96,4 +97,5 @@ export const userrouter = new Elysia({
   .use(EventsController)
   .use(PersonalController)
   .use(EventscommentsController)
-  .use(MyProfileController);
+  .use(MyProfileController)
+  .use(DeleteManagementController)

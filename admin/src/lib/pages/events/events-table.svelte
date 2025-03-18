@@ -73,7 +73,8 @@
 			description: event.description,
 			delta: event.delta,
 			eventImage: event.eventImage,
-			gst: event.gst
+			gst: event.gst,
+			duration: event.duration
 		};
 	}
 </script>

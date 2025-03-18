@@ -62,6 +62,59 @@ export const UserEventController = new Elysia({
             },
         }
     )
+    .get(
+        "/view-event",
+        async ({ set, query }) => {
+            try {
+                const { eventId } = query;
+                const isEventExist = await EventModel.findById(eventId)
+
+                if (!isEventExist) {
+                    set.status = 400;
+                    return {
+                        message: "Event not found"
+                    }
+                }
+
+                const Event = await EventModel.findById(eventId)
+                    .populate({
+                        path: "group",
+                        select: "name",
+                        populate: {
+                            path: "subTopic",
+                            select: "subTopicName",
+                            populate: {
+                                path: "topic",
+                                select: "topicName"
+                            }
+                        }
+                    })
+                    .populate("managedBy", "name")
+
+
+                set.status = 200;
+                return {
+                    Event
+                };
+            } catch (error) {
+                console.log(error);
+                set.status = 500;
+                return {
+                    message: "Internal Server Error",
+                    error,
+                };
+            }
+        },
+        {
+            query: t.Object({
+                eventId: t.String()
+            }),
+            detail: {
+                summary: "View Event",
+                description: "View Event",
+            },
+        }
+    )
     .post(
         "/approve/:id",
         async ({ params }) => {

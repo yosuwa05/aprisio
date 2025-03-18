@@ -19,6 +19,7 @@ type IEvent = {
   soldTickets: number;
   reminingTickets: number;
   price: number;
+  duration: number;
   expirydatetime: Date;
   organiserName: string;
   biography: string;
@@ -53,6 +54,10 @@ const AdminEventSchema = new Schema<IEvent>(
     },
     gst: { type: Number, default: 0 },
     soldTickets: {
+      type: Number,
+      default: 0,
+    },
+    duration: {
       type: Number,
       default: 0,
     },

@@ -86,10 +86,10 @@ export default function PersonalProfile({
                 </h1>
                 {user && (
                   <>
-                    <div className='flex gap-2 items-center text-sm text-fadedtext'>
+                    {/* <div className='flex gap-2 items-center text-sm text-fadedtext'>
                       <Icon icon='ic:outline-email' />
                       <p>{data?.user.email}</p>
-                    </div>
+                    </div> */}
                     <div className='flex gap-2 items-center text-sm text-fadedtext'>
                       <Button
                         size={"sm"}

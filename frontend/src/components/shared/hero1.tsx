@@ -17,16 +17,17 @@ function Hero1() {
       <section className=' flex flex-col   md:gap-14'>
         <div className='flex 2xl:mt-24 xl:mt-20 mt-14 flex-col justify-center 2xl:gap-20 xl:gap-8 lg:gap-8 md:gap-8 gap-5 items-center'>
           <h1 className='2xl:text-7xl xl:text-7xl w-[90%] z-10 leading-normal text-center lg:text-5xl md:text-5xl text-3xl font-semibold text-[#353535]'>
-            Your Career May Be Behind You
+            Life, Curated. Together.
           </h1>
-          <h2 className='xl:text-6xl w-[90%] z-10 leading-normal text-center lg:text-4xl md:text-4xl text-2xl font-semibold text-[#353535]'>
+          {/* <h2 className='xl:text-6xl w-[90%] z-10 leading-normal text-center lg:text-4xl md:text-4xl text-2xl font-semibold text-[#353535]'>
             Your Best Days are Ahead of You
-          </h2>
+          </h2> */}
           <div className='w-full justify-center flex z-10'>
             <p className='text-center lg:w-1/2 w-[80%] flex text-[#353535CC] xl:text-2xl lg:text-xl md:text-lg text-base justify-center items-center'>
-              Join a vibrant community of active, impactful, & like-minded post
-              career individuals exploring new opportunities, building new
-              connections, & pursuing new interests.
+              Aprisio is a quiet invitation to connect. A community for adults
+              40+, built around shared interests, meaningful experiences, and
+              lasting friendships. No noise. No pressure. Just a place to enjoy
+              what matters — with people who get it.
             </p>
           </div>
         </div>

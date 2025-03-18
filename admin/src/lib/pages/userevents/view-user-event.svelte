@@ -1,74 +1,30 @@
 <script lang="ts">
 	import { _axios } from '$lib/_axios';
-	import Paginator from '$lib/components/paginator.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import * as Table from '$lib/components/ui/table';
-	import TableCaption from '$lib/components/ui/table/table-caption.svelte';
-	import { baseUrl } from '$lib/config';
 	import Icon from '@iconify/svelte';
 	import { createQuery } from '@tanstack/svelte-query';
 	import { format } from 'date-fns';
 	import { Loader } from 'lucide-svelte';
-	import { tick } from 'svelte';
 	import { manageUserEventStore } from './user-events-store';
 
-	async function fetchTopics(limit = 10, page = 1, search = '') {
-		const res = await _axios.get(`/events/ticketusers?limit=${limit}&page=${page}&q=${search}`);
-		const data = await res.data;
-
-		return data;
-	}
-
 	async function fetchDetails(id: string) {
-		const res = await _axios.get('/events/' + id);
-		const data = await res.data;
-		return data;
+		const res = await _axios.get('/user-event/view-event?eventId=' + id);
+		return res.data;
 	}
 
-	const formatEventDate = (date: string) => {
-		return format(new Date(date), 'EEE, MMM d yyyy, h:mm a');
-	};
-
-	let page = $state(1);
-	let limit = $state(7);
-	let search = $state('');
-	let debounceTimeout: any;
-	function debounceSearch() {
-		clearTimeout(debounceTimeout);
-		debounceTimeout = setTimeout(async () => {
-			await tick();
-			page = 1;
-			$query.refetch();
-		}, 500);
-	}
-	const query = createQuery({
-		queryKey: ['events fetch 2'],
-		queryFn: () => fetchTopics(limit, page, search)
-	});
+	const formatEventDate = (date: string) => format(new Date(date), 'EEE, MMM d yyyy, h:mm a');
 
 	const detailsQuery = createQuery({
 		queryKey: ['user single event fetch', $manageUserEventStore.userEventId],
 		queryFn: () => fetchDetails($manageUserEventStore.userEventId)
 	});
-
-	function formatDate(date: Date) {
-		return new Intl.DateTimeFormat('en-US', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric'
-		}).format(date);
-	}
 </script>
 
-<div class="px-12">
+<div class="px-12 py-6">
 	{#if $detailsQuery.isLoading && $detailsQuery.isRefetching}
 		<Loader class="mx-auto h-10 w-10" />
 	{:else if $detailsQuery.data}
-		<div class="text-maintext font-karla mx-auto mt-6 flex gap-5">
+		<div class="text-maintext font-karla mx-auto max-w-4xl">
 			<Button
 				size="icon"
 				onclick={() => {
@@ -78,25 +34,48 @@
 			>
 				<Icon icon="ion:arrow-back" color="white" class="h-6 w-6" />
 			</Button>
-			<div class="flex flex-col gap-3">
-				<div class="flex items-center gap-2">
-					<h1 class="text-3xl font-bold">{$detailsQuery.data?.event.eventName}</h1>
-
-					<h5 class="text-gray-500">{$detailsQuery.data?.event.eventId}</h5>
-				</div>
-				<p class="flex items-center gap-2">
-					<Icon icon="tdesign:time" font-size="1rem" />
-					{formatEventDate($detailsQuery.data?.event.datetime)}
+			<div class="mt-6 flex flex-col gap-4 border-b pb-4">
+				<h1 class="text-3xl font-bold">{$detailsQuery.data?.Event?.eventName}</h1>
+				<p class="flex items-center gap-2 text-gray-600">
+					<Icon icon="tdesign:time" class="text-lg" />
+					{formatEventDate($detailsQuery.data?.Event?.date)}
 				</p>
-
-				<p class="flex items-center gap-2">
-					<Icon icon="lets-icons:ticket" font-size="1rem" />
-					{$detailsQuery.data?.event.availableTickets} tickets
+				<p class="flex items-center gap-2 text-gray-600">
+					<Icon icon="mdi:map-marker" class="text-lg" />
+					{$detailsQuery.data?.Event?.location}
 				</p>
+			</div>
 
-				<p class="flex items-center gap-2">
-					<Icon icon="streamline:bag-rupee" font-size="1rem" />
-					{$detailsQuery.data?.event.price} INR
+			<div class="mt-6 border-b pb-4">
+				<h2 class="text-xl font-semibold">Event Rules</h2>
+				<ul class="mt-2 list-disc pl-5 text-gray-700">
+					{#each $detailsQuery.data?.Event?.rules as rule}
+						<li>
+							<strong>{rule?.heading}:</strong>
+							{rule?.subHeading}
+						</li>
+					{/each}
+				</ul>
+			</div>
+
+			<div class="mt-6 border-b pb-4">
+				<h2 class="text-xl font-semibold">Managed By</h2>
+				<p class="mt-2 text-gray-700">{$detailsQuery.data?.Event?.managedBy?.name || 'N/A'}</p>
+			</div>
+
+			<div class="mt-6 border-b pb-4">
+				<h2 class="text-xl font-semibold">Group & Topics</h2>
+				<p class="mt-2 text-gray-700">
+					<strong>Group:</strong>
+					{$detailsQuery.data?.Event?.group?.name || 'N/A'}
+				</p>
+				<p class="text-gray-700">
+					<strong>Sub-Topic:</strong>
+					{$detailsQuery.data?.Event?.group?.subTopic?.subTopicName}
+				</p>
+				<p class="text-gray-700">
+					<strong>Topic:</strong>
+					{$detailsQuery.data?.Event?.group?.subTopic?.topic?.topicName}
 				</p>
 			</div>
 		</div>

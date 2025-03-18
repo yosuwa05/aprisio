@@ -168,7 +168,7 @@ export default function Feed() {
                 }}
               />
 
-              <Button
+              {/* <Button
                 onClick={() => {
                   if (!user) return toast.error("Login to continue");
                   router.push("/feed/create-event");
@@ -176,7 +176,7 @@ export default function Feed() {
                 className='relative z-10 bg-white text-[#D49D0D] shadow-[#d49c0d46] shadow-lg hover:bg-white'>
                 <Plus />
                 Create Event
-              </Button>
+              </Button> */}
             </div>
 
             <h1 className='text-2xl text-textcol my-4 font-semibold'>Events</h1>
