@@ -12,9 +12,12 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import DatePicker from 'svelty-picker';
 	import { _topicsSchema, eventsStore } from './events-store';
+	import dayjs from 'dayjs';
 
 	let selectedDateTime = new Date();
-
+	const formatDateTime = (dateString: any) => {
+		return dayjs(dateString, 'YYYY-MM-DD hh:mm A').format('YYYY-MM-DDTHH:mm');
+	};
 	let edit = $state(false);
 	$effect(() => {
 		edit = $eventsStore.mode == 'create' && $eventsStore.id ? true : false;
@@ -113,10 +116,11 @@
 				const content = quill.root.innerHTML;
 
 				let formData = new FormData();
-
+				const formatedDateTime: any = formatDateTime(_data.datetime);
+				const formatedExpiryDateTime: any = formatDateTime(_data.expirydatetime);
 				formData.append('eventName', _data.eventName);
-				formData.append('datetime', _data.datetime);
-				formData.append('expirydatetime', _data.expirydatetime);
+				formData.append('datetime', formatedDateTime);
+				formData.append('expirydatetime', formatedExpiryDateTime);
 				formData.append('organiserName', _data.organiserName);
 				formData.append('biography', _data.biography);
 				formData.append('mapLink', _data.mapLink);
@@ -136,23 +140,27 @@
 				formData.append('availableTickets', _data.availableTickets);
 
 				formData.append('description', content);
-
+				console.log(_data);
 				$createManagerMutation.mutate(formData);
 			}
 		}
 	);
-
+	// 2025-03-28 06:30 AM
 	$effect(() => {
 		if (edit) {
+			console.log(dayjs($eventsStore.datetime).format('YYYY-MM-DD hh:mm a'));
+			console.log($eventsStore);
 			$form.eventName = $eventsStore.eventName;
-			$form.datetime = new Date($eventsStore.datetime).toISOString().slice(0, 16);
+			$form.datetime = dayjs($eventsStore.datetime).format('YYYY-MM-DD hh:mm a').toString();
 			$form.location = $eventsStore.location;
 			$form.price = $eventsStore.price;
 			$form.availableTickets = $eventsStore.availableTickets;
 			$form.mapLink = $eventsStore.mapLink;
 			$form.gst = $eventsStore.gst;
 			$form.duration = $eventsStore.duration;
-			$form.expirydatetime = new Date($eventsStore.expirydatetime).toISOString().slice(0, 16);
+			$form.expirydatetime = dayjs($eventsStore.expirydatetime)
+				.format('YYYY-MM-DD hh:mm a')
+				.toString();
 			$form.organiserName = $eventsStore.organiserName;
 			$form.biography = $eventsStore.biography;
 			$form.description = $eventsStore.description;
@@ -248,14 +256,22 @@
 		<div class="grid grid-cols-2 gap-3 py-2">
 			<div>
 				<Label>Booking Expiry Time and Date</Label>
-				<Input
+				<!-- <Input
 					class="mt-1 pr-10"
 					type="datetime-local"
 					aria-invalid={$errors.expirydatetime ? 'true' : undefined}
 					bind:value={$form.expirydatetime}
 					{...$constraints.expirydatetime}
+				/> -->
+				<DatePicker
+					bind:value={$form.expirydatetime}
+					format="yyyy-mm-dd hh:ii p"
+					formatType="standard"
+					displayFormat="yyyy-mm-dd hh:ii p"
+					placeholder="Select date and time"
+					displayFormatType="standard"
+					inputClasses="bg-[#fefae4] text-black!  w-full text-xs p-4 border bg-transparent border-none outline-none border-input bg-background ring-offset-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base"
 				/>
-
 				{#if $errors.expirydatetime}<span class="invalid text-xs text-red-500"
 						>{$errors.expirydatetime}</span
 					>{/if}
@@ -377,9 +393,11 @@
 				<div class="w-full">
 					<DatePicker
 						bind:value={$form.datetime}
-						format="yyyy-MM-dd hh:mm A"
+						format="yyyy-mm-dd hh:ii p"
+						formatType="standard"
+						displayFormat="yyyy-mm-dd hh:ii p"
 						placeholder="Select date and time"
-						displayFormat="dd/MM/yyyy hh:mm A"
+						displayFormatType="standard"
 						inputClasses="bg-[#fefae4] text-black!  w-full text-xs p-4 border bg-transparent border-none outline-none border-input bg-background ring-offset-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base"
 					/>
 				</div>
