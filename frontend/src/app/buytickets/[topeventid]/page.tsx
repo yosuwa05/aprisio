@@ -184,7 +184,7 @@ export default function BuyTickets() {
               </h2>
             </div>
             <div className='text-[#353535CC]/60 font-extrabold font-roboto text-lg pb-4'>
-              Starts at INR {data?.event?.price || ""}
+              INR {data?.event?.price || ""} + GST
             </div>
           </div>
 
