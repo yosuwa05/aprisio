@@ -3,6 +3,18 @@ import { generateEventId, generateTicketPrefix } from "@/lib/utils";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { TicketModel } from "@/models/ticket-tracking";
 import Elysia, { t } from "elysia";
+import { parse } from "date-fns";
+
+function parseCustomDate(dateStr: string): Date | null {
+  const cleanDateStr = dateStr.replace(/ (am|pm)$/i, '');
+  let parsedDate = parse(cleanDateStr, "yyyy-MM-dd HH:mm", new Date());
+
+  if (isNaN(parsedDate.getTime())) {
+    parsedDate = parse(dateStr, "yyyy-MM-dd hh:mm a", new Date());
+  }
+
+  return isNaN(parsedDate.getTime()) ? null : parsedDate;
+}
 
 export const eventsController = new Elysia({
   prefix: "/events",
@@ -52,16 +64,15 @@ export const eventsController = new Elysia({
         console.log("Raw datetime:", datetime);
         console.log("Raw expirydatetime:", expirydatetime);
 
-        let finalDate = new Date(datetime);
-        let _finalDate = new Date(expirydatetime);
 
-        if (isNaN(finalDate.getTime()) || isNaN(_finalDate.getTime())) {
-          throw new Error("Invalid date format received");
-        }
 
+        let finalDate = parseCustomDate(datetime);
+        let _finalDate = parseCustomDate(expirydatetime);
         console.log("Parsed datetime:", finalDate);
         console.log("Parsed expirydatetime:", _finalDate);
-
+        if (!finalDate || !_finalDate) {
+          throw new Error("Invalid date format received");
+        }
 
 
         let eventId = generateEventId();
@@ -278,9 +289,9 @@ export const eventsController = new Elysia({
 
         event.eventName = eventName || event.eventName;
         // @ts-ignore
-        event.datetime = new Date(datetime) || event.datetime;
+        event.datetime = parseCustomDate(datetime) || event.datetime;
         // @ts-ignore
-        event.expirydatetime = new Date(expirydatetime) || event.expirydatetime;
+        event.expirydatetime = parseCustomDate(expirydatetime) || event.expirydatetime;
         event.location = location || event.location;
         event.price = Number(price ?? 0) || event.price;
         event.availableTickets =

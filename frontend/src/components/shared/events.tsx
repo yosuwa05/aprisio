@@ -20,26 +20,10 @@ import { useQuery } from "@tanstack/react-query";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
-function formatDate(dateString: any) {
-  if (!dateString) {
-    return "Date not available";
-  }
 
-  let date;
-
-  if (typeof dateString === "string") {
-    date = parseISO(dateString);
-  } else {
-    date = new Date(dateString);
-  }
-
-  if (!isValid(date)) {
-    console.error("Invalid date format:", dateString);
-    return "Invalid Date";
-  }
-
-  return format(date, "MMM dd, yyyy");
-}
+const formatEventDate = (date: string) => {
+  return format(new Date(date), "EEE, MMM d yyyy, h:mm a");
+};
 
 export default function Events() {
   const { data: bata } = useQuery({
@@ -107,7 +91,7 @@ export default function Events() {
                       {item?.eventName}
                     </p>
                     <p className='font-mulish text-lg text-[#353535] truncate'>
-                      {formatDate(item?.datetime)} - {item?.location}
+                      {formatEventDate(item?.datetime)} - {item?.location}
                     </p>
                   </div>
                   <div>
@@ -143,7 +127,7 @@ export default function Events() {
                     {item?.eventName}
                   </p>
                   <p className='font-mulish text-lg text-[#353535] truncate'>
-                    {formatDate(item?.datetime)} - {item?.location}
+                    {formatEventDate(item?.datetime)} - {item?.location}
                   </p>
                 </div>
                 <div>

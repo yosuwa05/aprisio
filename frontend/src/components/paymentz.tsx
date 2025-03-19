@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import chevronleft from "@img/icons/blue-chevron-left.svg";
 import paymentfailed from "@img/images/paymentfailed.png";
 import paymentsuccess from "@img/images/paymentsuccess.png";
@@ -20,7 +21,9 @@ export function PaymentSuccess() {
 
   const status = params.get("status");
   const txnId = params.get("txnId");
-
+  const setActiveTab = useGlobalLayoutStore(
+    (state) => state.setActiveMyProfileTab
+  );
   const { data, isLoading } = useQuery<any>({
     queryKey: ["paynow broo"],
     queryFn: async () => {
@@ -140,13 +143,18 @@ export function PaymentSuccess() {
               ₹ {data?.amount}
             </span>
           </div>
+
+          <p className='text-lg text-[#7A7A7A] text-center'>
+            Thank you for your purchase
+          </p>
         </div>
       )}
 
       <div className='flex justify-center mt-6'>
         <Button
           onClick={() => {
-            router.push("/top-events");
+            router.push("/profile");
+            setActiveTab("payment");
           }}
           className='rounded-full py-8 px-7  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
           Back to experience

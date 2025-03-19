@@ -24,10 +24,10 @@ function Hero1() {
           </h2> */}
           <div className='w-full justify-center flex z-10'>
             <p className='text-center lg:w-1/2 w-[80%] flex text-[#353535CC] xl:text-2xl lg:text-xl md:text-lg text-base justify-center items-center'>
-              Aprisio is a quiet invitation to connect. A community for adults
-              40+, built around shared interests, meaningful experiences, and
-              lasting friendships. No noise. No pressure. Just a place to enjoy
-              what matters — with people who get it.
+              Aprisio is a quiet invitation to connect. A community for
+              individuals 40+, built around shared interests, meaningful
+              experiences, and lasting friendships. No noise. No pressure. Just
+              a place to enjoy what matters — with people who get it.
             </p>
           </div>
         </div>
