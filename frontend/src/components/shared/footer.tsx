@@ -15,7 +15,7 @@ export default function Footer() {
 
   return (
     <section className=''>
-      <div className='bg-white lg:grid-cols-3 grid-cols-1 gap-9 lg:gap-0 grid py-14 lg:px-24 px-5'>
+      <div className='bg-white lg:grid-cols-2 grid-cols-1 gap-9 lg:gap-0 grid py-14 lg:px-24 px-5'>
         <div className='w-full md:w-[80%]'>
           <Image
             src={logo}
@@ -52,7 +52,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div>
+        {/* <div>
           <h1 className='text-[#043A53] font-roboto font-semibold xl:text-3xl text-2xl xl:pb-8 pb-4'>
             About
           </h1>
@@ -63,13 +63,12 @@ export default function Footer() {
             that feel natural, meaningful, and real. This is the next chapter.
             Let’s live it well.
           </p>
-          {/* social icons */}
           <div className='flex pt-5 lg:gap-5 gap-3'>
             <Image className='w-10 h-10' src={instagram} alt='email' />
             <Image className='w-10 h-10' src={facebook} alt='email' />
             <Image className='w-10 h-10' src={twitter} alt='email' />
           </div>
-        </div>
+        </div> */}
 
         <div className='flex flex-col lg:items-end'>
           <div>

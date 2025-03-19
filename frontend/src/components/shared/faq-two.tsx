@@ -87,7 +87,7 @@ export default function FAQ2() {
 
           <div className='flex flex-col gap-4 lg:pt-0 pt-3 lg:w-full w-3/4'>
             <h1 className='font-roboto  font-semibold xl:text-4xl lg:text-2xl text-2xl text-[#353535]'>
-              Cantered around experiences
+              Centered around experiences
             </h1>
 
             <p className='font-sans xl:text-3xl lg:text-xl text-xl text-[#353535CC]'>

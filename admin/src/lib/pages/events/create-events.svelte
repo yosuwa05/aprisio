@@ -151,16 +151,15 @@
 			console.log(dayjs($eventsStore.datetime).format('YYYY-MM-DD hh:mm a'));
 			console.log($eventsStore);
 			$form.eventName = $eventsStore.eventName;
-			$form.datetime = dayjs($eventsStore.datetime).format('YYYY-MM-DD hh:mm a').toString();
+			$form.datetime = dayjs($eventsStore.datetime).format('YYYY-MM-DD hh:mm a');
 			$form.location = $eventsStore.location;
 			$form.price = $eventsStore.price;
 			$form.availableTickets = $eventsStore.availableTickets;
 			$form.mapLink = $eventsStore.mapLink;
 			$form.gst = $eventsStore.gst;
 			$form.duration = $eventsStore.duration;
-			$form.expirydatetime = dayjs($eventsStore.expirydatetime)
-				.format('YYYY-MM-DD hh:mm a')
-				.toString();
+			$form.expirydatetime = dayjs($eventsStore.expirydatetime).format('YYYY-MM-DD hh:mm a');
+
 			$form.organiserName = $eventsStore.organiserName;
 			$form.biography = $eventsStore.biography;
 			$form.description = $eventsStore.description;
