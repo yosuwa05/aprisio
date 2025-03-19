@@ -52,6 +52,8 @@ export function EventsSection({ groupid, gropuslug }: Props) {
     },
   });
 
+  console.log(data);
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (groupid: any) => {
       return await _axios.post("/group/join", {
@@ -62,9 +64,9 @@ export function EventsSection({ groupid, gropuslug }: Props) {
     onSuccess: (data) => {
       if (data.data.ok) {
         toast(data.data.message || "Joined group successfully");
-        // queryClient.invalidateQueries({
-        //   queryKey: ["groups" + user?.id, topic],
-        // });
+        queryClient.invalidateQueries({
+          queryKey: ["groups-feed" + user?.id, groupid],
+        });
         refetch();
       }
     },

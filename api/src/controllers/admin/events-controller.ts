@@ -49,12 +49,20 @@ export const eventsController = new Elysia({
           file = filename;
         }
 
+        console.log("Raw datetime:", datetime);
+        console.log("Raw expirydatetime:", expirydatetime);
 
         let finalDate = new Date(datetime);
         let _finalDate = new Date(expirydatetime);
+
         if (isNaN(finalDate.getTime()) || isNaN(_finalDate.getTime())) {
           throw new Error("Invalid date format received");
         }
+
+        console.log("Parsed datetime:", finalDate);
+        console.log("Parsed expirydatetime:", _finalDate);
+
+
 
         let eventId = generateEventId();
         let ticketPrefix = generateTicketPrefix();
@@ -89,7 +97,7 @@ export const eventsController = new Elysia({
         await newTopic.save();
 
         set.status = 200;
-        return { message: "Topic created successfully", ok: true };
+        return { message: "Event created successfully", ok: true };
       } catch (error: any) {
         console.error(error);
         set.status = 500;
@@ -300,7 +308,7 @@ export const eventsController = new Elysia({
         set.status = 500;
         console.log(error);
         return {
-          message: "An internal error occurred while updating event.",
+          message: error,
           ok: false,
         };
       }

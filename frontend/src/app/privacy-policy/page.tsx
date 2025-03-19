@@ -4,15 +4,15 @@ import Link from "next/link";
 const PrivacyPolicy = () => {
   return (
     <div>
-      <div className="sticky top-[-2px] z-50 bg-white py-2">
+      <div className='sticky top-[-2px] z-50 bg-white py-2'>
         <Topbar />
       </div>
-      <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
-        <p className="text-gray-600 mb-4">Effective Date: [27/01/2025]</p>
-        <p className="text-gray-600 mb-4">Last Updated: [05/02/2025]</p>
+      <div className='container mx-auto p-4'>
+        <h1 className='text-3xl font-bold mb-4'>Privacy Policy</h1>
+        <p className='text-gray-600 mb-4'>Effective Date: [05/03/2025]</p>
+        <p className='text-gray-600 mb-4'>Last Updated: [14/02/2025]</p>
 
-        <p className="mb-4">
+        <p className='mb-4'>
           Aprisio ("we," "our," or "us"), is owned and operated by Age Wise
           Digital Solutions Private Limited, a company (“Company”) incorporated
           in India under the Companies Act, 2013 and having its registered
@@ -31,10 +31,10 @@ const PrivacyPolicy = () => {
           not use our Services.
         </p>
 
-        <p className="mb-4">
+        <p className='mb-4'>
           This Privacy Policy forms an integral part of the Terms of Use
           available at{" "}
-          <Link href="/terms-of-use" className="text-blue-500 underline">
+          <Link href='/terms-of-use' className='text-blue-500 underline'>
             www.aprisio.com/terms-of-use
           </Link>{" "}
           (“Terms”) and should be read in consonance with the Terms. Capitalized
@@ -42,15 +42,15 @@ const PrivacyPolicy = () => {
           meaning as attributed to them in the Terms.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">Information We Collect</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Information We Collect</h2>
+        <p className='mb-4'>
           We collect information to provide, improve, and personalize your
           experience on the Platform. We may collect and process personal
           information provided by you, including but not limited to:
         </p>
 
-        <h3 className="text-xl font-bold mb-2">Account Information</h3>
-        <ul className="list-disc list-inside mb-4">
+        <h3 className='text-xl font-bold mb-2'>Account Information</h3>
+        <ul className='list-disc list-inside mb-4'>
           <li>Username (required to create an account).</li>
           <li>
             Email address (used for account recovery, notifications, or
@@ -65,8 +65,8 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
 
-        <h3 className="text-xl font-bold mb-2">Publicly Shared Information</h3>
-        <ul className="list-disc list-inside mb-4">
+        <h3 className='text-xl font-bold mb-2'>Publicly Shared Information</h3>
+        <ul className='list-disc list-inside mb-4'>
           <li>
             Posts, comments, votes (upvotes/downvotes), and other content you
             share in forums or communities.
@@ -74,10 +74,10 @@ const PrivacyPolicy = () => {
           <li>Profile details (e.g., avatar, bio, and any optional fields).</li>
         </ul>
 
-        <h3 className="text-xl font-bold mb-2">
+        <h3 className='text-xl font-bold mb-2'>
           Automatically Collected Information
         </h3>
-        <ul className="list-disc list-inside mb-4">
+        <ul className='list-disc list-inside mb-4'>
           <li>
             Device Information: Browser type, operating system, and device
             model.
@@ -91,8 +91,8 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
 
-        <h3 className="text-xl font-bold mb-2">Optional Information</h3>
-        <ul className="list-disc list-inside mb-4">
+        <h3 className='text-xl font-bold mb-2'>Optional Information</h3>
+        <ul className='list-disc list-inside mb-4'>
           <li>
             Location Data: If you enable location-based services or provide
             location information in your posts.
@@ -103,7 +103,7 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
 
-        <p className="mb-4">
+        <p className='mb-4'>
           (hereinafter, collectively referred to as “Personal Information”). It
           is clarified that in the event you make any payments through the
           Platform, we will not store any payment or card related information
@@ -111,12 +111,12 @@ const PrivacyPolicy = () => {
           card number, account number, validity date, expiry date or CVV number.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">How We Use Your Information</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>How We Use Your Information</h2>
+        <p className='mb-4'>
           We process your Personal Information for the following purposes:
         </p>
 
-        <ul className="list-disc list-inside mb-4">
+        <ul className='list-disc list-inside mb-4'>
           <li>
             To Operate the Platform: Create and manage your account, allow
             posting and commenting, and enable community interactions.
@@ -148,12 +148,12 @@ const PrivacyPolicy = () => {
           <li>Terms of use: To enforce the Company’s Terms of Use.</li>
         </ul>
 
-        <h2 className="text-2xl font-bold mb-4">Sharing Your Information</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Sharing Your Information</h2>
+        <p className='mb-4'>
           We may share your Personal Information in the following ways:
         </p>
 
-        <ul className="list-disc list-inside mb-4">
+        <ul className='list-disc list-inside mb-4'>
           <li>
             Public Sharing: We allow any content you post (e.g., comments,
             threads, media) to be visible to other users and, depending on
@@ -195,12 +195,12 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
 
-        <h2 className="text-2xl font-bold mb-4">Your Choices</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Your Choices</h2>
+        <p className='mb-4'>
           We provide options to manage your privacy and data:
         </p>
 
-        <ul className="list-disc list-inside mb-4">
+        <ul className='list-disc list-inside mb-4'>
           <li>
             Account Privacy: You can adjust your profile visibility and
             notification preferences.
@@ -216,9 +216,8 @@ const PrivacyPolicy = () => {
             request access to, updating or correction of, or deletion of your
             Personal Information by contacting us at{" "}
             <a
-              href="mailto:support@aprisio.com"
-              className="text-blue-500 underline"
-            >
+              href='mailto:support@aprisio.com'
+              className='text-blue-500 underline'>
               support@aprisio.com
             </a>
             .
@@ -228,9 +227,8 @@ const PrivacyPolicy = () => {
             collection, use and disclosure of your Personal Information by
             contacting us at{" "}
             <a
-              href="mailto:support@aprisio.com"
-              className="text-blue-500 underline"
-            >
+              href='mailto:support@aprisio.com'
+              className='text-blue-500 underline'>
               support@aprisio.com
             </a>
             . If you withdraw your consent, we will stop processing the relevant
@@ -245,8 +243,8 @@ const PrivacyPolicy = () => {
           </li>
         </ul>
 
-        <h2 className="text-2xl font-bold mb-4">Data Security</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Data Security</h2>
+        <p className='mb-4'>
           We implement reasonable safeguards and necessary security practices to
           protect your Personal Information and take such steps as we consider
           reasonably necessary to ensure that your information is treated
@@ -255,7 +253,7 @@ const PrivacyPolicy = () => {
           Platform you accept the inherent security implications of data
           transmission over the internet.
         </p>
-        <p className="mb-4">
+        <p className='mb-4'>
           You are advised to protect your login credentials and report any
           suspicious activity to the Platform. The use of the Platform shall be
           at your own risk and the Company assumes no liability for any
@@ -264,22 +262,21 @@ const PrivacyPolicy = () => {
           omissions beyond its reasonable control and you agree not to hold the
           Company responsible for any breach of security.
         </p>
-        <p className="mb-4">
+        <p className='mb-4'>
           In the event we become aware of any breach of the security of your
           Personal Information, we will promptly notify you and take appropriate
           action to the best of our ability to remedy such a breach.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">Data Retention</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Data Retention</h2>
+        <p className='mb-4'>
           We retain your Personal Information for such duration as necessary to
           provide the Platform and/or comply with any legal obligations. You can
           request deletion of your account and connected personal information by
           contacting us through email at{" "}
           <a
-            href="mailto:support@aprisio.com"
-            className="text-blue-500 underline"
-          >
+            href='mailto:support@aprisio.com'
+            className='text-blue-500 underline'>
             support@aprisio.com
           </a>
           . We may retain your Personal Information as needed to comply with our
@@ -289,8 +286,8 @@ const PrivacyPolicy = () => {
           agreements, and for other business reasons.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">Data Transfer</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Data Transfer</h2>
+        <p className='mb-4'>
           The Company may transfer your Personal Information that it collects
           about you, including Personal Information, to affiliated entities, or
           to other third parties across borders and from your country or
@@ -302,15 +299,15 @@ const PrivacyPolicy = () => {
           Privacy Policy.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">Children's Privacy</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Children's Privacy</h2>
+        <p className='mb-4'>
           The Platform is not intended for users under 18 (eighteen) years of
           age. If we learn that personal data from a minor has been collected
           without appropriate consent, we will delete it promptly.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">Exclusion</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Exclusion</h2>
+        <p className='mb-4'>
           This Privacy Policy does not apply to any information other than the
           Personal Information collected by the Company through the Platform.
           This Privacy Policy will not apply to any unsolicited information
@@ -321,58 +318,57 @@ const PrivacyPolicy = () => {
           such unsolicited information without limitation.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className='text-2xl font-bold mb-4'>
           Cookies and Tracking Technologies
         </h2>
-        <p className="mb-4">
+        <p className='mb-4'>
           Cookies are small portions of information saved by your browser onto
           your computer / mobile. Cookies are used to record various aspects of
           your visit and assist the Company to provide you with uninterrupted
           service.
         </p>
-        <p className="mb-4">
+        <p className='mb-4'>
           We use cookies, web beacons, and similar technologies to remember your
           preferences, analyze traffic and usage patterns and serve personalized
           recommendations or ads.
         </p>
-        <p className="mb-4">
+        <p className='mb-4'>
           You can control cookie preferences in your browser settings or opt-out
           of tracking features as applicable.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">International Users</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>International Users</h2>
+        <p className='mb-4'>
           If you access the Platform from outside India, your data may be
           processed and stored in India, where privacy laws may differ. By using
           the Platform, you consent to the transfer of data to India.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className='text-2xl font-bold mb-4'>
           Updates to This Privacy Policy
         </h2>
-        <p className="mb-4">
+        <p className='mb-4'>
           We may update this Privacy Policy to reflect changes in our practices
           or legal requirements. We will notify you of significant changes via
           email or through the Platform.
         </p>
 
-        <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-        <p className="mb-4">
+        <h2 className='text-2xl font-bold mb-4'>Contact Us</h2>
+        <p className='mb-4'>
           If you have questions or concerns about this Privacy Policy, contact
           our grievance officer:
         </p>
-        <p className="mb-4">Name: Kaushal Kumar Mishra</p>
-        <p className="mb-4">Contact number: +91-9845090780</p>
-        <p className="mb-4">
+        <p className='mb-4'>Name: Kaushal Kumar Mishra</p>
+        <p className='mb-4'>Contact number: +91-7411522330</p>
+        <p className='mb-4'>
           Email:{" "}
           <a
-            href="mailto:support@aprisio.com"
-            className="text-blue-500 underline"
-          >
+            href='mailto:support@aprisio.com'
+            className='text-blue-500 underline'>
             support@aprisio.com
           </a>
         </p>
-        <p className="mb-4">
+        <p className='mb-4'>
           Kindly note that once your complaint is received, we shall use our
           best efforts to address it within a period of 30 (thirty) days from
           the date of receipt of such complaint.

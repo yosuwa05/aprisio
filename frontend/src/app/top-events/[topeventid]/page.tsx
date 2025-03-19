@@ -32,37 +32,37 @@ export default function ViewTopEventPage() {
   const router = useRouter();
 
   return (
-    <main className="px-4 md:px-8 py-4 md:py-6 container mx-auto">
+    <main className='px-4 md:px-8 py-4 md:py-6 container mx-auto'>
       {isLoading ? (
-        <div className="flex h-[60vh] items-center justify-center">
+        <div className='flex h-[60vh] items-center justify-center'>
           <GlobalLoader />
         </div>
       ) : (
         <>
-          <div className="">
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-5">
-                <h1 className="text-3xl md:text-5xl font-medium text-textcol font-roboto">
+          <div className=''>
+            <div className='flex flex-col gap-4'>
+              <div className='flex flex-col gap-5'>
+                <h1 className='text-3xl md:text-5xl font-medium text-textcol font-roboto'>
                   {data?.event?.eventName || "Event Name"}
                 </h1>
-                <h2 className="text-xl md:text-2xl text-[#64737A]  font-roboto font-medium">
+                <h2 className='text-xl md:text-2xl text-[#64737A]  font-roboto font-medium'>
                   {formatEventDate(data?.event?.datetime)}
                 </h2>
               </div>
-              <div className="text-contrasttext text-base font-sans flex justify-between flex-wrap items-center max-w-4xl">
+              <div className='text-contrasttext text-base font-sans flex justify-between flex-wrap items-center max-w-4xl'>
                 <div>
                   {" "}
-                  <div className="capitalize text-base  md:text-xl">
+                  <div className='capitalize text-base  md:text-xl'>
                     Duration : {data?.event?.duration || ""} Hrs
                   </div>
-                  <h1 className="capitalize text-base  md:text-xl">
+                  <h1 className='capitalize text-base  md:text-xl'>
                     {data?.event?.location || ""}
                   </h1>
-                  <div className="capitalize text-base  md:text-xl">
+                  <div className='capitalize text-base  md:text-xl'>
                     Hosted by : {data?.event?.organiserName || ""}
                   </div>
                 </div>
-                <div className="">
+                <div className=''>
                   <Button
                     onClick={() => {
                       if (!user) return toast.error("Login to continue");
@@ -71,49 +71,47 @@ export default function ViewTopEventPage() {
                       }
                       router.push("/buytickets/" + topeventid);
                     }}
-                    className="bg-[#FCF7EA] hover:bg-[#FCF7EA] border border-gray-300 rounded-3xl text-black font-bold"
-                  >
+                    className='bg-[#FCF7EA] hover:bg-[#FCF7EA] border border-gray-300 rounded-3xl text-black font-bold'>
                     Buy Tickets
                   </Button>
 
-                  <div className="text-[#353535CC]/80 font-extrabold font-roboto text-lg py-4 ml-2">
-                    Starts at INR {data?.event?.price || ""}
+                  <div className='text-[#353535CC]/80 font-extrabold font-roboto text-lg py-4 ml-2'>
+                    INR {data?.event?.price || ""} + GST
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-10 pt-6">
-            <div className="w-full lg:w-1/4 flex-shrink-0">
+          <div className='flex flex-col lg:flex-row gap-10 pt-6'>
+            <div className='w-full lg:w-1/4 flex-shrink-0'>
               <Image
-                loading="eager"
+                loading='eager'
                 // src={coffee}
                 height={100}
                 width={100}
                 src={BASE_URL + `/file?key=${data?.event?.eventImage}`}
-                alt="Event Image"
-                className="w-full h-auto object-cover"
+                alt='Event Image'
+                className='w-full h-auto object-cover'
               />
 
               <div
                 style={{ boxShadow: "15px 4px 60px 0px #02507C26" }}
-                className="mt-4 w-fullrounded-lg bg-[#FFFFFF] p-6 rounded-lg"
-              >
-                <div className="flex gap-4 items-center">
+                className='mt-4 w-fullrounded-lg bg-[#FFFFFF] p-6 rounded-lg'>
+                <div className='flex gap-4 items-center'>
                   <Image
                     src={logosmall}
-                    className="w-[50px] cursor-pointer   "
-                    alt="logo"
+                    className='w-[50px] cursor-pointer   '
+                    alt='logo'
                   />
-                  <div className="flex flex-col gap-1">
-                    <span className="text-textcol font-bold text-lg ">
+                  <div className='flex flex-col gap-1'>
+                    <span className='text-textcol font-bold text-lg '>
                       About
                     </span>
-                    <span className="text-fadedtext text-sm">Aprisio</span>
+                    <span className='text-fadedtext text-sm'>Aprisio</span>
                   </div>
                 </div>
-                <p className="font-normal text-lg pt-3 leading-8 break-words text-[#353535CC]/80  font-sans text-pretty whitespace-normal ">
+                <p className='font-normal text-lg pt-3 leading-8 break-words text-[#353535CC]/80  font-sans text-pretty whitespace-normal '>
                   {data?.event?.biography}
                 </p>
               </div>
@@ -124,11 +122,10 @@ export default function ViewTopEventPage() {
                 dangerouslySetInnerHTML={{
                   __html: data?.event?.description,
                 }}
-                className="lg:w-2/3 "
-              ></div>
+                className='lg:w-2/3 '></div>
 
-              <Link href={data?.event?.mapLink} target="_blank">
-                <h1 className="text-lg text-blue-800 font-medium font-roboto">
+              <Link href={data?.event?.mapLink} target='_blank'>
+                <h1 className='text-lg text-blue-800 font-medium font-roboto'>
                   Get Directions
                 </h1>
               </Link>

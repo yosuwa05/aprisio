@@ -44,7 +44,7 @@ export const GroupsFeedSection = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const updateActiveGroup = useGlobalFeedStore((state) => state.setActiveGroup);
-
+  console.log(groupid, "feed", topic);
   const {
     data,
     fetchNextPage,
@@ -79,6 +79,9 @@ export const GroupsFeedSection = () => {
         toast(data.data.message || "Joined group successfully");
         queryClient.invalidateQueries({
           queryKey: ["groups" + user?.id, topic],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["group-events" + user?.id, groupid],
         });
         refetch();
       }
