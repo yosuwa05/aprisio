@@ -8,11 +8,11 @@
 	import { baseUrl } from '$lib/config';
 	import Icon from '@iconify/svelte';
 	import { createQuery } from '@tanstack/svelte-query';
-	import { format } from 'date-fns';
+	import { formatInTimeZone } from 'date-fns-tz';
+	import ExcelJS from 'exceljs';
 	import { Loader } from 'lucide-svelte';
 	import { tick } from 'svelte';
 	import { manageLayoutStore } from './events-store';
-	import ExcelJS from 'exceljs';
 	//@ts-ignore
 	import { saveAs } from 'file-saver';
 	import { toast } from 'svelte-sonner';
@@ -38,7 +38,7 @@
 	}
 
 	const formatEventDate = (date: string) => {
-		return format(new Date(date), 'EEE, MMM d yyyy, h:mm a');
+		return formatInTimeZone(new Date(date), 'UTC', 'EEE, MMM d yyyy, h:mm a');
 	};
 
 	let page = $state(1);
@@ -68,7 +68,6 @@
 		queryKey: ['Fetch All tickets', $manageLayoutStore.selectedId],
 		queryFn: () => FetchAlltickets($manageLayoutStore.selectedId)
 	});
-	console.log($AllTickets.data);
 
 	async function exportToExcel() {
 		if ($AllTickets?.data?.alltickets?.length === 0) {
@@ -115,17 +114,6 @@
 		const date = new Date();
 		const fileName = `${$detailsQuery.data?.event.eventName}_${date.toLocaleDateString('en-GB')}.xlsx`;
 		saveAs(blob, fileName);
-	}
-
-	function formatDate(date: Date) {
-		return new Intl.DateTimeFormat('en-US', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-			second: 'numeric'
-		}).format(date);
 	}
 </script>
 

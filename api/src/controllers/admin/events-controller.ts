@@ -2,17 +2,15 @@ import { deleteFile, saveFile } from "@/lib/file-s3";
 import { generateEventId, generateTicketPrefix } from "@/lib/utils";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { TicketModel } from "@/models/ticket-tracking";
+import { parse } from "date-fns";
 import Elysia, { t } from "elysia";
-import { formatISO, parse } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
 
 function parseCustomDate(dateStr: string): Date | null {
-  const cleanDateStr = dateStr.replace(/ (am|pm)$/i, '');
-  let parsedDate = parse(cleanDateStr, "yyyy-MM-dd HH:mm", new Date());
-
-  if (isNaN(parsedDate.getTime())) {
-    parsedDate = parse(dateStr, "yyyy-MM-dd hh:mm a", new Date());
+  if (dateStr.includes("00:00 am")) {
+    dateStr = dateStr.replace("00:00 am", "12:00 am");
   }
+
+  let parsedDate = parse(dateStr, "yyyy-MM-dd hh:mm a", new Date());
 
   return isNaN(parsedDate.getTime()) ? null : parsedDate;
 }
@@ -43,7 +41,7 @@ export const eventsController = new Elysia({
         description,
         delta,
         gst,
-        duration
+        duration,
       } = body;
 
       try {
@@ -62,19 +60,12 @@ export const eventsController = new Elysia({
           file = filename;
         }
 
-        console.log("Raw datetime:", datetime);
-        console.log("Raw expirydatetime:", expirydatetime);
-
-
-
         let finalDate = parseCustomDate(datetime);
         let _finalDate = parseCustomDate(expirydatetime);
-        console.log("Parsed datetime:", finalDate);
-        console.log("Parsed expirydatetime:", _finalDate);
+
         if (!finalDate || !_finalDate) {
           throw new Error("Invalid date format received");
         }
-
 
         let eventId = generateEventId();
         let ticketPrefix = generateTicketPrefix();
@@ -103,7 +94,7 @@ export const eventsController = new Elysia({
           lastSoldTicketNumber: 1,
           description,
           gst,
-          duration
+          duration,
         });
 
         await newTopic.save();
@@ -260,7 +251,7 @@ export const eventsController = new Elysia({
           description,
           delta,
           gst,
-          duration
+          duration,
         } = body;
 
         const event = await AdminEventModel.findById(id);
@@ -291,8 +282,9 @@ export const eventsController = new Elysia({
         event.eventName = eventName || event.eventName;
         // @ts-ignore
         event.datetime = parseCustomDate(datetime) || event.datetime;
-        // @ts-ignore
-        event.expirydatetime = parseCustomDate(expirydatetime) || event.expirydatetime;
+        event.expirydatetime =
+          // @ts-ignore
+          parseCustomDate(expirydatetime) || event.expirydatetime;
         event.location = location || event.location;
         event.price = Number(price ?? 0) || event.price;
         event.availableTickets =
@@ -365,14 +357,10 @@ export const eventsController = new Elysia({
             message: "Event not found",
           };
         }
-        const eventDateIST = toZonedTime(event.datetime, "Asia/Kolkata");
-        const formattedDateIST = formatISO(eventDateIST, { representation: "complete" });
-        console.log(formattedDateIST)
-        //@ts-ignore
-        event.datetime = formattedDateIST;
+
         return {
-          event
-        }
+          event,
+        };
       } catch (error: any) {
         set.status = 500;
         return {
@@ -460,7 +448,7 @@ export const eventsController = new Elysia({
         const total = await TicketModel.countDocuments(searchQuery);
         const ticketusers = await TicketModel.find(searchQuery)
           .populate("userId", "name email mobile")
-          .sort({ createdAt: -1 })
+          .sort({ createdAt: -1 });
 
         if (!ticketusers) {
           return {
@@ -478,7 +466,7 @@ export const eventsController = new Elysia({
             ticketCount: ticket?.ticketCount,
             amount: ticket?.amount,
           };
-        })
+        });
 
         return {
           alltickets: alltickets || [],

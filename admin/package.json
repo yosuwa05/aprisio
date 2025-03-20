@@ -48,6 +48,7 @@
 		"d3-array": "^3.2.4",
 		"d3-scale": "^4.0.2",
 		"date-fns": "^4.1.0",
+		"date-fns-tz": "^3.2.0",
 		"dayjs": "^1.11.13",
 		"exceljs": "^4.4.0",
 		"file-saver": "^2.0.5",

@@ -6,19 +6,23 @@
 	import * as Select from '$lib/components/ui/select/index';
 	import { queryClient } from '$lib/query-client';
 	import { createMutation } from '@tanstack/svelte-query';
+	import { format, parseISO } from 'date-fns';
+	import { formatInTimeZone } from 'date-fns-tz';
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import DatePicker from 'svelty-picker';
 	import { _topicsSchema, eventsStore } from './events-store';
-	import { format, parseISO } from 'date-fns';
 	// 2025-03-07 03:30 am
-	let selectedDateTime = new Date();
 
 	let edit = $state(false);
 	$effect(() => {
 		edit = $eventsStore.mode == 'create' && $eventsStore.id ? true : false;
+	});
+
+	$effect(() => {
+		console.log($form.datetime);
 	});
 
 	let quill = $state<any>(null);
@@ -137,16 +141,18 @@
 				formData.append('availableTickets', _data.availableTickets);
 
 				formData.append('description', content);
-				console.log(_data);
-				// $createManagerMutation.mutate(formData);
+
+				$createManagerMutation.mutate(formData);
 			}
 		}
 	);
 	$effect(() => {
 		if (edit) {
-			console.log($eventsStore);
 			$form.eventName = $eventsStore.eventName;
-			$form.datetime = format(parseISO($eventsStore.datetime), 'yyyy-MM-dd hh:mm a');
+
+			const utcDate = parseISO($eventsStore.datetime);
+			$form.datetime = formatInTimeZone(utcDate, 'UTC', 'yyyy-MM-dd h:mm a');
+
 			$form.expirydatetime = format(parseISO($eventsStore.expirydatetime), 'yyyy-MM-dd hh:mm a');
 			$form.location = $eventsStore.location;
 			$form.price = $eventsStore.price;
@@ -265,12 +271,12 @@
 				<div class="w-full">
 					<DatePicker
 						bind:value={$form.datetime}
-						format="yyyy-mm-dd hh:ii p"
+						format="yyyy-mm-dd HH:ii P"
 						formatType="standard"
-						displayFormat="yyyy-mm-dd hh:ii p"
+						displayFormat="yyyy-mm-dd HH:ii P"
 						placeholder={edit ? $form.datetime : 'Select Date and Time'}
 						displayFormatType="standard"
-						inputClasses={`bg-[#fefae4] text-black!  w-full text-xs p-4 border bg-transparent border-none outline-none border-input bg-background ring-offset-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base ${edit ? 'font-black' : ''} placeholder:`}
+						inputClasses={`bg-[#fefae4] text-black! w-full text-xs p-4 border bg-transparent border-none outline-none border-input bg-background ring-offset-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base ${edit ? 'font-black' : ''} placeholder:`}
 					/>
 				</div>
 				{#if $errors.datetime}

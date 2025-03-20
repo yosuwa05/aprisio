@@ -1,37 +1,25 @@
 import { EventModel, UserModel } from "@/models";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { GroupModel } from "@/models/group.model";
-import Elysia, { t } from "elysia";
-import puppeteer from "puppeteer";
-import { unlink } from "fs/promises";
-import path from "path";
 import { TicketModel } from "@/models/ticket-tracking";
 import { StoreType } from "@/types";
 import axios from "axios";
-import { parseISO, format, isValid } from 'date-fns';
+import { addHours, addMinutes, format } from "date-fns";
+import Elysia, { t } from "elysia";
+import { unlink } from "fs/promises";
+import path from "path";
+import puppeteer from "puppeteer";
 
+export function formatDateForPDF(dateString: Date) {
+  let inProd = process.env.TENV === "PROD";
 
-function formatDateForPDF(dateString: any) {
-  if (!dateString) {
-    return "Date not available";
+  if (inProd) {
+    const istDate = addMinutes(addHours(dateString, 5), 30);
+    return format(istDate, "MMM dd, yyyy hh:mm a");
   }
 
-  let date;
-
-  if (typeof dateString === "string") {
-    date = parseISO(dateString);
-  } else {
-    date = new Date(dateString);
-  }
-
-  if (!isValid(date)) {
-    console.error("Invalid date format:", dateString);
-    return "Invalid Date";
-  }
-
-  return format(date, "MMM dd, yyyy HH:mm");
+  return format(dateString, "MMM dd, yyyy hh:mm a");
 }
-
 
 const getBase64Image = async (imageUrl: string) => {
   try {
@@ -49,7 +37,6 @@ const getBase64Image = async (imageUrl: string) => {
   }
 };
 
-
 export const EventsController = new Elysia({
   prefix: "/events",
   detail: {
@@ -64,7 +51,6 @@ export const EventsController = new Elysia({
         const userId = (store as any)["id"];
 
         const event = await EventModel.findOne({ _id: eventId });
-
 
         if (!event) {
           set.status = 400;
@@ -90,7 +76,7 @@ export const EventsController = new Elysia({
             ok: true,
           };
         } else {
-          set.status = 400
+          set.status = 400;
           return {
             message: "Already attended",
             ok: false,
@@ -119,8 +105,15 @@ export const EventsController = new Elysia({
       try {
         const userId = (store as any)["id"];
 
-        const { eventDate, location, eventName, eventRules, groupSelected, eventType, eventTime } =
-          body;
+        const {
+          eventDate,
+          location,
+          eventName,
+          eventRules,
+          groupSelected,
+          eventType,
+          eventTime,
+        } = body;
 
         const group = await GroupModel.findById(groupSelected);
 
@@ -181,214 +174,232 @@ export const EventsController = new Elysia({
       },
     }
   )
-  .put("/edit", async ({ set, body, store }) => {
-    try {
-      const userId = (store as any)["id"];
-      const { eventId, eventDate, location, eventName, eventRules, groupSelected } = body;
+  .put(
+    "/edit",
+    async ({ set, body, store }) => {
+      try {
+        const userId = (store as any)["id"];
+        const {
+          eventId,
+          eventDate,
+          location,
+          eventName,
+          eventRules,
+          groupSelected,
+        } = body;
 
-      const event = await EventModel.findById(eventId);
+        const event = await EventModel.findById(eventId);
 
-      if (!event) {
-        set.status = 400
-        return {
-          message: "Event not found",
-          ok: false,
-        };
-      }
-
-      if (event.managedBy.toString() !== userId) {
-        set.status = 400
-        return {
-          message: "You are not authorized to edit this event",
-          ok: false,
-        };
-      }
-
-      let updateFields: any = {}
-      if (eventDate) updateFields.date = eventDate;
-      if (location) updateFields.location = location;
-      if (eventName) updateFields.eventName = eventName;
-      if (eventRules) {
-        const parsedRules = JSON.parse(eventRules);
-        updateFields.rules = parsedRules.events || [];
-      }
-
-      if (groupSelected) {
-        const group = await GroupModel.findById(groupSelected);
-        if (!group) {
+        if (!event) {
+          set.status = 400;
           return {
-            message: "Group not found",
+            message: "Event not found",
             ok: false,
           };
         }
-        updateFields.group = group._id;
-      }
-      await EventModel.findByIdAndUpdate(eventId, updateFields, { new: true });
 
-      return {
-        message: "Event updated successfully",
-        ok: true,
-      };
+        if (event.managedBy.toString() !== userId) {
+          set.status = 400;
+          return {
+            message: "You are not authorized to edit this event",
+            ok: false,
+          };
+        }
 
-    } catch (error: any) {
-      console.log(error)
-      set.status = 500
-      return {
-        message: error
-      }
-    }
-  }, {
-    body: t.Object({
-      location: t.Optional(t.String()),
-      eventName: t.Optional(t.String()),
-      eventRules: t.Optional(t.String()),
-      eventDate: t.Optional(t.String()),
-      groupSelected: t.String(),
-      eventId: t.String(),
-    }),
-    detail: {
-      description: "Create an event",
-      summary: "Create an event",
-    },
-  })
-  .post("/decline-event", async ({ set, query, store }) => {
-    try {
+        let updateFields: any = {};
+        if (eventDate) updateFields.date = eventDate;
+        if (location) updateFields.location = location;
+        if (eventName) updateFields.eventName = eventName;
+        if (eventRules) {
+          const parsedRules = JSON.parse(eventRules);
+          updateFields.rules = parsedRules.events || [];
+        }
 
-      const { eventId } = query
-      const userId = (store as any)["id"];
-      const event = await EventModel.findById(eventId)
+        if (groupSelected) {
+          const group = await GroupModel.findById(groupSelected);
+          if (!group) {
+            return {
+              message: "Group not found",
+              ok: false,
+            };
+          }
+          updateFields.group = group._id;
+        }
+        await EventModel.findByIdAndUpdate(eventId, updateFields, {
+          new: true,
+        });
 
-      if (!event) {
-        set.status = 400
         return {
-          message: "Event not found",
-          ok: false,
+          message: "Event updated successfully",
+          ok: true,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
         };
       }
+    },
+    {
+      body: t.Object({
+        location: t.Optional(t.String()),
+        eventName: t.Optional(t.String()),
+        eventRules: t.Optional(t.String()),
+        eventDate: t.Optional(t.String()),
+        groupSelected: t.String(),
+        eventId: t.String(),
+      }),
+      detail: {
+        description: "Create an event",
+        summary: "Create an event",
+      },
+    }
+  )
+  .post(
+    "/decline-event",
+    async ({ set, query, store }) => {
+      try {
+        const { eventId } = query;
+        const userId = (store as any)["id"];
+        const event = await EventModel.findById(eventId);
 
-      const isUserParticipated = event.attendees.includes(userId)
+        if (!event) {
+          set.status = 400;
+          return {
+            message: "Event not found",
+            ok: false,
+          };
+        }
 
-      if (!isUserParticipated) {
-        set.status = 400;
+        const isUserParticipated = event.attendees.includes(userId);
+
+        if (!isUserParticipated) {
+          set.status = 400;
+          return {
+            message: "You are not a participant of this event",
+            ok: false,
+          };
+        }
+
+        await EventModel.findByIdAndUpdate(eventId, {
+          $pull: { attendees: userId },
+        });
+
+        set.status = 200;
         return {
-          message: "You are not a participant of this event",
-          ok: false,
+          message: "event declined successfully",
+          ok: true,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
         };
       }
+    },
+    {
+      detail: {
+        summary: "Decline Event",
+        description: "Decline Event",
+      },
+      query: t.Object({
+        eventId: t.String(),
+      }),
+    }
+  )
+  .get(
+    "/group-events",
+    async ({ set, store, query }) => {
+      try {
+        const userId = (store as any)["id"];
+        const { page, limit, groupId } = query;
 
-      await EventModel.findByIdAndUpdate(eventId, {
-        $pull: { attendees: userId }
-      })
+        if (!groupId) {
+          set.status = 400;
+          return { ok: false, message: "Group ID is required" };
+        }
 
-      set.status = 200;
-      return {
-        message: "event declined successfully",
-        ok: true,
-      };
+        const _page = Number(page) || 1;
+        const _limit = Number(limit) || 10;
 
-    } catch (error: any) {
-      console.log(error)
-      set.status = 500
-      return {
-        message: error
+        const events = await EventModel.find({
+          group: groupId,
+          managedBy: { $ne: userId },
+        })
+          .populate("group", "name slug")
+          .sort({ createdAt: -1, _id: -1 })
+          .skip((_page - 1) * _limit)
+          .limit(_limit)
+          .select("-unnecessaryField")
+          .lean();
+
+        set.status = 200;
+        return { events, ok: true };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return { ok: false, message: "Internal Server Error" };
       }
-    }
-  }, {
-    detail: {
-      summary: "Decline Event",
-      description: "Decline Event"
     },
-    query: t.Object({
-      eventId: t.String()
-    })
-  })
-  .get("/group-events", async ({ set, store, query }) => {
-    try {
-      const userId = (store as any)["id"];
-      const { page, limit, groupId } = query;
+    {
+      detail: {
+        summary: "Group Events Excluding User",
+        description:
+          "Fetch events from a group where the user is not an attendee and does not manage the event.",
+      },
+      query: t.Object({
+        page: t.Optional(t.String()),
+        limit: t.Optional(t.String()),
+        groupId: t.String(),
+      }),
+    }
+  )
+  .get(
+    "/admin-events",
+    async ({ set, query }) => {
+      try {
+        const { page, limit } = query;
+        const _page = Number(page) || 1;
+        const _limit = Number(limit) || 10;
 
-      if (!groupId) {
-        set.status = 400;
-        return { ok: false, message: "Group ID is required" };
+        const events = await AdminEventModel.find({})
+          .sort({ createdAt: -1, _id: -1 })
+          .skip((_page - 1) * _limit)
+          .limit(_limit)
+          .select("-unnecessaryField")
+          .lean();
+
+        set.status = 200;
+        return { events, ok: true };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return { ok: false, message: "Internal Server Error" };
       }
-
-      const _page = Number(page) || 1;
-      const _limit = Number(limit) || 10;
-
-      const events = await EventModel.find({
-        group: groupId,
-        managedBy: { $ne: userId },
-      })
-        .populate("group", "name slug")
-        .sort({ createdAt: -1, _id: -1 })
-        .skip((_page - 1) * _limit)
-        .limit(_limit)
-        .select("-unnecessaryField")
-        .lean();
-
-
-
-      set.status = 200;
-      return { events, ok: true };
-
-    } catch (error: any) {
-      console.log(error);
-      set.status = 500;
-      return { ok: false, message: "Internal Server Error" };
-    }
-  }, {
-    detail: {
-      summary: "Group Events Excluding User",
-      description: "Fetch events from a group where the user is not an attendee and does not manage the event.",
     },
-    query: t.Object({
-      page: t.Optional(t.String()),
-      limit: t.Optional(t.String()),
-      groupId: t.String(),
-    }),
-  })
-  .get("/admin-events", async ({ set, query }) => {
-    try {
-      const { page, limit } = query;
-      const _page = Number(page) || 1;
-      const _limit = Number(limit) || 10;
-
-      const events = await AdminEventModel.find({
-      })
-        .sort({ createdAt: -1, _id: -1 })
-        .skip((_page - 1) * _limit)
-        .limit(_limit)
-        .select("-unnecessaryField")
-        .lean();
-
-      set.status = 200;
-      return { events, ok: true };
-
-    } catch (error: any) {
-      console.log(error);
-      set.status = 500;
-      return { ok: false, message: "Internal Server Error" };
+    {
+      detail: {
+        summary: "Admin Events ",
+        description: "Admin events",
+      },
+      query: t.Object({
+        page: t.Optional(t.String()),
+        limit: t.Optional(t.String()),
+      }),
     }
-  }, {
-    detail: {
-      summary: "Admin Events ",
-      description: "Admin events",
-    },
-    query: t.Object({
-      page: t.Optional(t.String()),
-      limit: t.Optional(t.String()),
-    }),
-  })
+  )
 
   .get("/paidtickets", async ({ set, store, query }) => {
     try {
       const userId = (store as StoreType)["id"];
-      console.log(userId)
+      console.log(userId);
       const { page, limit } = query;
       const _page = Number(page) || 1;
       const _limit = Number(limit) || 10;
       const tickets = await TicketModel.find({
-        userId
+        userId,
       })
         .populate("eventId")
         .sort({ createdAt: -1, _id: -1 })
@@ -398,13 +409,12 @@ export const EventsController = new Elysia({
 
       set.status = 200;
       return { tickets, ok: true };
-
     } catch (error: any) {
-      console.log(error)
-      set.status = 500
+      console.log(error);
+      set.status = 500;
       return {
-        message: error
-      }
+        message: error,
+      };
     }
   })
   .get("/generatepdf", async ({ query, set }) => {
@@ -420,7 +430,7 @@ export const EventsController = new Elysia({
       let browser;
 
       const event: any = await AdminEventModel.findById(ticket.eventId);
-      const user: any = await UserModel.findById(ticket.userId)
+      const user: any = await UserModel.findById(ticket.userId);
 
       if (!user) {
         set.status = 40;
@@ -493,7 +503,7 @@ export const EventsController = new Elysia({
         browser.close();
       }
 
-      await unlink(pdfPath)
+      await unlink(pdfPath);
 
       return blob;
     } catch (error) {
@@ -503,6 +513,4 @@ export const EventsController = new Elysia({
         status: "error",
       };
     }
-  })
-
-
+  });

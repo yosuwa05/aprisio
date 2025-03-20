@@ -19,6 +19,7 @@ interface ITicket {
   name: string;
   emailId: string;
   mobileNumber: string;
+  createdAt: Date;
 }
 
 const TicketEntrySchema = new Schema<ITicketEntry>({

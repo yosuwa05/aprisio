@@ -1,14 +1,14 @@
+import { UserModel } from "@/models";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { TicketModel } from "@/models/ticket-tracking";
 import axios from "axios";
 import { Elysia, t } from "elysia";
+import { unlink } from "fs/promises";
 import path from "node:path";
 import puppeteer from "puppeteer";
 import { deleteFile, saveFile } from "../../lib/file";
 import { AdminAuthModel } from "../../models/adminmodel";
-import { unlink } from "fs/promises";
-import { UserModel } from "@/models";
-import { parseISO, format, isValid } from 'date-fns';
+import { formatDateForPDF } from "../user/events/events-controller";
 
 const getBase64Image = async (imageUrl: string) => {
   try {
@@ -26,27 +26,6 @@ const getBase64Image = async (imageUrl: string) => {
   }
 };
 
-function formatDateForPDF(dateString: any) {
-  if (!dateString) {
-    return "Date not available";
-  }
-
-  let date;
-
-  if (typeof dateString === "string") {
-    date = parseISO(dateString);
-  } else {
-    date = new Date(dateString);
-  }
-
-  if (!isValid(date)) {
-    console.error("Invalid date format:", dateString);
-    return "Invalid Date";
-  }
-
-  return format(date, "MMM dd, yyyy HH:mm");
-}
-
 export const adminController = new Elysia({
   prefix: "/admin",
 })
@@ -63,7 +42,7 @@ export const adminController = new Elysia({
       let browser;
 
       const event: any = await AdminEventModel.findById(ticket.eventId);
-      const user: any = await UserModel.findById(ticket.userId)
+      const user: any = await UserModel.findById(ticket.userId);
 
       if (!user) {
         set.status = 40;
@@ -136,7 +115,7 @@ export const adminController = new Elysia({
         browser.close();
       }
 
-      await unlink(pdfPath)
+      await unlink(pdfPath);
 
       return blob;
     } catch (error) {

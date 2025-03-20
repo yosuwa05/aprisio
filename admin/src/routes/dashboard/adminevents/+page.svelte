@@ -36,7 +36,8 @@
 				description: '',
 				delta: '',
 				eventImage: '',
-				gst: ''
+				gst: '',
+				duration: ''
 			};
 		}}
 	>
