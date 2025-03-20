@@ -71,7 +71,7 @@ export const EventsNoAuthController = new Elysia({
         const _limit = Number(limit) || 10;
 
         const events = await AdminEventModel.find()
-          .sort({ createdAt: -1, _id: -1 })
+          .sort({ datetime: 1, id: 1 })
           .skip((_page - 1) * _limit)
           .limit(_limit)
           .select("-unnecessaryField")

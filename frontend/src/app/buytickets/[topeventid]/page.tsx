@@ -180,7 +180,10 @@ export default function BuyTickets() {
                 {data?.event?.eventName || "Event Name"}
               </h1>
               <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-normal'>
-                {formatDate(data?.event?.datetime)}
+                {/*  */}
+                {data?.event?.eventName == "Aprisio Coffee Masterclass"
+                  ? "Sun, Apr 6 2025 ,4:00 pm to 6:30 pm"
+                  : formatDate(data?.event?.datetime)}
               </h2>
             </div>
             <div className='text-[#353535CC]/60 font-extrabold font-roboto text-lg pb-4'>

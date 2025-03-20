@@ -138,12 +138,13 @@
 
 				formData.append('description', content);
 				console.log(_data);
-				$createManagerMutation.mutate(formData);
+				// $createManagerMutation.mutate(formData);
 			}
 		}
 	);
 	$effect(() => {
 		if (edit) {
+			console.log($eventsStore);
 			$form.eventName = $eventsStore.eventName;
 			$form.datetime = format(parseISO($eventsStore.datetime), 'yyyy-MM-dd hh:mm a');
 			$form.expirydatetime = format(parseISO($eventsStore.expirydatetime), 'yyyy-MM-dd hh:mm a');

@@ -20,9 +20,14 @@ import { useQuery } from "@tanstack/react-query";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
-
 const formatEventDate = (date: string) => {
-  return format(new Date(date), "EEE, MMM d yyyy, h:mm a");
+  const newDate = new Date(date);
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(newDate);
 };
 
 export default function Events() {
@@ -91,7 +96,10 @@ export default function Events() {
                       {item?.eventName}
                     </p>
                     <p className='font-mulish text-lg text-[#353535] truncate'>
-                      {formatEventDate(item?.datetime)} - {item?.location}
+                      {item?.eventName == "Aprisio Coffee Masterclass"
+                        ? "Sun, Apr 6 2025  "
+                        : formatEventDate(item?.datetime)}
+                      &nbsp; - {item?.location}
                     </p>
                   </div>
                   <div>
@@ -127,7 +135,10 @@ export default function Events() {
                     {item?.eventName}
                   </p>
                   <p className='font-mulish text-lg text-[#353535] truncate'>
-                    {formatEventDate(item?.datetime)} - {item?.location}
+                    {item?.eventName == "Aprisio Coffee Masterclass"
+                      ? "Sun, Apr 6 2025  "
+                      : formatEventDate(item?.datetime)}{" "}
+                    - {item?.location}
                   </p>
                 </div>
                 <div>

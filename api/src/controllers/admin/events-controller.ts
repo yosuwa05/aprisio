@@ -3,7 +3,8 @@ import { generateEventId, generateTicketPrefix } from "@/lib/utils";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { TicketModel } from "@/models/ticket-tracking";
 import Elysia, { t } from "elysia";
-import { parse } from "date-fns";
+import { formatISO, parse } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 function parseCustomDate(dateStr: string): Date | null {
   const cleanDateStr = dateStr.replace(/ (am|pm)$/i, '');
@@ -364,11 +365,14 @@ export const eventsController = new Elysia({
             message: "Event not found",
           };
         }
-
+        const eventDateIST = toZonedTime(event.datetime, "Asia/Kolkata");
+        const formattedDateIST = formatISO(eventDateIST, { representation: "complete" });
+        console.log(formattedDateIST)
+        //@ts-ignore
+        event.datetime = formattedDateIST;
         return {
-          event,
-          ok: true,
-        };
+          event
+        }
       } catch (error: any) {
         set.status = 500;
         return {
