@@ -12,6 +12,7 @@ enum EventType {
 
 type IEvent = {
   datetime: Date;
+  enddatetime: Date;
   eventId: string;
   location: string;
   eventName: string;
@@ -36,11 +37,13 @@ type IEvent = {
   ticketPrefix: string;
   lastSoldTicketNumber: number;
   gst: number
+  isEventActivated: boolean;
 };
 
 const AdminEventSchema = new Schema<IEvent>(
   {
-    datetime: { type: Date, required: true },
+    datetime: { type: Date, default: null },
+    enddatetime: { type: Date, default: null },
     eventId: { type: String, required: true },
     location: { type: String, required: true },
     eventName: { type: String, required: true },
@@ -75,14 +78,17 @@ const AdminEventSchema = new Schema<IEvent>(
     },
     delta: { type: String, default: "" },
     mapLink: { type: String, default: "" },
-    expirydatetime: { type: Date, required: true },
+    expirydatetime: { type: Date, default: null },
     organiserName: { type: String },
     biography: { type: String },
     eventType: {
       type: String,
       enum: EventType,
     },
-
+    isEventActivated: {
+      type: Boolean,
+      default: true
+    },
     rules: [
       {
         heading: { type: String },

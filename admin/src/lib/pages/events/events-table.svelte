@@ -74,7 +74,9 @@
 			delta: event.delta,
 			eventImage: event.eventImage,
 			gst: event.gst,
-			duration: event.duration
+			duration: event.duration,
+			enddatetime: event.enddatetime,
+			isEventActivated: event.isEventActivated
 		};
 	}
 </script>

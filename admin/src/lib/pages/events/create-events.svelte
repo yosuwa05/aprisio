@@ -14,6 +14,7 @@
 	import { zod } from 'sveltekit-superforms/adapters';
 	import DatePicker from 'svelty-picker';
 	import { _topicsSchema, eventsStore } from './events-store';
+	import { Switch } from '$lib/components/ui/switch';
 	// 2025-03-07 03:30 am
 
 	let edit = $state(false);
@@ -92,6 +93,7 @@
 				let _data: any = {
 					eventName: $form.eventName,
 					datetime: $form.datetime,
+					enddatetime: $form.enddatetime,
 					organiserName: $form.organiserName,
 					biography: $form.biography,
 					mapLink: $form.mapLink,
@@ -102,6 +104,7 @@
 					eventType: $form.eventType,
 					price: $form.price,
 					availableTickets: $form.availableTickets,
+					isEventActivated: $form.isEventActivated,
 					eventRules: rules.map((rule) => ({
 						heading: rule.heading,
 						subHeading: rule.subHeading
@@ -118,9 +121,10 @@
 				const content = quill.root.innerHTML;
 
 				let formData = new FormData();
-
+				console.log(_data.isEventActivated);
 				formData.append('eventName', _data.eventName);
 				formData.append('datetime', _data.datetime);
+				formData.append('enddatetime', _data.enddatetime);
 				formData.append('expirydatetime', _data.expirydatetime);
 				formData.append('organiserName', _data.organiserName);
 				formData.append('biography', _data.biography);
@@ -128,6 +132,7 @@
 				formData.append('gst', _data.gst);
 				formData.append('duration', _data.duration);
 				formData.append('location', _data.location);
+				formData.append('isEventActivated', JSON.stringify(_data.isEventActivated));
 				if (file) {
 					formData.append('eventImage', file);
 				}
@@ -149,11 +154,14 @@
 	$effect(() => {
 		if (edit) {
 			$form.eventName = $eventsStore.eventName;
+			const starttime = parseISO($eventsStore.datetime);
+			$form.datetime = formatInTimeZone(starttime, 'UTC', 'yyyy-MM-dd h:mm a');
 
-			const utcDate = parseISO($eventsStore.datetime);
-			$form.datetime = formatInTimeZone(utcDate, 'UTC', 'yyyy-MM-dd h:mm a');
+			const endtime = parseISO($eventsStore.enddatetime);
+			$form.enddatetime = formatInTimeZone(endtime, 'UTC', 'yyyy-MM-dd h:mm a');
 
-			$form.expirydatetime = format(parseISO($eventsStore.expirydatetime), 'yyyy-MM-dd hh:mm a');
+			const bookingexpiry = parseISO($eventsStore.expirydatetime);
+			$form.expirydatetime = formatInTimeZone(bookingexpiry, 'UTC', 'yyyy-MM-dd h:mm a');
 			$form.location = $eventsStore.location;
 			$form.price = $eventsStore.price;
 			$form.availableTickets = $eventsStore.availableTickets;
@@ -163,6 +171,7 @@
 			$form.organiserName = $eventsStore.organiserName;
 			$form.biography = $eventsStore.biography;
 			$form.description = $eventsStore.description;
+			$form.isEventActivated = $eventsStore.isEventActivated;
 
 			if (quill && $eventsStore.delta) {
 				quill.setContents(JSON.parse($eventsStore.delta));
@@ -170,6 +179,7 @@
 		} else {
 			$form.eventName = '';
 			$form.datetime = '';
+			$form.enddatetime = '';
 			$form.location = '';
 			$form.price = '';
 			$form.availableTickets = '';
@@ -180,6 +190,7 @@
 			$form.organiserName = '';
 			$form.biography = '';
 			$form.description = '';
+			$form.isEventActivated = true;
 
 			if (quill) {
 				quill.setContents([]);
@@ -239,15 +250,9 @@
 
 			<div>
 				<Label>Price</Label>
-				<Input
-					class="mt-1 pr-10"
-					type="number"
-					aria-invalid={$errors.price ? 'true' : undefined}
-					bind:value={$form.price}
-					{...$constraints.price}
-				/>
+				<Input class="mt-1 pr-10" type="number" bind:value={$form.price} />
 
-				{#if $errors.price}<span class="invalid text-xs text-red-500">{$errors.price}</span>{/if}
+				<!-- {#if $errors.price}<span class="invalid text-xs text-red-500">{$errors.price}</span>{/if} -->
 			</div>
 			<div>
 				<Label>Gst</Label>
@@ -267,7 +272,7 @@
 
 		<div class="grid grid-cols-2 gap-3 py-2">
 			<div>
-				<Label for="datetime">Date and Time</Label>
+				<Label for="datetime">Start Date and Time</Label>
 				<div class="w-full">
 					<DatePicker
 						bind:value={$form.datetime}
@@ -284,7 +289,24 @@
 				{/if}
 			</div>
 			<div>
-				<Label>Booking Expiry Time and Date</Label>
+				<Label for="enddatetime">End Date and Time</Label>
+				<div class="w-full">
+					<DatePicker
+						bind:value={$form.enddatetime}
+						format="yyyy-mm-dd HH:ii P"
+						formatType="standard"
+						displayFormat="yyyy-mm-dd HH:ii P"
+						placeholder={edit ? $form.enddatetime : 'Select Date and Time'}
+						displayFormatType="standard"
+						inputClasses={`bg-[#fefae4] text-black! w-full text-xs p-4 border bg-transparent border-none outline-none border-input bg-background ring-offset-background placeholder:text-muted-foreground flex h-10 w-full rounded-md border px-3 py-2 text-base ${edit ? 'font-black' : ''} placeholder:`}
+					/>
+				</div>
+				{#if $errors.enddatetime}
+					<span class="error">{$errors.enddatetime}</span>
+				{/if}
+			</div>
+			<div>
+				<Label>Booking Expiry Date and Time</Label>
 
 				<DatePicker
 					bind:value={$form.expirydatetime}
@@ -298,6 +320,19 @@
 				{#if $errors.expirydatetime}<span class="invalid text-xs text-red-500"
 						>{$errors.expirydatetime}</span
 					>{/if}
+			</div>
+			<div class="flex flex-col gap-2">
+				<Label>Event Status</Label>
+				<div class="flex items-center space-x-2 pt-2">
+					<Switch
+						id="event-active"
+						checked={$form.isEventActivated}
+						onCheckedChange={(checked) => ($form.isEventActivated = checked)}
+					/>
+					<Label for="event-active" class="cursor-pointer">
+						{$form.isEventActivated ? 'Event Enabled' : 'Event Disabled'}
+					</Label>
+				</div>
 			</div>
 		</div>
 

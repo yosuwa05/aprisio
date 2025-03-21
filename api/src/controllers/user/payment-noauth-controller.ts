@@ -1,9 +1,11 @@
+import { sendEmail } from "@/lib/mail";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { PaymentModel } from "@/models/payment-model";
 import { TicketModel } from "@/models/ticket-tracking";
 import axios from "axios";
 import crypto from "crypto";
 import Elysia, { t } from "elysia";
+import { formatDateForPDF } from "./events/events-controller";
 
 export const paymentNoAuthController = new Elysia({
   prefix: "/paymentz",
@@ -177,6 +179,55 @@ export const paymentNoAuthController = new Elysia({
           await paymentEntry.save();
 
           await event.save();
+
+          let content = `
+  <div>
+    
+    <div style="text-align: center;">
+    <img
+          class="noise"
+           style="height: 60px; width: 240px; top: 0; right: 0"
+          src="https://aprisio.com/_next/static/media/logo.61120085.png"
+          />
+    </div>
+
+
+    <p>Hi,</p>
+
+    <p>Thanks for your purchase!</p>
+
+    <p>Your ticket for the <strong>Aprisio experience</strong> is enclosed.</p>
+
+    <p>You can also download your ticket from  
+      <a href="https://www.aprisio.com/my-account/experiences" target="_blank">
+        www.aprisio.com > My Account > Experiences
+      </a>.
+    </p>
+
+    <p>In case of queries, please reach out to  
+      <a href="mailto:support@aprisio.com">support@aprisio.com</a>.
+    </p>
+    <br>
+    <p><strong>Event Name:</strong> ${event.eventName}</p>
+
+    <p><strong>Transaction ID:</strong> ${paymentEntry.txnId}</p>
+    <p><strong>Ticket ID:</strong> ${ticket?.ticketId}</p>
+    <p><strong>Number of Tickets:</strong> ${tickettrack?.ticketCount}</p>
+    <p><strong>Date of Booking:</strong> ${formatDateForPDF(tickettrack?.createdAt)}</p>
+    <br>
+
+
+    <p>Regards,</p>
+    <p><strong>Aprisio Team</strong></p>
+  </div>
+`;
+
+          await sendEmail({
+            subject: "Your ticket for Aprisio experience",
+            to: paymentEntry.emailId,
+            html: content,
+            from: "noreply@aprisio.com",
+          });
 
           return {
             ok: true,

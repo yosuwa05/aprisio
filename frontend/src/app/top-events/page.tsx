@@ -15,10 +15,7 @@ import { format } from "date-fns/format";
 const formatEventDate = (date: string) => {
   const newDate = new Date(date);
   return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
     month: "short",
-    day: "numeric",
-    year: "numeric",
   }).format(newDate);
 };
 
@@ -88,7 +85,11 @@ export default function Events() {
               page?.events?.map((event: any, index: number) => {
                 return (
                   <div
-                    onClick={() => router.push(`/top-events/${event._id}`)}
+                    onClick={() => {
+                      // if (event?.eventName == "Aprisio Coffee Masterclass") {
+                      router.push(`/top-events/${event._id}`);
+                      // }
+                    }}
                     key={event?._id}
                     className='relative rounded-2xl overflow-hidden cursor-pointer'>
                     <Image
@@ -105,11 +106,14 @@ export default function Events() {
                         <p className='font-mulish capitalize text-xl text-[#353535] truncate'>
                           {event.eventName}
                         </p>
-                        <p className='font-mulish text-lg text-[#353535] truncate'>
+                        {/* <p className='font-mulish text-lg text-[#353535] truncate'>
                           {event?.eventName == "Aprisio Coffee Masterclass"
                             ? "Sun, Apr 6 2025  "
                             : formatEventDate(event?.datetime)}{" "}
                           - {event.location}
+                        </p> */}
+                        <p className='font-mulish text-lg text-[#353535] truncate'>
+                          {formatEventDate(event?.datetime)} - {event.location}
                         </p>
                       </div>
                       <div className='cursor-pointer flex-shrink-0'>

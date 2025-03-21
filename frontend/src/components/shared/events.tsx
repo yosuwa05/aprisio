@@ -20,13 +20,19 @@ import { useQuery } from "@tanstack/react-query";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
+// const formatEventDate = (date: string) => {
+//   const newDate = new Date(date);
+//   return new Intl.DateTimeFormat("en-US", {
+//     weekday: "short",
+//     month: "short",
+//     day: "numeric",
+//     year: "numeric",
+//   }).format(newDate);
+// };
 const formatEventDate = (date: string) => {
   const newDate = new Date(date);
   return new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
     month: "short",
-    day: "numeric",
-    year: "numeric",
   }).format(newDate);
 };
 
@@ -79,7 +85,11 @@ export default function Events() {
           {bata?.events?.map((item: any, index: any) => (
             <SwiperSlide key={index}>
               <div
-                onClick={() => router.push(`/top-events/${item._id}`)}
+                onClick={() => {
+                  // if (item?.eventName == "Aprisio Coffee Masterclass") {
+                  router.push(`/top-events/${item._id}`);
+                  // }
+                }}
                 className='relative rounded-2xl overflow-hidden cursor-pointer'>
                 <Image
                   loading='eager'
@@ -95,10 +105,14 @@ export default function Events() {
                     <p className='font-mulish capitalize text-xl text-[#353535] truncate'>
                       {item?.eventName}
                     </p>
-                    <p className='font-mulish text-lg text-[#353535] truncate'>
+                    {/* <p className='font-mulish text-lg text-[#353535] truncate'>
                       {item?.eventName == "Aprisio Coffee Masterclass"
                         ? "Sun, Apr 6 2025  "
                         : formatEventDate(item?.datetime)}
+                      &nbsp; - {item?.location}
+                    </p> */}
+                    <p className='font-mulish text-lg text-[#353535] truncate'>
+                      {formatEventDate(item?.datetime)}
                       &nbsp; - {item?.location}
                     </p>
                   </div>
@@ -117,7 +131,11 @@ export default function Events() {
       <div className='block py-8 pb-16 lg:hidden'>
         {bata?.events?.map((item: any, index: any) => (
           <div
-            onClick={() => router.push(`/top-events/${item._id}`)}
+            onClick={() => {
+              // if (item?.eventName == "Aprisio Coffee Masterclass") {
+              router.push(`/top-events/${item._id}`);
+              // }
+            }}
             key={index}
             className='flex pt-8 justify-center cursor-pointer'>
             <div className='relative w-[90%] max-w-sm sm:max-w-md md:max-w-lg rounded-2xl overflow-hidden'>
@@ -134,11 +152,14 @@ export default function Events() {
                   <p className='font-mulish capitalize text-xl text-[#353535] truncate'>
                     {item?.eventName}
                   </p>
-                  <p className='font-mulish text-lg text-[#353535] truncate'>
+                  {/* <p className='font-mulish text-lg text-[#353535] truncate'>
                     {item?.eventName == "Aprisio Coffee Masterclass"
                       ? "Sun, Apr 6 2025  "
                       : formatEventDate(item?.datetime)}{" "}
                     - {item?.location}
+                  </p> */}
+                  <p className='font-mulish text-lg text-[#353535] truncate'>
+                    {formatEventDate(item?.datetime)} - {item?.location}
                   </p>
                 </div>
                 <div>

@@ -9,6 +9,7 @@ import puppeteer from "puppeteer";
 import { deleteFile, saveFile } from "../../lib/file";
 import { AdminAuthModel } from "../../models/adminmodel";
 import { formatDateForPDF } from "../user/events/events-controller";
+import { formatInTimeZone } from "date-fns-tz";
 
 const getBase64Image = async (imageUrl: string) => {
   try {
@@ -24,6 +25,10 @@ const getBase64Image = async (imageUrl: string) => {
     console.error("Error fetching image:", error);
     return "";
   }
+};
+
+export const formatEventDate = (date: string) => {
+  return formatInTimeZone(new Date(date), "UTC", "EEE, MMM d yyyy, h:mm a");
 };
 
 export const adminController = new Elysia({
@@ -70,7 +75,7 @@ export const adminController = new Elysia({
         .replace("{{title}}", ticket?.tickets?.ticketId)
         .replace("{{ticket_ID}}", ticket?.tickets?.ticketId)
         .replace("{{EventName}}", event?.eventName)
-        .replace("{{Date}}", formatDateForPDF(event?.datetime))
+        .replace("{{Date}}", formatEventDate(event?.datetime))
         .replace("{{Location}}", event?.location)
         .replace("{{UserName}}", ticket?.name || user?.name)
         .replace("{{BookingDate}}", formatDateForPDF(ticket?.createdAt))

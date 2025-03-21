@@ -28,6 +28,7 @@ export const eventsController = new Elysia({
     async ({ body, set, store }) => {
       const {
         datetime,
+        enddatetime,
         eventImage,
         eventName,
         location,
@@ -42,6 +43,7 @@ export const eventsController = new Elysia({
         delta,
         gst,
         duration,
+        isEventActivated
       } = body;
 
       try {
@@ -62,8 +64,9 @@ export const eventsController = new Elysia({
 
         let finalDate = parseCustomDate(datetime);
         let _finalDate = parseCustomDate(expirydatetime);
+        let endTime = parseCustomDate(enddatetime);
 
-        if (!finalDate || !_finalDate) {
+        if (!finalDate || !_finalDate || !endTime) {
           throw new Error("Invalid date format received");
         }
 
@@ -74,6 +77,7 @@ export const eventsController = new Elysia({
           eventName,
           datetime: finalDate,
           expirydatetime: _finalDate,
+          enddatetime: endTime,
           attendees: [],
           eventId,
           mapLink: mapLink || "",
@@ -95,6 +99,7 @@ export const eventsController = new Elysia({
           description,
           gst,
           duration,
+          isEventActivated
         });
 
         await newTopic.save();
@@ -115,6 +120,7 @@ export const eventsController = new Elysia({
         eventName: t.String(),
         datetime: t.String(),
         expirydatetime: t.String(),
+        enddatetime: t.String(),
         location: t.String(),
         duration: t.String(),
         eventImage: t.File(),
@@ -126,6 +132,7 @@ export const eventsController = new Elysia({
         organiserName: t.String(),
         biography: t.String(),
         description: t.String(),
+        isEventActivated: t.Optional(t.Any()),
         delta: t.Optional(
           t.String({
             default: "{}",
@@ -247,11 +254,13 @@ export const eventsController = new Elysia({
           mapLink,
           expirydatetime,
           datetime,
+          enddatetime,
           biography,
           description,
           delta,
           gst,
           duration,
+          isEventActivated
         } = body;
 
         const event = await AdminEventModel.findById(id);
@@ -282,6 +291,8 @@ export const eventsController = new Elysia({
         event.eventName = eventName || event.eventName;
         // @ts-ignore
         event.datetime = parseCustomDate(datetime) || event.datetime;
+        //@ts-ignore
+        event.enddatetime = parseCustomDate(enddatetime) || event.enddatetime;
         event.expirydatetime =
           // @ts-ignore
           parseCustomDate(expirydatetime) || event.expirydatetime;
@@ -296,6 +307,7 @@ export const eventsController = new Elysia({
         event.delta = delta || event.delta;
         event.gst = Number(gst ?? 0) || event.gst;
         event.duration = Number(duration ?? 0) || event.duration;
+        event.isEventActivated = isEventActivated || event.isEventActivated;
 
         if (fileName) {
           event.eventImage = fileName;
@@ -324,6 +336,7 @@ export const eventsController = new Elysia({
       body: t.Object({
         eventName: t.Optional(t.String()),
         datetime: t.Optional(t.String()),
+        enddatetime: t.Optional(t.String()),
         expirydatetime: t.Optional(t.String()),
         location: t.Optional(t.String()),
         eventImage: t.Optional(t.File()),
@@ -337,6 +350,7 @@ export const eventsController = new Elysia({
         biography: t.Optional(t.String()),
         description: t.Optional(t.String()),
         delta: t.Optional(t.String()),
+        isEventActivated: t.Optional(t.Any()),
       }),
       detail: {
         description: "Update event",

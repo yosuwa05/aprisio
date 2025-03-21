@@ -1,3 +1,4 @@
+import { formatEventDate } from "@/controllers/admin/adminController";
 import { EventModel, UserModel } from "@/models";
 import { AdminEventModel } from "@/models/admin-events.model";
 import { GroupModel } from "@/models/group.model";
@@ -458,7 +459,7 @@ export const EventsController = new Elysia({
         .replace("{{title}}", ticket?.tickets?.ticketId)
         .replace("{{ticket_ID}}", ticket?.tickets?.ticketId)
         .replace("{{EventName}}", event?.eventName)
-        .replace("{{Date}}", formatDateForPDF(event?.datetime))
+        .replace("{{Date}}", formatEventDate(event?.datetime))
         .replace("{{Location}}", event?.location)
         .replace("{{UserName}}", ticket?.name || user?.name)
         .replace("{{BookingDate}}", formatDateForPDF(ticket?.createdAt))

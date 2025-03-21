@@ -9,34 +9,36 @@ import chevronleft from "@img/icons/blue-chevron-left.svg";
 import chevronright from "@img/icons/blue-chevron-right.svg";
 import logosmall from "@img/images/final-logo.png";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { format, isValid, parseISO } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { formatInTimeZone } from "date-fns-tz";
+import { isSameDay, parseISO } from "date-fns";
+const formatEventDate = (start: string, end: string) => {
+  if (!start || !end) return "";
+  const startDate = parseISO(start);
+  const endDate = parseISO(end);
 
-function formatDate(dateString: any) {
-  if (!dateString) {
-    return "Date not available";
-  }
+  // Convert to UTC to avoid time zone shifts
+  const startDateUTC = new Date(startDate.toISOString().split("T")[0]);
+  const endDateUTC = new Date(endDate.toISOString().split("T")[0]);
 
-  let date;
-
-  if (typeof dateString === "string") {
-    date = parseISO(dateString);
+  if (isSameDay(startDateUTC, endDateUTC)) {
+    return `${formatInTimeZone(
+      startDate,
+      "UTC",
+      "EEE, MMM d yyyy, h:mm a"
+    )} to ${formatInTimeZone(endDate, "UTC", "h:mm a")}`;
   } else {
-    date = new Date(dateString);
+    return `${formatInTimeZone(
+      startDate,
+      "UTC",
+      "EEE, MMM d yyyy, h:mm a"
+    )} to ${formatInTimeZone(endDate, "UTC", "EEE, MMM d yyyy, h:mm a")}`;
   }
-
-  if (!isValid(date)) {
-    console.error("Invalid date format:", dateString);
-    return "Invalid Date";
-  }
-
-  return format(date, "MMM dd, yyyy HH:mm");
-}
-
+};
 export default function BuyTickets() {
   const { topeventid } = useParams();
   const user = useGlobalAuthStore((state) => state.user);
@@ -179,11 +181,16 @@ export default function BuyTickets() {
               <h1 className='text-3xl md:text-4xl font-normal text-textcol font-roboto'>
                 {data?.event?.eventName || "Event Name"}
               </h1>
-              <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-normal'>
-                {/*  */}
+              {/* <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-normal'>
                 {data?.event?.eventName == "Aprisio Coffee Masterclass"
                   ? "Sun, Apr 6 2025 ,4:00 pm to 6:30 pm"
                   : formatDate(data?.event?.datetime)}
+              </h2> */}
+              <h2 className='text-lg md:text-xl text-[#64737A]  font-roboto font-normal'>
+                {formatEventDate(
+                  data?.event?.datetime,
+                  data?.event?.enddatetime
+                ) || ""}
               </h2>
             </div>
             <div className='text-[#353535CC]/60 font-extrabold font-roboto text-lg pb-4'>

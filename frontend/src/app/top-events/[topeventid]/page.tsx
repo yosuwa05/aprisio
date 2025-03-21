@@ -11,11 +11,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { formatInTimeZone } from "date-fns-tz";
+import { isSameDay, parseISO } from "date-fns";
 
-const formatEventDate = (date: string) => {
-  return format(new Date(date), "EEE, MMM d yyyy, h:mm a");
+const formatEventDate = (start: string, end: string) => {
+  const startDate = parseISO(start);
+  const endDate = parseISO(end);
+
+  // Convert to UTC to avoid time zone shifts
+  const startDateUTC = new Date(startDate.toISOString().split("T")[0]);
+  const endDateUTC = new Date(endDate.toISOString().split("T")[0]);
+
+  if (isSameDay(startDateUTC, endDateUTC)) {
+    return `${formatInTimeZone(
+      startDate,
+      "UTC",
+      "EEE, MMM d yyyy, h:mm a"
+    )} to ${formatInTimeZone(endDate, "UTC", "h:mm a")}`;
+  } else {
+    return (
+      <>
+        {formatInTimeZone(startDate, "UTC", "EEE, MMM d yyyy, h:mm a")} to
+        <br />
+        {formatInTimeZone(endDate, "UTC", "EEE, MMM d yyyy, h:mm a")}
+      </>
+    );
+  }
 };
-
 export default function ViewTopEventPage() {
   const { topeventid } = useParams();
   const user = useGlobalAuthStore((state) => state.user);
@@ -31,6 +53,21 @@ export default function ViewTopEventPage() {
 
   const router = useRouter();
 
+  if (data && !data?.event?.isEventActivated) {
+    return (
+      <main className='px-4 md:px-8 py-4 md:py-6 container mx-auto'>
+        <div className='flex h-[60vh] flex-col gap-5 items-center justify-center'>
+          <h1 className='text-3xl md:text-6xl text-center font-medium text-textcol font-roboto'>
+            {data?.event?.eventName}
+          </h1>
+          <h1 className='text-xl md:text-2xl text-center font-medium text-textcol font-roboto'>
+            Comming Soon...
+          </h1>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className='px-4 md:px-8 py-4 md:py-6 container mx-auto'>
       {isLoading ? (
@@ -40,27 +77,24 @@ export default function ViewTopEventPage() {
       ) : (
         <>
           <div className=''>
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col '>
               <div className='flex flex-col gap-5'>
                 <h1 className='text-3xl md:text-5xl font-medium text-textcol font-roboto'>
                   {data?.event?.eventName || "Event Name"}
                 </h1>
-                <h2 className='text-xl md:text-2xl text-[#64737A]  font-roboto font-medium'>
+                {/* <h2 className='text-xl md:text-2xl text-[#64737A]  font-roboto font-medium'>
                   {data?.event?.eventName == "Aprisio Coffee Masterclass"
                     ? "Sun, Apr 6 2025 ,4:00 pm to 6:30 pm"
                     : formatEventDate(data?.event?.datetime)}
-                </h2>
+                </h2> */}
               </div>
-              <div className='text-contrasttext text-base font-sans flex justify-between flex-wrap items-center max-w-4xl'>
-                <div>
-                  {" "}
-                  <h1 className='capitalize text-base  md:text-xl'>
-                    {data?.event?.location || ""}
-                  </h1>
-                  <div className='capitalize text-base  md:text-xl'>
-                    Hosted by : {data?.event?.organiserName || ""}
-                  </div>
-                </div>
+              <div className='flex justify-between flex-wrap items-center max-w-4xl gap-3 md:gap-0'>
+                <h2 className='text-xl md:text-2xl text-[#64737A]  font-roboto font-medium'>
+                  {formatEventDate(
+                    data?.event?.datetime,
+                    data?.event?.enddatetime
+                  ) || ""}
+                </h2>
                 <div className=''>
                   <Button
                     onClick={() => {
@@ -70,12 +104,23 @@ export default function ViewTopEventPage() {
                       }
                       router.push("/buytickets/" + topeventid);
                     }}
-                    className='bg-buttoncol hover:bg-buttoncol border border-gray-300 rounded-3xl text-black font-bold'>
+                    className='bg-buttoncol hover:bg-buttoncol border border-gray-300 rounded-3xl   md:text-lg  text-black font-bold py-4  md:py-6 px-6'>
                     Buy Tickets
                   </Button>
 
-                  <div className='text-[#353535CC]/80 font-extrabold font-roboto text-lg py-4 ml-2'>
+                  <div className='text-[#353535CC]/80 font-extrabold font-roboto text-center text-lg py-2 '>
                     INR {data?.event?.price || ""} + GST
+                  </div>
+                </div>
+              </div>
+              <div className='text-contrasttext text-base font-sans flex justify-between flex-wrap items-center max-w-4xl'>
+                <div>
+                  {" "}
+                  <h1 className='capitalize text-base  md:text-xl'>
+                    {data?.event?.location || ""}
+                  </h1>
+                  <div className='capitalize text-base  md:text-xl'>
+                    Hosted by : {data?.event?.organiserName || ""}
                   </div>
                 </div>
               </div>

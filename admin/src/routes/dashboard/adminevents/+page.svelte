@@ -37,7 +37,8 @@
 				delta: '',
 				eventImage: '',
 				gst: '',
-				duration: ''
+				duration: '',
+				enddatetime: ''
 			};
 		}}
 	>

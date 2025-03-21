@@ -19,7 +19,9 @@ export const eventsStore = writable({
 	eventImage: '',
 	delta: '',
 	gst: '',
-	duration: ''
+	duration: '',
+	enddatetime: '',
+	isEventActivated: true
 });
 
 export const manageLayoutStore = writable({
@@ -32,6 +34,7 @@ type StoreProps = {
 	eventName: string;
 	id: string;
 	datetime: string;
+	enddatetime: string;
 	location: string;
 	eventRules: any[];
 	eventType: string;
@@ -46,6 +49,7 @@ type StoreProps = {
 	eventImage: string;
 	delta: string;
 	duration: string;
+	isEventActivated: boolean
 };
 
 export type eventStore = Writable<StoreProps>;
@@ -55,6 +59,9 @@ export const _topicsSchema = z.object({
 		required_error: 'Date Time  is required'
 	}),
 	expirydatetime: z.string({
+		required_error: 'Date Time  is required'
+	}),
+	enddatetime: z.string({
 		required_error: 'Date Time  is required'
 	}),
 	mapLink: z.string({
@@ -77,6 +84,7 @@ export const _topicsSchema = z.object({
 			message: 'Location is required'
 		})
 		.max(100),
+	isEventActivated: z.boolean(),
 	eventType: z.enum(['online', 'offline']),
 	price: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 	gst: z.union([z.string(), z.number()]).transform((val) => val.toString()),
