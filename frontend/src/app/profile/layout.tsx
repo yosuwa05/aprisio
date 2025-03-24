@@ -73,10 +73,28 @@ export default function MyProfile({
     mutate();
   }
 
-  if (isLoading || !user) {
+  if (isLoading) {
     return (
       <div className='bg-white h-screen w-screen flex justify-center items-center'>
         Loading...
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className='bg-white h-screen w-screen flex flex-col justify-center items-center text-center'>
+        <h1 className='text-2xl font-semibold text-gray-700'>
+          You are not logged in
+        </h1>
+        <p className='text-gray-500 mb-4'>
+          Please log in to access your profile.
+        </p>
+        <Button
+          className='bg-buttoncol text-white px-6 py-2 rounded-lg hover:to-buttoncol'
+          onClick={() => router.push("/login")}>
+          Login
+        </Button>
       </div>
     );
   }

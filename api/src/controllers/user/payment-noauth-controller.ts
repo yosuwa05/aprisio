@@ -199,7 +199,7 @@ export const paymentNoAuthController = new Elysia({
     <p>Your ticket for the <strong>Aprisio experience</strong> is enclosed.</p>
 
     <p>You can also download your ticket from  
-      <a href="https://www.aprisio.com/my-account/experiences" target="_blank">
+      <a href="https://www.aprisio.com/profile" target="_blank">
         www.aprisio.com > My Account > Experiences
       </a>.
     </p>

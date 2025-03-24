@@ -159,7 +159,7 @@ export function PaymentSuccess() {
             setActiveTab("payment");
           }}
           className='rounded-full py-8 px-7  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
-          Back to experience
+          Back to Experiences
           <Image src={chevronleft} alt='chevron-left' />
         </Button>
       </div>

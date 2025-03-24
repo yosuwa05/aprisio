@@ -52,16 +52,15 @@ export default function Events() {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "long",
+  const formatfullDate = (date: string) => {
+    const newDate = new Date(date);
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
       year: "numeric",
-      timeZone: "UTC",
-    });
-  }
-
+    }).format(newDate);
+  };
   return (
     <section className='bg-white relative'>
       <div className='absolute top-[0.9%] left-[1.3%] lg:top-[6%] lg:left-[2.5%] -z-2'>
@@ -113,7 +112,10 @@ export default function Events() {
                           - {event.location}
                         </p> */}
                         <p className='font-mulish text-lg text-[#353535] truncate'>
-                          {formatEventDate(event?.datetime)} - {event.location}
+                          {event?.isEventActivated === true
+                            ? formatfullDate(event?.datetime)
+                            : formatEventDate(event?.datetime)}{" "}
+                          - {event.location}
                         </p>
                       </div>
                       <div className='cursor-pointer flex-shrink-0'>

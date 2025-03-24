@@ -1,7 +1,9 @@
 "use client";
 
 import location from "@img/images/location.png";
-import logo from "@img/images/logo.png";
+import logo from "@img/images/betalogo.png";
+import startup from "@img/images/startup.jpeg";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,11 +17,11 @@ export default function Footer() {
 
   return (
     <section className=''>
-      <div className='bg-white lg:grid-cols-2 grid-cols-1 gap-9 lg:gap-0 grid py-14 lg:px-24 px-5'>
+      <div className='bg-white lg:grid-cols-3 grid-cols-1 gap-9 lg:gap-0 grid py-14 lg:px-24 px-5'>
         <div className='w-full md:w-[80%]'>
           <Image
             src={logo}
-            className='w-[120px] xl:w-[180px] cursor-pointer hidden md:block py-2'
+            className='w-[120px] xl:w-[180px] cursor-pointer  py-2'
             alt='logo'
             priority={true}
             onClick={() => router.push("/")}
@@ -52,23 +54,25 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        {/* <div>
-          <h1 className='text-[#043A53] font-roboto font-semibold xl:text-3xl text-2xl xl:pb-8 pb-4'>
-            About
-          </h1>
+        <div
+          className='cursor-pointer'
+          onClick={() => {
+            const pdfPath =
+              "/images/Startup_Recognition_Certificate_110225.pdf";
+            if (typeof window !== "undefined") {
+              window.open(pdfPath, "_blank");
+            }
+          }}>
+          <Image
+            src={startup}
+            className='w-[120px] xl:w-[180px] cursor-pointer   py-2'
+            alt='logo'
+            priority={true}
+          />
           <p className='text-[#353535E3] font-sans xl:text-2xl text-xl'>
-            Aprisio is a space for people in their 40s and beyond to find
-            community — not through algorithms, but through shared moments. From
-            masterclasses to immersive experiences, we create ways to connect
-            that feel natural, meaningful, and real. This is the next chapter.
-            Let’s live it well.
+            Proudly recognized by Startup India
           </p>
-          <div className='flex pt-5 lg:gap-5 gap-3'>
-            <Image className='w-10 h-10' src={instagram} alt='email' />
-            <Image className='w-10 h-10' src={facebook} alt='email' />
-            <Image className='w-10 h-10' src={twitter} alt='email' />
-          </div>
-        </div> */}
+        </div>
 
         <div className='flex flex-col lg:items-end'>
           <div>

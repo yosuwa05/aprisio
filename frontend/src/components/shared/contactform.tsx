@@ -63,8 +63,8 @@ export default function ContactForm() {
     <>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className='grid lg:grid-cols-2 md:grid-cols-1 grid-cols-1 md:gap-8 gap-5'>
-        <div className='relative'>
+        className='lg:grid lg:grid-cols-2  md:gap-8 gap-5'>
+        <div className='relative lg:py-0 py-3'>
           <Image
             className='absolute lg:left-[5%] left-2  top-[50%] transform -translate-y-1/2 w-7 h-7'
             src={user}
@@ -84,7 +84,7 @@ export default function ContactForm() {
             </p>
           )}
         </div>
-        <div className='relative'>
+        <div className='relative lg:py-0 py-3'>
           <Image
             src={mail}
             alt='Email'

@@ -5,7 +5,7 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Icon } from "@iconify/react";
 import logosmall from "@img/images/final-logo.png";
-import logo from "@img/images/logo.png";
+import logo from "@img/images/betalogo.png";
 import { useQuery } from "@tanstack/react-query";
 import { Menu } from "lucide-react";
 import Image from "next/image";
@@ -36,7 +36,7 @@ export default function Topbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState<string | null>(null);
-
+  const [sheetOpen, setSheetOpen] = useState<boolean>(false);
   useEffect(() => {
     if (pathname === "/") {
       setActiveSection("home");
@@ -97,7 +97,7 @@ export default function Topbar() {
     <nav className='w-full flex px-4 my-4 justify-between md:px-6 '>
       <div className='flex  items-center'>
         <div className='flex gap-2'>
-          <Sheet>
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild className='md:hidden'>
               <div className='flex'>
                 <Menu size={24} />
@@ -122,12 +122,28 @@ export default function Topbar() {
                         fontSize={20}
                       />
 
-                      <h1 className={`capitalize text-sm md:text-lg `}>
-                        Homes
-                      </h1>
+                      <h1 className={`capitalize text-sm md:text-lg `}>Home</h1>
                     </div>
                   </div>
                 </Link>
+
+                {user && (
+                  <Link
+                    href={"/feeds"}
+                    className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center my-3'>
+                    <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                      <div className='flex gap-3 items-center'>
+                        <Icon
+                          icon='material-symbols:feed-outline'
+                          fontSize={20}
+                        />
+                        <h1 className={`capitalize text-sm md:text-lg `}>
+                          Feed
+                        </h1>
+                      </div>
+                    </div>
+                  </Link>
+                )}
 
                 <Link
                   href={"/feed"}
@@ -140,7 +156,7 @@ export default function Topbar() {
                       />
 
                       <h1 className={`capitalize text-sm md:text-lg `}>
-                        Explore Community
+                        Community
                       </h1>
                     </div>
                   </div>
@@ -280,7 +296,19 @@ export default function Topbar() {
                 )}
 
                 <div className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4'>
-                  <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                  <div
+                    onClick={(e) => {
+                      setActiveSection("about");
+                      e.preventDefault();
+                      setSheetOpen(false);
+                      if (pathname !== "/") {
+                        router.push("/");
+                        scrollToSection("about");
+                      } else {
+                        scrollToSection("about");
+                      }
+                    }}
+                    className='w-full flex justify-between items-center  font-bold text-contrasttext '>
                     <div className='flex gap-3 items-center'>
                       <Icon icon='ix:about' />
 
@@ -291,7 +319,9 @@ export default function Topbar() {
                   </div>
                 </div>
 
-                <div className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center mt-4'>
+                <div
+                  onClick={() => router.push("/contact")}
+                  className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center my-3'>
                   <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
                     <div className='flex gap-3 items-center'>
                       <Icon icon='material-symbols:call-outline-sharp' />

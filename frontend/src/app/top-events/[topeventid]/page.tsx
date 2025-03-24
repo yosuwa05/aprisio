@@ -13,6 +13,7 @@ import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { formatInTimeZone } from "date-fns-tz";
 import { isSameDay, parseISO } from "date-fns";
+import chevronleft from "@img/icons/blue-chevron-left.svg";
 
 const formatEventDate = (start: string, end: string) => {
   const startDate = parseISO(start);
@@ -63,6 +64,14 @@ export default function ViewTopEventPage() {
           <h1 className='text-xl md:text-2xl text-center font-medium text-textcol font-roboto'>
             Comming Soon...
           </h1>
+          <Button
+            onClick={() => {
+              router.push("/top-events");
+            }}
+            className='rounded-full py-8 px-7  bg-contrasttext    text-white flex justify-between font-bold shadow-none text-sm hover:bg-contrasttext/90'>
+            Back to Experiences
+            <Image src={chevronleft} alt='chevron-left' />
+          </Button>
         </div>
       </main>
     );

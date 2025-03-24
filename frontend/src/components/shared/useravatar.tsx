@@ -6,7 +6,7 @@ import { makeUserAvatarSlug } from "@/lib/utils";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
+import { Icon } from "@iconify/react";
 import {
   Dialog,
   DialogContent,
@@ -53,14 +53,11 @@ export function UserAvatar() {
           <Avatar className='h-8 w-8 lg:h-10 lg:w-10'>
             <AvatarImage
               className='object-cover rounded-full'
-              src={
-                user
-                  ? BASE_URL + `/file?key=${user?.image}`
-                  : "/assets/person.png"
-              }
+              src={user ? BASE_URL + `/file?key=${user?.image}` : ""}
             />
             <AvatarFallback>
-              {makeUserAvatarSlug(user?.name ?? "")}
+              <Icon icon={"el:user"} />
+              {/* {makeUserAvatarSlug(user?.name ?? "A")} */}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

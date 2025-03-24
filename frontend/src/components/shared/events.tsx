@@ -20,15 +20,15 @@ import { useQuery } from "@tanstack/react-query";
 import { _axios } from "@/lib/axios-instance";
 import { BASE_URL } from "@/lib/config";
 import { useRouter } from "next/navigation";
-// const formatEventDate = (date: string) => {
-//   const newDate = new Date(date);
-//   return new Intl.DateTimeFormat("en-US", {
-//     weekday: "short",
-//     month: "short",
-//     day: "numeric",
-//     year: "numeric",
-//   }).format(newDate);
-// };
+const formatFullDate = (date: string) => {
+  const newDate = new Date(date);
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(newDate);
+};
 const formatEventDate = (date: string) => {
   const newDate = new Date(date);
   return new Intl.DateTimeFormat("en-US", {
@@ -112,8 +112,10 @@ export default function Events() {
                       &nbsp; - {item?.location}
                     </p> */}
                     <p className='font-mulish text-lg text-[#353535] truncate'>
-                      {formatEventDate(item?.datetime)}
-                      &nbsp; - {item?.location}
+                      {item?.isEventActivated === true
+                        ? formatFullDate(item?.datetime)
+                        : formatEventDate(item?.datetime)}{" "}
+                      - {item.location}
                     </p>
                   </div>
                   <div>
@@ -159,7 +161,10 @@ export default function Events() {
                     - {item?.location}
                   </p> */}
                   <p className='font-mulish text-lg text-[#353535] truncate'>
-                    {formatEventDate(item?.datetime)} - {item?.location}
+                    {item?.isEventActivated === true
+                      ? formatFullDate(item?.datetime)
+                      : formatEventDate(item?.datetime)}{" "}
+                    - {item.location}
                   </p>
                 </div>
                 <div>
