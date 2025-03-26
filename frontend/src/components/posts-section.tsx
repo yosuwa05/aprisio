@@ -13,6 +13,7 @@ import { Skeleton } from "./ui/skeleton";
 type IAuthor = {
   name: string;
   image: string;
+  _id: string;
 };
 type IPost = {
   author: IAuthor;
@@ -43,6 +44,7 @@ export const PostsSection = () => {
         );
         return res;
       },
+
       initialPageParam: 1,
       getNextPageParam: (lastPage: any) => lastPage.data.nextCursor,
     });
@@ -60,16 +62,16 @@ export const PostsSection = () => {
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="flex flex-col gap-6 items-center p-1 lg:p-4 mb-12 lg:mb-6">
+    <div className='flex flex-col gap-6 items-center p-1 lg:p-4 mb-12 lg:mb-6'>
       {isLoading ? (
-        <div className="flex flex-col gap-4 w-full">
+        <div className='flex flex-col gap-4 w-full'>
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="flex gap-4 w-full">
-              <Skeleton className="w-[50px] h-[50px] rounded-full" />
-              <div className="flex flex-col gap-2 w-full">
-                <Skeleton className="w-full h-[200px]" />
-                <Skeleton className="w-full h-[15px]" />
-                <Skeleton className="w-3/4 h-[15px]" />
+            <div key={i} className='flex gap-4 w-full'>
+              <Skeleton className='w-[50px] h-[50px] rounded-full' />
+              <div className='flex flex-col gap-2 w-full'>
+                <Skeleton className='w-full h-[200px]' />
+                <Skeleton className='w-full h-[15px]' />
+                <Skeleton className='w-3/4 h-[15px]' />
               </div>
             </div>
           ))}
@@ -82,6 +84,7 @@ export const PostsSection = () => {
                 <Postcard
                   post={{
                     author: post.author.name,
+                    authorId: post.author._id,
                     title: post.title,
                     description: post.description,
                     createdAt: post.createdAt,
@@ -101,15 +104,15 @@ export const PostsSection = () => {
             ))
           )
         ) : (
-          <p className="text-gray-500 text-xs font-semibold">
+          <p className='text-gray-500 text-xs font-semibold'>
             {!isLoading ? "No posts found" : ""}
           </p>
         )
       ) : (
-        <p className="text-gray-500">No posts</p>
+        <p className='text-gray-500'>No posts</p>
       )}
 
-      <div ref={ref} className="h-1"></div>
+      <div ref={ref} className='h-1'></div>
 
       {isFetchingNextPage && <GlobalLoader />}
     </div>

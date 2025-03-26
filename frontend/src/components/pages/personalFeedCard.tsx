@@ -29,11 +29,28 @@ import {
   DrawerTitle,
 } from "../ui/drawer";
 import PerosonalFeedCommentSection from "./personalFeedCommentSection";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 interface IPostCard {
   title: string;
   description: string;
   author: string;
+  authorId: string;
   createdAt: string;
   id: string;
   likedByMe?: boolean;
@@ -60,6 +77,8 @@ export default function PersonalPostcard({
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
   const [postId, setPostId] = useState("");
+  const [deletePostId, setDeletePost] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -139,6 +158,34 @@ export default function PersonalPostcard({
     },
   });
 
+  const { mutate: deleteMutate, isPending: deletePending } = useMutation({
+    mutationFn: async () => {
+      let res = await _axios.delete(
+        `/delete-management/post?postId=${deletePostId}`
+      );
+      return res.data;
+    },
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success(data?.message || "Post deleted successfully");
+      queryClient.invalidateQueries({
+        queryKey: ["personalfeed" + user?.id, userslug],
+      });
+      setDeleteOpen(false);
+      setDeletePost("");
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "An Error Occured");
+      setDeletePost("");
+      setDeleteOpen(false);
+    },
+  });
+
+  function handleDeletePost() {
+    if (isPending) return;
+    deleteMutate();
+  }
+
   return (
     <div
       className='p-4 lg:px-8 w-full rounded-lg transition-all'
@@ -180,8 +227,43 @@ export default function PersonalPostcard({
           </div>
         </div>
 
-        <p className='text-xs font-medium text-[#6B6D6D] self-center'>
+        <p className='text-xs font-medium text-[#6B6D6D] flex items-center md:gap-3'>
           {formatDate(post.createdAt)}
+
+          {user?.id === post.authorId && (
+            <DropdownMenu>
+              <DropdownMenuTrigger className=''>
+                <Icon className='text-xl' icon={"pepicons-pop:dots-y"} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className='!mr-4'>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (post?.group?.[0]?.name) {
+                      router.push(`/edit-post/group/${post.id}`);
+                    } else {
+                      router.push(`/feed/edit-post/${post.id}`);
+                    }
+                  }}
+                  className='cursor-pointer'>
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className='cursor-pointer'
+                  onClick={() => {
+                    setDeleteOpen(true);
+                    setDeletePost(post?.id);
+                  }}>
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            // <Button
+            //   variant={"link"}
+
+            // >
+            //   <Edit className="text-gray-600" size={14} />
+            // </Button>
+          )}
         </p>
       </div>
 
@@ -316,6 +398,30 @@ export default function PersonalPostcard({
           topic={topic}
         />
       </div>
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              post from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => {
+                setDeletePost("");
+              }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deletePending}
+              onClick={handleDeletePost}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

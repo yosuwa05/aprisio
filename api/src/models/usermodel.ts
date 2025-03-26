@@ -4,6 +4,8 @@ interface User {
   name: string;
   mobile: string;
   address: string;
+  gender: string;
+  dateOfBirth: string;
   active: boolean;
   email: string;
   password: string;
@@ -15,6 +17,8 @@ interface User {
   emailVerificationToken: string | null;
   emailVerificationTokenExpiry: Date | null;
   passwordResetToken: string | null;
+  lastEmailSentTime: Date | null
+
 }
 
 const UserSchema = new Schema<User>(
@@ -31,6 +35,13 @@ const UserSchema = new Schema<User>(
     emailVerified: {
       type: Boolean,
       default: false,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female"],
+    },
+    dateOfBirth: {
+      type: String,
     },
     fcmToken: {
       type: String,
@@ -53,6 +64,9 @@ const UserSchema = new Schema<User>(
       type: String,
     },
     emailVerificationTokenExpiry: {
+      type: Date,
+    },
+    lastEmailSentTime: {
       type: Date,
     },
     passwordResetToken: {

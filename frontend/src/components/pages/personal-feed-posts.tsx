@@ -13,6 +13,7 @@ import PersonalPostcard from "./personalFeedCard";
 type IAuthor = {
   name: string;
   image: string;
+  _id: string;
 };
 type IPost = {
   author: IAuthor;
@@ -34,6 +35,7 @@ export const PersonalFeedPosts = () => {
   const isUserRoute = usePathname().includes("/user/");
 
   const { userslug } = useParams();
+  console.log(userslug, "userSlugss");
   const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
@@ -49,6 +51,7 @@ export const PersonalFeedPosts = () => {
         return res;
       },
       initialPageParam: 1,
+      retry: false,
       getNextPageParam: (lastPage: any) => lastPage.data.nextCursor,
     });
 
@@ -63,7 +66,7 @@ export const PersonalFeedPosts = () => {
       fetchNextPage();
     }
   }, [entry?.isIntersecting, hasNextPage, isFetchingNextPage]);
-
+  console.log(data);
   return (
     <div className='flex flex-col gap-6 items-center p-1'>
       {isLoading ? (
@@ -87,6 +90,7 @@ export const PersonalFeedPosts = () => {
                 <PersonalPostcard
                   post={{
                     author: post.author.name,
+                    authorId: post.author._id,
                     title: post.title,
                     description: post.description,
                     createdAt: post.createdAt,

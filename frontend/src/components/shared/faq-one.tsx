@@ -59,7 +59,7 @@ export default function FAQ1() {
               Discover
             </h1>
             <p className='font-mulish xl:text-3xl lg:text-xl text-xl text-[#353535CC] xl:pt-5 lg:pt-3 pt-1'>
-              Access curated events and experiences around food, travel, arts,
+              Access curated events and experiences around food, travel, art,
               wellness, and more.
             </p>
           </div>

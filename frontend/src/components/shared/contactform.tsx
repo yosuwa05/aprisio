@@ -34,12 +34,7 @@ export default function ContactForm() {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: () =>
-      _axios.post("/form/contact", {
-        name: "test",
-        message: "test",
-        email: "test",
-      }),
+    mutationFn: (data: any) => _axios.post("/form/contact", data),
     onSuccess: (data) => {
       toast.success("Message sent successfully!");
       reset();
@@ -84,7 +79,7 @@ export default function ContactForm() {
             </p>
           )}
         </div>
-        <div className='relative lg:py-0 py-3'>
+        <div className='relative lg:py-0 py-8'>
           <Image
             src={mail}
             alt='Email'

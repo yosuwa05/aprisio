@@ -114,7 +114,14 @@ export function TopCommunityBar() {
                           e.stopPropagation();
                           setSelectedTopic(topic);
                         }}>
-                        <div className='text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none '>
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                          onMouseDown={(e) => {
+                            e.stopPropagation();
+                          }}
+                          className='text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none '>
                           {topic.topicName}
                         </div>
                         <Icon

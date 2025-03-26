@@ -135,6 +135,8 @@ export const communityController = new Elysia({
           aggregationPipeline.push({
             $match: {
               topicName: { $regex: topicName, $options: "i" },
+              isDeleted: false,
+              active: true,
             },
           });
         }

@@ -43,6 +43,9 @@ export function TopicsCard({
     onSuccess: ({ data }) => {
       if (data.ok) {
         toast.success(data.message);
+        queryClient.invalidateQueries({
+          queryKey: ["joined"],
+        });
       } else {
         toast.error(data.error);
       }
@@ -51,25 +54,24 @@ export function TopicsCard({
       await queryClient.cancelQueries({ queryKey: ["community", user?.id] });
 
       const previousTopics = queryClient.getQueryData(["community", user?.id]);
+      // Ensure `previousTopics` exists
+      if (!previousTopics) return { previousTopics };
 
       queryClient.setQueryData(["community", user?.id], (old: any) => {
-        if (!old) return old;
+        if (!old || !old.pages) return old;
 
         return {
           ...old,
           pages: old.pages.map((page: any) => ({
             ...page,
-            data: {
-              ...page.data,
-              topics: page.data.topics.map((topic: any) => ({
-                ...topic,
-                subTopic: topic.subTopic.map((subTopic: any) =>
-                  subTopic._id === subTopicId
-                    ? { ...subTopic, joined: true }
-                    : subTopic
-                ),
-              })),
-            },
+            topics: page.topics.map((topic: any) => ({
+              ...topic,
+              subTopic: topic.subTopic.map((subTopic: any) =>
+                subTopic._id === subTopicId
+                  ? { ...subTopic, joined: true }
+                  : subTopic
+              ),
+            })),
           })),
         };
       });

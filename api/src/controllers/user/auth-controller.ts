@@ -39,29 +39,33 @@ export const authController = new Elysia({
         }
 
         const currentTime = new Date();
-        const expiryDate = new Date(user.emailVerificationTokenExpiry ?? "");
+
 
         if (!user.emailVerified) {
-          const resendThreshold = new Date(
-            expiryDate.getTime() - 12 * 60 * 60 * 1000,
-          );
+          const lastEmailSentTime = user.lastEmailSentTime ?? new Date(0);
+          const timeSinceLastEmail = currentTime.getTime() - lastEmailSentTime.getTime();
+          if (timeSinceLastEmail < 2 * 60 * 1000) {
+            return {
+              message: "Please wait before requesting a new verification email.",
+              ok: false,
+            };
+          }
 
-          if (
-            !user.emailVerificationTokenExpiry ||
-            currentTime > resendThreshold
-          ) {
-            const verificationToken = generateVerificationToken();
-            const hashedToken = hashToken(verificationToken);
-            const tokenExpiration = new Date(Date.now() + 12 * 60 * 60 * 1000);
+          const verificationToken = generateVerificationToken();
+          const hashedToken = hashToken(verificationToken);
+          const tokenExpiration = new Date(Date.now() + 12 * 60 * 60 * 1000);
 
-            user.emailVerificationToken = hashedToken;
-            user.emailVerificationTokenExpiry = tokenExpiration;
-            await user.save();
+          user.emailVerificationToken = hashedToken;
+          user.emailVerificationTokenExpiry = tokenExpiration;
+          user.lastEmailSentTime = currentTime;
+          await user.save();
 
-            // const verificationLink = `http://localhost:3001/verify-email?token=${hashedToken}`;
-            const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
+          // const verificationLink = `http://localhost:3001/verify-email?token=${hashedToken}`;
+          const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
+          // const verificationLink = `https://development.aprisio.com/verify-email?token=${hashedToken}`;
 
-            let content = `
+
+          let content = `
             <html>
               <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
                 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
@@ -98,24 +102,20 @@ export const authController = new Elysia({
             </html>
           `;
 
-            await sendEmail({
-              subject: "Verify Your Email to Log In",
-              to: email,
-              html: content,
-              from: "noreply@aprisio.com",
-            });
-
-            return {
-              message:
-                "Email verification required. A new verification email has been sent.",
-              ok: false,
-            };
-          }
+          await sendEmail({
+            subject: "Verify Your Email to Log In",
+            to: email,
+            html: content,
+            from: "noreply@aprisio.com",
+          });
 
           return {
-            message: "Email verification required. Please check your inbox.",
+            message:
+              "Email verification required. A new verification email has been sent.",
             ok: false,
           };
+
+
         } else {
           const token = await PasetoUtil.encodePaseto({
             email: user.email.toString(),

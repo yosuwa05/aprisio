@@ -34,7 +34,7 @@ export async function sendEmail(option: EmailOptions) {
     });
 
     const info = await transporter.sendMail({
-      from: "hello@aprisio.com",
+      from: '"Aprisio" <hello@aprisio.com>',
       to: option.to,
       cc: option.cc,
       bcc: option.bcc,

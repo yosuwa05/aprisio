@@ -4,7 +4,7 @@ import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Icon } from "@iconify/react";
-import logosmall from "@img/images/final-logo.png";
+import mobilebeta from "@img/images/mobilebeta.png";
 import logo from "@img/images/betalogo.png";
 import { useQuery } from "@tanstack/react-query";
 import { Menu } from "lucide-react";
@@ -94,7 +94,7 @@ export default function Topbar() {
   };
 
   return (
-    <nav className='w-full flex px-4 my-4 justify-between md:px-6 '>
+    <nav className='w-full flex px-4 my-2 md:my-4 justify-between items-center md:px-6 '>
       <div className='flex  items-center'>
         <div className='flex gap-2'>
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -361,10 +361,10 @@ export default function Topbar() {
         />
 
         <Image
-          src={logosmall}
-          className='w-[25px] cursor-pointer md:hidden ml-3'
+          src={mobilebeta}
+          className=' h-[50px] w-[50px]  cursor-pointer md:hidden ml-3'
           alt='logo'
-          onClick={() => router.push("/feeds")}
+          onClick={() => router.push("/")}
         />
 
         <ul className='hidden xl:flex gap-8 text-textcol font-semibold mx-4 text-xl'>

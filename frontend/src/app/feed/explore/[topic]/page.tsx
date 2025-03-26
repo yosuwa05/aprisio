@@ -10,7 +10,7 @@ import { BASE_URL } from "@/lib/config";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronRight, Plus } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
@@ -44,6 +44,7 @@ export default function Feed() {
       return res.data;
     },
   });
+  const queryClient = useQueryClient();
 
   const { data: joined } = useQuery({
     queryKey: ["user-Joined-things"],
@@ -74,6 +75,9 @@ export default function Feed() {
     onSuccess: ({ data }) => {
       if (data.ok) {
         toast.success(data.message);
+        queryClient.invalidateQueries({
+          queryKey: ["joined"],
+        });
         refetch();
       } else {
         toast.error(data.error.toString());

@@ -96,45 +96,10 @@ export const formController = new Elysia({
 
         const verificationLink2 = `https://aprisio.com/verify-email?token=${hashedToken}`;
 
-        let content2 = `
-        <html>
-          <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
-              <tr>
-                <td align="center">
-                  <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-                    <tr>
-                      <td style="padding: 20px; text-align: center;">
-                        <h2 style="color: #333;">Welcome to Aprisio!</h2>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 20px;">
-                        <p>Hello ${newUser.name},</p>
-                        <p>Thank you for joining Aprisio! We're excited to have you on board.</p>
-                        <p>To get started, please verify your email address by clicking the link below:</p>
-                        <p style="text-align: center; margin: 20px 0;">
-                          <a href="${verificationLink2}" style="background-color: #007BFF; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Your Email</a>
-                        </p>
-                        <p>If you didn't sign up for an Aprisio account, you can safely ignore this email.</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="padding: 20px; text-align: center;">
-                        <hr style="border: 1px solid #ddd; width: 80%;">
-                        <p style="color: #777; font-size: 14px;">If you have any questions, feel free to contact us at support@aprisio.com.</p>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-          </body>
-        </html>
-      `;
+        let content2 = await Bun.file("html/welcomemail.html").text();
 
         await sendEmail({
-          subject: "Verify Your Email to Log In",
+          subject: "Welcome to Aprisio",
           to: email,
           html: content2,
           from: "noreply@aprisio.com",
@@ -143,14 +108,14 @@ export const formController = new Elysia({
         set.status = 200;
         return {
           message:
-            "Registration successful! Kindly check your email for confirmation.",
+            "Registration successful! ",
           ok: true,
         };
       } catch (error: any) {
         set.status = 500;
         return {
           ok: false,
-          message: "An internal error occurred while processing the form.",
+          message: error,
         };
       }
     },
@@ -197,7 +162,7 @@ export const formController = new Elysia({
           html: content,
           from: "hello@aprisio.com",
         });
-
+        set.status = 200
         return {
           ok: true,
           message: "Message sent successfully",

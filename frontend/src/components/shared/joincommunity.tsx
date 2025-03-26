@@ -186,14 +186,12 @@ const JoinCommunityForm = () => {
   }, [mobileValue]);
 
   const onSubmit = async (data: object) => {
-    // if (!emailVerified) {
-    //     toast.error("Please verify your email before submitting.");
-    //     return;
-    // }
+    console.log(data);
     if (isLoading) return;
     setIsLoading(true);
     try {
       const response = await _axios.post("/form/submit", data);
+
       if (response.data.ok) {
         setIsLoading(false);
         toast.success(response.data.message);
@@ -207,23 +205,12 @@ const JoinCommunityForm = () => {
         router.push("/login");
       } else {
         setIsLoading(false);
-        toast.error(response.data.message);
+        toast.error(response.data.message || "Some thing went wrong");
       }
     } catch (error) {
       setIsLoading(false);
-      if (error instanceof AxiosError) {
-        const errorMessage =
-          error.response?.data?.message || "An unexpected error occurred.";
-        toast.error(errorMessage);
-      } else {
-        console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred.");
-      }
     }
   };
-  useEffect(() => {
-    console.log("Form errors:", errors);
-  }, [errors]);
 
   return (
     <>
