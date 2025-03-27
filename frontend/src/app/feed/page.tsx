@@ -188,9 +188,9 @@ export default function Community() {
     <>
       <div className='mx-2 md:mx-12 mt-6'>
         <div className='bg-white shadow-lg rounded-lg p-6 text-center flex  font-roboto flex-col gap-4'>
-          <p className='text-xl capitalize text-[#222222] leading-relaxed'>
-            <span className=''>Create your own Group</span> in the Community and
-            Sub-Community of your choice. Invite your friends and other Aprisio
+          <p className='text-lg  text-[#222222] leading-relaxed'>
+            <span className=''>Create your own Group</span> in the community and
+            sub-community of your choice. invite your friends and other aprisio
             members with shared interests.
           </p>
           <p className='text-lg text-[#000000]'>

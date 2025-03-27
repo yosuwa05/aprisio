@@ -33,9 +33,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-
+import { Icon } from "@iconify/react";
 const postSchema = z.object({
-  title: z.string().min(1).max(100),
+  title: z
+    .string({ required_error: "Title is required" })
+    .min(1, { message: "Title must be at least 1 character " })
+    .max(150, { message: "Title must be at most 150 characters " }),
   description: z.string(),
   url: z.string(),
 });
@@ -55,7 +58,14 @@ export default function CreatePostGroup() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { register, reset, watch, handleSubmit, setValue } = useForm({
+  const {
+    register,
+    reset,
+    watch,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(postSchema),
   });
   const titleValue = watch("title", "");
@@ -207,10 +217,21 @@ export default function CreatePostGroup() {
     <div>
       <div className='mx-2 xl:mx-12'>
         <div className='flex justify-between items-center xl:items-end mx-2'>
-          <h1 className='text-3xl font-semibold py-4 xl:text-5xl'>
-            Create Post
-          </h1>
-
+          <div className='flex justify-between gap-2  md:gap-3 items-center py-4'>
+            <Button
+              onClick={() => router.back()}
+              variant={"outline"}
+              size={"icon"}>
+              <Icon
+                onClick={() => router.back()}
+                icon={"weui:back-filled"}
+                className='text-4xl cursor-pointer '
+              />
+            </Button>
+            <h1 className='text-3xl font-semibold    xl:text-5xl'>
+              Create Post
+            </h1>
+          </div>
           <Button
             className='rounded-full p-[20px] bg-[#FCF7EA] border-[#AF965447] font-bold border-[1px] text-[#534B04] shadow-none text-xs lg:text-sm hover:bg-buttoncol'
             onClick={() => {
@@ -225,48 +246,57 @@ export default function CreatePostGroup() {
             )}
           </Button>
         </div>
-
-        <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
-          <PopoverTrigger asChild className='p-6'>
-            <Button
-              type='button'
-              className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
-              {selectedGroupId.slug ? selectedGroupId.slug : "Select a Group"}
-              <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />
+        {selectedGroupId?.slug ? (
+          <div className='px-3 py-2'>
+            <Button className='bg-[#F2F5F6]  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
+              {selectedGroupId.slug ? selectedGroupId.slug : "Select a Topic"}
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className='w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg'>
-            <Input
-              placeholder='Search...'
-              className='w-full my-2'
-              value={subTopicSearch}
-              onChange={(e) => setSubTopicSearch(e.target.value)}
-            />
-            <div className='flex flex-col gap-2'>
-              {isSubTopicsLoading && (
-                <div className='flex justify-center items-center my-4'>
-                  <div>
-                    <GlobalLoader />
+          </div>
+        ) : (
+          <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
+            <PopoverTrigger asChild className='p-6'>
+              <Button
+                type='button'
+                className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
+                {selectedGroupId.slug ? selectedGroupId.slug : "Select a Group"}
+                <ChevronDown
+                  className='mt-1 ml-2 text-black text-xl'
+                  size={60}
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg'>
+              <Input
+                placeholder='Search...'
+                className='w-full my-2'
+                value={subTopicSearch}
+                onChange={(e) => setSubTopicSearch(e.target.value)}
+              />
+              <div className='flex flex-col gap-2'>
+                {isSubTopicsLoading && (
+                  <div className='flex justify-center items-center my-4'>
+                    <div>
+                      <GlobalLoader />
+                    </div>
                   </div>
-                </div>
-              )}
-              {!isSubTopicsLoading &&
-                data?.groups?.map((subTopic: any) => (
-                  <div
-                    key={subTopic._id}
-                    className='flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]'
-                    onClick={() => {
-                      setSubTopicSearch("");
-                      setSubTopicOpen(false);
-                      setSelectedGroupId(subTopic);
-                    }}>
-                    <p className='text-black'>{subTopic.slug}</p>
-                  </div>
-                ))}
-            </div>
-          </PopoverContent>
-        </Popover>
-
+                )}
+                {!isSubTopicsLoading &&
+                  data?.groups?.map((subTopic: any) => (
+                    <div
+                      key={subTopic._id}
+                      className='flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]'
+                      onClick={() => {
+                        setSubTopicSearch("");
+                        setSubTopicOpen(false);
+                        setSelectedGroupId(subTopic);
+                      }}>
+                      <p className='text-black'>{subTopic.slug}</p>
+                    </div>
+                  ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
         <div className='flex flex-col md:gap-4'>
           <div className='flex'>
             {tabs.map((tab, index: number) => (
@@ -296,8 +326,13 @@ export default function CreatePostGroup() {
                 className='h-16 rounded-2xl text-fadedtext text-lg'
                 {...register("title")}
               />
+              {errors.title && (
+                <p className='text-red-500 text-xs'>
+                  {errors.title.message as string}
+                </p>
+              )}
               <div className='text-fadedtext text-sm w-full text-right p-2'>
-                {titleValue.length}/100
+                {titleValue.length}/150
               </div>
             </div>
 

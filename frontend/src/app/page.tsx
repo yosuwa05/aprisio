@@ -50,12 +50,12 @@ export default function Home() {
   return (
     <>
       <Dialog open={showPopup} onOpenChange={setShowPopup}>
-        <DialogContent
-          onClick={() => {
-            router.push("/top-events/67d7d2e814e0a096fc38974b");
-          }}
-          className='max-w-2xl md:max-w-3xl lg:max-w-4xl w-full p-4 md:p-6 cursor-pointer  lg:p-8'>
-          <div className='w-full flex justify-center'>
+        <DialogContent className='max-w-2xl md:max-w-3xl lg:max-w-4xl w-full p-4 md:p-6 cursor-pointer  lg:p-8'>
+          <div
+            onClick={() => {
+              router.push("/top-events/67d7d2e814e0a096fc38974b");
+            }}
+            className='w-full flex justify-center'>
             <Image
               src={coffeeImage}
               alt='Welcome'

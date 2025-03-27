@@ -154,7 +154,19 @@ export default function NewEvent() {
   return (
     <div className='mx-2 xl:mx-8'>
       <div className='flex justify-between items-center xl:items-end mx-2'>
-        <h1 className='text-3xl font-semibold py-4 xl:text-5xl'>Edit Event</h1>
+        <div className='flex justify-between gap-2  md:gap-3 items-center py-4'>
+          <Button
+            onClick={() => router.back()}
+            variant={"outline"}
+            size={"icon"}>
+            <Icon
+              onClick={() => router.back()}
+              icon={"weui:back-filled"}
+              className='text-4xl cursor-pointer '
+            />
+          </Button>
+          <h1 className='text-3xl font-semibold    xl:text-5xl'>Edit Post</h1>
+        </div>
       </div>
 
       <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
