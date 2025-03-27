@@ -31,6 +31,8 @@ interface IUSER {
   name: string;
   email: string;
   image?: string;
+  dateOfBirth: string;
+  gender: string;
 }
 
 interface IUSERDATA {
@@ -88,6 +90,13 @@ export function EditProfile() {
       reset({
         name: userData.user.name,
         email: userData.user.email,
+        dateOfBirth: userData.user.dateOfBirth
+          ? dayjs(userData.user.dateOfBirth, "DD-MM-YYYY").format("DD-MM-YYYY")
+          : "",
+        gender:
+          userData.user.gender === "male" || userData.user.gender === "female"
+            ? userData.user.gender
+            : "male",
       });
     }
   }, [userData, reset]);
@@ -134,8 +143,9 @@ export function EditProfile() {
     formData.append("name", data.name);
     formData.append("email", data.email);
     if (file) formData.append("image", file);
-    console.log(data);
-    // mutate(formData);
+    formData.append("dateOfBirth", data.dateOfBirth);
+    formData.append("gender", data.gender);
+    mutate(formData);
   };
 
   return (
@@ -155,7 +165,7 @@ export function EditProfile() {
                     file ? renderedImage : BASE_URL + `/file?key=${user?.image}`
                   }
                 />
-                <AvatarFallback className=''>
+                <AvatarFallback className='text-black'>
                   {makeUserAvatarSlug(userData?.user.name ?? "")}
                 </AvatarFallback>
               </Avatar>
@@ -197,12 +207,13 @@ export function EditProfile() {
         <div>
           <Label>Gender</Label>
           <Select
+            defaultValue={userData?.user?.gender || "male"}
             value={watch("gender")}
             onValueChange={(value: any) => {
               setValue("gender", value);
               trigger("gender");
             }}>
-            <SelectTrigger className='h-16 rounded-2xl text-fadedtext text-lg'>
+            <SelectTrigger className='h-14 rounded-2xl text-fadedtext text-lg'>
               <SelectValue placeholder='Select Gender' />
             </SelectTrigger>
             <SelectContent>
@@ -219,11 +230,11 @@ export function EditProfile() {
             adapterLocale='en-gb'>
             <DesktopDatePicker
               format='DD-MM-YYYY'
-              // defaultValue={
-              //   data?.data?.application?.dateOfBirth
-              //     ? dayjs(data?.data?.application?.dateOfBirth) // Ensure it's a Day.js object
-              //     : null
-              // }
+              value={
+                watch("dateOfBirth")
+                  ? dayjs(watch("dateOfBirth"), "DD-MM-YYYY")
+                  : null
+              }
               className='w-full rounded-md border-0 bg-white shadow-[0_2px_4px_rgba(0,0,0,0.1)] focus:shadow-[0_4px_8px_rgba(0,0,0,0.1)] transition-shadow focus:outline-none focus:ring-0'
               {...register("dateOfBirth")}
               onChange={handleDateChange}
@@ -238,9 +249,10 @@ export function EditProfile() {
 
         <div className='flex md:col-span-2 justify-center pt-4'>
           <Button
+            disabled={isPending}
             className='rounded-full py-[25px] w-[130px] bg-buttoncol text-white flex justify-between font-bold shadow-none text-sm hover:bg-buttoncol disabled:opacity-50 disabled:cursor-not-allowed'
             type='submit'>
-            Save
+            {isPending ? "Saving..." : "Save"}
             <Image src={chevronleft} alt='chevron-left' />
           </Button>
         </div>

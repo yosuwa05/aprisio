@@ -49,12 +49,6 @@
 			href: '/admin/dashboard/adminevents/',
 			icon: 'material-symbols:event-rounded',
 			subRoutes: '-'
-		},
-		{
-			name: 'User Events',
-			href: '/admin/dashboard/userevents/',
-			icon: 'material-symbols:event-rounded',
-			subRoutes: '-'
 		}
 	]);
 

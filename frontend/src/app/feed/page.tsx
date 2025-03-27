@@ -188,27 +188,25 @@ export default function Community() {
     <>
       <div className='mx-2 md:mx-12 mt-6'>
         <div className='bg-white shadow-lg rounded-lg p-6 text-center flex  font-roboto flex-col gap-4'>
-          <p className='text-xl capitalize text-gray-700 leading-relaxed'>
-            <span className='text-green-700 font-semibold'>
-              Create your own Group
-            </span>{" "}
-            in the Community and Sub-Community of your choice. Invite your
-            friends and other Aprisio members with shared interests.
+          <p className='text-xl capitalize text-[#222222] leading-relaxed'>
+            <span className=''>Create your own Group</span> in the Community and
+            Sub-Community of your choice. Invite your friends and other Aprisio
+            members with shared interests.
           </p>
-          <p className='text-lg text-gray-600'>
-            <span className='text-red-600 font-semibold'>
-              Media (Community)
+          <p className='text-lg text-[#000000]'>
+            <span className=' font-semibold'>
+              Media <span className='font-normal'>(Community)</span>
             </span>{" "}
             {"→"}
-            <span className='text-purple-600 font-semibold'>
+            <span className=' font-semibold'>
               {" "}
-              New Media (Sub-Community)
+              New Media <span className='font-normal'>(Sub-Community)</span>
             </span>{" "}
             {"→"}
-            <span className='text-orange-600 font-semibold'> Your Group</span>.
+            <span className=' font-semibold'> Your Group</span>.
             <br />
-            <span className='text-green-700 font-bold'>It’s free!</span> Go
-            ahead and create your own group today.
+            <span className=' '>It’s free!</span> Go ahead and create your own
+            group today.
           </p>
         </div>
 

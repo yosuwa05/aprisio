@@ -10,6 +10,7 @@ interface IGroup {
   subTopic: Types.ObjectId;
   groupAdmin: Types.ObjectId;
   slug: string;
+  active: boolean
 }
 
 const GroupSchema = new Schema<IGroup>(
@@ -34,6 +35,10 @@ const GroupSchema = new Schema<IGroup>(
     groupAdmin: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    active: {
+      type: Boolean,
+      default: true
     },
     slug: { type: String },
   },

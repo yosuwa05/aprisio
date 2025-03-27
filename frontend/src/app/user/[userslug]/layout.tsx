@@ -72,7 +72,7 @@ export default function PersonalProfile({
                         className='object-cover w-full h-full'
                         src={BASE_URL + `/file?key=${data?.user?.image}`}
                       />
-                      <AvatarFallback className=''>
+                      <AvatarFallback className='text-black'>
                         {makeUserAvatarSlug(data?.user.name ?? "")}
                       </AvatarFallback>
                     </Avatar>

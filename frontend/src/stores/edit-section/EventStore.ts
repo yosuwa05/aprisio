@@ -18,7 +18,6 @@ type Event = {
     location: string;
     date: string;
     isEventEnded: boolean;
-    isApprovedByAdmin: boolean
     managedBy: string;
     rules: Array<EventRule>;
     attendees: Array<string>;
@@ -42,7 +41,6 @@ const defaultEvent: Event = {
     location: "",
     date: "",
     isEventEnded: false,
-    isApprovedByAdmin: false,
     managedBy: "",
     rules: [],
     attendees: [],

@@ -211,7 +211,7 @@ export default function CreateGroup() {
           {activeIndex == 3 && (
             <GroupPhotoSection groupid={currentGroup.groupId} />
           )}
-        </div>
+        </div>  
       </div>
     </div>
   );

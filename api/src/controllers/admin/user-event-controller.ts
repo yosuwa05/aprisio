@@ -12,16 +12,12 @@ export const UserEventController = new Elysia({
         "/all",
         async ({ set, query }) => {
             try {
-                const { page = 1, limit = 10, q, filter } = query;
+                const { page = 1, limit = 10, q } = query;
 
                 const searchQuery: any = {};
 
                 if (q) {
                     searchQuery.$or = [{ eventName: { $regex: q, $options: "i" } }];
-                }
-
-                if (filter !== undefined) {
-                    searchQuery.isApprovedByAdmin = filter === "true";
                 }
 
                 const total = await EventModel.countDocuments(searchQuery);
@@ -126,7 +122,6 @@ export const UserEventController = new Elysia({
                     return { message: "Event not found" };
                 }
 
-                event.isApprovedByAdmin = !event.isApprovedByAdmin;
                 await event.save();
 
                 return {

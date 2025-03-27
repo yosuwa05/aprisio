@@ -20,7 +20,6 @@ type IEvent = {
   isEventEnded: boolean;
   attendees: Types.ObjectId[];
   commentsCount: number;
-  isApprovedByAdmin: boolean;
   eventImage: string;
   eventsDateString: string;
   eventType: EventType;
@@ -73,7 +72,6 @@ const EventSchema = new Schema<IEvent>(
         ref: "User",
       },
     ],
-    isApprovedByAdmin: { type: Boolean, default: false },
   },
   {
     timestamps: true,

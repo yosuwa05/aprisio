@@ -12,7 +12,7 @@ export const personalAuthController = new Elysia({
     try {
       const userId = (store as any)["id"];
 
-      const userPromise = UserModel.findById(userId, "name email");
+      const userPromise = UserModel.findById(userId, "name email gender dateOfBirth");
 
       const [
         user,

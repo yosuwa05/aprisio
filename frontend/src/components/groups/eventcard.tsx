@@ -33,7 +33,6 @@ type Event = {
   };
   attendees: Array<string>;
   isEventEnded: boolean;
-  isApprovedByAdmin: boolean;
 };
 
 function formatDateString(date: Date) {
@@ -104,7 +103,11 @@ export function EventCard({ event }: Props) {
           </p>
 
           <Button
-            disabled={isPending || event.isEventEnded || event.attending}
+            disabled={
+              isPending || event?.isEventEnded || event?.managedBy === user?.id
+                ? undefined
+                : event?.attending
+            }
             className={`
            bg-[#FCF7EA] hover:bg-[#FCF7EA] border-[#AF965447] rounded-3xl border-[0.2px]  text-black`}
             onClick={() => {
@@ -121,7 +124,6 @@ export function EventCard({ event }: Props) {
                     name: event.group.name,
                     slug: event.group.slug,
                   },
-                  isApprovedByAdmin: event.isApprovedByAdmin,
                   createdAt: event.createdAt,
                   managedBy: event.managedBy,
                   isEventEnded: event.isEventEnded,
