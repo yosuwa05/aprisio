@@ -154,7 +154,7 @@ export const topicsController = new Elysia({
           await topic.save();
 
           return {
-            message: "Topic deleted permanently",
+            message: "Topic deleted ",
             ok: true,
           };
         }
@@ -164,7 +164,7 @@ export const topicsController = new Elysia({
 
         set.status = 200;
         return {
-          message: "Topic Deactivated Successfully",
+          message: "Topic Updated Successfully",
           ok: true,
         };
       } catch (error: any) {

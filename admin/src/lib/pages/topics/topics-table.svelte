@@ -162,7 +162,7 @@
 		<Dialog.Root open={modelOpen} onOpenChange={(e) => (modelOpen = e)}>
 			<Dialog.Content class="p-6">
 				<Dialog.Header class="text-center">
-					<Dialog.Title class="text-center">Do you want to delete this Manager ?</Dialog.Title>
+					<Dialog.Title class="text-center">Do you want to delete this topic ?</Dialog.Title>
 				</Dialog.Header>
 
 				<div class="flex justify-around gap-4">

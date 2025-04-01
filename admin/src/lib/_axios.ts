@@ -3,7 +3,7 @@ import { baseUrl } from './config';
 
 export const _axios = axios.create({
 	baseURL: baseUrl,
-	withCredentials: true
+	withCredentials: true,
 });
 
 _axios.interceptors.response.use(

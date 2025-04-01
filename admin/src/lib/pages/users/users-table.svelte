@@ -3,15 +3,19 @@
 	import { _axios } from '$lib/_axios';
 	import Paginator from '$lib/components/paginator.svelte';
 	import { Badge } from '$lib/components/ui/badge';
+	import { Button } from '$lib/components/ui/button';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import * as Table from '$lib/components/ui/table';
+	import { baseUrl } from '$lib/config';
 	import { formatDate } from '$lib/utils';
 	import Icon from '@iconify/svelte';
 	import { createMutation, createQuery } from '@tanstack/svelte-query';
 	import { tick } from 'svelte';
-
-	async function fetchUsers(limit = 10, page = 1, search = '') {
-		const res = await _axios.get(`/user/all?limit=${limit}&page=${page}&q=${search}`);
+	import * as Select from '$lib/components/ui/select/index';
+	async function fetchUsers(limit = 10, page = 1, search = '', gender = '', ageRange = '') {
+		const res = await _axios.get(
+			`/user/all?limit=${limit}&page=${page}&q=${search}&gender=${gender}&ageRange=${ageRange}`
+		);
 		const data = await res.data;
 		return data;
 	}
@@ -19,6 +23,8 @@
 	let page = $state(1);
 	let limit = $state(8);
 	let search = $state('');
+	let gender = $state('');
+	let ageRange = $state('');
 
 	let debounceTimeout: any;
 	function debounceSearch() {
@@ -32,7 +38,7 @@
 
 	const query = createQuery({
 		queryKey: ['users fetch', debounceSearch],
-		queryFn: () => fetchUsers(limit, page, search)
+		queryFn: () => fetchUsers(limit, page, search, gender, ageRange)
 	});
 
 	const banMutation = createMutation({
@@ -47,34 +53,118 @@
 			console.log(error);
 		}
 	});
+
+	const exportUsers = () => {
+		fetch(`${baseUrl}/user/export-excel`, {
+			method: 'GET',
+			headers: {
+				Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+			}
+		})
+			.then((res) => res.blob())
+			.then((blob) => {
+				const date = new Date();
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement('a');
+				a.href = url;
+				a.download = `Aprisio_Users_${date.toISOString().split('T')[0]}.xlsx`;
+				document.body.appendChild(a);
+				a.click();
+			})
+			.catch((err) => console.error('Download error:', err));
+	};
 </script>
 
 <div class="text-maintext font-karla mx-auto mt-6 w-[calc(100vw-420px)] overflow-auto">
-	<div class="mb-4 ml-auto w-[40%]">
-		<div class="relative grid gap-2">
-			<Input
-				type={'text'}
-				required
-				class="pr-10  focus:!ring-0 focus:!ring-transparent"
-				placeholder={'Search Users Name'}
-				bind:value={search}
-				oninput={debounceSearch}
-			/>
-			{#if !search}
-				<Icon
-					icon={'iconamoon:search'}
-					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+	<div class="mb-4 ml-auto">
+		<div class=" flex justify-end gap-4">
+			<div class="relative">
+				<Input
+					type={'text'}
+					required
+					class="pr-10  focus:!ring-0 focus:!ring-transparent"
+					placeholder={'Search Users Name'}
+					bind:value={search}
+					oninput={debounceSearch}
 				/>
-			{:else}
-				<Icon
-					icon={'mdi:clear-outline'}
+				{#if !search}
+					<Icon
+						icon={'iconamoon:search'}
+						class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+					/>
+				{:else}
+					<Icon
+						icon={'mdi:clear-outline'}
+						onclick={() => {
+							search = '';
+							debounceSearch();
+						}}
+						class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
+					/>
+				{/if}
+			</div>
+
+			<Select.Root
+				type="single"
+				name="ageRange"
+				value={ageRange}
+				onValueChange={(value) => {
+					ageRange = value === 'all' ? '' : value;
+					page = 1;
+					$query.refetch();
+				}}
+			>
+				<Select.Trigger class="w-[120px] capitalize">
+					{ageRange ? `${ageRange} years` : 'All Ages'}
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.Item value="all">All Ages</Select.Item>
+						<Select.Item value="10-20">10-20 years</Select.Item>
+						<Select.Item value="20-30">20-30 years</Select.Item>
+						<Select.Item value="30-40">30-40 years</Select.Item>
+						<Select.Item value="40-50">40-50 years</Select.Item>
+						<Select.Item value="50-60">50-60 years</Select.Item>
+						<Select.Item value="60-70">60-70 years</Select.Item>
+						<Select.Item value="70-80">70-80 years</Select.Item>
+						<Select.Item value="80-90">80-90 years</Select.Item>
+						<Select.Item value="90-100">90-100 years</Select.Item>
+					</Select.Group>
+				</Select.Content>
+			</Select.Root>
+
+			<Select.Root
+				type="single"
+				name="category"
+				bind:value={gender}
+				onValueChange={(value) => {
+					gender = value === 'all' ? '' : value;
+					page = 1;
+					$query.refetch();
+				}}
+			>
+				<Select.Trigger class="w-[100px] capitalize">
+					{gender ? (gender === 'male' ? 'Male' : 'Female') : 'All'}
+				</Select.Trigger>
+				<Select.Content>
+					<Select.Group>
+						<Select.Item value="all">All</Select.Item>
+						<Select.Item value="male">Male</Select.Item>
+						<Select.Item value="female">Female</Select.Item>
+					</Select.Group>
+				</Select.Content>
+			</Select.Root>
+
+			<div>
+				<Button
+					class="w-[120px] text-white"
 					onclick={() => {
-						search = '';
-						debounceSearch();
+						exportUsers();
 					}}
-					class="absolute bottom-2.5 right-2 cursor-pointer text-xl text-gray-400"
-				/>
-			{/if}
+				>
+					Export
+				</Button>
+			</div>
 		</div>
 	</div>
 

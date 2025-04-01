@@ -9,8 +9,8 @@ export default function CommunityLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="">
-      <div className="sticky top-[0px] z-50 bg-white py-2">
+    <div className=''>
+      <div className='sticky top-[0px] z-50 bg-white py-2'>
         <Topbar />
         <TopCommunityBar />
       </div>

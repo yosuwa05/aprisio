@@ -108,6 +108,7 @@
 					<Table.Head class="w-[100px]">Sl.No</Table.Head>
 					<Table.Head>Subtopic Name</Table.Head>
 					<Table.Head>Topic Name</Table.Head>
+					<Table.Head>Joined Users</Table.Head>
 					<Table.Head class="">Created At</Table.Head>
 					<Table.Head class="">Active</Table.Head>
 					<Table.Head>Actions</Table.Head>
@@ -118,7 +119,8 @@
 					<Table.Row>
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
 						<Table.Cell>{topic.subTopicName}</Table.Cell>
-						<Table.Cell>{topic.topic?.topicName ?? '-'}</Table.Cell>
+						<Table.Cell>{topic.topicName ?? '-'}</Table.Cell>
+						<Table.Cell>{topic.joinedUserCount}</Table.Cell>
 						<Table.Cell class="flex items-center"
 							>{formatDate(new Date(topic.createdAt))}</Table.Cell
 						>

@@ -81,7 +81,7 @@ export const GroupsFeedSection = () => {
           queryKey: ["groups" + user?.id, topic],
         });
         queryClient.invalidateQueries({
-          queryKey: ["group-events" + user?.id, groupid],
+          queryKey: ["group-events", user?.id, groupid],
         });
         refetch();
       }
@@ -108,8 +108,7 @@ export const GroupsFeedSection = () => {
       {data?.pages?.[0]?.data?.canJoin ? (
         <Button
           disabled={isPending}
-          variant={"ghost"}
-          className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
+          className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
             mutate(data?.pages?.[0]?.data?.groupId);
@@ -118,8 +117,8 @@ export const GroupsFeedSection = () => {
           <h3 className='font-semibold text-sm'>Join Group</h3>
         </Button>
       ) : (
-        <div
-          className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
+        <Button
+          className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
             updateActiveGroup(typeof groupid === "string" ? groupid : "");
@@ -127,7 +126,7 @@ export const GroupsFeedSection = () => {
           }}>
           <Icon icon='tabler:plus' fontSize={22} />
           <h3 className='font-semibold text-sm'>Create Post</h3>
-        </div>
+        </Button>
       )}
 
       <div className='max-h-[calc(100vh-280px)] w-full overflow-scroll hide-scrollbar p-2'>

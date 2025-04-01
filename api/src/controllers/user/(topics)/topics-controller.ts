@@ -13,7 +13,10 @@ export const TopicsController = new Elysia({
         const page = query.page || 1;
         const limit = query.limit || 10;
 
-        const topics = await TopicModel.find({}, "topicName")
+        const topics = await TopicModel.find({
+          isDeleted: false,
+          active: true,
+        }, "topicName")
           .sort({ createdAt: -1 })
           .skip((page - 1) * limit)
           .limit(limit)
@@ -27,7 +30,7 @@ export const TopicsController = new Elysia({
           total,
           ok: true,
         };
-      } catch (error) {}
+      } catch (error) { }
     },
     {
       query: t.Object({

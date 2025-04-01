@@ -12,18 +12,20 @@ export const UserEventController = new Elysia({
         "/all",
         async ({ set, query }) => {
             try {
-                const { page = 1, limit = 10, q } = query;
+                const { page = 1, limit = 10, q, filter } = query;
 
                 const searchQuery: any = {};
 
                 if (q) {
                     searchQuery.$or = [{ eventName: { $regex: q, $options: "i" } }];
                 }
-
+                if (filter !== undefined) {
+                    searchQuery.isEventEnded = filter === "true";
+                }
                 const total = await EventModel.countDocuments(searchQuery);
 
                 const events = await EventModel.find(searchQuery)
-                    .populate("group", "name  ")
+                    .populate("group", "name")
                     .populate("managedBy", "name")
                     .select("group managedBy eventName createdAt isApprovedByAdmin isEventEnded ")
                     .sort({ createdAt: -1 })

@@ -9,6 +9,7 @@ interface INotification {
   createdAt: Date;
   readAt: Date;
   post: Types.ObjectId;
+  event: Types.ObjectId;
 }
 
 const NotificationSchema = new Schema<INotification>({
@@ -19,7 +20,8 @@ const NotificationSchema = new Schema<INotification>({
   type: { type: String },
   createdAt: { type: Date, default: Date.now },
   readAt: { type: Date, default: null },
-  post: { type: Schema.Types.ObjectId, ref: "Post" },
+  post: { type: Schema.Types.ObjectId, ref: "Post", default: null },
+  event: { type: Schema.Types.ObjectId, ref: "Event", default: null }
 });
 
 export const NotificationModel = model<INotification>(

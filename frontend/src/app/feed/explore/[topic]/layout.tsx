@@ -9,7 +9,9 @@ export default function RootLayout({
 }>) {
   return (
     <div>
-      <DockMenu />
+      <div className='md:hidden'>
+        <DockMenu />
+      </div>
       {children}
     </div>
   );

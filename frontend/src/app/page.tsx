@@ -13,29 +13,21 @@ import FAQ1 from "../components/shared/faq-one";
 import FAQ2 from "../components/shared/faq-two";
 import Footer from "../components/shared/footer";
 import Testimonial from "../components/shared/testimonials";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
-import coffeeImage from "@img/images/coffeebanner.jpeg";
+import coffeeImage from "@img/images/newcoffeebanner.jpeg";
 export default function Home() {
   const router = useRouter();
   const user = useGlobalAuthStore((state) => state.user);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
-    // Check if the popup has been shown before
-    const hasSeenPopup = localStorage.getItem("popup_shown");
+    const lastPopupDate = localStorage.getItem("popup_shown_date");
+    const today = new Date().toISOString().split("T")[0];
 
-    // Only show popup if it hasn't been shown before
-    if (hasSeenPopup !== "true") {
+    if (lastPopupDate !== today) {
       setShowPopup(true);
-      localStorage.setItem("popup_shown", "true");
+      localStorage.setItem("popup_shown_date", today);
     }
 
     setTimeout(() => {

@@ -42,6 +42,11 @@ export default function MyProfileCommentSection({
   const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
 
   function handleSubmit() {
+    if (!user) {
+      toast.error("Please login to comment ");
+      setTypedComment("");
+      return;
+    }
     mutate({ content: typedComment, postId, parentCommentId: undefined });
     setTypedComment("");
   }
@@ -113,8 +118,8 @@ export default function MyProfileCommentSection({
 
   return (
     <div>
-      <div className="mt-4 flex gap-4 items-center">
-        <Avatar className="h-9 w-9 object-cover">
+      <div className='mt-4 flex gap-4 items-center'>
+        <Avatar className='h-9 w-9 object-cover'>
           <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
           <AvatarFallback>
             {makeUserAvatarSlug(user?.name ?? "")}
@@ -122,8 +127,8 @@ export default function MyProfileCommentSection({
         </Avatar>
 
         <Input
-          placeholder="Write your comment"
-          className="border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold"
+          placeholder='Write your comment'
+          className='border-none bg-contrastbg text-[#828485] placeholder:text-xs font-semibold'
           value={typedComment}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -135,7 +140,7 @@ export default function MyProfileCommentSection({
       </div>
 
       {viewAllReplies && !isLoading && (
-        <motion.div className="mt-4 flex flex-col gap-6">
+        <motion.div className='mt-4 flex flex-col gap-6'>
           {data?.pages?.flatMap((page) =>
             page?.comments?.map((comment: any, index: number) => (
               <React.Fragment key={comment._id}>
@@ -149,13 +154,12 @@ export default function MyProfileCommentSection({
           )}
 
           {hasNextPage && (
-            <div className="flex justify-start">
+            <div className='flex justify-start'>
               <Button
-                className=" text-contrasttext"
+                className=' text-contrasttext'
                 onClick={() => fetchNextPage()}
                 disabled={isFetchingNextPage}
-                variant="ghost"
-              >
+                variant='ghost'>
                 See More
               </Button>
             </div>

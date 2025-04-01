@@ -54,7 +54,7 @@ export function TopicsCard({
       await queryClient.cancelQueries({ queryKey: ["community", user?.id] });
 
       const previousTopics = queryClient.getQueryData(["community", user?.id]);
-      // Ensure `previousTopics` exists
+
       if (!previousTopics) return { previousTopics };
 
       queryClient.setQueryData(["community", user?.id], (old: any) => {
@@ -132,7 +132,7 @@ export function TopicsCard({
               </>
             ) : (
               <p className='text-[#828485] font-sans font-medium'>
-                Coming Soon
+                Get Started
               </p>
             )}
           </div>
@@ -147,7 +147,8 @@ export function TopicsCard({
             }
           `}
           disabled={isPending}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             if (joined) {
               router.push(`/feed/explore/${slug}`);
               return;

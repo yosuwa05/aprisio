@@ -96,14 +96,7 @@ export const formController = new Elysia({
 
         const verificationLink2 = `https://aprisio.com/verify-email?token=${hashedToken}`;
 
-        let content2 = await Bun.file("html/welcomemail.html").text();
 
-        await sendEmail({
-          subject: "Welcome to Aprisio",
-          to: email,
-          html: content2,
-          from: "noreply@aprisio.com",
-        });
 
         set.status = 200;
         return {
@@ -199,11 +192,20 @@ export const formController = new Elysia({
           ok: false,
         };
       }
+      let content2 = await Bun.file("html/welcomemail.html").text();
 
       if (user) {
         user.emailVerified = true;
         user.emailVerificationToken = null;
         user.emailVerificationTokenExpiry = null;
+
+        await sendEmail({
+          subject: "Welcome to Aprisio",
+          to: user.email,
+          html: content2,
+          from: "noreply@aprisio.com",
+        });
+
         await user.save();
         set.status = 200;
         return {

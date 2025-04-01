@@ -29,7 +29,7 @@
 			localStorage.setItem('admin', JSON.stringify(data.admin));
 
 			toast(data.message, {});
-			goto('/admin/dashboard/users/');
+			goto('/admin/dashboard');
 		},
 		onError(error, variables, context) {
 			console.error('onError', error, variables, context);

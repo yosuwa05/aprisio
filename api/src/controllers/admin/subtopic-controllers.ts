@@ -82,34 +82,118 @@ export const subtopicController = new Elysia({
       },
     }
   )
+  // .get(
+  //   "/all",
+  //   async ({ query, set }) => {
+  //     const { page = 1, limit = 10, q } = query;
+
+  //     try {
+  //       const subtopics = await SubTopicModel.find({
+  //         isDeleted: false,
+  //         subTopicName: {
+  //           $regex: q,
+  //           $options: "i",
+  //         },
+  //       })
+  //         .populate({
+  //           path: "topic",
+  //           select: "topicName",
+  //         })
+  //         .sort({ createdAt: -1 })
+  //         .skip((page - 1) * limit)
+  //         .limit(limit)
+  //         .lean();
+
+  //       const totalSubtopics = await SubTopicModel.countDocuments({
+  //         isDeleted: false,
+  //         subTopicName: {
+  //           $regex: q,
+  //           $options: "i",
+  //         },
+  //       });
+
+  //       return {
+  //         subtopics,
+  //         total: totalSubtopics,
+  //         ok: true,
+  //       };
+  //     } catch (error: any) {
+  //       console.log(error);
+  //       set.status = 500;
+  //       return {
+  //         message: "An internal error occurred while fetching subtopics.",
+  //         ok: false,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     query: t.Object({
+  //       page: t.Optional(t.Number()),
+  //       limit: t.Optional(t.Number()),
+  //       q: t.Optional(t.String()),
+  //     }),
+  //     detail: {
+  //       description: "Get subtopics",
+  //       summary: "Get subtopics",
+  //     },
+  //   }
+  // )
   .get(
     "/all",
     async ({ query, set }) => {
       const { page = 1, limit = 10, q } = query;
 
       try {
-        const subtopics = await SubTopicModel.find({
-          isDeleted: false,
-          subTopicName: {
-            $regex: q,
-            $options: "i",
+        const subtopics = await SubTopicModel.aggregate([
+          {
+            $match: {
+              isDeleted: false,
+              active: true,
+              ...(q && { subTopicName: { $regex: q, $options: "i" } }),
+            },
           },
-        })
-          .populate({
-            path: "topic",
-            select: "topicName",
-          })
-          .sort({ createdAt: -1 })
-          .skip((page - 1) * limit)
-          .limit(limit)
-          .lean();
+          {
+            $lookup: {
+              from: "topics",
+              localField: "topic",
+              foreignField: "_id",
+              as: "topicData",
+            },
+          },
+          {
+            $unwind: "$topicData",
+          },
+          {
+            $lookup: {
+              from: "usersubtopics",
+              localField: "_id",
+              foreignField: "subTopicId",
+              as: "joinedUsers",
+            },
+          },
+          {
+            $addFields: {
+              joinedUserCount: { $size: "$joinedUsers" },
+            },
+          },
+          {
+            $project: {
+              _id: 1,
+              subTopicName: 1,
+              topicName: "$topicData.topicName",
+              joinedUserCount: 1,
+              createdAt: 1,
+              updatedAt: 1,
+            },
+          },
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+        ]);
 
         const totalSubtopics = await SubTopicModel.countDocuments({
           isDeleted: false,
-          subTopicName: {
-            $regex: q,
-            $options: "i",
-          },
+          ...(q && { subTopicName: { $regex: q, $options: "i" } }),
         });
 
         return {
@@ -133,8 +217,8 @@ export const subtopicController = new Elysia({
         q: t.Optional(t.String()),
       }),
       detail: {
-        description: "Get subtopics",
-        summary: "Get subtopics",
+        description: "Get subtopics with user join count",
+        summary: "Get subtopics with user join count",
       },
     }
   )

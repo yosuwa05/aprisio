@@ -9,57 +9,100 @@ import { GroupPostShareModel } from "@/models/grouppostshare";
 import { UserGroupsModel } from "@/models/usergroup.model";
 import Elysia, { t } from "elysia";
 
-export const DeleteManagementController = new Elysia({
-    prefix: "/delete-management",
+
+export const AdminGroupController = new Elysia({
+    prefix: "/group-management",
     detail: {
-        tags: ["Client - Users - Delete Management"],
+        tags: ["Admin - Group - Management"],
     },
 })
 
-    .delete("/post", async ({ set, query }) => {
-        try {
-            const { postId } = query;
+    .get(
+        "/all",
+        async ({ set, query }) => {
+            try {
+                const { page = 1, limit = 10, q, filter } = query;
 
-            const isPostExist = await PostModel.findById(postId);
-            if (!isPostExist) {
-                set.status = 400;
-                return { message: "Post not found" };
+                const searchQuery: any = {};
+
+                if (q) {
+                    searchQuery.$or = [{ name: { $regex: q, $options: "i" } }];
+                }
+
+                if (filter !== undefined) {
+                    searchQuery.active = filter === "true";
+                }
+
+
+                const total = await GroupModel.countDocuments(searchQuery);
+
+                const Groups = await GroupModel.find(searchQuery)
+                    .populate("subTopic", "subTopicName")
+                    .populate("groupAdmin", "name")
+                    .sort({ createdAt: -1 })
+                    .skip((page - 1) * limit)
+                    .limit(limit);
+
+                set.status = 200;
+                return {
+                    message: "User Groups fetched successfully",
+                    Groups,
+                    total,
+                };
+            } catch (error) {
+                console.log(error);
+                set.status = 500;
+                return {
+                    message: "Internal Server Error",
+                    error,
+                };
             }
+        },
+        {
+            query: t.Object({
+                page: t.Optional(t.Number()),
+                limit: t.Optional(t.Number()),
+                q: t.Optional(t.String()),
+                filter: t.Optional(t.String()),
+            }),
+            detail: {
+                summary: "Get all user Groups",
+                description: "Get all user Groups",
+            },
+        }
+    )
+    .post(
+        "/statuschange/:id",
+        async ({ params }) => {
+            try {
+                const { id } = params;
 
-            const comments = await CommentModel.find({ post: postId });
+                const group = await GroupModel.findById(id);
+                if (!group) {
+                    return { message: "Group not found" };
+                }
+                group.active = !group.active;
+                await group.save();
 
-            const commentIds = comments.map(comment => comment._id);
-
-            if (commentIds.length > 0) {
-                await CommentLikeModel.deleteMany({ comment: { $in: commentIds } });
-                await CommentModel.deleteMany({ parentComment: { $in: commentIds } });
-                await CommentModel.deleteMany({ post: postId });
+                return {
+                    message: "Status updated successfully",
+                };
+            } catch (error) {
+                console.log(error);
+                return {
+                    message: error
+                };
             }
-
-            await LikeModel.deleteMany({ post: postId });
-            await GroupPostShareModel.deleteMany({ postId });
-
-            deleteFile(isPostExist.image)
-
-            await PostModel.findByIdAndDelete(postId);
-
-            set.status = 200;
-            return { message: "Post deleted successfully" };
-
-        } catch (error: any) {
-            console.log(error);
-            set.status = 500;
-            return { message: error.message };
+        },
+        {
+            params: t.Object({
+                id: t.String(),
+            }),
+            detail: {
+                summary: "Active or DisActive an Group",
+            },
         }
-    }, {
-        query: t.Object({
-            postId: t.String()
-        }),
-        detail: {
-            summary: "Delete post",
-            description: "Deletes a post "
-        }
-    })
+    )
     .delete("/group", async ({ set, query }) => {
         try {
             const { groupId } = query;

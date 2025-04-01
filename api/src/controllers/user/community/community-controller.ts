@@ -129,7 +129,18 @@ export const communityController = new Elysia({
         const limit = query.limit || 10;
         const { userId, topicName } = query;
 
-        const aggregationPipeline: any = [];
+        const aggregationPipeline: any = [
+          {
+            $match: {
+              isDeleted: false,
+              active: true,
+              ...(topicName && topicName.trim() !== "" && {
+                topicName: { $regex: topicName, $options: "i" },
+              }),
+            },
+          },
+        ];
+
 
         if (topicName && topicName.trim() !== "") {
           aggregationPipeline.push({

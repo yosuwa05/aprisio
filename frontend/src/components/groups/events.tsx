@@ -94,8 +94,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
       {data?.pages?.[0]?.canJoin ? (
         <Button
           disabled={isPending}
-          variant={"ghost"}
-          className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer px-4'
+          className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
             mutate(groupid);
@@ -104,8 +103,8 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           <h3 className='font-semibold text-sm'>Join Group</h3>
         </Button>
       ) : (
-        <div
-          className='flex gap-2 items-center text-sm text-contrasttext cursor-pointer ml-2'
+        <Button
+          className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
             updateActiveGroup(typeof gropuslug === "string" ? gropuslug : "");
@@ -114,7 +113,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           }}>
           <Icon icon='tabler:plus' fontSize={22} />
           <h3 className='font-semibold text-sm'>Create Event</h3>
-        </div>
+        </Button>
       )}
 
       <div className='mt-6 flex-col flex gap-4'>

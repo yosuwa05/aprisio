@@ -130,11 +130,15 @@ export default function Feed() {
 
             {!isSuggetionsLoading && user && (
               <div>
-                <h3 className='font-normal text-xl my-4'>
-                  Other Sub - Communities
+                <h3
+                  onClick={() => {
+                    router.push("/feed");
+                  }}
+                  className='font-normal text-xl my-4 cursor-pointer hover:underline'>
+                  Explore Other Communities
                 </h3>
 
-                <div className='gap-4 flex flex-col'>
+                {/* <div className='gap-4 flex flex-col'>
                   {suggetions?.topics?.map((e: Suggetion, index: number) => {
                     return (
                       <div
@@ -148,7 +152,7 @@ export default function Feed() {
                       </div>
                     );
                   })}
-                </div>
+                </div> */}
               </div>
             )}
           </div>

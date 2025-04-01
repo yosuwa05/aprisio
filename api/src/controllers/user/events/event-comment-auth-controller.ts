@@ -1,6 +1,8 @@
-import { EventModel } from "@/models";
+import { sendNotification } from "@/lib/firebase";
+import { EventModel, UserModel } from "@/models";
 import { EventCommentLikeModel } from "@/models/event-commentlikes";
 import { EventCommentModel } from "@/models/event-comments";
+import { NotificationModel } from "@/models/notificationmodel";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
@@ -30,6 +32,30 @@ export const EventscommentsController = new Elysia({
         await EventModel.findByIdAndUpdate(eventId, {
           $inc: { commentsCount: 1 },
         });
+
+        const event = await EventModel.findById(eventId).lean();
+
+        if (event) {
+          const user = await UserModel.findById(event.managedBy).lean();
+
+          if (user && user.fcmToken) {
+            await sendNotification(
+              user.fcmToken,
+              "Someone commented on your Event",
+              "Someone commented on the event: " + event.eventName,
+            );
+
+            const newNotification = new NotificationModel({
+              user: user._id,
+              type: "event-comment",
+              content: "Your post has been commented on.",
+              from: userId,
+              event: eventId,
+              title: "New Comment",
+            });
+            await newNotification.save();
+          }
+        }
 
         set.status = 201;
         return {

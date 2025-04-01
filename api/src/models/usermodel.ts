@@ -39,6 +39,7 @@ const UserSchema = new Schema<User>(
     gender: {
       type: String,
       enum: ["male", "female"],
+      default: null
     },
     dateOfBirth: {
       type: String,

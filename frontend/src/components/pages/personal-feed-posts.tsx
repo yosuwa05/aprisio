@@ -35,7 +35,6 @@ export const PersonalFeedPosts = () => {
   const isUserRoute = usePathname().includes("/user/");
 
   const { userslug } = useParams();
-  console.log(userslug, "userSlugss");
   const router = useRouter();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({

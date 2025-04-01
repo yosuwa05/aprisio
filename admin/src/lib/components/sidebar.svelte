@@ -8,19 +8,19 @@
 	import logo from '../../public/logo.png';
 
 	const routes = $state([
-		// {
-		// 	type: 'heading',
-		// 	name: 'Analytics'
-		// },
-		// {
-		// 	name: 'Dashboard',
-		// 	href: '/admin/dashboard/',
-		// 	icon: 'uil:analysis',
-		// 	subRoutes: '-'
-		// },
 		{
 			type: 'heading',
-			name: 'Dashboard'
+			name: 'Analytics'
+		},
+		{
+			name: 'Dashboard',
+			href: '/admin/dashboard/',
+			icon: 'uil:analysis',
+			subRoutes: '-'
+		},
+		{
+			type: 'heading',
+			name: 'User Management'
 		},
 		{
 			name: 'Users',
@@ -29,8 +29,20 @@
 			subRoutes: '-'
 		},
 		{
+			name: 'User Groups',
+			href: '/admin/dashboard/usergroups/',
+			icon: 'ic:baseline-groups',
+			subRoutes: '-'
+		},
+		{
+			name: 'User Events',
+			href: '/admin/dashboard/userevents/',
+			icon: 'clarity:event-line',
+			subRoutes: '-'
+		},
+		{
 			type: 'heading',
-			name: 'Community'
+			name: 'Admin Management'
 		},
 		{
 			name: 'Topics',
@@ -44,6 +56,7 @@
 			icon: 'mdi:books',
 			subRoutes: '-'
 		},
+
 		{
 			name: 'Admin Events',
 			href: '/admin/dashboard/adminevents/',
