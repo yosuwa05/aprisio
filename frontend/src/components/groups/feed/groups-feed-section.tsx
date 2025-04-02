@@ -44,7 +44,6 @@ export const GroupsFeedSection = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const updateActiveGroup = useGlobalFeedStore((state) => state.setActiveGroup);
-  console.log(groupid, "feed", topic);
   const {
     data,
     fetchNextPage,

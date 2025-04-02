@@ -20,6 +20,7 @@ type IEvent = {
   soldTickets: number;
   reminingTickets: number;
   price: number;
+  strikePrice: number;
   duration: number;
   expirydatetime: Date;
   organiserName: string;
@@ -38,6 +39,7 @@ type IEvent = {
   lastSoldTicketNumber: number;
   gst: number
   isEventActivated: boolean;
+  isDeleted: boolean;
 };
 
 const AdminEventSchema = new Schema<IEvent>(
@@ -52,6 +54,10 @@ const AdminEventSchema = new Schema<IEvent>(
       default: 0,
     },
     price: {
+      type: Number,
+      default: 0,
+    },
+    strikePrice: {
       type: Number,
       default: 0,
     },
@@ -103,6 +109,7 @@ const AdminEventSchema = new Schema<IEvent>(
     isEventEnded: { type: Boolean, default: false },
     eventImage: { type: String, default: "" },
     eventsDateString: { type: String, default: "" },
+    isDeleted: { type: Boolean, default: false },
     attendees: [
       {
         type: Schema.Types.ObjectId,

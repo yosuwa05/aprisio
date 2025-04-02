@@ -12,8 +12,10 @@ import { Skeleton } from "./ui/skeleton";
 import { toast } from "sonner";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { Button } from "./ui/button";
-
-export const GroupsSection = () => {
+type Props = {
+  isUserJoined: boolean;
+};
+export const GroupsSection = ({ isUserJoined }: Props) => {
   const user = useGlobalAuthStore((state) => state.user);
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
   const setActiveLayout = useGlobalLayoutStore(
@@ -88,15 +90,8 @@ export const GroupsSection = () => {
               if (!user) {
                 return toast.error("Login to continue");
               }
-              if (activeLayout != "group") {
-                if (
-                  !joined?.data?.TopicsFollowed ||
-                  joined.data.TopicsFollowed.length === 0
-                ) {
-                  return toast.error(
-                    "You must join the community to create a post"
-                  );
-                }
+              if (isUserJoined === false) {
+                return toast.error("You must join the community to create ");
               }
               router.push(
                 activeLayout == "group"

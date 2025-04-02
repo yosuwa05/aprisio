@@ -206,7 +206,12 @@ export default function LoginForm({}) {
               </Button>
             </div>
 
-            <div className='flex justify-end'>
+            <div className='flex justify-end flex-wrap-reverse gap-7  md:gap-10 items-center '>
+              <Link href={"/"}>
+                <p className='text-[#043A53] font-roboto font-normal text-sm'>
+                  {`Back to home`}{" "}
+                </p>
+              </Link>
               <Link href={"/join-community"}>
                 <p className='text-[#043A53] font-roboto font-normal text-sm'>
                   {`Don't have an account ?`}{" "}

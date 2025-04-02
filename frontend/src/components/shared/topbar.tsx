@@ -264,7 +264,7 @@ export default function Topbar() {
                           <div className='flex gap-3 items-center'>
                             <Icon icon='hugeicons:note' />
                             <h1 className={`capitalize text-sm md:text-lg `}>
-                              Topics Followed
+                              Joined Communities
                             </h1>
                           </div>
                           <Icon

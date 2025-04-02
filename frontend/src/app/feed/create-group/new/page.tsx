@@ -52,6 +52,7 @@ export default function CreateGroup() {
   const [subTopicOpen, setSubTopicOpen] = useState(false);
   const [selectedSubTopic, setSelectedSubTopic] = useState({
     slug: "",
+    subTopicName: "",
   });
 
   const [eventRules, setEventRules] = useState({
@@ -86,10 +87,15 @@ export default function CreateGroup() {
   }, []);
 
   const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
-
+  const activeSubTopicName = useGlobalFeedStore(
+    (state) => state.activeSubTopicName
+  );
   useEffect(() => {
-    setSelectedSubTopic({ slug: activeSubTopic });
-  }, [activeSubTopic]);
+    setSelectedSubTopic({
+      slug: activeSubTopic,
+      subTopicName: activeSubTopicName,
+    });
+  }, [activeSubTopic, activeSubTopicName]);
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -173,8 +179,12 @@ export default function CreateGroup() {
         </div>
         {selectedSubTopic?.slug ? (
           <div className='px-3 py-2'>
-            <Button className='bg-[#F2F5F6]  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
-              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
+            <Button className='bg-[#F2F5F6] capitalize  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
+              {selectedSubTopic.slug
+                ? selectedSubTopic.subTopicName
+                : selectedSubTopic.slug
+                ? selectedSubTopic.slug
+                : "Select a Topic"}
             </Button>
           </div>
         ) : (
@@ -215,7 +225,10 @@ export default function CreateGroup() {
                       onClick={() => {
                         setSubTopicSearch("");
                         setSubTopicOpen(false);
-                        setSelectedSubTopic(subTopic);
+                        setSelectedSubTopic({
+                          slug: subTopic,
+                          subTopicName: subTopic.subTopicName,
+                        });
                       }}>
                       <p className='text-black'>{subTopic.slug}</p>
                     </div>
@@ -260,7 +273,7 @@ export default function CreateGroup() {
                   <Label htmlFor='content'></Label>
                   <Textarea
                     id='content'
-                    placeholder='Description...'
+                    placeholder='Description'
                     className='rounded-2xl !text-lg text-fadedtext p-4'
                     rows={4}
                     {...register("description")}

@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>Dashboard | Sub Topics</title>
+	<title>Dashboard | Sub Community</title>
 	<meta name="description" content="dashboard for aprisio." />
 </svelte:head>
 
@@ -29,11 +29,11 @@
 	<Tabs.List>
 		<Tabs.Trigger value="list" class="flex items-center">
 			<Icon class="h-4 w-4" icon="ph:books" />
-			<span class="ml-2">Subtopics List</span>
+			<span class="ml-2">Sub Community List</span>
 		</Tabs.Trigger>
 		<Tabs.Trigger value="create">
 			<Icon class="h-4 w-4" icon="proicons:book-add" />
-			<span class="ml-2"> Create Subtopics</span>
+			<span class="ml-2"> Create Sub Community</span>
 		</Tabs.Trigger>
 	</Tabs.List>
 	<Tabs.Content value="list">

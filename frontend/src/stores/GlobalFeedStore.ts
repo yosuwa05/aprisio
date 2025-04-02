@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
 interface FeedState {
+  activeSubTopicName: string;
+  setActiveSubTopicName: (subTopicName: string) => void;
   activeSubTopic: string;
   setActiveSubTopic: (subTopic: string) => void;
   activeGroup: string;
@@ -11,6 +13,8 @@ interface FeedState {
 
 export const useGlobalFeedStore = create<FeedState>()((set) => {
   return {
+    activeSubTopicName: "",
+    setActiveSubTopicName: (subTopicName: string) => set({ activeSubTopicName: subTopicName }),
     activeSubTopic: "",
     setActiveSubTopic: (subTopic: string) => set({ activeSubTopic: subTopic }),
     activeGroup: "",

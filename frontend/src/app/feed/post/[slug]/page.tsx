@@ -35,17 +35,16 @@ export default function PersonalFeed() {
 
   return (
     <div>
-      <div className="mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8 ">
-        <div className="flex w-full max-w-[1200px] mx-auto gap-4">
-          <div className="hidden lg:block lg:max-w-[300px] min-w-[300px] lg:h-[81vh] overflow-y-auto hide-scrollbar">
+      <div className='mx-2 md:mx-8 mt-4 flex flex-col lg:flex-row gap-8 '>
+        <div className='flex w-full max-w-[1200px] mx-auto gap-4'>
+          <div className='hidden lg:block lg:max-w-[300px] min-w-[300px] lg:h-[81vh] overflow-y-auto hide-scrollbar'>
             <Collapsible
               open={openSections.joinedGroups}
-              onOpenChange={() => toggleSection("joinedGroups")}
-            >
-              <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                  <div className="flex gap-3 items-center">
-                    <Icon icon="gravity-ui:persons" />
+              onOpenChange={() => toggleSection("joinedGroups")}>
+              <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
+                <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                  <div className='flex gap-3 items-center'>
+                    <Icon icon='gravity-ui:persons' />
                     <h1 className={`capitalize text-sm md:text-lg `}>
                       Joined Groups
                     </h1>
@@ -60,13 +59,12 @@ export default function PersonalFeed() {
                   />
                 </div>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 px-4 ">
+              <CollapsibleContent className='pt-2 px-4 '>
                 {data?.data?.joinedGroups?.map((group: any) => (
                   <p
                     onClick={() => router.push(`/groups/${group?.groupSlug}`)}
                     key={group?._id}
-                    className="text-textcol py-1.5 cursor-pointer  md:py-3"
-                  >
+                    className='text-textcol py-1.5 cursor-pointer  md:py-3'>
                     {group?.groupName}
                   </p>
                 ))}
@@ -75,12 +73,11 @@ export default function PersonalFeed() {
 
             <Collapsible
               open={openSections.joinedEvents}
-              onOpenChange={() => toggleSection("joinedEvents")}
-            >
-              <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                  <div className="flex gap-3 items-center">
-                    <Icon icon="uiw:date" />
+              onOpenChange={() => toggleSection("joinedEvents")}>
+              <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
+                <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                  <div className='flex gap-3 items-center'>
+                    <Icon icon='uiw:date' />
                     <h1 className={`capitalize text-sm md:text-lg `}>
                       Joined Events
                     </h1>
@@ -95,13 +92,12 @@ export default function PersonalFeed() {
                   />
                 </div>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 px-4 ">
+              <CollapsibleContent className='pt-2 px-4 '>
                 {data?.data?.joinedEvents?.map((event: any) => (
                   <p
                     onClick={() => router.push(`/events/${event?._id}`)}
                     key={event?._id}
-                    className="text-textcol py-1.5 cursor-pointer  md:py-3"
-                  >
+                    className='text-textcol py-1.5 cursor-pointer  md:py-3'>
                     {event?.eventName}
                   </p>
                 ))}
@@ -110,14 +106,13 @@ export default function PersonalFeed() {
 
             <Collapsible
               open={openSections.topicsFollowed}
-              onOpenChange={() => toggleSection("topicsFollowed")}
-            >
-              <CollapsibleTrigger className="bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center">
-                <div className="w-full flex justify-between items-center  font-bold text-contrasttext ">
-                  <div className="flex gap-3 items-center">
-                    <Icon icon="hugeicons:note" />
+              onOpenChange={() => toggleSection("topicsFollowed")}>
+              <CollapsibleTrigger className='bg-gray-100 p-2 rounded-sm  w-full text-start flex gap-2 items-center'>
+                <div className='w-full flex justify-between items-center  font-bold text-contrasttext '>
+                  <div className='flex gap-3 items-center'>
+                    <Icon icon='hugeicons:note' />
                     <h1 className={`capitalize text-sm md:text-lg `}>
-                      Topics Followed
+                      Joined Communities
                     </h1>
                   </div>
                   <Icon
@@ -130,15 +125,14 @@ export default function PersonalFeed() {
                   />
                 </div>
               </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 px-4 ">
+              <CollapsibleContent className='pt-2 px-4 '>
                 {data?.data?.TopicsFollowed?.map((topic: any) => (
                   <p
                     onClick={() =>
                       router.push(`/feed/explore/${topic?.subtopicSlug}`)
                     }
                     key={topic?._id}
-                    className="text-textcol py-1.5 cursor-pointer md:py-3"
-                  >
+                    className='text-textcol py-1.5 cursor-pointer md:py-3'>
                     {topic?.subtopicName}
                   </p>
                 ))}
@@ -146,7 +140,7 @@ export default function PersonalFeed() {
             </Collapsible>
           </div>
 
-          <div className="flex-1 flex flex-col md:overflow-y-auto md:max-h-[82vh] hide-scrollbar overflow-hidden">
+          <div className='flex-1 flex flex-col md:overflow-y-auto md:max-h-[82vh] hide-scrollbar overflow-hidden'>
             <SinglePostContent />
           </div>
         </div>

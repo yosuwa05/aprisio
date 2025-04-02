@@ -75,7 +75,7 @@
 					type={'text'}
 					required
 					class="pr-10"
-					placeholder={'Search Subtopics'}
+					placeholder={'Search Sub Community'}
 					bind:value={search}
 					oninput={debounceSearch}
 				/>
@@ -106,8 +106,8 @@
 			<Table.Header>
 				<Table.Row class="">
 					<Table.Head class="w-[100px]">Sl.No</Table.Head>
-					<Table.Head>Subtopic Name</Table.Head>
-					<Table.Head>Topic Name</Table.Head>
+					<Table.Head>Sub Community Name</Table.Head>
+					<Table.Head>Community Name</Table.Head>
 					<Table.Head>Joined Users</Table.Head>
 					<Table.Head class="">Created At</Table.Head>
 					<Table.Head class="">Active</Table.Head>
@@ -140,7 +140,7 @@
 							<button
 								onclick={() => {
 									$subTopicsStore = {
-										id: topic._id,
+										id: topic?._id,
 										mode: 'create',
 										topicName: topic.subTopicName,
 										description: topic.description,

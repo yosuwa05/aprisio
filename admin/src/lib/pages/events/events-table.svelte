@@ -64,6 +64,7 @@
 			location: event.location,
 			eventRules: event.eventRules,
 			price: event.price,
+			strikePrice: event.strikePrice,
 			eventType: event.eventType,
 			availableTickets: event.availableTickets,
 			mapLink: event.mapLink,

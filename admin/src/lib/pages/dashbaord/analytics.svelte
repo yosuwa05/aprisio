@@ -31,7 +31,7 @@
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0">
-					<Card.Title class="text-sm font-medium">Topics</Card.Title>
+					<Card.Title class="text-sm font-medium">Community</Card.Title>
 					<Icon icon="ic:twotone-book" class="text-muted-foreground text-xl" />
 				</Card.Header>
 				<Card.Content>
@@ -40,7 +40,7 @@
 			</Card.Root>
 			<Card.Root>
 				<Card.Header class="flex flex-row items-center justify-between space-y-0 ">
-					<Card.Title class="text-sm font-medium">Sub Topics</Card.Title>
+					<Card.Title class="text-sm font-medium">Sub community</Card.Title>
 					<Icon icon="mdi:books" class="text-muted-foreground text-xl" />
 				</Card.Header>
 				<Card.Content>

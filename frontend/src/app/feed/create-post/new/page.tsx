@@ -54,6 +54,7 @@ export default function CreatePost() {
   const [subTopicOpen, setSubTopicOpen] = useState(false);
   const [selectedSubTopic, setSelectedSubTopic] = useState({
     slug: "",
+    subTopicName: "",
   });
   const [imageUrl, setImageUrl] = useState<string>("");
   const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
@@ -77,6 +78,9 @@ export default function CreatePost() {
   const urlValue = watch("url", "");
 
   const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
+  const activeSubTopicName = useGlobalFeedStore(
+    (state) => state.activeSubTopicName
+  );
 
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -93,8 +97,11 @@ export default function CreatePost() {
     });
 
   useEffect(() => {
-    setSelectedSubTopic({ slug: activeSubTopic });
-  }, [activeSubTopic]);
+    setSelectedSubTopic({
+      slug: activeSubTopic,
+      subTopicName: activeSubTopicName,
+    });
+  }, [activeSubTopic, activeSubTopicName]);
 
   const { isPending, mutate } = useMutation({
     mutationFn: async (data: unknown) => {
@@ -108,9 +115,10 @@ export default function CreatePost() {
         queryClient.invalidateQueries({ queryKey: ["projects" + user?.id] });
         queryClient.invalidateQueries({ queryKey: ["drafts"] });
         router.push("/feed/explore/" + selectedSubTopic.slug);
-      } else {
-        toast(data?.data?.message || "An error occurred while creating post");
       }
+    },
+    onError(error: any) {
+      toast.error(error?.response?.data?.message);
     },
   });
 
@@ -137,12 +145,12 @@ export default function CreatePost() {
       queryClient.invalidateQueries({ queryKey: ["drafts"] });
       reset();
       setUploadedFile(null);
-      setSelectedSubTopic({ slug: "" });
+      setSelectedSubTopic({ slug: "", subTopicName: "" });
     },
     onError: () => {
       toast("An error occurred while creating post");
       setUploadedFile(null);
-      setSelectedSubTopic({ slug: "" });
+      setSelectedSubTopic({ slug: "", subTopicName: "" });
     },
   });
 
@@ -257,7 +265,7 @@ export default function CreatePost() {
       setImageUrl("");
       setUploadedFile(null);
     }
-    setSelectedSubTopic({ slug: draft.selectedTopic.slug });
+    setSelectedSubTopic({ slug: draft.selectedTopic.slug, subTopicName: "" });
     setEditingDraftId(draft._id);
     setDraftsModelOpen(false);
   }
@@ -336,8 +344,12 @@ export default function CreatePost() {
 
         {selectedSubTopic?.slug ? (
           <div className='px-3 py-2'>
-            <Button className='bg-[#F2F5F6]  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
-              {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
+            <Button className='bg-[#F2F5F6] capitalize hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
+              {selectedSubTopic.slug
+                ? selectedSubTopic.subTopicName
+                : selectedSubTopic.slug
+                ? selectedSubTopic.slug
+                : "Select a Topic"}
             </Button>
           </div>
         ) : (
@@ -430,7 +442,7 @@ export default function CreatePost() {
                 <Label htmlFor='content'></Label>
                 <Textarea
                   id='content'
-                  placeholder='Description...'
+                  placeholder='Description'
                   className='rounded-2xl !text-lg text-fadedtext p-4'
                   rows={4}
                   {...register("description")}

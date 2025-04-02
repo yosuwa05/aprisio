@@ -43,7 +43,8 @@ export const eventsController = new Elysia({
         delta,
         gst,
         duration,
-        isEventActivated
+        isEventActivated,
+        strikePrice
       } = body;
 
       try {
@@ -99,7 +100,8 @@ export const eventsController = new Elysia({
           description,
           gst,
           duration,
-          isEventActivated
+          isEventActivated,
+          strikePrice
         });
 
         await newTopic.save();
@@ -126,6 +128,7 @@ export const eventsController = new Elysia({
         eventImage: t.File(),
         eventType: t.String(),
         price: t.String(),
+        strikePrice: t.String(),
         gst: t.String(),
         availableTickets: t.String(),
         mapLink: t.String(),
@@ -152,6 +155,7 @@ export const eventsController = new Elysia({
 
       try {
         const events = await AdminEventModel.find({
+          isDeleted: false,
           eventName: {
             $regex: q,
             $options: "i",
@@ -162,6 +166,7 @@ export const eventsController = new Elysia({
           .limit(limit);
 
         const totalEvents = await AdminEventModel.countDocuments({
+          isDeleted: false,
           eventName: {
             $regex: q,
             $options: "i",
@@ -197,7 +202,6 @@ export const eventsController = new Elysia({
   .delete(
     "/:id",
     async ({ query, set, store, params }) => {
-      const { permanent } = query;
       const { id } = params;
 
       try {
@@ -209,7 +213,9 @@ export const eventsController = new Elysia({
           };
         }
 
-        await AdminEventModel.findOneAndDelete({ _id: id });
+        await AdminEventModel.findByIdAndUpdate(id, {
+          isDeleted: true,
+        });
 
         set.status = 200;
         return {
@@ -260,7 +266,8 @@ export const eventsController = new Elysia({
           delta,
           gst,
           duration,
-          isEventActivated
+          isEventActivated,
+          strikePrice
         } = body;
 
         const event = await AdminEventModel.findById(id);
@@ -308,7 +315,7 @@ export const eventsController = new Elysia({
         event.gst = Number(gst ?? 0) || event.gst;
         event.duration = Number(duration ?? 0) || event.duration;
         event.isEventActivated = isEventActivated || event.isEventActivated;
-
+        event.strikePrice = Number(strikePrice ?? 0) || event.strikePrice;
         if (fileName) {
           event.eventImage = fileName;
         }
@@ -342,6 +349,7 @@ export const eventsController = new Elysia({
         eventImage: t.Optional(t.File()),
         eventType: t.Optional(t.String()),
         price: t.Optional(t.String()),
+        strikePrice: t.Optional(t.String()),
         availableTickets: t.Optional(t.String()),
         organiserName: t.Optional(t.String()),
         mapLink: t.Optional(t.String()),
@@ -351,6 +359,7 @@ export const eventsController = new Elysia({
         description: t.Optional(t.String()),
         delta: t.Optional(t.String()),
         isEventActivated: t.Optional(t.Any()),
+
       }),
       detail: {
         description: "Update event",

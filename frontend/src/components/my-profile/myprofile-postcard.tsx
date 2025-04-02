@@ -158,7 +158,6 @@ export default function MyProfilePostCard({ post }: { post: IPostCard }) {
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data?.message || "Post deleted successfully");
       queryClient.invalidateQueries({
         queryKey: ["my-profile-posts", user?.id, activeTab],

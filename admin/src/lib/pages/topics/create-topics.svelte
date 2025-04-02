@@ -66,7 +66,7 @@
 <div class="text-maintext mx-auto max-w-[80%]">
 	<form method="POST" use:enhance class="grid grid-cols-2 gap-4 py-4">
 		<div>
-			<Label>Topic Name</Label>
+			<Label>Community Name</Label>
 			<Input
 				class="mt-1 pr-10"
 				placeholder="Ex: Science & Technology"

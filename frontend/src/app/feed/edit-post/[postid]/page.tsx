@@ -171,7 +171,7 @@ export default function EditPost() {
 
         <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
           <PopoverTrigger asChild className='p-6'>
-            <Button className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
+            <Button className='bg-[#F2F5F6] capitalize text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
               {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
               <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />
             </Button>
@@ -247,7 +247,7 @@ export default function EditPost() {
                 <Label htmlFor='content'></Label>
                 <Textarea
                   id='content'
-                  placeholder='Description...'
+                  placeholder='Description'
                   className='rounded-2xl !text-lg text-fadedtext p-4'
                   rows={4}
                   {...register("description")}

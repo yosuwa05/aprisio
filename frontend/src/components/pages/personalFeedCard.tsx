@@ -166,7 +166,6 @@ export default function PersonalPostcard({
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data?.message || "Post deleted successfully");
       queryClient.invalidateQueries({
         queryKey: ["personalfeed" + user?.id, userslug],

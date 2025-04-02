@@ -165,7 +165,7 @@ export default function NewEvent() {
               className='text-4xl cursor-pointer '
             />
           </Button>
-          <h1 className='text-3xl font-semibold    xl:text-5xl'>Edit Post</h1>
+          <h1 className='text-3xl font-semibold    xl:text-5xl'>Edit Event</h1>
         </div>
       </div>
 
@@ -173,7 +173,7 @@ export default function NewEvent() {
         <PopoverTrigger asChild className='p-6'>
           <Button
             type='button'
-            className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
+            className='bg-[#F2F5F6] capitalize  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
             {selectedGroupId.slug ? selectedGroupId.slug : "Select a Group"}
             <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />
           </Button>

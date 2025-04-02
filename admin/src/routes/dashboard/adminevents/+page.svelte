@@ -38,7 +38,9 @@
 				eventImage: '',
 				gst: '',
 				duration: '',
-				enddatetime: ''
+				enddatetime: '',
+				strikePrice: '',
+				isEventActivated: true
 			};
 		}}
 	>

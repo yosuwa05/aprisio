@@ -190,7 +190,6 @@ const JoinCommunityForm = () => {
   }, [mobileValue]);
 
   const onSubmit = async (data: object) => {
-    console.log(data);
     if (isLoading) return;
     setIsLoading(true);
     try {

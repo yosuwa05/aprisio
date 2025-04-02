@@ -45,13 +45,13 @@
 			name: 'Admin Management'
 		},
 		{
-			name: 'Topics',
+			name: 'Community',
 			href: '/admin/dashboard/topics/',
 			icon: 'ic:twotone-book',
 			subRoutes: '-'
 		},
 		{
-			name: 'Sub Topics',
+			name: 'Sub community',
 			href: '/admin/dashboard/subtopics/',
 			icon: 'mdi:books',
 			subRoutes: '-'

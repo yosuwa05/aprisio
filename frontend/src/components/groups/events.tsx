@@ -52,8 +52,6 @@ export function EventsSection({ groupid, gropuslug }: Props) {
     },
   });
 
-  console.log(data);
-
   const { mutate, isPending } = useMutation({
     mutationFn: async (groupid: any) => {
       return await _axios.post("/group/join", {

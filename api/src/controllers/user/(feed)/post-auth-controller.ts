@@ -86,7 +86,7 @@ export const authenticatedPostController = new Elysia({
         if (!userSubtopic) {
           set.status = 400;
           return {
-            message: "Follow the topic to post",
+            message: "Join the Community to post",
             ok: false,
           };
         }

@@ -168,7 +168,7 @@ export default function CreatePostGroup() {
           <PopoverTrigger asChild className='p-6'>
             <Button
               type='button'
-              className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
+              className='bg-[#F2F5F6] capitalize text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
               {selectedGroupId.slug ? selectedGroupId.slug : "Select a Group"}
               <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />
             </Button>
@@ -244,7 +244,7 @@ export default function CreatePostGroup() {
                 <Label htmlFor='content'></Label>
                 <Textarea
                   id='content'
-                  placeholder='Description...'
+                  placeholder='Description'
                   className='rounded-2xl !text-lg text-fadedtext p-4'
                   rows={4}
                   {...register("description")}

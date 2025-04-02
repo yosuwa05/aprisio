@@ -158,7 +158,6 @@ export default function Postcard({
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data?.message || "Post deleted successfully");
       queryClient.invalidateQueries({
         queryKey: ["projects" + user?.id, topic],

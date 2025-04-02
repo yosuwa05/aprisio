@@ -104,9 +104,10 @@ export default function CreatePostGroup() {
           queryKey: ["groups-feed" + user?.id, selectedGroupId.slug],
         });
         router.push("/groups/" + selectedGroupId.slug);
-      } else {
-        toast(data.data.message || "An error occurred while creating post");
       }
+    },
+    onError(error: any) {
+      toast.error(error?.response?.data?.message);
     },
   });
 
@@ -248,7 +249,7 @@ export default function CreatePostGroup() {
         </div>
         {selectedGroupId?.slug ? (
           <div className='px-3 py-2'>
-            <Button className='bg-[#F2F5F6]  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
+            <Button className='bg-[#F2F5F6] capitalize  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
               {selectedGroupId.slug ? selectedGroupId.slug : "Select a Topic"}
             </Button>
           </div>
@@ -341,7 +342,7 @@ export default function CreatePostGroup() {
                 <Label htmlFor='content'></Label>
                 <Textarea
                   id='content'
-                  placeholder='Description...'
+                  // placeholder='Description'
                   className='rounded-2xl !text-lg text-fadedtext p-4'
                   rows={4}
                   {...register("description")}

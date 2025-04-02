@@ -110,7 +110,6 @@ export default function GroupCard({ group }: Props) {
       return res.data;
     },
     onSuccess: (data) => {
-      console.log(data);
       toast.success(data?.message || "Group deleted successfully");
 
       queryClient.invalidateQueries({

@@ -103,6 +103,7 @@
 					location: $form.location,
 					eventType: $form.eventType,
 					price: $form.price,
+					strikePrice: $form.strikePrice,
 					availableTickets: $form.availableTickets,
 					isEventActivated: $form.isEventActivated,
 					eventRules: rules.map((rule) => ({
@@ -110,7 +111,6 @@
 						subHeading: rule.subHeading
 					}))
 				};
-
 				const { valid } = await validateForm({
 					focusOnError: true
 				});
@@ -143,6 +143,8 @@
 				}
 				formData.append('eventType', _data.eventType);
 				formData.append('price', _data.price);
+				formData.append('strikePrice', _data.strikePrice);
+
 				formData.append('availableTickets', _data.availableTickets);
 
 				formData.append('description', content);
@@ -172,6 +174,7 @@
 			$form.biography = $eventsStore.biography;
 			$form.description = $eventsStore.description;
 			$form.isEventActivated = $eventsStore.isEventActivated;
+			$form.strikePrice = $eventsStore.strikePrice;
 
 			if (quill && $eventsStore.delta) {
 				quill.setContents(JSON.parse($eventsStore.delta));
@@ -182,6 +185,7 @@
 			$form.enddatetime = '';
 			$form.location = '';
 			$form.price = '';
+			$form.strikePrice = '';
 			$form.availableTickets = '';
 			$form.mapLink = '';
 			$form.gst = '';
@@ -267,6 +271,20 @@
 				/>
 
 				{#if $errors.gst}<span class="invalid text-xs text-red-500">{$errors.gst}</span>{/if}
+			</div>
+			<div>
+				<Label>Strike Price</Label>
+				<Input
+					class="mt-1 pr-10"
+					type="number"
+					aria-invalid={$errors.strikePrice ? 'true' : undefined}
+					bind:value={$form.strikePrice}
+					{...$constraints.strikePrice}
+				/>
+
+				{#if $errors.strikePrice}<span class="invalid text-xs text-red-500"
+						>{$errors.strikePrice}</span
+					>{/if}
 			</div>
 		</div>
 

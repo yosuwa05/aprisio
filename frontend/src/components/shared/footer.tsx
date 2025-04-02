@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import instagram from "../../../public/images/Instagram.png";
+import linkedin from "../../../public/images/linkedin.png";
 import facebook from "../../../public/images/facebook.png";
 import mail from "../../../public/images/mail.png";
 import phone from "../../../public/images/phone-icon.png";
@@ -54,24 +55,40 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        <div
-          className='cursor-pointer'
-          onClick={() => {
-            const pdfPath =
-              "/images/Startup_Recognition_Certificate_110225.pdf";
-            if (typeof window !== "undefined") {
-              window.open(pdfPath, "_blank");
-            }
-          }}>
-          <Image
-            src={startup}
-            className='w-[120px] xl:w-[180px] cursor-pointer   py-2'
-            alt='logo'
-            priority={true}
-          />
-          <p className='text-[#353535E3] font-sans xl:text-2xl text-xl'>
-            Proudly recognized by Startup India
-          </p>
+        <div className='flex flex-col '>
+          <div
+            className='cursor-pointer'
+            onClick={() => {
+              const pdfPath =
+                "/images/Startup_Recognition_Certificate_110225.pdf";
+              if (typeof window !== "undefined") {
+                window.open(pdfPath, "_blank");
+              }
+            }}>
+            <Image
+              src={startup}
+              className='w-[120px] xl:w-[180px] cursor-pointer   py-2'
+              alt='logo'
+              priority={true}
+            />
+            <p className='text-[#353535E3] font-sans xl:text-2xl text-xl'>
+              Proudly recognized by Startup India
+            </p>
+          </div>
+          <div className='flex pt-5 lg:gap-5 gap-3'>
+            <Link
+              href='https://www.instagram.com/aprisio_experiences/'
+              target='_blank'
+              rel='noopener noreferrer'>
+              <Image className='w-10 h-10' src={instagram} alt='email' />
+            </Link>
+            <Link
+              href='https://www.linkedin.com/company/aprisio/posts/?feedView=all'
+              target='_blank'
+              rel='noopener noreferrer'>
+              <Image className='w-10 h-10' src={linkedin} alt='email' />
+            </Link>
+          </div>
         </div>
 
         <div className='flex flex-col lg:items-end'>

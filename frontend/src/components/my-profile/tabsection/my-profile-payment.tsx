@@ -29,8 +29,6 @@ export const MyProfilePayments = () => {
       },
     });
 
-  console.log(data);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const { ref, entry } = useIntersection({
     root: containerRef.current,

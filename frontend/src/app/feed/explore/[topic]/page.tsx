@@ -11,7 +11,6 @@ import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronRight, Plus } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -30,10 +29,9 @@ export default function Feed() {
   const updateActiveSubTopic = useGlobalFeedStore(
     (state) => state.setActiveSubTopic
   );
-
-  useEffect(() => {
-    updateActiveSubTopic(typeof topic === "string" ? topic : "");
-  }, [topic]);
+  const updateActiveSubTopicName = useGlobalFeedStore(
+    (state) => state.setActiveSubTopicName
+  );
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["community-info", topic, user?.id],
@@ -44,6 +42,14 @@ export default function Feed() {
       return res.data;
     },
   });
+  useEffect(() => {
+    updateActiveSubTopic(typeof topic === "string" ? topic : "");
+    updateActiveSubTopicName(
+      typeof data?.subTopic?.subTopicName === "string"
+        ? data?.subTopic?.subTopicName
+        : ""
+    );
+  }, [topic, data]);
   const queryClient = useQueryClient();
 
   const { data: joined } = useQuery({
@@ -159,8 +165,12 @@ export default function Feed() {
         )}
 
         <div className='lg:flex-1 flex flex-col md:overflow-y-auto md:max-h-[calc(100vh-120px)] hide-scrollbar overflow-hidden lg:min-w-[600px] w-full lg:pt-0 pt-5'>
-          {activeLayout == "post" && <PostsSection />}
-          {activeLayout == "group" && <GroupsSection />}
+          {activeLayout == "post" && (
+            <PostsSection isUserJoined={data?.isUserJoined ?? ""} />
+          )}
+          {activeLayout == "group" && (
+            <GroupsSection isUserJoined={data?.isUserJoined ?? ""} />
+          )}
           {activeLayout == "event" && (
             <EventsSection groupid={""} gropuslug={""} />
           )}

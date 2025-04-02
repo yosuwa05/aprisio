@@ -188,7 +188,7 @@ export default function NewEvent() {
       </div>
       {selectedGroupId?.slug ? (
         <div className='px-3 py-2'>
-          <Button className='bg-[#F2F5F6]  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
+          <Button className='bg-[#F2F5F6] capitalize  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
             {selectedGroupId.slug ? selectedGroupId.slug : "Select a Topic"}
           </Button>
         </div>

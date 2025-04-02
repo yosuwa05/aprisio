@@ -182,7 +182,7 @@ export default function CreateGroup() {
                   <Label htmlFor='content'></Label>
                   <Textarea
                     id='content'
-                    placeholder='Description...'
+                    placeholder='Description'
                     className='rounded-2xl !text-lg text-fadedtext p-4'
                     rows={4}
                     {...register("description")}
@@ -211,7 +211,7 @@ export default function CreateGroup() {
           {activeIndex == 3 && (
             <GroupPhotoSection groupid={currentGroup.groupId} />
           )}
-        </div>  
+        </div>
       </div>
     </div>
   );

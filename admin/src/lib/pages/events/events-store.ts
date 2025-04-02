@@ -10,6 +10,7 @@ export const eventsStore = writable({
 	eventRules: [],
 	eventType: 'online',
 	price: '',
+	strikePrice: '',
 	availableTickets: '',
 	mapLink: '',
 	expirydatetime: '',
@@ -39,6 +40,7 @@ type StoreProps = {
 	eventRules: any[];
 	eventType: string;
 	price: string;
+	strikePrice: string;
 	gst: string;
 	availableTickets: string;
 	mapLink: string;
@@ -87,6 +89,7 @@ export const _topicsSchema = z.object({
 	isEventActivated: z.boolean(),
 	eventType: z.enum(['online', 'offline']),
 	price: z.union([z.string(), z.number()]).transform((val) => val.toString()),
+	strikePrice: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 	gst: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 	duration: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 	availableTickets: z.union([z.string(), z.number()]).transform((val) => val.toString()),

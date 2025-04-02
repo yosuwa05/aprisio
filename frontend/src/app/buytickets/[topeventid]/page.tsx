@@ -126,7 +126,7 @@ export default function BuyTickets() {
     if (!isTermsClicked) {
       return toast.success("Please agree to the terms before proceeding.");
     }
-    console.log(totalAmount, ticketCount, subtotalAmount, gstAmount);
+
     if (isPending) return;
     payuData({
       productInfo: "For Purchase of Ticket for " + data?.event?.eventName,
@@ -342,7 +342,6 @@ export default function BuyTickets() {
                         </Button>
                         <Button
                           onClick={() => {
-                            console.log(userDetails);
                             if (
                               !userDetails?.name ||
                               !userDetails?.mobileNumber ||

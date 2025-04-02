@@ -75,7 +75,7 @@
 					type={'text'}
 					required
 					class="pr-10"
-					placeholder={'Search Topics'}
+					placeholder={'Search Community'}
 					bind:value={search}
 					oninput={debounceSearch}
 				/>
@@ -106,8 +106,7 @@
 			<Table.Header>
 				<Table.Row class="">
 					<Table.Head class="w-[100px]">Sl.No</Table.Head>
-					<Table.Head>Topic Name</Table.Head>
-
+					<Table.Head>Community Name</Table.Head>
 					<Table.Head class="">Created At</Table.Head>
 					<Table.Head class="">Active</Table.Head>
 					<Table.Head>Actions</Table.Head>

@@ -70,7 +70,9 @@ export const EventsNoAuthController = new Elysia({
         const _page = Number(page) || 1;
         const _limit = Number(limit) || 10;
 
-        const events = await AdminEventModel.find()
+        const events = await AdminEventModel.find({
+          isDeleted: false,
+        })
           .sort({ datetime: 1, id: 1 })
           .skip((_page - 1) * _limit)
           .limit(_limit)

@@ -34,7 +34,11 @@ type IPost = {
   group?: any;
 };
 
-export const PostsSection = () => {
+type Props = {
+  isUserJoined: boolean;
+};
+
+export const PostsSection = ({ isUserJoined }: Props) => {
   const user = useGlobalAuthStore((state) => state.user);
   const activeLayout = useGlobalLayoutStore((state) => state.activeLayout);
   const setActiveLayout = useGlobalLayoutStore(
@@ -103,15 +107,11 @@ export const PostsSection = () => {
           <Button
             className='rounded-full    bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
             onClick={() => {
-              if (activeLayout != "group") {
-                if (
-                  !joined?.data?.TopicsFollowed ||
-                  joined.data.TopicsFollowed.length === 0
-                ) {
-                  return toast.error(
-                    "You must join the community to create a post"
-                  );
-                }
+              if (!user) {
+                return toast.error("Login to continue");
+              }
+              if (isUserJoined === false) {
+                return toast.error("You must join the community to create ");
               }
               router.push(
                 activeLayout == "group"
