@@ -142,7 +142,7 @@ export default function GroupCard({ group }: Props) {
               <p className='text-[#043A53] text-xs font-medium text-left'>
                 {group?.memberCount + 1} Member
               </p>
-              <p className='text-gray-500 text-xs font-medium hidden sm:block'>
+              <p className='text-gray-500 text-xs font-medium '>
                 <span>Created</span> {formatDate(group?.createdAt)}
               </p>
               <p className='text-[#828485] text-xs font-medium text-left'>

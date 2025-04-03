@@ -20,7 +20,8 @@
 		$topicsStore = {
 			mode: value,
 			id: '',
-			topicName: ''
+			topicName: '',
+			popularity: ''
 		};
 	}}
 >

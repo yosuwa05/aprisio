@@ -15,6 +15,7 @@ interface Props {
   slug: string;
   groupCount: number;
   totalEvents: number;
+  totalPosts: number;
 }
 
 export function TopicsCard({
@@ -25,6 +26,7 @@ export function TopicsCard({
   slug,
   groupCount,
   totalEvents,
+  totalPosts,
 }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
 
@@ -117,16 +119,16 @@ export function TopicsCard({
           </h2>
 
           <div className='flex gap-2'>
-            {groupCount > 0 || totalEvents > 0 ? (
+            {groupCount > 0 || totalPosts > 0 ? (
               <>
-                {groupCount > 0 && (
+                {totalPosts > 0 && (
                   <p className='text-contrasttext font-sans font-medium'>
-                    {groupCount}+ Groups
+                    {totalPosts}+ Posts
                   </p>
                 )}
-                {totalEvents > 0 && (
+                {groupCount > 0 && (
                   <p className='text-[#828485] font-sans font-medium'>
-                    {totalEvents}+ Events
+                    {groupCount}+ Groups
                   </p>
                 )}
               </>

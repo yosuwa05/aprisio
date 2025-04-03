@@ -19,7 +19,6 @@ const formatEventDate = (start: string, end: string) => {
   const startDate = parseISO(start);
   const endDate = parseISO(end);
 
-  // Convert to UTC to avoid time zone shifts
   const startDateUTC = new Date(startDate.toISOString().split("T")[0]);
   const endDateUTC = new Date(endDate.toISOString().split("T")[0]);
 
@@ -120,6 +119,16 @@ export default function ViewTopEventPage() {
                   <div className='text-[#353535CC]/80 font-extrabold font-roboto text-center text-lg py-2 '>
                     INR {data?.event?.price || ""} + GST
                   </div>
+                  {/* <div className='text-center py-2'>
+                    {data?.event?.strikePrice && (
+                      <div className='text-gray-500 text-lg line-through font-bold'>
+                        INR {data?.event?.strikePrice} + GST
+                      </div>
+                    )}
+                    <div className='text-[#353535CC]/80 font-extrabold font-roboto text-lg'>
+                      INR {data?.event?.price || ""} + GST
+                    </div>
+                  </div> */}
                 </div>
               </div>
               <div className='text-contrasttext text-base font-sans flex justify-between flex-wrap items-center max-w-4xl'>

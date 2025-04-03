@@ -107,6 +107,7 @@
 				<Table.Row class="">
 					<Table.Head class="w-[100px]">Sl.No</Table.Head>
 					<Table.Head>Community Name</Table.Head>
+					<Table.Head>Popularity</Table.Head>
 					<Table.Head class="">Created At</Table.Head>
 					<Table.Head class="">Active</Table.Head>
 					<Table.Head>Actions</Table.Head>
@@ -117,6 +118,8 @@
 					<Table.Row>
 						<Table.Cell>{i + 1 + (page - 1) * limit}</Table.Cell>
 						<Table.Cell>{topic.topicName}</Table.Cell>
+						<Table.Cell>{topic.popularity || '-'}</Table.Cell>
+
 						<Table.Cell class="flex items-center"
 							>{formatDate(new Date(topic.createdAt))}</Table.Cell
 						>
@@ -138,6 +141,7 @@
 									$topicsStore = {
 										id: topic._id,
 										mode: 'create',
+										popularity: topic.popularity,
 										topicName: topic.topicName
 									};
 								}}

@@ -26,6 +26,7 @@ type IEvent = {
   eventTime: string;
   amount: number;
   totalTickets: number;
+  isApprovedByAdmin: boolean;
 };
 
 const EventSchema = new Schema<IEvent>(
@@ -64,6 +65,7 @@ const EventSchema = new Schema<IEvent>(
     },
     commentsCount: { type: Number, default: 0 },
     isEventEnded: { type: Boolean, default: false },
+    isApprovedByAdmin: { type: Boolean, default: false },
     eventImage: { type: String, default: "" },
     eventsDateString: { type: String, default: "" },
     attendees: [

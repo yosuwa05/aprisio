@@ -12,11 +12,12 @@ export const topicsController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      const { topicName } = body;
+      const { topicName, popularity } = body;
 
       try {
         const newTopic = new TopicModel({
           topicName,
+          popularity
         });
 
         await newTopic.save();
@@ -34,6 +35,7 @@ export const topicsController = new Elysia({
     {
       body: t.Object({
         topicName: t.String(),
+        popularity: t.String(),
       }),
       detail: {
         description: "Create topic",
@@ -54,7 +56,7 @@ export const topicsController = new Elysia({
             $options: "i",
           },
         })
-          .sort({ createdAt: -1 })
+          .sort({ popularity: 1, topicName: 1, _id: -1 })
           .skip((page - 1) * limit)
           .limit(limit);
 
@@ -94,7 +96,7 @@ export const topicsController = new Elysia({
   .put(
     "/:id",
     async ({ body, set, store, params }) => {
-      const { topicName } = body;
+      const { topicName, popularity } = body;
       const { id } = params;
 
       try {
@@ -107,7 +109,7 @@ export const topicsController = new Elysia({
         }
 
         topic.topicName = topicName;
-
+        topic.popularity = Number(popularity);
         await topic.save();
 
         set.status = 200;
@@ -126,6 +128,7 @@ export const topicsController = new Elysia({
       }),
       body: t.Object({
         topicName: t.String(),
+        popularity: t.String(),
       }),
       detail: {
         description: "Update topic",

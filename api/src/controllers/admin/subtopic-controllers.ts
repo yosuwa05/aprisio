@@ -148,7 +148,6 @@ export const subtopicController = new Elysia({
           {
             $match: {
               isDeleted: false,
-              active: true,
               ...(q && { subTopicName: { $regex: q, $options: "i" } }),
             },
           },
@@ -184,6 +183,10 @@ export const subtopicController = new Elysia({
               joinedUserCount: 1,
               createdAt: 1,
               updatedAt: 1,
+              active: 1,
+              topicId: "$topicData._id",
+              description: 1
+
             },
           },
           { $sort: { createdAt: -1 } },

@@ -97,23 +97,25 @@ export default function ViewEventPage() {
                   : data?.event?.group?.name}
               </span>
             </div>
-            <div className='flex flex-col items-center'>
-              <Button
-                onClick={() => {
-                  if (isPending) return;
-                  if (!user) return toast.error("Login to continue");
-                  mutate({
-                    eventId: eventid,
-                  });
-                }}
-                disabled={data?.event?.attending}
-                className='rounded-full bg-buttoncol text-black shadow-none p-4  md:p-8   text-xs lg:text-xl hover:bg-buttoncol font-semibold'>
-                {!data?.event?.attending ? "Attend Event" : "Joined"}
-              </Button>
-              <div className='mt-4 text-gray-700 text-xs text-center'>
-                {data?.event?.attendees?.length} Members Attended
+            {data?.event?.isApprovedByAdmin && (
+              <div className='flex flex-col items-center'>
+                <Button
+                  onClick={() => {
+                    if (isPending) return;
+                    if (!user) return toast.error("Login to continue");
+                    mutate({
+                      eventId: eventid,
+                    });
+                  }}
+                  disabled={data?.event?.attending}
+                  className='rounded-full bg-buttoncol text-black shadow-none p-4  md:p-8   text-xs lg:text-xl hover:bg-buttoncol font-semibold'>
+                  {!data?.event?.attending ? "Attend Event" : "Joined"}
+                </Button>
+                <div className='mt-4 text-gray-700 text-xs text-center'>
+                  {data?.event?.attendees?.length} Members Attended
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <article
@@ -135,32 +137,34 @@ export default function ViewEventPage() {
               </p>
             ))}
           </article>
-
-          <div
-            style={{ boxShadow: "0px 4px 60px 0px #02507C26" }}
-            className='mt-14 rounded-2xl  pb-10 container max-w-6xl mx-auto p-8 '>
-            {/* <div
-              className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200  cursor-pointer'
-              onClick={() => setViewAllReplies(!viewAllReplies)}>
-              <Icon
-                className='h-4 w-4 lg:h-5 lg:w-5'
-                icon='basil:comment-outline'
-                color='black'
-              />
-              <p className='text-xs lg:text-sm'>
-                {data?.event?.commentCount ?? 0}
+          {data?.event?.isApprovedByAdmin && (
+            <div
+              style={{ boxShadow: "0px 4px 60px 0px #02507C26" }}
+              className='mt-14 rounded-2xl  pb-10 container max-w-6xl mx-auto p-8 '>
+              {/* <div
+    className='flex gap-2 lg:gap-1 items-center font-semibold px-2 rounded-full py-1 bg-gray-50 border-[1px] border-gray-200  cursor-pointer'
+    onClick={() => setViewAllReplies(!viewAllReplies)}>
+    <Icon
+      className='h-4 w-4 lg:h-5 lg:w-5'
+      icon='basil:comment-outline'
+      color='black'
+    />
+    <p className='text-xs lg:text-sm'>
+      {data?.event?.commentCount ?? 0}
+    </p>
+  </div> */}
+              <p className='font-semibold mb-4 font-roboto text-2xl text-[#1F1F1F] '>
+                Comments
               </p>
-            </div> */}
-            <p className='font-semibold mb-4 font-roboto text-2xl text-[#1F1F1F] '>
-              Comments
-            </p>
-            <EventCommentSection
-              eventId={eventid}
-              // viewAllReplies={viewAllReplies}
-              // setViewAllReplies={setViewAllReplies}
-              // topic={topic}
-            />
-          </div>
+
+              <EventCommentSection
+                eventId={eventid}
+                // viewAllReplies={viewAllReplies}
+                // setViewAllReplies={setViewAllReplies}
+                // topic={topic}
+              />
+            </div>
+          )}
         </div>
       )}
     </main>

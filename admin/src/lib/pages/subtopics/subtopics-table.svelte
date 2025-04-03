@@ -142,9 +142,9 @@
 									$subTopicsStore = {
 										id: topic?._id,
 										mode: 'create',
-										topicName: topic.subTopicName,
-										description: topic.description,
-										topic: `${topic.topic._id} -&- ${topic.topic.topicName}`
+										topicName: topic?.subTopicName,
+										description: topic?.description,
+										topic: `${topic?.topicId} -&- ${topic.topicName}`
 									};
 								}}
 							>

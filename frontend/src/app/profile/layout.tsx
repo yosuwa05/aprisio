@@ -3,7 +3,7 @@
 import { ChatBase } from "@/components/chat/chat-base";
 import { EditProfile } from "@/components/my-profile/my-profile-edit";
 import { MyProfileTopBar } from "@/components/my-profile/my-profile-top-bar";
-import { MyProfileCreatedGroups } from "@/components/my-profile/tabsection/my-profile-created-groups";
+import { MyProfileGroupSection } from "@/components/my-profile/tabsection/my-profile-created-groups";
 import { MyProfileLikedPosts } from "@/components/my-profile/tabsection/my-profile-favourite-posts";
 import { MyProfileJoinedGroups } from "@/components/my-profile/tabsection/my-profile-joined-groups";
 import { MyProfileOrganisedEvents } from "@/components/my-profile/tabsection/my-profile-orgainsed-events";
@@ -217,7 +217,7 @@ export default function MyProfile({
           {activeTab == "participated-events" && (
             <MyProfileParticipatedEvents />
           )}
-          {activeTab == "created-groups" && <MyProfileCreatedGroups />}
+          {activeTab == "created-groups" && <MyProfileGroupSection />}
           {activeTab == "joined-groups" && <MyProfileJoinedGroups />}
           {activeTab == "payment" && <MyProfilePayments />}
           {activeTab == "edit-profile" && <EditProfile />}

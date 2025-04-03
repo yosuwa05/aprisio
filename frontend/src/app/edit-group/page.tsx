@@ -105,46 +105,61 @@ export default function CreateGroup() {
           </h1>
         </div>
 
-        <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
-          <PopoverTrigger asChild className='p-6'>
-            <Button
-              type='button'
-              className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
+        {selectedSubTopic?.slug ? (
+          <div className='px-3 py-2'>
+            <Button className='bg-[#F2F5F6] capitalize  hover:bg-[#F2F5F6]  cursor-auto  text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4  my-3 mx-1'>
               {selectedSubTopic.slug ? selectedSubTopic.slug : "Select a Topic"}
-              <ChevronDown className='mt-1 ml-2 text-black text-xl' size={60} />
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className='w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg'>
-            <Input
-              placeholder='Search...'
-              className='w-full my-2'
-              value={subTopicSearch}
-              onChange={(e) => setSubTopicSearch(e.target.value)}
-            />
-            <div className='flex flex-col gap-2'>
-              {isSubTopicsLoading && (
-                <div className='flex justify-center items-center my-4'>
-                  <div>
-                    <GlobalLoader />
+          </div>
+        ) : (
+          <Popover open={subTopicOpen} onOpenChange={(e) => setSubTopicOpen(e)}>
+            <PopoverTrigger asChild className='p-6'>
+              <Button
+                type='button'
+                className='bg-[#F2F5F6] text-black border-[1px] border-[#043A53] rounded-3xl text-lg p-4 hover:bg-[#FCF7EA] my-3 mx-1'>
+                {selectedSubTopic.slug
+                  ? selectedSubTopic.slug
+                  : "Select a Topic"}
+                <ChevronDown
+                  className='mt-1 ml-2 text-black text-xl'
+                  size={60}
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-[300px] ml-4 bg-[#F2F5F6] rounded-xl p-4 shadow-lg'>
+              <Input
+                placeholder='Search...'
+                className='w-full my-2'
+                value={subTopicSearch}
+                onChange={(e) => setSubTopicSearch(e.target.value)}
+              />
+              <div className='flex flex-col gap-2'>
+                {isSubTopicsLoading && (
+                  <div className='flex justify-center items-center my-4'>
+                    <div>
+                      <GlobalLoader />
+                    </div>
                   </div>
-                </div>
-              )}
-              {!isSubTopicsLoading &&
-                data?.subTopics?.map((subTopic: any) => (
-                  <div
-                    key={subTopic._id}
-                    className='flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]'
-                    onClick={() => {
-                      setSubTopicSearch("");
-                      setSubTopicOpen(false);
-                      setSelectedSubTopic(subTopic);
-                    }}>
-                    <p className='text-black'>{subTopic.slug}</p>
-                  </div>
-                ))}
-            </div>
-          </PopoverContent>
-        </Popover>
+                )}
+                {!isSubTopicsLoading &&
+                  data?.subTopics?.map((subTopic: any) => (
+                    <div
+                      key={subTopic._id}
+                      className='flex cursor-pointer text-lg mx-4 text-black hover:bg-[#FCF7EA] rounded-lg p-[1px]'
+                      onClick={() => {
+                        setSubTopicSearch("");
+                        setSubTopicOpen(false);
+                        setSelectedSubTopic({
+                          slug: subTopic,
+                        });
+                      }}>
+                      <p className='text-black'>{subTopic.slug}</p>
+                    </div>
+                  ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
 
         <div className='flex flex-col md:gap-4'>
           <div className='flex'>

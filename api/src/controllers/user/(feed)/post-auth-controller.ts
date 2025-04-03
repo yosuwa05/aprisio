@@ -33,10 +33,10 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
-        if (title.length > 100) {
+        if (title.length > 150) {
           set.status = 400;
           return {
-            message: "Title is too long. Max length is 100 characters.",
+            message: "Title is too long. Max length is 150 characters.",
             ok: false,
           };
         }
@@ -160,10 +160,10 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
-        if (title.length > 100) {
+        if (title.length > 150) {
           set.status = 400;
           return {
-            message: "Title is too long. Max length is 100 characters.",
+            message: "Title is too long. Max length is 150 characters.",
             ok: false,
           };
         }
@@ -364,10 +364,10 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
-        if (title.length > 100) {
+        if (title.length > 150) {
           set.status = 400;
           return {
-            message: "Title is too long. Max length is 100 characters.",
+            message: "Title is too long. Max length is 150 characters.",
             ok: false,
           };
         }
@@ -477,10 +477,10 @@ export const authenticatedPostController = new Elysia({
           };
         }
 
-        if (title.length > 100) {
+        if (title.length > 150) {
           set.status = 400;
           return {
-            message: "Title is too long. Max length is 100 characters.",
+            message: "Title is too long. Max length is 150 characters.",
             ok: false,
           };
         }

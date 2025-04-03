@@ -956,4 +956,137 @@ export const MyProfileController = new Elysia({
         gender: t.Optional(t.String()),
       }),
     },
-  );
+  )
+  .get("/approval-event-request", async ({ store, set, query }) => {
+    try {
+      const userId = (store as StoreType)?.id;
+      const { page, limit } = query;
+
+      const _page = Number(page) || 1;
+      const _limit = Number(limit) || 10;
+
+      const adminGroups = await GroupModel.find({
+        groupAdmin: userId,
+      })
+
+      if (!adminGroups || adminGroups.length === 0) {
+        return {
+          message: "No groups found where you are an admin.",
+          events: []
+        };
+      }
+
+      const groupIds = adminGroups.map(group => group._id);
+
+      const pendingEvents = await EventModel.find({
+        group: { $in: groupIds },
+        isApprovedByAdmin: false
+      }).select('isApprovedByAdmin group managedBy createdAt eventName ')
+        .populate('managedBy', 'name')
+        .populate('group', 'name')
+        .sort({ createdAt: -1, _id: -1 })
+        .skip((_page - 1) * _limit)
+        .limit(_limit)
+        .lean();
+      set.status = 200;
+
+      return {
+        message: "Retrieved pending events successfully",
+        events: pendingEvents
+      };
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500;
+      return {
+        message: error
+      }
+    }
+  }, {
+    detail: {
+      summary: "pending Events",
+      description: "pending Events",
+    },
+    query: t.Object({
+      page: t.Optional(t.String()),
+      limit: t.Optional(t.String()),
+    }),
+  })
+  .put("/approve-event", async ({ set, query }) => {
+    try {
+
+      const { eventId } = query;
+
+      const event = await EventModel.findById(eventId)
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not found"
+        }
+      }
+
+      event.isApprovedByAdmin = true
+
+      await event.save()
+      set.status = 200
+
+      return {
+        message: "Event Approved "
+      }
+
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500;
+      return {
+        message: error
+      }
+    }
+  }, {
+    detail: {
+      summary: "Approve Events",
+      description: "Approve Events",
+    },
+    query: t.Object({
+      eventId: t.String()
+    }),
+  })
+  .delete("/reject-event", async ({ set, query }) => {
+    try {
+
+      const { eventId } = query;
+
+      const event = await EventModel.findById(eventId)
+
+      if (!event) {
+        set.status = 400
+        return {
+          message: "Event not found"
+        }
+      }
+
+      await EventModel.findByIdAndDelete(eventId)
+
+      set.status = 200
+
+      return {
+        message: "Event Rejected"
+      }
+
+    } catch (error: any) {
+      console.log(error)
+      set.status = 500;
+      return {
+        message: error
+      }
+    }
+  }, {
+    detail: {
+      summary: "Reject Events",
+      description: "Reject Events",
+    },
+    query: t.Object({
+      eventId: t.String()
+    }),
+  })

@@ -296,7 +296,7 @@ export const noAuthGroupController = new Elysia({
           userId,
         });
 
-        const events = await EventModel.find({ group: groupid })
+        const events = await EventModel.find({ group: groupid, isApprovedByAdmin: true })
           .sort({ createdAt: -1, _id: -1 })
           .skip((page - 1) * limit)
           .limit(limit)

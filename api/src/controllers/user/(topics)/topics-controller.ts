@@ -23,7 +23,10 @@ export const TopicsController = new Elysia({
           .lean()
           .exec();
 
-        const total = await TopicModel.countDocuments({});
+        const total = await TopicModel.countDocuments({
+          isDeleted: false,
+          active: true,
+        });
 
         return {
           topics,
@@ -49,7 +52,10 @@ export const TopicsController = new Elysia({
         if (!query.topic || query.topic == "undefined") return { ok: true };
 
         const subTopic = await SubTopicModel.find(
-          query.topic ? { topic: query.topic } : {},
+          query.topic ? {
+            topic: query.topic, isDeleted: false,
+            active: true,
+          } : {},
           "subTopicName slug",
         )
           .sort({ createdAt: -1 })

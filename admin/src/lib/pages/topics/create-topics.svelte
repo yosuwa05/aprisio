@@ -16,7 +16,7 @@
 	});
 
 	const createManagerMutation = createMutation({
-		mutationFn: (data: CreateTopicsData) =>
+		mutationFn: (data: any) =>
 			edit ? _axios.put(`/topics/${$topicsStore.id}`, data) : _axios.post('/topics/create', data),
 		onSuccess({}) {
 			queryClient.refetchQueries({
@@ -41,7 +41,8 @@
 			resetForm: false,
 			async onSubmit({}) {
 				let _data: CreateTopicsData = {
-					topicName: $form.topicName
+					topicName: $form.topicName,
+					popularity: $form.popularity
 				};
 
 				const { valid } = await validateForm({
@@ -49,7 +50,11 @@
 				});
 
 				if (!valid) return;
-				$createManagerMutation.mutate(_data);
+
+				let formData = new FormData();
+				formData.append('topicName', _data.topicName);
+				formData.append('popularity', _data.popularity);
+				$createManagerMutation.mutate(formData);
 			}
 		}
 	);
@@ -57,8 +62,10 @@
 	$effect(() => {
 		if (edit) {
 			$form.topicName = $topicsStore.topicName;
+			$form.popularity = $topicsStore.popularity;
 		} else {
 			$form.topicName = '';
+			$form.popularity = '';
 		}
 	});
 </script>
@@ -79,7 +86,20 @@
 				>{/if}
 		</div>
 
-		<div></div>
+		<div>
+			<Label>Popularity</Label>
+			<Input
+				class="mt-1 pr-10"
+				type="number"
+				placeholder="Ex: 5"
+				aria-invalid={$errors.popularity ? 'true' : undefined}
+				bind:value={$form.popularity}
+				{...$constraints.popularity}
+			/>
+
+			{#if $errors.popularity}<span class="invalid text-xs text-red-500">{$errors.popularity}</span
+				>{/if}
+		</div>
 
 		<Button class="w-[40%] text-white" type="submit" disabled={$createManagerMutation.isPending}>
 			{edit ? 'Update' : $createManagerMutation.isPending ? 'Creating...' : 'Create'}

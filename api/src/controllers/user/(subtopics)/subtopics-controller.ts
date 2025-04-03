@@ -162,7 +162,7 @@ export const subtopicsController = new Elysia({
 
         const ids = gropus.map((group) => group._id);
 
-        const events = await EventModel.find({ group: { $in: ids } })
+        const events = await EventModel.find({ group: { $in: ids }, isApprovedByAdmin: true })
           .sort({ createdAt: -1, _id: -1 })
           .skip((page - 1) * limit)
           .limit(limit)
@@ -172,8 +172,8 @@ export const subtopicsController = new Elysia({
           ...event,
           attending: userId
             ? event.attendees?.some(
-                (attendee) => attendee.toString() === userId,
-              )
+              (attendee) => attendee.toString() === userId,
+            )
             : false,
         }));
 

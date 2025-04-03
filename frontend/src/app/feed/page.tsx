@@ -175,6 +175,7 @@ export default function Community() {
                           slug={subTopic.slug}
                           groupCount={subTopic.groupCount}
                           totalEvents={subTopic.totalEvents}
+                          totalPosts={subTopic.postCount}
                         />
                       )
                     )}

@@ -17,8 +17,14 @@ export const AdminDashBoardController = new Elysia({
 
             const totalUsers = await UserModel.countDocuments({});
             const totalGroups = await GroupModel.countDocuments({});
-            const totalTopics = await TopicModel.countDocuments({});
-            const totalSubTopics = await SubTopicModel.countDocuments({});
+            const totalTopics = await TopicModel.countDocuments({
+                isDeleted: false,
+                active: true
+            });
+            const totalSubTopics = await SubTopicModel.countDocuments({
+                isDeleted: false,
+                active: true
+            });
             const totalLiveEvents = await EventModel.countDocuments({
                 isEventEnded: false
             });
