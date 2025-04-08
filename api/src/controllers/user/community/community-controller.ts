@@ -375,7 +375,8 @@ export const communityController = new Elysia({
               "subTopic.isDeleted": false,
               "subTopic.active": true,
             },
-          }
+          },
+          { $sort: { "subTopic.popularity": 1, "subTopic.subTopicName": 1, _id: -1 } }
         );
 
         // Add user joined info if userId is provided

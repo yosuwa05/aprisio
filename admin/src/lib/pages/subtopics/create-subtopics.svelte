@@ -79,6 +79,7 @@
 				formData.append('subTopicName', $form.subTopicName);
 				formData.append('topic', $form.topic);
 				formData.append('description', $form.description);
+				formData.append('popularity', $form.popularity);
 				$createSubtopicMutation.mutate(formData);
 			}
 		}
@@ -89,10 +90,12 @@
 			$form.subTopicName = $subTopicsStore.topicName;
 			$form.topic = $subTopicsStore.topic;
 			$form.description = $subTopicsStore.description;
+			$form.popularity = $subTopicsStore.popularity;
 		} else {
 			$form.subTopicName = '';
 			$form.topic = '';
 			$form.description = '';
+			$form.popularity = '';
 			image = null;
 		}
 	});
@@ -175,7 +178,7 @@
 			</Select.Root>
 		</div>
 
-		<div class="col-span-2">
+		<div>
 			<Label for="image">Image</Label>
 			<Input
 				id="image"
@@ -185,6 +188,20 @@
 				accept=".jpg, .jpeg, .png, .webp"
 				onchange={handleFileSelect}
 			/>
+		</div>
+		<div>
+			<Label>Popularity</Label>
+			<Input
+				class="mt-1 pr-10"
+				type="number"
+				placeholder="Ex: 5"
+				aria-invalid={$errors.popularity ? 'true' : undefined}
+				bind:value={$form.popularity}
+				{...$constraints.popularity}
+			/>
+
+			{#if $errors.popularity}<span class="invalid text-xs text-red-500">{$errors.popularity}</span
+				>{/if}
 		</div>
 
 		<div class="col-span-2">

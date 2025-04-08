@@ -35,7 +35,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
               console.log("Notification not supported");
             }
           });
-        },
+        }
       );
     }
   }, []);
@@ -43,7 +43,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <Toaster position="top-center" />
+      <Toaster position='top-center' />
     </QueryClientProvider>
   );
 }

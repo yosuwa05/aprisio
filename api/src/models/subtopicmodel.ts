@@ -10,6 +10,7 @@ interface ISubTopic {
   slug: string;
   members: number;
   image: string;
+  popularity: number;
 }
 
 const subtopicSchema = new Schema<ISubTopic>(
@@ -40,6 +41,7 @@ const subtopicSchema = new Schema<ISubTopic>(
     slug: {
       type: String,
     },
+    popularity: { type: Number, default: 0 },
   },
   {
     timestamps: true,

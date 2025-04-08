@@ -15,7 +15,7 @@ export const subtopicController = new Elysia({
   .post(
     "/create",
     async ({ body, set, store }) => {
-      let { subTopicName, topic, description, file } = body;
+      let { subTopicName, topic, description, file, popularity } = body;
 
       topic = topic.split(" -&- ")[0];
 
@@ -55,6 +55,7 @@ export const subtopicController = new Elysia({
           isDeleted: false,
           image: fileUrl,
           slug: slugify(subTopicName),
+          popularity
         });
 
         await newSubTopic.save();
@@ -72,6 +73,7 @@ export const subtopicController = new Elysia({
     {
       body: t.Object({
         subTopicName: t.String(),
+        popularity: t.String(),
         topic: t.String(),
         description: t.String(),
         file: t.File(),
@@ -138,19 +140,124 @@ export const subtopicController = new Elysia({
   //     },
   //   }
   // )
+
+
+  // .get(
+  //   "/all",
+  //   async ({ query, set }) => {
+  //     const { page = 1, limit = 10, q } = query;
+
+  //     try {
+  //       const subtopics = await SubTopicModel.aggregate([
+  //         {
+  //           $match: { isDeleted: false },
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: "topics",
+  //             localField: "topic",
+  //             foreignField: "_id",
+  //             as: "topicData",
+  //           },
+  //         },
+  //         {
+  //           $unwind: "$topicData",
+  //         },
+  //         {
+  //           $match: {
+  //             $or: [
+  //               ...(q
+  //                 ? [
+  //                   { subTopicName: { $regex: q, $options: "i" } },
+  //                   { "topicData.topicName": { $regex: q, $options: "i" } },
+  //                 ]
+  //                 : []),
+  //             ],
+  //           },
+  //         },
+  //         {
+  //           $lookup: {
+  //             from: "usersubtopics",
+  //             localField: "_id",
+  //             foreignField: "subTopicId",
+  //             as: "joinedUsers",
+  //           },
+  //         },
+  //         {
+  //           $addFields: {
+  //             joinedUserCount: { $size: "$joinedUsers" },
+  //           },
+  //         },
+  //         {
+  //           $project: {
+  //             _id: 1,
+  //             subTopicName: 1,
+  //             topicName: "$topicData.topicName",
+  //             joinedUserCount: 1,
+  //             createdAt: 1,
+  //             updatedAt: 1,
+  //             active: 1,
+  //             topicId: "$topicData._id",
+  //             description: 1
+
+  //           },
+  //         },
+  //         { $sort: { createdAt: -1 } },
+  //         { $skip: (page - 1) * limit },
+  //         { $limit: limit },
+  //       ]);
+
+  //       const totalSubtopics = await SubTopicModel.countDocuments({
+  //         isDeleted: false,
+  //         ...(q && { subTopicName: { $regex: q, $options: "i" } }),
+  //       });
+
+  //       return {
+  //         subtopics,
+  //         total: totalSubtopics,
+  //         ok: true,
+  //       };
+  //     } catch (error: any) {
+  //       console.log(error);
+  //       set.status = 500;
+  //       return {
+  //         message: "An internal error occurred while fetching subtopics.",
+  //         ok: false,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     query: t.Object({
+  //       page: t.Optional(t.Number()),
+  //       limit: t.Optional(t.Number()),
+  //       q: t.Optional(t.String()),
+  //     }),
+  //     detail: {
+  //       description: "Get subtopics with user join count",
+  //       summary: "Get subtopics with user join count",
+  //     },
+  //   }
+  // )
+
   .get(
     "/all",
     async ({ query, set }) => {
       const { page = 1, limit = 10, q } = query;
 
       try {
+        const baseMatch = { isDeleted: false };
+
+        const searchMatch = q
+          ? {
+            $or: [
+              { subTopicName: { $regex: q, $options: "i" } },
+              { "topicData.topicName": { $regex: q, $options: "i" } },
+            ],
+          }
+          : {};
+
         const subtopics = await SubTopicModel.aggregate([
-          {
-            $match: {
-              isDeleted: false,
-              ...(q && { subTopicName: { $regex: q, $options: "i" } }),
-            },
-          },
+          { $match: baseMatch },
           {
             $lookup: {
               from: "topics",
@@ -159,9 +266,8 @@ export const subtopicController = new Elysia({
               as: "topicData",
             },
           },
-          {
-            $unwind: "$topicData",
-          },
+          { $unwind: "$topicData" },
+          { $match: searchMatch },
           {
             $lookup: {
               from: "usersubtopics",
@@ -185,19 +291,33 @@ export const subtopicController = new Elysia({
               updatedAt: 1,
               active: 1,
               topicId: "$topicData._id",
-              description: 1
-
+              description: 1,
+              popularity: 1
             },
           },
-          { $sort: { createdAt: -1 } },
+          // { $sort: { popularity: 1, createdAt: -1, _id: -1 } },
+          { $sort: { createdAt: -1, _id: -1 } },
           { $skip: (page - 1) * limit },
           { $limit: limit },
         ]);
 
-        const totalSubtopics = await SubTopicModel.countDocuments({
-          isDeleted: false,
-          ...(q && { subTopicName: { $regex: q, $options: "i" } }),
-        });
+        // Fix for correct total count
+        const totalAgg = await SubTopicModel.aggregate([
+          { $match: baseMatch },
+          {
+            $lookup: {
+              from: "topics",
+              localField: "topic",
+              foreignField: "_id",
+              as: "topicData",
+            },
+          },
+          { $unwind: "$topicData" },
+          { $match: searchMatch },
+          { $count: "total" },
+        ]);
+
+        const totalSubtopics = totalAgg[0]?.total || 0;
 
         return {
           subtopics,
@@ -205,7 +325,7 @@ export const subtopicController = new Elysia({
           ok: true,
         };
       } catch (error: any) {
-        console.log(error);
+        console.error(error);
         set.status = 500;
         return {
           message: "An internal error occurred while fetching subtopics.",
@@ -225,6 +345,8 @@ export const subtopicController = new Elysia({
       },
     }
   )
+
+
   // .put(
   //   "/:id",
   //   async ({ body, set, params }) => {
@@ -296,7 +418,7 @@ export const subtopicController = new Elysia({
   .put(
     "/:id",
     async ({ body, set, params }) => {
-      let { subTopicName, topic, description, file } = body;
+      let { subTopicName, topic, description, file, popularity } = body;
       const { id } = params;
 
       topic = topic.split(" -&- ")[0];
@@ -335,6 +457,7 @@ export const subtopicController = new Elysia({
         subtopic.subTopicName = subTopicName;
         subtopic.topic = new Types.ObjectId(topic);
         subtopic.description = description;
+        subtopic.popularity = Number(popularity)
 
         await subtopic.save();
 
@@ -355,6 +478,7 @@ export const subtopicController = new Elysia({
       }),
       body: t.Object({
         subTopicName: t.String(),
+        popularity: t.String(),
         topic: t.String(),
         description: t.String(),
         file: t.Optional(t.File()), // Optional file

@@ -5,10 +5,24 @@ import { logger } from "@rasla/logify";
 import { Elysia } from "elysia";
 import mongoose from "mongoose";
 import { baseRouter } from "./controllers";
-import { generateEventId } from "./lib/utils";
+
 import { EventModel } from "./models";
+import { AdminEventModel } from "./models/admin-events.model";
 
 const app = new Elysia();
+
+
+app.ws("/api/ws", {
+  open: (ws) => {
+    console.log("WebSocket connection opened");
+
+  },
+  message: (ws, message) => {
+    console.log("Message received:", message);
+  },
+});
+
+
 app.listen({
   idleTimeout: 200,
 });
@@ -23,7 +37,6 @@ try {
     dbName: "aprisio",
     maxConnecting: 10,
   });
-
   console.log("Connected to Database");
 } catch (e) {
   console.log(e);
@@ -35,12 +48,15 @@ app.use(
   })
 );
 
+
 app.use(
   cron({
     name: "heartbeat",
     pattern: "0 0 * * *",
     async run() {
       console.log("cron running");
+
+      // ===  User Events ===
       const events = await EventModel.find({ isEventEnded: false });
       for (let event of events) {
         if (new Date() > new Date(event.date)) {
@@ -50,19 +66,24 @@ app.use(
           );
         }
       }
+
+      // ===  Admin Events ===
+      const adminEvents = await AdminEventModel.find({ isEventEnded: false });
+      for (const adminEvent of adminEvents) {
+        if (new Date() > new Date(adminEvent.enddatetime || adminEvent.datetime)) {
+          await AdminEventModel.updateOne(
+            { _id: adminEvent._id },
+            { $set: { isEventEnded: true } }
+          );
+          console.log(`Admin Event marked as ended: ${adminEvent._id}`);
+        }
+      }
+
     },
   })
 );
 
 
-
-// let res = await sendNotification(
-//   "dzImjSr_jftAg4qEWaLDrN:APA91bEUvHZpNmxLVOIMtxhY52eJ7iXsvGwu_l2djMTUy4jWwuzIOeawdnU8S5Q1KBABnI7EtfxEKkNBqfS42ERVF-B7K_CdJaUFHyLUOjkVp4DGoOSeKLQ",
-//   "brooo",
-//   "brooo"
-// );
-
-// console.log(res);
 
 app.use(
   swagger({

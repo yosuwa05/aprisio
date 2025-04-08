@@ -105,8 +105,12 @@ export default function ViewTopEventPage() {
                 </h2>
                 <div className=''>
                   <Button
+                    disabled={data?.event?.isEventEnded}
                     onClick={() => {
-                      if (!user) return toast.error("Login to continue");
+                      if (!user) {
+                        toast.error("Login to continue");
+                        return router.push("/login");
+                      }
                       if (data?.event?.reminingTickets === 0) {
                         return toast.error("No tickets available");
                       }

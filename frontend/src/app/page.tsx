@@ -16,19 +16,20 @@ import Testimonial from "../components/shared/testimonials";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
 import coffeeImage from "@img/images/newcoffeebanner.jpeg";
+
 export default function Home() {
   const router = useRouter();
   const user = useGlobalAuthStore((state) => state.user);
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
-    const lastPopupDate = localStorage.getItem("popup_shown_date");
-    const today = new Date().toISOString().split("T")[0];
+    // const lastPopupDate = localStorage.getItem("popup_shown_date");
+    // const today = new Date().toISOString().split("T")[0];
 
-    if (lastPopupDate !== today) {
-      setShowPopup(true);
-      localStorage.setItem("popup_shown_date", today);
-    }
+    // if (lastPopupDate !== today) {
+    //   setShowPopup(true);
+    //   localStorage.setItem("popup_shown_date", today);
+    // }
 
     setTimeout(() => {
       setLoading(false);
@@ -41,7 +42,7 @@ export default function Home() {
 
   return (
     <>
-      <Dialog open={showPopup} onOpenChange={setShowPopup}>
+      {/* <Dialog open={showPopup} onOpenChange={setShowPopup}>
         <DialogContent className='max-w-2xl md:max-w-3xl lg:max-w-4xl w-full p-4 md:p-6 cursor-pointer  lg:p-8'>
           <div
             onClick={() => {
@@ -56,7 +57,7 @@ export default function Home() {
             />
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
       <div className='sticky top-[-2px] z-50 bg-white py-2'>
         <Topbar />

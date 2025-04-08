@@ -114,6 +114,7 @@ export default function Feed() {
                 src={BASE_URL + `/file?key=${data?.subTopic?.image}`}
                 className='rounded-xl object-cover '
                 alt=''
+                quality={30}
                 width={500}
                 height={500}
               />

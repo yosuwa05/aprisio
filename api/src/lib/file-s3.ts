@@ -7,7 +7,7 @@ import { Upload } from "@aws-sdk/lib-storage";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { Readable } from "stream";
 import { slugify } from "./utils";
-
+import sharp from "sharp";
 export const s3Client = new S3Client({
   region: process.env.REGION || "ap-south-1",
   credentials: {
@@ -44,8 +44,28 @@ export const saveFile = async (
       "." +
       extension;
 
+
+    const arrayBuffer = await blob.arrayBuffer();
+    let imageBuffer = Buffer.from(arrayBuffer);
+    const metadata: any = await sharp(imageBuffer).metadata();
+    const fileSizeMB = imageBuffer.length / (1024 * 1024);
+
+
+    if (metadata.quality && metadata.quality <= 50) {
+    } else if (fileSizeMB >= 15) {
+      imageBuffer = await sharp(imageBuffer)
+        .resize({ width: 2000 })
+        .jpeg({ quality: 70 })
+        .toBuffer();
+    } else if (fileSizeMB >= 3) {
+      imageBuffer = await sharp(imageBuffer).jpeg({ quality: 75 }).toBuffer();
+    } else if (fileSizeMB >= 1) {
+      imageBuffer = await sharp(imageBuffer).jpeg({ quality: 80 }).toBuffer();
+    } else {
+    }
     // @ts-ignore
-    const stream = Readable.from(blob.stream());
+    const stream = Readable.from(imageBuffer);
+
 
     const upload = new Upload({
       client: s3Client,
@@ -53,7 +73,7 @@ export const saveFile = async (
         Bucket: bucketName,
         Key: filename,
         Body: stream,
-        ContentLength: blob.size,
+        ContentLength: imageBuffer.length,
       },
     });
 
@@ -134,7 +154,7 @@ export const getAsBlob = async (filename: string) => {
     for await (const chunk of stream) {
       chunks.push(chunk);
     }
-
+    //@ts-ignore
     const buffer = Buffer.concat(chunks);
 
     return {

@@ -14,7 +14,7 @@
 	import { toast } from 'svelte-sonner';
 	import { subTopicsStore } from './subtopics-store';
 
-	async function fetchSubtopics(limit = 10, page = 1, search = '') {
+	async function fetchSubtopics(limit = 7, page = 1, search = '') {
 		const res = await _axios.get(`/subtopic/all?limit=${limit}&page=${page}&q=${search}`);
 		const data = await res.data;
 		return data;
@@ -110,6 +110,7 @@
 					<Table.Head>Community Name</Table.Head>
 					<Table.Head>Joined Users</Table.Head>
 					<Table.Head class="">Created At</Table.Head>
+					<Table.Head>Popularity</Table.Head>
 					<Table.Head class="">Active</Table.Head>
 					<Table.Head>Actions</Table.Head>
 				</Table.Row>
@@ -124,6 +125,8 @@
 						<Table.Cell class="flex items-center"
 							>{formatDate(new Date(topic.createdAt))}</Table.Cell
 						>
+						<Table.Cell>{topic.popularity || '-'}</Table.Cell>
+
 						<Table.Cell>
 							<Switch
 								class="text-right"
@@ -144,7 +147,8 @@
 										mode: 'create',
 										topicName: topic?.subTopicName,
 										description: topic?.description,
-										topic: `${topic?.topicId} -&- ${topic.topicName}`
+										topic: `${topic?.topicId} -&- ${topic.topicName}`,
+										popularity: topic?.popularity
 									};
 								}}
 							>

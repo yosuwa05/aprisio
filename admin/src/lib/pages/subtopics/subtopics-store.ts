@@ -6,7 +6,8 @@ export const subTopicsStore = writable({
 	topicName: '',
 	id: '',
 	topic: '',
-	description: ''
+	description: '',
+	popularity: ''
 });
 
 type StoreProps = {
@@ -15,6 +16,7 @@ type StoreProps = {
 	id: string;
 	topic: string;
 	description: string;
+	popularity: string
 };
 
 export type SubTopicsStore = Writable<StoreProps>;
@@ -26,7 +28,8 @@ export const _subTopicsSchema = z.object({
 		})
 		.max(50),
 	topic: z.string(),
-	description: z.string().min(1)
+	description: z.string().min(1),
+	popularity: z.union([z.string(), z.number()]).transform((val) => val.toString()),
 });
 
 export type SubTopicsStoreProps = {

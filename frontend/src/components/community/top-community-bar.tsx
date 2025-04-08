@@ -53,6 +53,8 @@ export function TopCommunityBar() {
       const response = await _axios.get("/topics?limit=400");
       return response.data;
     },
+    staleTime: 1000 * 60 * 15,
+    gcTime: 1000 * 60 * 30,
   });
 
   const {
@@ -61,72 +63,22 @@ export function TopCommunityBar() {
     isFetching,
   } = useQuery({
     queryKey: ["user-subtopic", selectedTopic?._id],
-    gcTime: 0,
+
     queryFn: async () => {
       const response = await _axios.get(
         `/topics/getsubtopics?topic=${selectedTopic?._id}`
       );
       return response.data;
     },
+    enabled: !!selectedTopic?._id,
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 5,
   });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
-  const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
 
-  // Sample topics data
-  const topics = [
-    {
-      name: "Technology",
-      submenu: [
-        "Web Development",
-        "Mobile Apps",
-        "AI & Machine Learning",
-        "Cybersecurity",
-      ],
-    },
-    {
-      name: "Business",
-      submenu: ["Marketing", "Finance", "Entrepreneurship", "Management"],
-    },
-    {
-      name: "Design",
-      submenu: ["UI/UX", "Graphic Design", "3D Modeling", "Animation"],
-    },
-    {
-      name: "Health",
-      submenu: ["Fitness", "Nutrition", "Mental Health", "Medical Research"],
-    },
-    {
-      name: "Education",
-      submenu: [
-        "Online Learning",
-        "K-12",
-        "Higher Education",
-        "Professional Development",
-      ],
-    },
-    {
-      name: "Entertainment",
-      submenu: ["Movies", "Music", "Gaming", "Streaming"],
-    },
-    {
-      name: "Science",
-      submenu: ["Physics", "Biology", "Chemistry", "Astronomy"],
-    },
-    {
-      name: "Travel",
-      submenu: [
-        "Destinations",
-        "Travel Tips",
-        "Adventure",
-        "Cultural Experiences",
-      ],
-    },
-  ];
-
-  // Handle mouse down for dragging
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!scrollContainerRef.current) return;
 
@@ -135,33 +87,18 @@ export function TopCommunityBar() {
     setScrollLeft(scrollContainerRef.current.scrollLeft);
   };
 
-  // Handle mouse move for dragging
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging || !scrollContainerRef.current) return;
 
     const x = e.pageX - scrollContainerRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll speed multiplier
+    const walk = (x - startX) * 2;
     scrollContainerRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  // Handle mouse up and leave to stop dragging
   const handleDragEnd = () => {
     setIsDragging(false);
   };
 
-  // Handle topic click to toggle dropdown
-  const handleTopicClick = (e: React.MouseEvent, index: number) => {
-    // Only toggle dropdown if we're not dragging
-    if (!isDragging) {
-      e.stopPropagation(); // Prevent event from bubbling up
-      setActiveDropdown(activeDropdown === index ? null : index);
-    }
-  };
-
-  // Close dropdown when clicking outside
-  const handleOutsideClick = () => {
-    setActiveDropdown(null);
-  };
   return (
     <div className='bg-[#F2F5F6] h-[60px] flex items-center overflow-hidden'>
       <div className='flex gap-4 items-center ml-4 md:ml-12 w-full'>
@@ -206,7 +143,9 @@ export function TopCommunityBar() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        setSelectedTopic(topic);
+                        if (!selectedTopic || selectedTopic._id !== topic._id) {
+                          setSelectedTopic(topic);
+                        }
                       }}
                       className={cn(
                         "  text-nowrap px-5 py-3 text-lg text-fadedtext flex gap-2 items-center bg-transparent cursor-pointer font-normal w-fit data-[state=open]:text-contrasttext   justify-between"
@@ -241,77 +180,6 @@ export function TopCommunityBar() {
               ))}
           </div>
         </div>
-        {/* <Carousel
-          opts={{
-            align: "center",
-            axis: "x",
-            dragFree: true,
-            direction: "ltr",
-            containScroll: "keepSnaps",
-          }}
-          className='w-full overflow-hidden'>
-          <CarouselContent className='mr-16'>
-            {!isLoading &&
-              data &&
-              data.topics?.map((topic: Topic) => (
-                <CarouselItem
-                  key={topic._id}
-                  className='basis-1/1 flex justify-center'>
-                  <Menubar className='bg-transparent border-none'>
-                    <MenubarMenu>
-                      <MenubarTrigger
-                        className='text-lg text-fadedtext flex gap-2 items-center bg-transparent cursor-pointer font-normal w-fit data-[state=open]:text-contrasttext'
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedTopic(topic);
-                        }}>
-                        <div
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                          onMouseDown={(e) => {
-                            e.stopPropagation();
-                          }}
-                          className='text-sm md:text-lg font-bold text-fadedtext md:font-normal select-none '>
-                          {topic.topicName}
-                        </div>
-                        <Icon
-                          icon='icon-park-outline:down'
-                          className='text-xl my-auto h-full  mt-[5px] text-[#5D5A5A]'
-                        />
-                      </MenubarTrigger>
-
-                      <MenubarContent>
-                        {isLoadingSubTopics || isFetching ? (
-                          [...Array(3)].map((_, index) => (
-                            <Skeleton
-                              key={index}
-                              className='w-32 h-6 my-2 rounded-md'
-                            />
-                          ))
-                        ) : !isFetching && subTopics?.subTopics?.length > 0 ? (
-                          subTopics?.subTopics.map(
-                            (subTopic: any, subTopicIndex: number) => (
-                              <MenubarItem
-                                className='cursor-pointer'
-                                onClick={() =>
-                                  router.push(`/feed/explore/${subTopic?.slug}`)
-                                }
-                                key={subTopicIndex}>
-                                {subTopic?.subTopicName}
-                              </MenubarItem>
-                            )
-                          )
-                        ) : (
-                          <MenubarItem>No SubTopics</MenubarItem>
-                        )}
-                      </MenubarContent>
-                    </MenubarMenu>
-                  </Menubar>
-                </CarouselItem>
-              ))}
-          </CarouselContent>
-        </Carousel> */}
       </div>
     </div>
   );

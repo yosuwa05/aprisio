@@ -22,7 +22,8 @@
 			id: '',
 			topicName: '',
 			description: '',
-			topic: ''
+			topic: '',
+			popularity: ''
 		};
 	}}
 >
