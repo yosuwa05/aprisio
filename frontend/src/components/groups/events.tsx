@@ -19,9 +19,10 @@ import { Button } from "../ui/button";
 type Props = {
   groupid: string;
   gropuslug: string;
+  isUserJoined: boolean;
 };
 
-export function EventsSection({ groupid, gropuslug }: Props) {
+export function EventsSection({ groupid, gropuslug, isUserJoined }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const router = useRouter();
   const limit = 10;
@@ -95,6 +96,9 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
+            if (isUserJoined === false) {
+              return toast.error("You must join the community to create ");
+            }
             mutate(groupid);
           }}>
           <Icon icon='tabler:plus' fontSize={22} />
@@ -105,6 +109,7 @@ export function EventsSection({ groupid, gropuslug }: Props) {
           className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
+
             updateActiveGroup(typeof gropuslug === "string" ? gropuslug : "");
             updateActiveGroupId(typeof groupid === "string" ? groupid : "");
             router.push(`/feed/create-event/`);

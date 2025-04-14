@@ -6,6 +6,7 @@ import { GroupPhotoModel } from "@/models/groupphotos.model";
 import { GroupPostShareModel } from "@/models/grouppostshare";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import Elysia, { t } from "elysia";
 import { Types } from "mongoose";
 
@@ -570,10 +571,18 @@ export const groupController = new Elysia({
           set.status = 400;
           return { message: "Group not found" };
         }
+        const subTopic = await SubTopicModel.findOne({ _id: isGroupExist.subTopic });
+
+        const followers = await UserSubTopicModel.find({ subTopicId: subTopic?._id }).select("userId");
+        const followedUserIds = followers.map((f) => f.userId);
+
 
         const sharedPosts = await GroupPostShareModel.aggregate([
           {
-            $match: { group: isGroupExist._id },
+            $match: {
+              group: isGroupExist._id,
+              sharedBy: { $in: followedUserIds },
+            },
           },
           {
             $lookup: {
@@ -598,7 +607,17 @@ export const groupController = new Elysia({
               localField: "sharedBy",
               foreignField: "_id",
               as: "sharedByUser",
+              pipeline: [
+                {
+                  $match: {
+                    active: true,
+                  },
+                },
+              ],
             },
+          },
+          {
+            $match: { "sharedByUser.0": { $exists: true } },
           },
           {
             $lookup: {

@@ -37,10 +37,15 @@ type IPost = {
   userImage?: string;
 };
 
-export const GroupsFeedSection = () => {
+type Props = {
+  isUserJoined: boolean;
+};
+
+export const GroupsFeedSection = ({ isUserJoined }: Props) => {
   const user = useGlobalAuthStore((state) => state.user);
   const { groupid } = useParams();
   const { topic } = useParams();
+
   const router = useRouter();
   const queryClient = useQueryClient();
   const updateActiveGroup = useGlobalFeedStore((state) => state.setActiveGroup);
@@ -110,6 +115,9 @@ export const GroupsFeedSection = () => {
           className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
           onClick={() => {
             if (!user) return toast.error("Login to continue");
+            if (isUserJoined === false) {
+              return toast.error("You must join the community  ");
+            }
             mutate(data?.pages?.[0]?.data?.groupId);
           }}>
           <Icon icon='tabler:plus' fontSize={22} />

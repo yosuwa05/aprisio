@@ -1,6 +1,8 @@
-import { db } from "@/lib/firebase";
+import { db, sendNotification } from "@/lib/firebase";
+import { getActiveUsers } from "@/lib/ws-store";
 import { UserModel } from "@/models";
 import { ChatModel } from "@/models/chatmodel";
+import { NotificationModel } from "@/models/notificationmodel";
 import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
@@ -92,7 +94,13 @@ export const chatController = new Elysia({
         );
 
         const messageWrite = batch.commit();
+        const NOTIFICATION_THROTTLE_MS = 30 * 1000;
+        const chatDoc = await ChatModel.findOne({ chatId }).lean();
+        const timeSinceLastUpdate = chatDoc?.lastUpdated
+          ? Date.now() - chatDoc?.lastUpdated
+          : Infinity;
 
+        const shouldSendNotification = timeSinceLastUpdate > NOTIFICATION_THROTTLE_MS;
         const chatUpdate = ChatModel.findOneAndUpdate(
           { chatId },
           {
@@ -109,6 +117,27 @@ export const chatController = new Elysia({
         );
 
         await Promise.all([messageWrite, chatUpdate]);
+
+        console.log(timeSinceLastUpdate, NOTIFICATION_THROTTLE_MS, shouldSendNotification, "[[[[[[[[[[[[[[[[[[")
+        const reciveUser = await UserModel.findById(receiverId).select('fcmToken').lean();
+
+
+        if (!reciveUser) {
+          return {
+            message: "receiver not found"
+          }
+        }
+        const activeUsers = getActiveUsers();
+        const isReceiverOnline = activeUsers.includes(receiverId);
+        console.log("send,message --------->", activeUsers, reciveUser, shouldSendNotification)
+        if (!isReceiverOnline && reciveUser?.fcmToken && shouldSendNotification) {
+          console.log("sending and triggering notifcation")
+          await sendNotification(
+            reciveUser.fcmToken,
+            "You have a new chat message",
+            "Someone sent you a new message."
+          );
+        }
 
         return { status: true };
       } catch (error) {

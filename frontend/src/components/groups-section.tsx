@@ -128,7 +128,7 @@ export const GroupsSection = ({ isUserJoined }: Props) => {
             page.data.groups.length > 0 ? (
               page.data.groups.map((group: any, postIndex: number) => (
                 <React.Fragment key={`${postIndex}`}>
-                  <GroupCard group={group} />
+                  <GroupCard group={group} isUserJoined={isUserJoined} />
                 </React.Fragment>
               ))
             ) : (

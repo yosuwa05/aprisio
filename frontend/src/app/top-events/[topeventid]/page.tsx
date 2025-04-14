@@ -120,10 +120,10 @@ export default function ViewTopEventPage() {
                     Buy Tickets
                   </Button>
 
-                  <div className='text-[#353535CC]/80 font-extrabold font-roboto text-center text-lg py-2 '>
+                  {/* <div className='text-[#353535CC]/80 font-extrabold font-roboto text-center text-lg py-2 '>
                     INR {data?.event?.price || ""} + GST
-                  </div>
-                  {/* <div className='text-center py-2'>
+                  </div> */}
+                  <div className='text-center py-2'>
                     {data?.event?.strikePrice && (
                       <div className='text-gray-500 text-lg line-through font-bold'>
                         INR {data?.event?.strikePrice} + GST
@@ -132,7 +132,7 @@ export default function ViewTopEventPage() {
                     <div className='text-[#353535CC]/80 font-extrabold font-roboto text-lg'>
                       INR {data?.event?.price || ""} + GST
                     </div>
-                  </div> */}
+                  </div>
                 </div>
               </div>
               <div className='text-contrasttext text-base font-sans flex justify-between flex-wrap items-center max-w-4xl'>

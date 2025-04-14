@@ -7,6 +7,7 @@ import { PhotosSection } from "@/components/groups/photos";
 import { GroupShareSection } from "@/components/groupshare-section";
 import { Skeleton } from "@/components/ui/skeleton";
 import { _axios } from "@/lib/axios-instance";
+import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react";
 import placeholder from "@img/assets/placeholder-hero.jpeg";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +18,7 @@ import { useState } from "react";
 export default function GroupPage() {
   const { groupid } = useParams();
   const router = useRouter();
+  const user = useGlobalAuthStore((state) => state.user);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -30,6 +32,18 @@ export default function GroupPage() {
     },
   });
 
+  const { data: communityData } = useQuery({
+    queryKey: ["community-information", data?.group?.subTopic?.slug, user?.id],
+    queryFn: async () => {
+      const res = await _axios.get(
+        `/community/info?slug=${data?.group?.subTopic?.slug}&userId=${user?.id}`
+      );
+      return res.data;
+    },
+    enabled: !!data?.group?.subTopic?.slug,
+  });
+
+  console.log(communityData?.isUserJoined, "isuserjoined");
   return (
     <div className='px-1 md:px-8 lg:px-16 xl:px-20 py-6'>
       <div className='flex flex-col lg:flex-row gap-8'>
@@ -61,8 +75,8 @@ export default function GroupPage() {
                 className='text-gray-600'
               />
               <p className='text-sm text-textcol'>
-                {data?.group?.memberCount + 1} Member
-                {data?.group?.memberCount + 1 > 1 && "s"}
+                {data?.group?.memberCount} Member
+                {data?.group?.memberCount > 1 && "s"}
               </p>
             </div>
           </div>
@@ -96,7 +110,9 @@ export default function GroupPage() {
           </div>
 
           <div className='mt-3'>
-            {activeIndex === 0 && <GroupsFeedSection />}
+            {activeIndex === 0 && (
+              <GroupsFeedSection isUserJoined={communityData?.isUserJoined} />
+            )}
             {activeIndex === 1 && <GroupShareSection />}
             {activeIndex === 2 && (
               <div className='px-4'>
@@ -110,6 +126,7 @@ export default function GroupPage() {
               <EventsSection
                 groupid={data?.group._id}
                 gropuslug={data?.group?.slug}
+                isUserJoined={communityData?.isUserJoined}
               />
             )}
             {activeIndex === 4 && <PersonsSection groupid={data?.group._id} />}

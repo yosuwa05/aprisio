@@ -43,13 +43,14 @@ interface IAdmin {
 
 interface Props {
   group: IGroupCard;
+  isUserJoined: boolean;
 }
 
 interface IGroup {
   id: string;
 }
 
-export default function GroupCard({ group }: Props) {
+export default function GroupCard({ group, isUserJoined }: Props) {
   const user = useGlobalAuthStore((state) => state.user);
   const { topic } = useParams();
   const router = useRouter();
@@ -140,7 +141,7 @@ export default function GroupCard({ group }: Props) {
             </h2>
             <div className='flex flex-col sm:flex-row gap-2 sm:gap-6 items-start sm:items-center justify-between'>
               <p className='text-[#043A53] text-xs font-medium text-left'>
-                {group?.memberCount + 1} Member
+                {group?.memberCount} Member
               </p>
               <p className='text-gray-500 text-xs font-medium '>
                 <span>Created</span> {formatDate(group?.createdAt)}
@@ -183,7 +184,12 @@ export default function GroupCard({ group }: Props) {
           ) : user && group.canJoin ? (
             <Button
               disabled={isPending}
-              onClick={() => mutate({ id: group._id })}
+              onClick={() => {
+                if (isUserJoined === false) {
+                  return toast.error("You must join the community  ");
+                }
+                mutate({ id: group._id });
+              }}
               className='rounded-3xl border-[0.2px] bg-[#F2F5F6] border-[#043A53] hover:bg-[#FCF7EA] text-black w-full sm:w-auto'>
               Join
             </Button>

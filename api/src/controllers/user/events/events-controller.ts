@@ -134,6 +134,9 @@ export const EventsController = new Elysia({
 
         if (eventRules) eventRulesData = JSON.parse(eventRules);
 
+        // Check if the event creator is also the group admin
+        const isCreatorGroupAdmin = userId === group.groupAdmin.toString();
+
         const newEvent = new EventModel({
           date: eventDate,
           name: eventName,
@@ -146,29 +149,31 @@ export const EventsController = new Elysia({
           managedBy: userId,
           eventType: eventType,
           eventTime: eventTime,
+          isApprovedByAdmin: isCreatorGroupAdmin,
         });
         await newEvent.save();
 
-        const user = await UserModel.findById(group.groupAdmin).lean();
+        if (!isCreatorGroupAdmin) {
+          const user = await UserModel.findById(group.groupAdmin).lean();
 
-        if (user && user.fcmToken) {
-          await sendNotification(
-            user.fcmToken,
-            "New event created",
-            "A new event: " + eventName + " has been created in your group.",
-          );
+          if (user && user.fcmToken) {
+            await sendNotification(
+              user.fcmToken,
+              "New event created",
+              "A new event: " + eventName + " has been created in your group."
+            );
 
-          const newNotification = new NotificationModel({
-            user: user._id,
-            type: "new-event",
-            content: `A new event has been created in your group: ${group.name}.`,
-            from: userId,
-            event: newEvent._id,
-            title: "New Event Created",
-          });
-          await newNotification.save();
+            const newNotification = new NotificationModel({
+              user: user._id,
+              type: "new-event",
+              content: `A new event has been created in your group: ${group.name}.`,
+              from: userId,
+              event: newEvent._id,
+              title: "New Event Created",
+            });
+            await newNotification.save();
+          }
         }
-
 
         return {
           message: "Event created successfully",

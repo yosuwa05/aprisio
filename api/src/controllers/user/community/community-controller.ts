@@ -1,6 +1,9 @@
+import { GroupModel } from "@/models/group.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { TopicModel } from "@/models/topicsmodel";
+import { UserGroupsModel } from "@/models/usergroup.model";
 import { UserSubTopicModel } from "@/models/usersubtopic.model";
+import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 import { Types } from "mongoose";
 
@@ -414,15 +417,65 @@ export const communityController = new Elysia({
 
         // Add statistics lookups
         aggregationPipeline.push(
+
           {
             $lookup: {
               from: "groups",
-              let: { subTopicId: { $toObjectId: "$subTopic._id" } },
+              let: {
+                subTopicId: { $toObjectId: "$subTopic._id" },
+                userId: userId ? new ObjectId(userId) : null,
+                joined: "$subTopic.joined",
+              },
               pipeline: [
                 {
                   $match: {
-                    $expr: { $eq: ["$subTopic", "$$subTopicId"] },
-                    active: true,
+                    $expr: {
+                      $and: [
+                        { $eq: ["$subTopic", "$$subTopicId"] },
+                        { $eq: ["$active", true] },
+                      ],
+                    },
+                  },
+                },
+                // ✅ Filter groups whose groupAdmin follows the subtopic
+                {
+                  $lookup: {
+                    from: "usersubtopics",
+                    let: {
+                      adminId: "$groupAdmin",
+                      subTopicId: "$subTopic",
+                    },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$userId", "$$adminId"] },
+                              { $eq: ["$subTopicId", "$$subTopicId"] },
+                            ],
+                          },
+                        },
+                      },
+                    ],
+                    as: "adminFollowCheck",
+                  },
+                },
+                {
+                  $match: {
+                    $expr: {
+                      $gt: [{ $size: "$adminFollowCheck" }, 0],
+                    },
+                  },
+                },
+                {
+                  $match: {
+                    $expr: {
+                      $or: [
+                        { $ne: ["$groupAdmin", "$$userId"] },
+                        { $eq: ["$$joined", true] },
+                        { $eq: ["$$userId", null] },
+                      ],
+                    },
                   },
                 },
                 {
@@ -468,6 +521,32 @@ export const communityController = new Elysia({
                 {
                   $match: {
                     $expr: { $eq: ["$subTopic", "$$subTopicId"] },
+                  },
+                },
+                {
+                  $lookup: {
+                    from: "usersubtopics",
+                    let: { postAuthorId: "$author", subTopicId: "$$subTopicId" },
+                    pipeline: [
+                      {
+                        $match: {
+                          $expr: {
+                            $and: [
+                              { $eq: ["$userId", "$$postAuthorId"] },
+                              { $eq: ["$subTopicId", "$$subTopicId"] },
+                            ],
+                          },
+                        },
+                      },
+                    ],
+                    as: "authorFollowCheck",
+                  },
+                },
+                {
+                  $match: {
+                    $expr: {
+                      $gt: [{ $size: "$authorFollowCheck" }, 0],
+                    },
                   },
                 },
                 {
@@ -634,4 +713,5 @@ export const communityController = new Elysia({
         description: "Get subtopic info",
       },
     }
-  );
+  )
+

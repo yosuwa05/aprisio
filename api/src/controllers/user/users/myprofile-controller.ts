@@ -8,6 +8,7 @@ import {
 } from "@/models";
 import { GroupModel } from "@/models/group.model";
 import { UserGroupsModel } from "@/models/usergroup.model";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import { StoreType } from "@/types";
 import { Elysia, t } from "elysia";
 import { Types } from "mongoose";
@@ -1090,3 +1091,52 @@ export const MyProfileController = new Elysia({
       eventId: t.String()
     }),
   })
+  .get(
+    "/joined-communities",
+    async ({ set, query }) => {
+      try {
+        const { page, limit, userId } = query;
+
+        const _page = Number(page) || 1;
+        const _limit = Number(limit) || 10;
+
+        const communities = await UserSubTopicModel.find({ userId: userId })
+          .populate({
+            path: "subTopicId",
+            select: "subTopicName topic slug",
+            populate: {
+              path: "topic",
+              select: "topicName",
+            },
+          })
+          .sort({ createdAt: -1, _id: -1 })
+          .skip((_page - 1) * _limit)
+          .limit(_limit)
+          .lean();
+
+        set.status = 200;
+
+        return {
+          communities,
+          ok: true,
+        };
+      } catch (error: any) {
+        console.log(error);
+        set.status = 500;
+        return {
+          message: error,
+        };
+      }
+    },
+    {
+      detail: {
+        summary: "Joined Communitis by  user",
+        description: "Joined Communitis by user",
+      },
+      query: t.Object({
+        page: t.Optional(t.String()),
+        limit: t.Optional(t.String()),
+        userId: t.String(),
+      }),
+    },
+  )

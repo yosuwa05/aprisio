@@ -25,6 +25,13 @@ export const postController = new Elysia({
 
         const subTopic = await SubTopicModel.findOne({ slug: query.subTopic });
 
+        const followers = await UserSubTopicModel.find({ subTopicId: subTopic?._id }).select("userId");
+
+        const followedUserIds = followers.map((f) => f.userId);
+
+
+        console.log(followedUserIds, "isUserFollowed")
+
         if (!subTopic) {
           set.status = 404;
           return {
@@ -37,6 +44,7 @@ export const postController = new Elysia({
           {
             $match: {
               subTopic: subTopic._id,
+              author: { $in: followedUserIds },
             },
           },
           {
@@ -171,6 +179,7 @@ export const postController = new Elysia({
 
         const totalPosts = await PostModel.countDocuments({
           subTopic: subTopic._id,
+
         });
         const hasNextPage = sanitizedPage * sanitizedLimit < totalPosts;
 
@@ -901,7 +910,11 @@ export const postController = new Elysia({
         const sanitizedLimit = Math.max(1, Math.min(limit, 20));
 
         const group = await GroupModel.findOne({ slug: groupid });
+        const subTopic = await SubTopicModel.findOne({ _id: group?.subTopic });
 
+        const followers = await UserSubTopicModel.find({ subTopicId: subTopic?._id }).select("userId");
+
+        const followedUserIds = followers.map((f) => f.userId);
         if (!group) {
           return {
             ok: false,
@@ -916,6 +929,7 @@ export const postController = new Elysia({
           {
             $match: {
               group: new Types.ObjectId(group._id),
+              author: { $in: followedUserIds },
             },
           },
           {

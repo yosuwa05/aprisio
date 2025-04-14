@@ -6,7 +6,10 @@ import { EventCommentModel } from "@/models/event-comments";
 import { GroupModel } from "@/models/group.model";
 import { GroupPhotoModel } from "@/models/groupphotos.model";
 import { GroupPostShareModel } from "@/models/grouppostshare";
+import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
+import { StoreType } from "@/types";
 import Elysia, { t } from "elysia";
 
 export const DeleteManagementController = new Elysia({
@@ -149,3 +152,59 @@ export const DeleteManagementController = new Elysia({
             description: "Deletes a group along with all associated posts, comments, likes, and shares."
         }
     })
+    .post(
+        "/unjoin-community",
+        async ({ set, body, store }) => {
+            try {
+                const { subTopicId } = body;
+                const userId = (store as StoreType)?.id;
+                console.log(userId)
+                const subTopic = await SubTopicModel.findById(subTopicId);
+
+                if (!subTopic) {
+                    set.status = 400;
+                    return {
+                        message: "Subtopic not found",
+                    };
+                }
+
+                const groups = await GroupModel.find({ subTopic: subTopic._id }).select("_id");
+
+                const groupIds = groups.map((group) => group._id);
+
+                const result = await UserGroupsModel.deleteMany({
+                    userId,
+                    group: { $in: groupIds },
+                    role: "member",
+                });
+
+                const unJoinSubTopic = await UserSubTopicModel.findOneAndDelete({
+                    userId,
+                    subTopicId: subTopic._id,
+                })
+
+                return {
+                    message: "Unjoined successfully",
+                    ok: true,
+                };
+            } catch (error: any) {
+                console.log("Unjoin Community Error:", error);
+                set.status = 500;
+                return {
+                    message: "An error occurred while unjoining the community.",
+                    error: error.message || error,
+                    ok: false,
+                };
+            }
+        },
+        {
+            detail: {
+                summary: "Unjoin Community",
+                description: "Unjoin Community",
+            },
+            body: t.Object({
+                subTopicId: t.String()
+            })
+        }
+    );
+

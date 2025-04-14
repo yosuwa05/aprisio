@@ -5,11 +5,25 @@ import { useEffect } from "react";
 import { getQueryClient } from "./get-query-client";
 import { _axios } from "./lib/axios-instance";
 import { useGlobalAuthStore } from "./stores/GlobalAuthStore";
+import { WS_BASE_URL } from "./lib/config";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
 
   const user = useGlobalAuthStore((state) => state.user);
+
+  useEffect(() => {
+    const ws = new WebSocket(`${WS_BASE_URL}/api/ws`);
+
+    ws.onopen = () => {
+      console.log("WebSocket connection opened frontned ");
+      ws.send(JSON.stringify({ userId: user?.id }));
+    };
+
+    ws.onmessage = (event) => {
+      console.log("Message received from server:", event.data);
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

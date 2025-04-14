@@ -48,6 +48,9 @@ export function TopicsCard({
         queryClient.invalidateQueries({
           queryKey: ["joined"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["community", user?.id],
+        });
       } else {
         toast.error(data.error);
       }

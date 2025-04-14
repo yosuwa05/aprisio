@@ -3,6 +3,7 @@ import { GroupModel } from "@/models/group.model";
 import { GroupPhotoModel } from "@/models/groupphotos.model";
 import { SubTopicModel } from "@/models/subtopicmodel";
 import { UserGroupsModel } from "@/models/usergroup.model";
+import { UserSubTopicModel } from "@/models/usersubtopic.model";
 import Elysia, { t } from "elysia";
 import { Types } from "mongoose";
 
@@ -13,6 +14,230 @@ export const noAuthGroupController = new Elysia({
     tags: ["Anonymous User - Group"],
   },
 })
+  // .get(
+  //   "/",
+  //   async ({ query }) => {
+  //     try {
+  //       const { subTopic, userId, search } = query;
+
+  //       const page = query.page || 1;
+  //       const limit = query.limit || 10;
+
+  //       let subTopicData = await SubTopicModel.findOne({ slug: subTopic });
+
+  //       let _limit = limit ?? 10;
+  //       let _page = page ?? 1;
+
+  //       if (!subTopicData) {
+  //         return {
+  //           data: [],
+  //           message: "Invalid subtopic",
+  //           ok: false,
+  //         };
+  //       }
+
+  //       let searchQuery: any = {
+  //         subTopic: subTopicData._id,
+  //       };
+
+  //       if (search) {
+  //         searchQuery.$or = [{ name: { $regex: search, $options: "i" } }];
+  //       }
+
+  //       const groups = await GroupModel.find(searchQuery)
+  //         .populate("groupAdmin", "name")
+  //         .sort({ createdAt: -1 })
+  //         .skip((_page - 1) * _limit)
+  //         .limit(_limit)
+  //         .lean()
+  //         .exec();
+
+  //       const groupIds = groups.map((g) => g._id);
+
+  //       let userJoinedGroups: any[] = [];
+  //       if (userId) {
+  //         userJoinedGroups = await UserGroupsModel.find({
+  //           userId,
+  //           group: { $in: groupIds },
+  //         }).lean();
+  //       }
+
+  //       const joinedGroupSet = new Set(
+  //         userJoinedGroups.map((ug) => String(ug.group))
+  //       );
+
+  //       const updatedGroups = groups.map((group) => {
+  //         let canJoin = true;
+
+  //         if (userId) {
+  //           if (
+  //             String(group.groupAdmin?._id) === userId ||
+  //             joinedGroupSet.has(String(group._id))
+  //           ) {
+  //             canJoin = false;
+  //           }
+  //         }
+
+  //         return { ...group, canJoin };
+  //       });
+
+  //       const total = await GroupModel.countDocuments(searchQuery);
+
+  //       return {
+  //         groups: updatedGroups,
+  //         ok: true,
+  //         page,
+  //         limit,
+  //         total,
+  //       };
+  //     } catch (error) {
+  //       console.error("Error fetching groups:", error);
+  //       return {
+  //         message: "An error occurred while fetching groups.",
+  //         ok: false,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     query: t.Object({
+  //       page: t.Number(),
+  //       limit: t.Number(),
+  //       subTopic: t.Optional(t.String()),
+  //       userId: t.Optional(t.String()),
+  //       search: t.Optional(t.String()),
+  //     }),
+  //     detail: {
+  //       description: "Get groups",
+  //       summary: "Get groups",
+  //     },
+  //   }
+  // )
+
+
+  // .get(
+  //   "/",
+  //   async ({ query }) => {
+  //     try {
+  //       const { subTopic, userId, search } = query;
+
+  //       const page = query.page || 1;
+  //       const limit = query.limit || 10;
+  //       const _limit = limit ?? 10;
+  //       const _page = page ?? 1;
+
+  //       const subTopicData = await SubTopicModel.findOne({ slug: subTopic });
+
+  //       if (!subTopicData) {
+  //         return {
+  //           data: [],
+  //           message: "Invalid subtopic",
+  //           ok: false,
+  //         };
+  //       }
+
+  //       // Check if user has followed the subtopic
+  //       let isFollowing = false;
+  //       if (userId) {
+  //         const subTopicFollowed = await UserSubTopicModel.findOne({
+  //           userId,
+  //           subTopicId: subTopicData._id,
+  //         });
+
+  //         if (subTopicFollowed) {
+  //           isFollowing = true;
+  //         }
+  //       }
+
+  //       let searchQuery: any = {
+  //         subTopic: subTopicData._id,
+  //       };
+
+  //       if (search) {
+  //         searchQuery.$or = [{ name: { $regex: search, $options: "i" } }];
+  //       }
+
+  //       if (userId && !isFollowing) {
+  //         searchQuery.groupAdmin = { $ne: userId };
+  //       }
+
+  //       let groups = await GroupModel.find(searchQuery)
+  //         .populate("groupAdmin", "name")
+  //         .sort({ createdAt: -1 })
+  //         .skip((_page - 1) * _limit)
+  //         .limit(_limit)
+  //         .lean()
+  //         .exec();
+
+
+  //       const groupIds = groups.map((g) => g._id);
+  //       let userJoinedGroups: any[] = [];
+
+  //       if (userId) {
+  //         userJoinedGroups = await UserGroupsModel.find({
+  //           userId,
+  //           group: { $in: groupIds },
+  //         }).lean();
+  //       }
+
+  //       const joinedGroupSet = new Set(
+  //         userJoinedGroups.map((ug) => String(ug.group))
+  //       );
+  //       const memberCounts = await UserGroupsModel.aggregate([
+  //         { $match: { group: { $in: groupIds } } },
+  //         { $group: { _id: "$group", count: { $sum: 1 } } }
+  //       ]);
+
+  //       const memberCountMap = new Map(
+  //         memberCounts.map(({ _id, count }) => [String(_id), count])
+  //       );
+  //       const updatedGroups = groups.map((group) => {
+  //         let canJoin = true;
+  //         const groupId = String(group._id);
+
+  //         if (userId && joinedGroupSet.has(groupId)) {
+  //           canJoin = false;
+  //         }
+
+  //         const memberCount = memberCountMap.get(groupId) || 0;
+
+  //         return {
+  //           ...group,
+  //           canJoin,
+  //           memberCount,
+  //         };
+  //       });
+
+  //       const total = await GroupModel.countDocuments(searchQuery);
+
+  //       return {
+  //         groups: updatedGroups,
+  //         ok: true,
+  //         page,
+  //         limit,
+  //         total,
+  //       };
+  //     } catch (error) {
+  //       console.error("Error fetching groups:", error);
+  //       return {
+  //         message: "An error occurred while fetching groups.",
+  //         ok: false,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     query: t.Object({
+  //       page: t.Number(),
+  //       limit: t.Number(),
+  //       subTopic: t.Optional(t.String()),
+  //       userId: t.Optional(t.String()),
+  //       search: t.Optional(t.String()),
+  //     }),
+  //     detail: {
+  //       description: "Get groups",
+  //       summary: "Get groups under a subtopic (hide own groups if not following)",
+  //     },
+  //   }
+  // )
   .get(
     "/",
     async ({ query }) => {
@@ -21,11 +246,10 @@ export const noAuthGroupController = new Elysia({
 
         const page = query.page || 1;
         const limit = query.limit || 10;
+        const _limit = limit ?? 10;
+        const _page = page ?? 1;
 
-        let subTopicData = await SubTopicModel.findOne({ slug: subTopic });
-
-        let _limit = limit ?? 10;
-        let _page = page ?? 1;
+        const subTopicData = await SubTopicModel.findOne({ slug: subTopic });
 
         if (!subTopicData) {
           return {
@@ -35,14 +259,34 @@ export const noAuthGroupController = new Elysia({
           };
         }
 
+        // Get all followers of the subtopic
+        const followers = await UserSubTopicModel.find({
+          subTopicId: subTopicData._id,
+        }).select("userId");
+
+        const followedUserIds = followers.map((f) => f.userId.toString());
+
+        // Determine if current user is following
+        let isFollowing = false;
+        if (userId && followedUserIds.includes(userId)) {
+          isFollowing = true;
+        }
+
+        // Build group search query
         let searchQuery: any = {
           subTopic: subTopicData._id,
+          groupAdmin: { $in: followedUserIds }, // only admins who follow the subtopic
         };
 
         if (search) {
           searchQuery.$or = [{ name: { $regex: search, $options: "i" } }];
         }
 
+        if (userId && !isFollowing) {
+          searchQuery.groupAdmin.$ne = userId; // hide own groups if not following
+        }
+
+        // Fetch groups
         const groups = await GroupModel.find(searchQuery)
           .populate("groupAdmin", "name")
           .sort({ createdAt: -1 })
@@ -52,8 +296,8 @@ export const noAuthGroupController = new Elysia({
           .exec();
 
         const groupIds = groups.map((g) => g._id);
-
         let userJoinedGroups: any[] = [];
+
         if (userId) {
           userJoinedGroups = await UserGroupsModel.find({
             userId,
@@ -65,19 +309,25 @@ export const noAuthGroupController = new Elysia({
           userJoinedGroups.map((ug) => String(ug.group))
         );
 
+        const memberCounts = await UserGroupsModel.aggregate([
+          { $match: { group: { $in: groupIds } } },
+          { $group: { _id: "$group", count: { $sum: 1 } } },
+        ]);
+
+        const memberCountMap = new Map(
+          memberCounts.map(({ _id, count }) => [String(_id), count])
+        );
+
         const updatedGroups = groups.map((group) => {
-          let canJoin = true;
+          const groupId = String(group._id);
+          const canJoin = userId ? !joinedGroupSet.has(groupId) : true;
+          const memberCount = memberCountMap.get(groupId) || 0;
 
-          if (userId) {
-            if (
-              String(group.groupAdmin?._id) === userId ||
-              joinedGroupSet.has(String(group._id))
-            ) {
-              canJoin = false;
-            }
-          }
-
-          return { ...group, canJoin };
+          return {
+            ...group,
+            canJoin,
+            memberCount,
+          };
         });
 
         const total = await GroupModel.countDocuments(searchQuery);
@@ -107,10 +357,12 @@ export const noAuthGroupController = new Elysia({
       }),
       detail: {
         description: "Get groups",
-        summary: "Get groups",
+        summary:
+          "Get groups under a subtopic (only show groups if admin follows the subtopic, and hide own groups if user not following)",
       },
     }
   )
+
   .get(
     "/me",
     async ({ query }) => {
@@ -243,17 +495,21 @@ export const noAuthGroupController = new Elysia({
       try {
         const { slug } = params;
 
-        const group = await GroupModel.findOne({ slug });
-
+        const group = await GroupModel.findOne({ slug }).populate("subTopic", "slug")
+          .lean();
+        const memberCount = await UserGroupsModel.countDocuments({ group: group?._id });
         if (!group) {
           return {
             message: "Group not found",
             ok: false,
           };
         }
-
+        group.memberCount = memberCount;
         return {
-          group,
+          group: {
+            ...group,
+            memberCount,
+          },
           ok: true,
         };
       } catch (error) {
@@ -274,13 +530,77 @@ export const noAuthGroupController = new Elysia({
       },
     }
   )
+  // .get(
+  //   "/events",
+  //   async ({ query }) => {
+  //     try {
+  //       let limit = Number(query.limit) || 10;
+  //       let page = Number(query.page) || 1;
+
+  //       const { userId, groupid } = query;
+
+  //       const group = await GroupModel.findOne({ _id: groupid });
+
+  //       if (!group) {
+  //         return {
+  //           ok: false,
+  //           message: "Group not found",
+  //         };
+  //       }
+  //       const isMember = await UserGroupsModel.findOne({
+  //         group: group._id,
+  //         userId,
+  //       });
+
+  //       const events = await EventModel.find({ group: groupid, isApprovedByAdmin: true })
+  //         .sort({ createdAt: -1, _id: -1 })
+  //         .skip((page - 1) * limit)
+  //         .limit(limit)
+  //         .select("-unnecessaryField")
+  //         .lean();
+
+  //       let tempEvents = events.map((event) => ({
+  //         ...event,
+  //         attending: userId
+  //           ? event.attendees?.some(
+  //             (attendee) => attendee.toString() === userId
+  //           )
+  //           : false,
+  //       }));
+
+  //       return {
+  //         events: tempEvents,
+  //         canJoin: !isMember,
+  //         ok: true,
+  //       };
+  //     } catch (error) {
+  //       console.error("Error fetching events: We Possibly fucked up.", error);
+
+  //       return {
+  //         ok: false,
+  //         error,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     query: t.Object({
+  //       page: t.Optional(t.Number()),
+  //       limit: t.Optional(t.Number()),
+  //       userId: t.Optional(t.String()),
+  //       groupid: t.String(),
+  //     }),
+  //     detail: {
+  //       description: "Get group events",
+  //       summary: "Get group events",
+  //     },
+  //   }
+  // )
   .get(
     "/events",
     async ({ query }) => {
       try {
-        let limit = Number(query.limit) || 10;
-        let page = Number(query.page) || 1;
-
+        const limit = Number(query.limit) || 10;
+        const page = Number(query.page) || 1;
         const { userId, groupid } = query;
 
         const group = await GroupModel.findOne({ _id: groupid });
@@ -291,19 +611,35 @@ export const noAuthGroupController = new Elysia({
             message: "Group not found",
           };
         }
+
         const isMember = await UserGroupsModel.findOne({
           group: group._id,
           userId,
         });
 
-        const events = await EventModel.find({ group: groupid, isApprovedByAdmin: true })
+        // Get subTopic of group
+        const subTopic = await SubTopicModel.findById(group.subTopic);
+        if (!subTopic) {
+          return { ok: false, message: "SubTopic not found" };
+        }
+
+        // Get users who follow the subTopic
+        const userSubTopicFollowers = await UserSubTopicModel.find({ subTopicId: subTopic._id }).select("userId");
+        const allowedUserIds = userSubTopicFollowers.map((f) => f.userId.toString());
+
+        // Fetch events, filtering authors who follow the topic
+        const rawEvents = await EventModel.find({
+          group: groupid,
+          isApprovedByAdmin: true,
+          managedBy: { $in: allowedUserIds },
+        })
           .sort({ createdAt: -1, _id: -1 })
           .skip((page - 1) * limit)
           .limit(limit)
           .select("-unnecessaryField")
           .lean();
 
-        let tempEvents = events.map((event) => ({
+        const events = rawEvents.map((event) => ({
           ...event,
           attending: userId
             ? event.attendees?.some(
@@ -313,12 +649,12 @@ export const noAuthGroupController = new Elysia({
         }));
 
         return {
-          events: tempEvents,
+          events,
           canJoin: !isMember,
           ok: true,
         };
       } catch (error) {
-        console.error("Error fetching events: We Possibly fucked up.", error);
+        console.error("Error fetching events:", error);
 
         return {
           ok: false,
@@ -334,7 +670,7 @@ export const noAuthGroupController = new Elysia({
         groupid: t.String(),
       }),
       detail: {
-        description: "Get group events",
+        description: "Get group events where creator follows the same subTopic",
         summary: "Get group events",
       },
     }

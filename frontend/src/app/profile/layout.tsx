@@ -5,6 +5,7 @@ import { EditProfile } from "@/components/my-profile/my-profile-edit";
 import { MyProfileTopBar } from "@/components/my-profile/my-profile-top-bar";
 import { MyProfileGroupSection } from "@/components/my-profile/tabsection/my-profile-created-groups";
 import { MyProfileLikedPosts } from "@/components/my-profile/tabsection/my-profile-favourite-posts";
+import { MyProfileJoinedCommunities } from "@/components/my-profile/tabsection/my-profile-joined-communities";
 import { MyProfileJoinedGroups } from "@/components/my-profile/tabsection/my-profile-joined-groups";
 import { MyProfileOrganisedEvents } from "@/components/my-profile/tabsection/my-profile-orgainsed-events";
 import { MyProfileParticipatedEvents } from "@/components/my-profile/tabsection/my-profile-participated-events";
@@ -221,6 +222,7 @@ export default function MyProfile({
           {activeTab == "joined-groups" && <MyProfileJoinedGroups />}
           {activeTab == "payment" && <MyProfilePayments />}
           {activeTab == "edit-profile" && <EditProfile />}
+          {activeTab == "joined-communities" && <MyProfileJoinedCommunities />}
         </div>
         <div
           className='hidden bxl:block lg:max-w-[350px] rounded-lg h-fit mt-4 mr-2'

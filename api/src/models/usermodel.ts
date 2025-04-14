@@ -18,7 +18,6 @@ interface User {
   emailVerificationTokenExpiry: Date | null;
   passwordResetToken: string | null;
   lastEmailSentTime: Date | null
-
 }
 
 const UserSchema = new Schema<User>(

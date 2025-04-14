@@ -8,18 +8,34 @@ import { baseRouter } from "./controllers";
 
 import { EventModel } from "./models";
 import { AdminEventModel } from "./models/admin-events.model";
+import { addWebSocket, getActiveUsers, removeWebsocket } from "./lib/ws-store";
 
 const app = new Elysia();
 
-
+let interval: any
 app.ws("/api/ws", {
   open: (ws) => {
     console.log("WebSocket connection opened");
-
+    ws.send("connected")
+    interval = setInterval(() => {
+      ws.send(JSON.stringify({ type: "ping" }));
+    }, 20000); // 20 seconds
   },
-  message: (ws, message) => {
-    console.log("Message received:", message);
+  message: (ws: any, message: any) => {
+    try {
+      console.log(message, "message")
+      addWebSocket(message?.userId, ws)
+    } catch (error) {
+      console.error("Invalid message", error);
+    }
   },
+  close: (ws) => {
+    console.log("WebSocket connection closed");
+    getActiveUsers().forEach((userId) => {
+      console.log(userId)
+      removeWebsocket(userId)
+    })
+  }
 });
 
 
