@@ -85,7 +85,7 @@ export const formController = new Elysia({
 `;
 
         // const verificationLink = `http://localhost:3001/form/verify-email?token=${verificationToken}`;
-        const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
+        // const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
 
         await sendEmail({
           subject: "New User Joined",
@@ -94,16 +94,83 @@ export const formController = new Elysia({
           from: "noreply@aprisio.com",
         });
 
-        const verificationLink2 = `https://aprisio.com/verify-email?token=${hashedToken}`;
+        // const verificationLink2 = `https://aprisio.com/verify-email?token=${hashedToken}`;
+
+        const currentTime = new Date();
+
+        const lastEmailSentTime = newUser.lastEmailSentTime ?? new Date(0);
+        const timeSinceLastEmail = currentTime.getTime() - lastEmailSentTime.getTime();
+        if (timeSinceLastEmail < 2 * 60 * 1000) {
+          return {
+            message: "Please wait before requesting a new verification email.",
+            ok: false,
+          };
+        }
+
+        // const verificationToken = generateVerificationToken();
+        // const hashedToken = hashToken(verificationToken);
+        // const tokenExpiration = new Date(Date.now() + 12 * 60 * 60 * 1000);
+
+        newUser.emailVerificationToken = hashedToken;
+        newUser.emailVerificationTokenExpiry = tokenExpiration;
+        newUser.lastEmailSentTime = currentTime;
+        await newUser.save();
+
+        // const verificationLink = `http://localhost:3001/verify-email?token=${hashedToken}`;
+        const verificationLink = `https://aprisio.com/verify-email?token=${hashedToken}`;
+        // const verificationLink = `https://development.aprisio.com/verify-email?token=${hashedToken}`;
 
 
+        let content1 = `
+                    <html>
+                      <body style="font-family: Arial, sans-serif; background-color: #f9f9f9; margin: 0; padding: 0;">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f9f9f9">
+                          <tr>
+                            <td align="center">
+                              <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                <tr>
+                                  <td style="padding: 20px; text-align: center;">
+                                    <h2 style="color: #333;">Welcome to Aprisio!</h2>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="padding: 20px;">
+                                    <p>Hello ${newUser.name},</p>
+                                    <p>Thank you for joining Aprisio! We're excited to have you on board.</p>
+                                    <p>To get started, please verify your email address by clicking the link below:</p>
+                                    <p style="text-align: center; margin: 20px 0;">
+                                      <a href="${verificationLink}" style="background-color: #007BFF; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Verify Your Email</a>
+                                    </p>
+                                    <p>If you didn't sign up for an Aprisio account, you can safely ignore this email.</p>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style="padding: 20px; text-align: center;">
+                                    <hr style="border: 1px solid #ddd; width: 80%;">
+                                    <p style="color: #777; font-size: 14px;">If you have any questions, feel free to contact us at support@aprisio.com.</p>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </body>
+                    </html>
+                  `;
 
-        set.status = 200;
+        await sendEmail({
+          subject: "Verify Your Email to Log In",
+          to: email,
+          html: content1,
+          from: "noreply@aprisio.com",
+        });
+        set.status = 200
         return {
-          message:
-            "Registration successful! ",
+          message: "Registration successful!  A new verification email has been sent.",
+
           ok: true,
         };
+
       } catch (error: any) {
         set.status = 500;
         return {

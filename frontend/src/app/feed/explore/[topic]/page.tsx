@@ -118,7 +118,7 @@ export default function Feed() {
                 width={500}
                 height={500}
               />
-              {!data?.isUserJoined && (
+              {!data?.isUserJoined ? (
                 <div>
                   <Button
                     onClick={() => {
@@ -130,6 +130,12 @@ export default function Feed() {
                     disabled={isPending}
                     className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
                     Join Community
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <Button className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
+                    Joined
                   </Button>
                 </div>
               )}

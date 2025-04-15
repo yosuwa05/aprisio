@@ -63,11 +63,6 @@ export function MyProfileTopBar() {
       name: "Experiences",
       subItems: [],
     },
-    {
-      slug: "settings",
-      name: "Settings",
-      subItems: [],
-    },
   ];
 
   const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
