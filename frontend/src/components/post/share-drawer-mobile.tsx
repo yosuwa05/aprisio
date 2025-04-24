@@ -16,7 +16,7 @@ export function PostShareModalMobile({
   CloseDrawer,
   CloseDialog,
 }: Props) {
-  const tabs = ["Groups", "Users"];
+  const tabs = ["Groups"];
   const [activeTab, setActiveTab] = useState("Groups");
   const [groupSearch, setGroupSearch] = useState<string>("");
   const [debouncedGroupSearch] = useDebouncedValue(groupSearch, 400);

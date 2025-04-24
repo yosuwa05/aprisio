@@ -819,6 +819,7 @@ export const noAuthGroupController = new Elysia({
 
         const pipeline: any[] = [
           { $match: matchStage },
+
           {
             $lookup: {
               from: "groups",
@@ -828,18 +829,53 @@ export const noAuthGroupController = new Elysia({
             },
           },
           { $unwind: "$group" },
+
+          // 🔍 Join to check if groupAdmin follows the subTopic
+          {
+            $lookup: {
+              from: "usersubtopics",
+              let: {
+                adminId: "$group.groupAdmin",
+                subTopicId: "$group.subTopic",
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$userId", "$$adminId"] },
+                        { $eq: ["$subTopicId", "$$subTopicId"] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "adminSubTopicFollow",
+            },
+          },
+
+          // ❌ Only allow if groupAdmin has followed the subTopic
+          {
+            $match: {
+              "adminSubTopicFollow.0": { $exists: true },
+            },
+          },
+
+          // 🔍 Apply search if provided
           search
             ? { $match: { "group.name": { $regex: search, $options: "i" } } }
             : null,
+
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * limit },
           { $limit: limit },
+
           {
             $project: {
               "group.name": 1,
               "group.slug": 1,
-              userId: 1,
               "group._id": 1,
+              userId: 1,
             },
           },
         ].filter(Boolean);
@@ -865,7 +901,6 @@ export const noAuthGroupController = new Elysia({
       },
       query: t.Object({
         userId: t.String(),
-
         limit: t.Optional(
           t.Number({
             default: 10,
@@ -880,3 +915,78 @@ export const noAuthGroupController = new Elysia({
       }),
     }
   );
+
+// .get(
+//   "/getgroupsforshare",
+//   async ({ set, query }) => {
+//     try {
+//       const { userId, limit = 10, page = 1, search } = query;
+
+//       const matchStage: any = {};
+//       if (userId) {
+//         matchStage.userId = new Types.ObjectId(userId);
+//       }
+
+//       const pipeline: any[] = [
+//         { $match: matchStage },
+//         {
+//           $lookup: {
+//             from: "groups",
+//             localField: "group",
+//             foreignField: "_id",
+//             as: "group",
+//           },
+//         },
+//         { $unwind: "$group" },
+//         search
+//           ? { $match: { "group.name": { $regex: search, $options: "i" } } }
+//           : null,
+//         { $sort: { createdAt: -1 } },
+//         { $skip: (page - 1) * limit },
+//         { $limit: limit },
+//         {
+//           $project: {
+//             "group.name": 1,
+//             "group.slug": 1,
+//             userId: 1,
+//             "group._id": 1,
+//           },
+//         },
+//       ].filter(Boolean);
+
+//       const groups = await UserGroupsModel.aggregate(pipeline);
+
+//       set.status = 200;
+//       return {
+//         ok: true,
+//         groups,
+//       };
+//     } catch (error) {
+//       set.status = 500;
+//       return {
+//         ok: false,
+//         message: "Error while getting groups for share modal",
+//       };
+//     }
+//   },
+//   {
+//     detail: {
+//       description: "Get Groups for share modal",
+//     },
+//     query: t.Object({
+//       userId: t.String(),
+
+//       limit: t.Optional(
+//         t.Number({
+//           default: 10,
+//         })
+//       ),
+//       page: t.Optional(
+//         t.Number({
+//           default: 1,
+//         })
+//       ),
+//       search: t.Optional(t.String()),
+//     }),
+//   }
+// );

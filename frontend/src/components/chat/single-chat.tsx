@@ -140,40 +140,40 @@ export function SingleChat() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex justify-between items-center p-3 border-b bg-white sticky top-[-20px] z-10">
-        <div className="flex gap-2 items-center">
-          <ChevronLeft className="cursor-pointer" onClick={goBack} />
-          <div className="flex gap-2 items-center">
+    <div className='flex flex-col h-screen'>
+      <div className='flex justify-between items-center p-3 border-b bg-white sticky top-[-20px] z-10'>
+        <div className='flex gap-2 items-center'>
+          <ChevronLeft className='cursor-pointer' onClick={goBack} />
+          <div className='flex gap-2 items-center'>
             <Image
               src={person}
-              alt="person"
+              alt='person'
               width={30}
               height={30}
-              className="rounded-full"
+              className='rounded-full'
             />
-            <div className="flex flex-col">
-              <h5 className="text-textcol text-sm font-normal m-0 p-0">
+
+            <div className='flex flex-col'>
+              <h5 className='text-textcol text-sm font-normal m-0 p-0'>
                 {selectedChat.name}
               </h5>
             </div>
           </div>
         </div>
-        <Icon icon={"bi:three-dots"} className="text-xl cursor-pointer" />
+        <Icon icon={"bi:three-dots"} className='text-xl cursor-pointer' />
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+      <div className='flex-1 overflow-y-auto p-3 space-y-2'>
         {messages.map((msg: any) => (
-          <div key={msg.id} className="flex items-center">
+          <div key={msg.id} className='flex items-center'>
             <div
               className={`max-w-[70%] w-fit p-2 rounded-2xl text-sm break-words ${
                 msg.senderId === user?.id.toString()
                   ? "bg-blue-500 text-white self-end ml-auto"
                   : "bg-gray-200 text-gray-800 self-start"
-              }`}
-            >
+              }`}>
               {msg.deleted ? (
-                <span className="italic text-gray-400">
+                <span className='italic text-gray-400'>
                   This message was deleted
                 </span>
               ) : (
@@ -183,7 +183,7 @@ export function SingleChat() {
 
             {msg.senderId === user?.id.toString() && !msg.deleted && (
               <Trash2
-                className="ml-2 cursor-pointer text-red-500"
+                className='ml-2 cursor-pointer text-red-500'
                 size={16}
                 onClick={() => handleDeleteMessage(msg.id!)}
               />
@@ -192,9 +192,9 @@ export function SingleChat() {
         ))}
       </div>
 
-      <div className="p-3 border-t flex items-center gap-2 bg-white sticky bottom-[-20px]">
+      <div className='p-3 border-t flex items-center gap-2 bg-white sticky bottom-[-20px]'>
         <Input
-          placeholder="Type a message..."
+          placeholder='Type a message...'
           value={message}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -203,19 +203,18 @@ export function SingleChat() {
             }
           }}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 border-none bg-contrastbg text-xs text-[#828485] placeholder:text-xs font-medium pr-10"
+          className='flex-1 border-none bg-contrastbg text-xs text-[#828485] placeholder:text-xs font-medium pr-10'
         />
 
         <Button
           variant={"outline"}
-          className="p-1 rounded-full text-blue-400 bg-transparent cursor-pointer"
+          className='p-1 rounded-full text-blue-400 bg-transparent cursor-pointer'
           asChild
           onClick={() => {
             if (isPending) return;
             handleSendMessage();
-          }}
-        >
-          <Send className="h-7 w-7" />
+          }}>
+          <Send className='h-7 w-7' />
         </Button>
       </div>
     </div>

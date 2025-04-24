@@ -5,10 +5,10 @@
 	let { children } = $props();
 </script>
 
-<div class="flex w-screen">
+<div class="flex">
 	<Sidebar />
-	<div class="flex flex-col w-full">
-		<Topbar />
+	<div class="ml-[300px] flex w-full flex-col">
+		<!-- <Topbar /> -->
 		{@render children()}
 	</div>
 </div>

@@ -207,7 +207,7 @@
 	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
 </svelte:head>
 
-<div class="text-maintext no-scrollbar mx-auto h-[calc(100vh-200px)] max-w-[80%] overflow-y-auto">
+<div class="text-maintext no-scrollbar mx-auto h-[calc(100vh-200px)] max-w-[80%]">
 	<form method="POST" use:enhance class="">
 		<div class="grid grid-cols-2 gap-4 py-2">
 			<div>

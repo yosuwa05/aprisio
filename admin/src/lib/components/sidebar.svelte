@@ -87,11 +87,9 @@
 </script>
 
 <div
-	class="hidescrollbarthumb font-karla hidden h-screen min-w-[300px] max-w-[300px] border-r border-r-[#6F7E5F] bg-[#6F7E5F] text-white md:block"
+	class="hidescrollbarthumb font-karla fixed hidden h-screen min-w-[300px] max-w-[300px] border-r border-r-[#6F7E5F] bg-[#6F7E5F] text-white md:block"
 >
-	<div
-		class="hidescrollbarthumb flex h-[calc(100vh)] flex-col justify-between gap-2 overflow-y-auto"
-	>
+	<div class="hidescrollbarthumb flex h-[100vh] flex-col justify-between gap-2 overflow-y-auto">
 		<button onclick={() => goto('/admin/dashboard')}>
 			<div
 				class="flex min-h-[50px] cursor-pointer items-center justify-center gap-2 border-b-[1px] border-b-[#9faf8e]"

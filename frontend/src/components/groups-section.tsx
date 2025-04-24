@@ -83,7 +83,7 @@ export const GroupsSection = ({ isUserJoined }: Props) => {
             </div>
           ))}
         </div>
-        <div className='flex justify-end w-full  md:w-fit'>
+        <div className=' justify-end w-full  hidden md:flex  md:w-fit'>
           <Button
             className='rounded-full    bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
             onClick={() => {

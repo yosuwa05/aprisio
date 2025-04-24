@@ -59,7 +59,7 @@
 		<Tabs.Content value="list">
 			<EventsTable />
 		</Tabs.Content>
-		<Tabs.Content value="create">
+		<Tabs.Content class="max-h-screen w-full" value="create">
 			<CreateEvents />
 		</Tabs.Content>
 	</Tabs.Root>

@@ -88,10 +88,9 @@ export function PaymentSuccess() {
           />
 
           <div className='pt-10 flex flex-col gap-4 font-roboto'>
-            <h1 className='text-3xl sm:text-4xl text-[#191818] font-semibold'>
-              Ticket Sold!
+            <h1 className='text-xl  md:text-3xl sm:text-4xl text-[#191818] font-semibold'>
+              Thanks for your purchase!
             </h1>
-            <p className='text-lg text-[#7A7A7A]'>Thanks for your purchase!</p>
           </div>
         </div>
       )}

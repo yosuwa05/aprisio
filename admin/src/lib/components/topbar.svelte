@@ -26,9 +26,7 @@
 </script>
 
 <!-- In the template, use $writableGlobalStore to subscribe to the store value -->
-<div
-	class="bg-primary flex min-h-[65px] items-center justify-start border-l-[1px] border-[#9faf8e]"
->
+<div class="bg-primary flex items-center justify-start border-l-[1px] border-[#9faf8e] py-5">
 	<div class="ml-auto flex items-center gap-2 pr-5 text-white">
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>

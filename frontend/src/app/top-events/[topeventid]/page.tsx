@@ -115,7 +115,10 @@ export default function ViewTopEventPage() {
                     </div>
                   </div>
                   <Button
-                    disabled={data?.event?.isEventEnded}
+                    disabled={
+                      data?.event?.isEventEnded ||
+                      data?.event?.reminingTickets === 0
+                    }
                     onClick={() => {
                       if (!user) {
                         toast.error("Login to continue");
@@ -127,7 +130,11 @@ export default function ViewTopEventPage() {
                       router.push("/buytickets/" + topeventid);
                     }}
                     className='bg-buttoncol hover:bg-buttoncol border border-gray-300 rounded-3xl   md:text-lg  text-black font-bold py-4  md:py-6 px-6'>
-                    {data?.event?.isEventEnded ? "Completed" : "Buy Tickets"}
+                    {data?.event?.isEventEnded
+                      ? "Completed"
+                      : data?.event?.reminingTickets === 0
+                      ? "Sold Out"
+                      : "Buy Tickets"}
                   </Button>
                 </div>
               </div>

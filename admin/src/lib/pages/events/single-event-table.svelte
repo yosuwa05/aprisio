@@ -121,7 +121,7 @@
 	{#if $detailsQuery.isLoading && $detailsQuery.isRefetching}
 		<Loader class="mx-auto h-10 w-10" />
 	{:else if $detailsQuery.data}
-		<div class="text-maintext font-karla mx-auto mt-6 flex gap-5">
+		<div class="text-maintext font-karla mx-auto mt-6 flex gap-2">
 			<Button
 				size="icon"
 				onclick={() => {

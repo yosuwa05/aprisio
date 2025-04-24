@@ -220,7 +220,7 @@ export const authController = new Elysia({
         const verificationToken = generateVerificationToken();
         const hashedToken = hashToken(verificationToken);
 
-        const resetLink = `https://development.aprisio.com/reset-password/${hashedToken}`;
+        const resetLink = `https://aprisio.com/reset-password/${hashedToken}`;
 
         user.passwordResetToken = hashedToken;
 

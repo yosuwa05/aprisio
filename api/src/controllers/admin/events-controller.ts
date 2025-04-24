@@ -305,8 +305,15 @@ export const eventsController = new Elysia({
           parseCustomDate(expirydatetime) || event.expirydatetime;
         event.location = location || event.location;
         event.price = Number(price ?? 0) || event.price;
-        event.availableTickets =
-          Number(availableTickets ?? 0) || event.availableTickets;
+        const newAvailableTickets = Number(availableTickets ?? event.availableTickets);
+        if (newAvailableTickets < event.soldTickets) {
+          return {
+            message: "Available tickets cannot be less than sold tickets.",
+            ok: false,
+          };
+        }
+        event.availableTickets = newAvailableTickets;
+        event.reminingTickets = newAvailableTickets - event.soldTickets;
         event.mapLink = mapLink || event.mapLink;
         event.organiserName = organiserName || event.organiserName;
         event.biography = biography || event.biography;

@@ -236,7 +236,7 @@ export default function MyProfile({
       </div>
       <div
         onClick={() => isChatOpen(true)}
-        className='fixed bottom-10 right-10 z-[60] block  bxl:hidden'>
+        className='fixed bottom-10 right-10  block  bxl:hidden'>
         <Button className='bg-white border-2 border-blue-600 w-12 h-12 text-2xl rounded-full hover:-translate-y-3  hover:bg-blue-600 hover:text-white text-blue-600 transition-all duration-500'>
           <Icon icon={"hugeicons:bubble-chat"} />
         </Button>

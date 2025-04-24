@@ -469,9 +469,9 @@ export default function Topbar() {
 
           {!unwantedRoutes.includes(pathname) && <Notifications />}
 
-          {/* {!unwantedRoutes.includes(pathname) && (
+          {!unwantedRoutes.includes(pathname) && (
             <Button
-              className='rounded-full bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
+              className='rounded-full  block  md:hidden  bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
               onClick={() => {
                 if (activeLayout != "group") {
                   if (
@@ -491,7 +491,7 @@ export default function Topbar() {
               }}>
               {activeLayout == "group" ? "Create Group" : "Create Post"}
             </Button>
-          )} */}
+          )}
           <UserAvatar />
         </div>
       ) : (

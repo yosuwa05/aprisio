@@ -15,7 +15,6 @@ import Footer from "../components/shared/footer";
 import Testimonial from "../components/shared/testimonials";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
-import coffeeImage from "@img/images/newcoffeebanner.jpeg";
 
 export default function Home() {
   const router = useRouter();
@@ -23,13 +22,13 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
   useEffect(() => {
-    // const lastPopupDate = localStorage.getItem("popup_shown_date");
-    // const today = new Date().toISOString().split("T")[0];
+    const lastPopupDate = localStorage.getItem("popup_shown_date");
+    const today = new Date().toISOString().split("T")[0];
 
-    // if (lastPopupDate !== today) {
-    //   setShowPopup(true);
-    //   localStorage.setItem("popup_shown_date", today);
-    // }
+    if (lastPopupDate !== today) {
+      setShowPopup(true);
+      localStorage.setItem("popup_shown_date", today);
+    }
 
     setTimeout(() => {
       setLoading(false);
@@ -42,22 +41,32 @@ export default function Home() {
 
   return (
     <>
-      {/* <Dialog open={showPopup} onOpenChange={setShowPopup}>
+      <Dialog open={showPopup} onOpenChange={setShowPopup}>
         <DialogContent className='max-w-2xl md:max-w-3xl lg:max-w-4xl w-full p-4 md:p-6 cursor-pointer  lg:p-8'>
           <div
-            onClick={() => {
-              router.push("/top-events/67d7d2e814e0a096fc38974b");
-            }}
+            // onClick={() => {
+            //   router.push("/top-events/67d7d2e814e0a096fc38974b");
+            // }}
             className='w-full flex justify-center'>
-            <Image
+            {/* <Image
               src={coffeeImage}
               alt='Welcome'
               loading='eager'
-              className='w-full h-auto max-h-[80vh] object-cover rounded-lg'
-            />
+              className='w-full  object-cover rounded-lg'
+            /> */}
+            <video
+              controls
+              className='w-full h-auto max-h-[80vh] object-cover rounded-t-2xl'
+              preload='metadata'
+              loop
+              autoPlay
+              playsInline
+              muted>
+              <source src='/video/apriso-cofee-experice.mp4' type='video/mp4' />
+            </video>
           </div>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
 
       <div className='sticky top-[-2px] z-50 bg-white py-2'>
         <Topbar />

@@ -103,7 +103,7 @@ export const PostsSection = ({ isUserJoined }: Props) => {
             </div>
           ))}
         </div>
-        <div className='flex justify-end w-full  md:w-fit'>
+        <div className='  hidden md:flex  justify-end w-full  md:w-fit'>
           <Button
             className='rounded-full    bg-buttoncol text-black shadow-none text-xs lg:text-sm hover:bg-buttoncol font-semibold'
             onClick={() => {
