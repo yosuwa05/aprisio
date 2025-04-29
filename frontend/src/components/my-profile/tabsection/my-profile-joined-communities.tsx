@@ -11,7 +11,6 @@ import MyProfileTopicCard from "../my-profile-topic-card";
 
 export const MyProfileJoinedCommunities = () => {
   const user = useGlobalAuthStore((state) => state.user);
-
   const limit = 10;
   const activeTab = useGlobalLayoutStore((state) => state.activeMyProfileTab);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

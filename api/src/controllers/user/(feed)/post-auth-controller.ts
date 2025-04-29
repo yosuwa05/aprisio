@@ -44,6 +44,7 @@ export const authenticatedPostController = new Elysia({
         const existingPost = await PostModel.findOne({ title });
 
         if (existingPost) {
+          set.status = 400
           return {
             message: "Duplicate entry. Title already exists.",
             ok: false,

@@ -118,8 +118,11 @@ export default function CommentSection({
     <div>
       <div className='mt-4 flex gap-4 items-center'>
         <Avatar className='h-9 w-9 object-cover'>
-          <AvatarImage src={BASE_URL + `/file?key=${user?.image}`} />
-          <AvatarFallback>
+          <AvatarImage
+            className=' -z-50'
+            src={BASE_URL + `/file?key=${user?.image}`}
+          />
+          <AvatarFallback className=' -z-50'>
             {makeUserAvatarSlug(user?.name ?? "")}
           </AvatarFallback>
         </Avatar>

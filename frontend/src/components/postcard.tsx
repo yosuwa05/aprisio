@@ -191,10 +191,12 @@ export default function Postcard({
           }}>
           <Avatar className='h-9 w-9'>
             <AvatarImage
-              className='object-cover rounded-full'
+              className='object-cover rounded-full -z-50'
               src={BASE_URL + `/file?key=${post.userImage}`}
             />
-            <AvatarFallback>{makeUserAvatarSlug(post.author)}</AvatarFallback>
+            <AvatarFallback className='-z-50'>
+              {makeUserAvatarSlug(post.author)}
+            </AvatarFallback>
           </Avatar>
 
           <div className='self-end'>

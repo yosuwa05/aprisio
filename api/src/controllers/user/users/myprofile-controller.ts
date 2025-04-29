@@ -837,54 +837,165 @@ export const MyProfileController = new Elysia({
       }),
     },
   )
+  // .get(
+  //   "/joined-groups",
+  //   async ({ set, query }) => {
+  //     try {
+  //       const { page, limit, userId } = query;
+
+  //       const _page = Number(page) || 1;
+  //       const _limit = Number(limit) || 10;
+
+  //       const groups = await UserGroupsModel.find({ userId: userId })
+  //         .populate({
+  //           path: "group",
+  //           populate: {
+  //             path: "groupAdmin",
+  //             select: "name",
+  //           },
+  //         })
+  //         .sort({ createdAt: -1, _id: -1 })
+  //         .skip((_page - 1) * _limit)
+  //         .limit(_limit)
+  //         .lean();
+
+  //       set.status = 200;
+
+  //       return {
+  //         groups,
+  //         ok: true,
+  //       };
+  //     } catch (error: any) {
+  //       console.log(error);
+  //       set.status = 500;
+  //       return {
+  //         message: error,
+  //       };
+  //     }
+  //   },
+  //   {
+  //     detail: {
+  //       summary: "Joined groups by  user",
+  //       description: "Joined groups by user",
+  //     },
+  //     query: t.Object({
+  //       page: t.Optional(t.String()),
+  //       limit: t.Optional(t.String()),
+  //       userId: t.String(),
+  //     }),
+  //   },
+  // )
   .get(
     "/joined-groups",
     async ({ set, query }) => {
       try {
-        const { page, limit, userId } = query;
+        const { page = 1, limit = 10, userId } = query;
 
-        const _page = Number(page) || 1;
-        const _limit = Number(limit) || 10;
+        const _page = Number(page);
+        const _limit = Number(limit);
 
-        const groups = await UserGroupsModel.find({ userId: userId })
-          .populate({
-            path: "group",
-            populate: {
-              path: "groupAdmin",
-              select: "name",
+        const pipeline: any[] = [
+          {
+            $match: {
+              userId: new Types.ObjectId(userId),
             },
-          })
-          .sort({ createdAt: -1, _id: -1 })
-          .skip((_page - 1) * _limit)
-          .limit(_limit)
-          .lean();
+          },
+          {
+            $lookup: {
+              from: "groups",
+              localField: "group",
+              foreignField: "_id",
+              as: "group",
+            },
+          },
+          { $unwind: "$group" },
+
+          {
+            $lookup: {
+              from: "users",
+              localField: "group.groupAdmin",
+              foreignField: "_id",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                  },
+                },
+              ],
+              as: "group.groupAdmin",
+            },
+          },
+          { $unwind: "$group.groupAdmin" },
+
+          {
+            $lookup: {
+              from: "usersubtopics",
+              let: {
+                adminId: "$group.groupAdmin._id",
+                subTopicId: "$group.subTopic",
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$userId", "$$adminId"] },
+                        { $eq: ["$subTopicId", "$$subTopicId"] },
+                      ],
+                    },
+                  },
+                },
+              ],
+              as: "adminSubTopicFollow",
+            },
+          },
+          {
+            $match: {
+              "adminSubTopicFollow.0": { $exists: true },
+            },
+          },
+
+          {
+            $project: {
+              adminSubTopicFollow: 0,
+            },
+          },
+
+          { $sort: { createdAt: -1 } },
+          { $skip: (_page - 1) * _limit },
+          { $limit: _limit },
+        ];
+
+        const groups = await UserGroupsModel.aggregate(pipeline);
 
         set.status = 200;
-
         return {
           groups,
           ok: true,
         };
       } catch (error: any) {
-        console.log(error);
+        console.error("Error fetching joined groups:", error);
         set.status = 500;
         return {
-          message: error,
+          message: error.message || "Error fetching joined groups.",
         };
       }
     },
     {
       detail: {
-        summary: "Joined groups by  user",
-        description: "Joined groups by user",
+        summary: "Joined groups by user with admin-follow filter",
+        description:
+          "Returns user group documents only if group admin follows the subTopic, with cleaned groupAdmin data.",
       },
       query: t.Object({
         page: t.Optional(t.String()),
         limit: t.Optional(t.String()),
         userId: t.String(),
       }),
-    },
+    }
   )
+
   .put(
     "/edit-profile",
     async ({ set, query, body }) => {

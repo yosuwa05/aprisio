@@ -122,8 +122,11 @@ export default function Comment({ comment, postId }: Props) {
       <div className='flex items-center gap-6 justify-between'>
         <div className='flex gap-2'>
           <Avatar className='h-5 w-5 object-cover'>
-            <AvatarImage src={BASE_URL + `/file?key=${comment?.user?.image}`} />
-            <AvatarFallback className='text-xs'>
+            <AvatarImage
+              className=' -z-50'
+              src={BASE_URL + `/file?key=${comment?.user?.image}`}
+            />
+            <AvatarFallback className='text-xs  -z-50'>
               {makeUserAvatarSlug(comment?.user?.name ?? "")}
             </AvatarFallback>
           </Avatar>

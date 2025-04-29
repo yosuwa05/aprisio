@@ -13,9 +13,18 @@ import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 type Suggetion = {
   slug: string;
   subTopicName: string;
@@ -32,7 +41,8 @@ export default function Feed() {
   const updateActiveSubTopicName = useGlobalFeedStore(
     (state) => state.setActiveSubTopicName
   );
-
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [subTopicID, setSubTopicId] = useState("");
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["community-info", topic, user?.id],
     queryFn: async () => {
@@ -95,6 +105,27 @@ export default function Feed() {
     },
   });
 
+  const { mutate: unJoinMutate, isPending: unjoinPending } = useMutation({
+    mutationKey: ["unjoin-community"],
+    mutationFn: async () => {
+      const res = await _axios.post(`/delete-management/unjoin-community`, {
+        subTopicId: subTopicID,
+      });
+      return res;
+    },
+    onSuccess: ({ data }) => {
+      if (data.ok) {
+        toast.success(data.message);
+        setSubTopicId("");
+        queryClient.invalidateQueries({ queryKey: ["joined"] });
+        queryClient.invalidateQueries({ queryKey: ["community-info"] });
+      }
+    },
+    onError(error: any) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+
   return (
     <div>
       <div className='mt-2   container flex flex-wrap  mx-auto px-3'>
@@ -134,7 +165,13 @@ export default function Feed() {
                 </div>
               ) : (
                 <div>
-                  <Button className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
+                  <Button
+                    disabled={unjoinPending}
+                    onClick={() => {
+                      setDeleteOpen(true);
+                      setSubTopicId(data?.subTopic?._id);
+                    }}
+                    className='rounded-full bg-buttoncol text-black font-bold shadow-none p-6 hover:bg-buttoncol'>
                     Joined
                   </Button>
                 </div>
@@ -233,6 +270,27 @@ export default function Feed() {
           </div>
         </div>
       </div>
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will unjoin you from the
+              community from our records.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setSubTopicId("")}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={unjoinPending}
+              onClick={() => unJoinMutate()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

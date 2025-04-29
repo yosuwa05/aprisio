@@ -347,9 +347,12 @@
 						checked={$form.isEventActivated}
 						onCheckedChange={(checked) => ($form.isEventActivated = checked)}
 					/>
-					<Label for="event-active" class="cursor-pointer">
-						{$form.isEventActivated ? 'Event Enabled' : 'Event Disabled'}
-					</Label>
+					<div class="flex items-center gap-5">
+						<Label for="event-active" class="cursor-pointer">
+							{$form.isEventActivated ? 'Event Enabled' : 'Event Disabled'}
+						</Label>
+						<div>(Disable coming soon page)</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -455,7 +458,7 @@
 		</div>
 
 		<div id="editor" class="overflow-y-auto"></div>
-		<div class="my-7 flex w-full justify-end gap-2">
+		<div class="flex w-full justify-end gap-2 py-7">
 			<Button
 				class="w-[120px] text-white"
 				type="submit"

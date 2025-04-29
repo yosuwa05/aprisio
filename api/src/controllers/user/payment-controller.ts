@@ -37,7 +37,7 @@ export const paymentController = new Elysia({
       if (tickets > event.reminingTickets) {
         set.status = 400;
         return {
-          message: `Only ${event.reminingTickets} ${event.reminingTickets === 1 ? "ticket" : "tickets"} are available`,
+          message: `Only ${event.reminingTickets} ${event.reminingTickets === 1 ? "ticket" : "tickets"}  available`,
         };
       }
 

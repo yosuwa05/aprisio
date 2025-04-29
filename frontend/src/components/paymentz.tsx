@@ -141,9 +141,6 @@ export function PaymentSuccess() {
             </span>
           </div>
 
-          <p className='text-lg text-[#7A7A7A] text-center'>
-            Thank you for your purchase!
-          </p>
           <p className='text-lg text-[#7A7A7A] text-center '>
             Your ticket is now available on your 'My Account' page under
             'Experiences'

@@ -61,7 +61,7 @@ export default function ViewTopEventPage() {
             {data?.event?.eventName}
           </h1>
           <h1 className='text-xl md:text-2xl text-center font-medium text-textcol font-roboto'>
-            Comming Soon...
+            Coming Soon...
           </h1>
           <Button
             onClick={() => {

@@ -13,6 +13,7 @@ import DockMenu from "@/components/dockmenu";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { useGlobalFeedStore } from "@/stores/GlobalFeedStore";
 
 type IAuthor = {
   name: string;
@@ -44,7 +45,10 @@ export const PostsSection = ({ isUserJoined }: Props) => {
   const setActiveLayout = useGlobalLayoutStore(
     (state) => state.setActiveLayout
   );
-
+  const activeSubTopic = useGlobalFeedStore((state) => state.activeSubTopic);
+  const activeSubTopicName = useGlobalFeedStore(
+    (state) => state.activeSubTopicName
+  );
   let layouts = ["post", "group", "event"];
   const { topic } = useParams();
   const router = useRouter();
@@ -113,6 +117,7 @@ export const PostsSection = ({ isUserJoined }: Props) => {
               if (isUserJoined === false) {
                 return toast.error("You must join the community to create ");
               }
+
               router.push(
                 activeLayout == "group"
                   ? "/feed/create-group/new"

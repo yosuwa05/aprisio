@@ -3,9 +3,9 @@
 import { _axios } from "@/lib/axios-instance";
 import { useGlobalAuthStore } from "@/stores/GlobalAuthStore";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
-import { Bell, Loader2 } from "lucide-react";
+import { Bell, BellDot, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -18,6 +18,7 @@ import {
 import { Skeleton } from "../ui/skeleton";
 import { useRouter } from "next/navigation";
 import { useGlobalLayoutStore } from "@/stores/GlobalLayoutStore";
+import { useState } from "react";
 
 export const Notifications = () => {
   const user = useGlobalAuthStore((state) => state.user);
@@ -26,6 +27,7 @@ export const Notifications = () => {
   const setActiveTab = useGlobalLayoutStore(
     (state) => state.setActiveMyProfileTab
   );
+  const [open, setOpen] = useState(false);
   const {
     data,
     fetchNextPage,
@@ -48,14 +50,49 @@ export const Notifications = () => {
     },
   });
 
+  const { data: isNewNotifcation, refetch: newRefetch } = useQuery({
+    queryKey: ["notification-count"],
+    queryFn: async () => {
+      const res = await _axios.get(`/notification/isnew-notification`);
+      return res?.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchInterval: 2000,
+    gcTime: 1000 * 60 * 10,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      return await _axios.patch("/notification/markasread", data);
+    },
+    onSuccess(data) {
+      console.log(data);
+      newRefetch();
+    },
+    onError(error: any) {
+      // toast.error(error.response.data.error || "Something went wrong");
+    },
+  });
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button
-          onClick={() => refetch()}
-          className='border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]'>
-          <Bell />
-        </Button>
+        <div className='relative inline-flex'>
+          <Button
+            onClick={() => {
+              if (isNewNotifcation?.newNotification) {
+                mutate();
+              }
+              refetch();
+            }}
+            className='border-[1px] bg-contrastbg hover:bg-contrastbg text-black p-0 rounded-lg border-[#E2E2E2] w-[35px] h-[35px] md:w-[35px] md:h-[35px]'
+            type='button'>
+            <Bell />
+          </Button>
+          {isNewNotifcation?.newNotification ? (
+            <span className="absolute top-0.5 right-0.5 grid min-h-[12px] min-w-[12px] translate-x-2/4 -translate-y-2/4 place-items-center rounded-full bg-red-500 py-1 px-1 text-xs font-medium leading-none text-white content-['']"></span>
+          ) : null}
+        </div>
       </SheetTrigger>
       <SheetContent className='min-w-[400px] overflow-y-scroll'>
         <SheetHeader>
@@ -90,7 +127,11 @@ export const Notifications = () => {
                     console.log(notification);
                     if (notification?.type === "new-event") {
                       setActiveTab("created-groups");
+                      setOpen(false);
                       router.push(`/profile`);
+                    } else if (notification?.type === "like" || "comment") {
+                      setOpen(false);
+                      router.push(`/feed/post/${notification?.post?.slug}`);
                     }
                   }}
                   key={notification._id}
